@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="content">
+    <h2 class="content-head is-center">What Banditore can do for me?</h2>
+
+    <div class="pure-g">
+        <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
+
+            <h3 class="content-subhead">
+                <i class="fa fa-bell-o"></i>
+                Be notified for a new release
+            </h3>
+            <p>
+                When a new release / tag is available, you'll know it <b>right away</b>. So you won't forget to update your project.
+            </p>
+        </div>
+        <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
+            <h3 class="content-subhead">
+                <i class="fa fa-rss"></i>
+                Soft notification, because of RSS feed
+            </h3>
+            <p>
+                I know you're tired of emails, popups &amp; browser / mobile notifications. <b>RSS feed</b> is soft notification that won't bother you.
+            </p>
+        </div>
+        <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
+            <h3 class="content-subhead">
+                <i class="fa fa-thumbs-o-up"></i>
+                Don't forget starred repository
+            </h3>
+            <p>
+                We all do that: you star a repo and the next few days you already forget about it. <b>That's over</b>. Any new release will remind you about it!
+            </p>
+        </div>
+        <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
+            <h3 class="content-subhead">
+                <i class="fa fa-github"></i>
+                Install your own Banditore
+            </h3>
+            <p>
+                Banditore is full <b>open source</b>. If you don't want to use this website, you can install it on your own server.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="ribbon l-box-lrg pure-g">
+    <div class="l-box-lrg is-center pure-u-1 pure-u-md-1-2 pure-u-lg-2-5">
+        <img width="300" alt="File Icons" class="pure-img-responsive" src="{{ asset('images/megaphone.svg') }}">
+    </div>
+    <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-3-5">
+
+        <h2 class="content-head content-head-ribbon">Bandi … what?</h2>
+
+        <p><b>Banditore</b> is an italian word. It means a <i>town crier</i> (or in french <i>un crieur public</i>).</p>
+        <p>Wikipedia says: "<i>A town crier, or bellman, is an officer of the court who makes public pronouncements as required by the court </i>".</p>
+        <p>
+            We are not in court here but I think you get the idea. Banditore will makes "announcements" about new releases from repositories you starred.
+            On every new release (or tag, because some people don't use the Release feature) it'll push a new item right away in your RSS feed.
+        </p>
+    </div>
+</div>
+
+<div class="content">
+    <h2 class="content-head is-center">How it works</h2>
+
+    <div class=" l-box-lrg pure-g">
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-3-5">
+            <h4>Retrieve starred repositories from your Github account</h4>
+            <p>
+                When you first login, we retrieve minimal information from you (name, username &amp; avatar).
+                Then we fetch your stars &amp; their associated repository.
+            </p>
+
+            <h4>Periodically retrieve new release &amp; tag</h4>
+            <p>
+                At least twice per hour, we retrieve new release or tag for your repository using your token.
+                Once we have gathered all these information, we build a feed with them, ordered by published date of each release.
+            </p>
+
+            <h4>Markdown<i>ified</i> content</h4>
+            <p>
+                Some release contains markdown information which will be converted in HTML for a better rendering.
+                For tag (which doesn't come with a body), we'll only display the tag name.
+            </p>
+
+            <h4>Do you want to improve it?</h4>
+            <p>
+                As I said, Banditore is <a href="https://github.com/j0k3r/banditore">open source</a>.
+                If something bother you or if you want to improve it, I'll be much happy to check your issue or review your PR!
+            </p>
+        </div>
+
+        <div class="l-box-lrg is-center pure-u-1 pure-u-md-1-2 pure-u-lg-2-5">
+            <img width="300" alt="File Icons" class="pure-img-responsive" src="{{ asset('images/productivity.svg') }}">
+        </div>
+    </div>
+</div>
+{% endblock %}

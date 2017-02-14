@@ -1,0 +1,19 @@
+security:
+    providers:
+        github_provider:
+            entity:
+                class: AppBundle:User
+                property: githubId
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            anonymous: ~
+            logout: ~
+
+            guard:
+                authenticators:
+                    - banditore.github.authenticator

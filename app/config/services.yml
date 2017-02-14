@@ -1,0 +1,41 @@
+services:
+    banditore.github.authenticator:
+        class: AppBundle\Security\GithubAuthenticator
+        autowire: true
+
+    # repository as a service
+    banditore.repository.repo:
+        class: AppBundle\Repository\RepoRepository
+        factory: [ "@doctrine.orm.default_entity_manager", getRepository ]
+        arguments:
+            - AppBundle:Repo
+
+    banditore.repository.star:
+        class: AppBundle\Repository\StarRepository
+        factory: [ "@doctrine.orm.default_entity_manager", getRepository ]
+        arguments:
+            - AppBundle:Star
+
+    banditore.repository.user:
+        class: AppBundle\Repository\UserRepository
+        factory: [ "@doctrine.orm.default_entity_manager", getRepository ]
+        arguments:
+            - AppBundle:User
+
+    banditore.repository.version:
+        class: AppBundle\Repository\VersionRepository
+        factory: [ "@doctrine.orm.default_entity_manager", getRepository ]
+        arguments:
+            - AppBundle:Version
+
+    # global Github application client
+    banditore.client.github.application:
+        class: Github\Client
+        calls:
+            - [ authenticate, [ "%github_client_id%", "%github_client_secret%", !php/const:Github\Client::AUTH_URL_CLIENT_ID ] ]
+
+    banditore.writer.atom:
+        class: MarcW\RssWriter\RssWriter
+        calls:
+            - [ registerWriter, [ "@marcw_rss_writer.writer.core" ] ]
+            - [ registerWriter, [ "@marcw_rss_writer.writer.atom" ] ]

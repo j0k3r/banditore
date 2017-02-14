@@ -1,0 +1,11 @@
+parameters:
+    database_host: 127.0.0.1
+    database_port: ~
+    database_name: symfony
+    database_user: root
+    database_password: ~
+
+    secret: 32243a839bcb3ae77ac1bd1db3a5e6c5b583953a
+
+    github_client_id: xxx
+    github_client_secret: xxx

@@ -1,0 +1,23 @@
+language: php
+
+sudo: false
+
+cache:
+    directories:
+        - $HOME/.composer/cache
+
+matrix:
+    include:
+        - php: 5.6
+          env: CS_FIXER=run
+        - php: 7.0
+
+install:
+    - composer --prefer-dist install --no-interaction
+
+before_script:
+    - echo 'date.timezone = "Europe/Paris"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+
+script:
+    - ./bin/simple-phpunit -v
+    - if [ "$CS_FIXER" = "run" ]; then php bin/php-cs-fixer fix --verbose --dry-run ; fi;
