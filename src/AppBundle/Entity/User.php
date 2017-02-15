@@ -33,28 +33,28 @@ class User implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="uuid", type="guid", length=255, unique=true, nullable=false)
+     * @ORM\Column(name="uuid", type="guid", length=191, unique=true, nullable=false)
      */
     private $uuid;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", length=255, unique=true, nullable=false)
+     * @ORM\Column(name="username", type="string", length=191, unique=true, nullable=false)
      */
     private $username;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="avatar", type="string", length=255)
+     * @ORM\Column(name="avatar", type="string", length=191)
      */
     private $avatar;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=191)
      */
     private $name;
 
