@@ -114,7 +114,8 @@ class CheckNewVersionCommand extends ContainerAwareCommand
             list($username, $repoName) = explode('/', $repo->getFullName());
 
             try {
-                $tags = $this->github->api('repo')->tags($username, $repoName);
+                // retrieve only the last 5 tags (we don't need more)
+                $tags = $this->github->api('repo')->tags($username, $repoName, ['per_page' => 5]);
             } catch (RuntimeException $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
                 continue;
@@ -167,6 +168,7 @@ class CheckNewVersionCommand extends ContainerAwareCommand
                         $newRelease['message'] = $this->github->api('markdown')->render($newRelease['message'], 'gfm', $repo->getFullName());
                     } catch (RuntimeException $e) {
                         $output->writeln('<error>Failed to parse markdown: ' . $e->getMessage() . '</error>');
+                        continue;
                     }
                 }
 
