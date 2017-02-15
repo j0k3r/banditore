@@ -4,7 +4,7 @@ services:
         autowire: true
 
     banditore.client.redis:
-        class: \Redis
+        class: Redis
         calls:
             - [ connect, [ "%redis_host%", "%redis_port%" ] ]
             - [ select, [ "%redis_database%" ] ]
