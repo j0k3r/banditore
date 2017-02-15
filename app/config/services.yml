@@ -3,6 +3,12 @@ services:
         class: AppBundle\Security\GithubAuthenticator
         autowire: true
 
+    banditore.client.redis:
+        class: \Redis
+        calls:
+            - [ connect, [ "%redis_host%", "%redis_port%" ] ]
+            - [ select, [ "%redis_database%" ] ]
+
     # repository as a service
     banditore.repository.repo:
         class: AppBundle\Repository\RepoRepository

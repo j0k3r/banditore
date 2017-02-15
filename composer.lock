@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "636bed918c782ac8c238c45c81645909",
+    "content-hash": "be176c15f0ec7bb3ddd1a581d127af7a",
     "packages": [
         {
             "name": "cache/adapter-common",
@@ -119,17 +119,17 @@
             "time": "2016-08-07T14:49:33+00:00"
         },
         {
-            "name": "cache/memcached-adapter",
-            "version": "0.3.2",
+            "name": "cache/redis-adapter",
+            "version": "0.4.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/php-cache/memcached-adapter.git",
-                "reference": "ab360d0d8a8a9b3ebd1e5aa237e9d90302f8d93b"
+                "url": "https://github.com/php-cache/redis-adapter.git",
+                "reference": "55872608728f0f52ba996c42c360e18631ef6f63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-cache/memcached-adapter/zipball/ab360d0d8a8a9b3ebd1e5aa237e9d90302f8d93b",
-                "reference": "ab360d0d8a8a9b3ebd1e5aa237e9d90302f8d93b",
+                "url": "https://api.github.com/repos/php-cache/redis-adapter/zipball/55872608728f0f52ba996c42c360e18631ef6f63",
+                "reference": "55872608728f0f52ba996c42c360e18631ef6f63",
                 "shasum": ""
             },
             "require": {
@@ -147,12 +147,12 @@
                 "phpunit/phpunit": "^4.0 || ^5.1"
             },
             "suggest": {
-                "ext-memcached": "The extension required to use this pool."
+                "ext-redis": "The extension required to use this pool."
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Cache\\Adapter\\Memcached\\": ""
+                    "Cache\\Adapter\\Redis\\": ""
                 },
                 "exclude-from-classmap": [
                     "/Tests/"
@@ -174,12 +174,13 @@
                     "homepage": "https://github.com/nyholm"
                 }
             ],
-            "description": "A PSR-6 cache implementation using Memcached. This implementation supports tags",
+            "description": "A PSR-6 cache implementation using Redis (PhpRedis). This implementation supports tags",
             "homepage": "http://www.php-cache.com/en/latest/",
             "keywords": [
                 "cache",
-                "memcached",
+                "phpredis",
                 "psr-6",
+                "redis",
                 "tag"
             ],
             "time": "2016-08-07T15:04:55+00:00"
@@ -2051,16 +2052,16 @@
         },
         {
             "name": "php-http/message",
-            "version": "v1.4.1",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/message.git",
-                "reference": "bfd895a4e753bdde99bed64d75b999e0c9fa6147"
+                "reference": "13df8c48f40ca7925303aa336f19be4b80984f01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/message/zipball/bfd895a4e753bdde99bed64d75b999e0c9fa6147",
-                "reference": "bfd895a4e753bdde99bed64d75b999e0c9fa6147",
+                "url": "https://api.github.com/repos/php-http/message/zipball/13df8c48f40ca7925303aa336f19be4b80984f01",
+                "reference": "13df8c48f40ca7925303aa336f19be4b80984f01",
                 "shasum": ""
             },
             "require": {
@@ -2088,7 +2089,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.5-dev"
+                    "dev-master": "1.6-dev"
                 }
             },
             "autoload": {
@@ -2116,7 +2117,7 @@
                 "message",
                 "psr-7"
             ],
-            "time": "2016-12-16T21:09:21+00:00"
+            "time": "2017-02-14T08:58:37+00:00"
         },
         {
             "name": "php-http/message-factory",
@@ -2497,16 +2498,16 @@
         },
         {
             "name": "sensio/framework-extra-bundle",
-            "version": "v3.0.21",
+            "version": "v3.0.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioFrameworkExtraBundle.git",
-                "reference": "ed86f6fb1753e76b39ff8b87f527045ca6b97169"
+                "reference": "1c66c2e3b8f17f06178142386aff5a9f8057a104"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/ed86f6fb1753e76b39ff8b87f527045ca6b97169",
-                "reference": "ed86f6fb1753e76b39ff8b87f527045ca6b97169",
+                "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/1c66c2e3b8f17f06178142386aff5a9f8057a104",
+                "reference": "1c66c2e3b8f17f06178142386aff5a9f8057a104",
                 "shasum": ""
             },
             "require": {
@@ -2515,6 +2516,8 @@
                 "symfony/framework-bundle": "~2.3|~3.0"
             },
             "require-dev": {
+                "doctrine/doctrine-bundle": "~1.5",
+                "doctrine/orm": "~2.4,>=2.4.5",
                 "symfony/asset": "~2.7|~3.0",
                 "symfony/browser-kit": "~2.3|~3.0",
                 "symfony/dom-crawler": "~2.3|~3.0",
@@ -2527,7 +2530,7 @@
                 "symfony/translation": "~2.3|~3.0",
                 "symfony/twig-bundle": "~2.3|~3.0",
                 "symfony/yaml": "~2.3|~3.0",
-                "twig/twig": "~1.11|~2.0",
+                "twig/twig": "~1.12|~2.0",
                 "zendframework/zend-diactoros": "^1.3"
             },
             "suggest": {
@@ -2561,7 +2564,7 @@
                 "annotations",
                 "controllers"
             ],
-            "time": "2017-02-02T15:31:23+00:00"
+            "time": "2017-02-15T06:52:30+00:00"
         },
         {
             "name": "sensiolabs/security-checker",
@@ -2606,60 +2609,6 @@
             ],
             "description": "A security checker for your composer.lock",
             "time": "2016-09-23T18:09:57+00:00"
-        },
-        {
-            "name": "swiftmailer/swiftmailer",
-            "version": "v5.4.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "81fdccfaf8bdc5d5d7a1ef6bb3a61bbb1a6c4a3e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/81fdccfaf8bdc5d5d7a1ef6bb3a61bbb1a6c4a3e",
-                "reference": "81fdccfaf8bdc5d5d7a1ef6bb3a61bbb1a6c4a3e",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "mockery/mockery": "~0.9.1",
-                "symfony/phpunit-bridge": "~3.2"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.4-dev"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "lib/swift_required.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Chris Corbyn"
-                },
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                }
-            ],
-            "description": "Swiftmailer, free feature-rich PHP mailer",
-            "homepage": "http://swiftmailer.org",
-            "keywords": [
-                "email",
-                "mail",
-                "mailer"
-            ],
-            "time": "2017-02-13T07:52:53+00:00"
         },
         {
             "name": "symfony/monolog-bundle",
@@ -3059,65 +3008,6 @@
             "time": "2016-11-14T01:06:16+00:00"
         },
         {
-            "name": "symfony/swiftmailer-bundle",
-            "version": "v2.4.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/swiftmailer-bundle.git",
-                "reference": "ad751095576ce0c12a284e30e3fff80c91f27225"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/swiftmailer-bundle/zipball/ad751095576ce0c12a284e30e3fff80c91f27225",
-                "reference": "ad751095576ce0c12a284e30e3fff80c91f27225",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.2",
-                "swiftmailer/swiftmailer": ">=4.2.0,~5.0",
-                "symfony/config": "~2.7|~3.0",
-                "symfony/dependency-injection": "~2.7|~3.0",
-                "symfony/http-kernel": "~2.7|~3.0"
-            },
-            "require-dev": {
-                "symfony/console": "~2.7|~3.0",
-                "symfony/framework-bundle": "~2.7|~3.0",
-                "symfony/phpunit-bridge": "~2.7|~3.0",
-                "symfony/yaml": "~2.7|~3.0"
-            },
-            "suggest": {
-                "psr/log": "Allows logging"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.4-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Bundle\\SwiftmailerBundle\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                }
-            ],
-            "description": "Symfony SwiftmailerBundle",
-            "homepage": "http://symfony.com",
-            "time": "2016-12-20T04:44:33+00:00"
-        },
-        {
             "name": "symfony/symfony",
             "version": "v3.2.3",
             "source": {
@@ -3323,6 +3213,72 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "cache/memcached-adapter",
+            "version": "0.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-cache/memcached-adapter.git",
+                "reference": "ab360d0d8a8a9b3ebd1e5aa237e9d90302f8d93b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-cache/memcached-adapter/zipball/ab360d0d8a8a9b3ebd1e5aa237e9d90302f8d93b",
+                "reference": "ab360d0d8a8a9b3ebd1e5aa237e9d90302f8d93b",
+                "shasum": ""
+            },
+            "require": {
+                "cache/adapter-common": "^0.3",
+                "cache/hierarchical-cache": "^0.3",
+                "cache/taggable-cache": "^0.4",
+                "php": "^5.5 || ^7.0",
+                "psr/cache": "^1.0"
+            },
+            "provide": {
+                "psr/cache-implementation": "^1.0"
+            },
+            "require-dev": {
+                "cache/integration-tests": "^0.11",
+                "phpunit/phpunit": "^4.0 || ^5.1"
+            },
+            "suggest": {
+                "ext-memcached": "The extension required to use this pool."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cache\\Adapter\\Memcached\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Aaron Scherer",
+                    "email": "aequasi@gmail.com",
+                    "homepage": "https://github.com/aequasi"
+                },
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com",
+                    "homepage": "https://github.com/nyholm"
+                }
+            ],
+            "description": "A PSR-6 cache implementation using Memcached. This implementation supports tags",
+            "homepage": "http://www.php-cache.com/en/latest/",
+            "keywords": [
+                "cache",
+                "memcached",
+                "psr-6",
+                "tag"
+            ],
+            "time": "2016-08-07T15:04:55+00:00"
+        },
         {
             "name": "friendsofphp/php-cs-fixer",
             "version": "v2.1.0",

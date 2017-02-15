@@ -33,8 +33,8 @@
         "knplabs/github-api": "^2.0",
         "php-http/guzzle6-adapter": "^1.1",
         "knpuniversity/oauth2-client-bundle": "^1.9",
-        "cache/memcached-adapter": "^0.3.2",
-        "ramsey/uuid": "^3.5"
+        "ramsey/uuid": "^3.5",
+        "cache/redis-adapter": "^0.4.2"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "~2.0",
