@@ -3,7 +3,7 @@
 namespace AppBundle\Command;
 
 use AppBundle\Entity\Version;
-use Cache\Adapter\Memcached\RedisCachePool;
+use Cache\Adapter\Redis\RedisCachePool;
 use Github\Exception\RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,7 +23,7 @@ class CheckNewVersionCommand extends ContainerAwareCommand
     private $em;
     private $repoRepository;
     private $versionRepository;
-    private $client;
+    private $github;
 
     protected function configure()
     {
@@ -65,6 +65,13 @@ class CheckNewVersionCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $rateLimit = $this->github->api('rate_limit')->getRateLimits();
+        if ($rateLimit['resources']['core']['remaining'] === 0) {
+            $output->writeln('<error>Github limit reached</error>, reset will apply at: <info>' . date('r', $rateLimit['resources']['core']['reset']) . '</info>');
+
+            return 1;
+        }
+
         if ($input->getOption('repo_id')) {
             $repos = [$input->getOption('repo_id')];
         } elseif ($input->getOption('repo_name')) {
@@ -74,7 +81,7 @@ class CheckNewVersionCommand extends ContainerAwareCommand
         }
 
         if (count($repos) <= 0) {
-            $output->writeln('<comment>No repos found</comment>');
+            $output->writeln('<error>No repos found</error>');
 
             return 1;
         }

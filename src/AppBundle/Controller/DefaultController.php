@@ -101,7 +101,7 @@ class DefaultController extends Controller
      */
     public function rssAction(Request $request, User $user)
     {
-        $releases = $this->get('banditore.repository.version')->findForUser($this->getUser()->getId());
+        $releases = $this->get('banditore.repository.version')->findForUser($user->getId());
 
         $feedUrl = $this->generateUrl('rss_user', ['uuid' => $user->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL);
 
