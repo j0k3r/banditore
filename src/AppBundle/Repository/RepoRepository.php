@@ -11,7 +11,7 @@ namespace AppBundle\Repository;
 class RepoRepository extends \Doctrine\ORM\EntityRepository
 {
     /**
-     * Retrieve all repositories to be fetched for new release
+     * Retrieve all repositories to be fetched for new release.
      *
      * @return array
      */

@@ -330,7 +330,7 @@ class User implements UserInterface
     /**
      * Get accessToken.
      *
-     * @return \DateTime
+     * @return string
      */
     public function getAccessToken()
     {

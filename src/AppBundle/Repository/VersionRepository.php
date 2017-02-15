@@ -14,7 +14,7 @@ class VersionRepository extends \Doctrine\ORM\EntityRepository
      * Find all versions available for the given user.
      * They'll be put in a RSS feed.
      *
-     * @param  int $userId
+     * @param int $userId
      *
      * @return array
      */

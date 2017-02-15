@@ -233,7 +233,7 @@ class Repo
      *
      * @param \DateTime $createdAt
      *
-     * @return User
+     * @return Repo
      */
     public function setCreatedAt($createdAt)
     {
@@ -257,7 +257,7 @@ class Repo
      *
      * @param \DateTime $updatedAt
      *
-     * @return User
+     * @return Repo
      */
     public function setUpdatedAt($updatedAt)
     {
