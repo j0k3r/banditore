@@ -117,7 +117,8 @@ a.pure-button-primary:hover {
     font-size: 120%;
 }
 
-.home-menu .pure-menu-selected a {
+.home-menu .pure-menu-selected a,
+.home-menu .pure-menu-selected a:visited {
     color: white;
 }
 
