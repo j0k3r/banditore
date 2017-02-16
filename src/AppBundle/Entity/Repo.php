@@ -29,14 +29,14 @@ class Repo
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=191)
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="full_name", type="string", length=255)
+     * @ORM\Column(name="full_name", type="string", length=191)
      */
     private $fullName;
 
@@ -50,7 +50,7 @@ class Repo
     /**
      * @var string
      *
-     * @ORM\Column(name="owner_avatar", type="string", length=255)
+     * @ORM\Column(name="owner_avatar", type="string", length=191)
      */
     private $ownerAvatar;
 

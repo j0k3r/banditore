@@ -32,23 +32,16 @@ class Version
     /**
      * @var string
      *
-     * @ORM\Column(name="tag_name", type="string", length=255)
+     * @ORM\Column(name="tag_name", type="string", length=191)
      */
     private $tagName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     * @ORM\Column(name="name", type="string", length=191, nullable=true)
      */
     private $name;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="draft", type="boolean")
-     */
-    private $draft;
 
     /**
      * @var bool
@@ -141,30 +134,6 @@ class Version
     }
 
     /**
-     * Set draft.
-     *
-     * @param bool $draft
-     *
-     * @return Version
-     */
-    public function setDraft($draft)
-    {
-        $this->draft = $draft;
-
-        return $this;
-    }
-
-    /**
-     * Get draft.
-     *
-     * @return bool
-     */
-    public function getDraft()
-    {
-        return $this->draft;
-    }
-
-    /**
      * Set prerelease.
      *
      * @param bool $prerelease
@@ -240,9 +209,8 @@ class Version
     {
         $this->setTagName($data['tag_name']);
         $this->setName($data['name']);
-        $this->setDraft($data['draft']);
         $this->setPrerelease($data['prerelease']);
         $this->setCreatedAt((new \DateTime())->setTimestamp(strtotime($data['published_at'])));
-        $this->setBody(htmlentities($data['message']));
+        $this->setBody($data['message']);
     }
 }

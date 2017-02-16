@@ -3,7 +3,7 @@
 namespace AppBundle\Command;
 
 use AppBundle\Entity\Version;
-use Cache\Adapter\Memcached\MemcachedCachePool;
+use Cache\Adapter\Redis\RedisCachePool;
 use Github\Exception\RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,7 +23,7 @@ class CheckNewVersionCommand extends ContainerAwareCommand
     private $em;
     private $repoRepository;
     private $versionRepository;
-    private $client;
+    private $github;
 
     protected function configure()
     {
@@ -58,17 +58,20 @@ class CheckNewVersionCommand extends ContainerAwareCommand
         $this->repoRepository = $this->getContainer()->get('banditore.repository.repo');
         $this->versionRepository = $this->getContainer()->get('banditore.repository.version');
         // $this->publisher = $this->getContainer()->get('swarrot.publisher');
-        $this->client = $this->getContainer()->get('banditore.client.github.application');
 
-        $memcached = new \Memcached();
-        $memcached->addServer('localhost', 11211);
-        $pool = new MemcachedCachePool($memcached);
-
-        $this->client->addCache($pool);
+        $this->github = $this->getContainer()->get('banditore.client.github.application');
+        $this->github->addCache(new RedisCachePool($this->getContainer()->get('banditore.client.redis')));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $rateLimit = $this->github->api('rate_limit')->getRateLimits();
+        if ($rateLimit['resources']['core']['remaining'] === 0) {
+            $output->writeln('<error>Github limit reached</error>, reset will apply at: <info>' . date('r', $rateLimit['resources']['core']['reset']) . '</info>');
+
+            return 1;
+        }
+
         if ($input->getOption('repo_id')) {
             $repos = [$input->getOption('repo_id')];
         } elseif ($input->getOption('repo_name')) {
@@ -78,7 +81,7 @@ class CheckNewVersionCommand extends ContainerAwareCommand
         }
 
         if (count($repos) <= 0) {
-            $output->writeln('<comment>No repos found</comment>');
+            $output->writeln('<error>No repos found</error>');
 
             return 1;
         }
@@ -105,13 +108,14 @@ class CheckNewVersionCommand extends ContainerAwareCommand
             $newVersion = 0;
             $repo = $this->repoRepository->find($repoId);
 
-            $rateLimit = $this->client->api('rate_limit')->getRateLimits();
+            $rateLimit = $this->github->api('rate_limit')->getRateLimits();
             $output->write('[' . $rateLimit['resources']['core']['remaining'] . ' - ' . $i . '/' . $totalRepos . '] Check <info>' . $repo->getFullName() . '</info> ... ');
 
             list($username, $repoName) = explode('/', $repo->getFullName());
 
             try {
-                $tags = $this->client->api('repo')->tags($username, $repoName);
+                // retrieve only the last 5 tags (we don't need more)
+                $tags = $this->github->api('repo')->tags($username, $repoName, ['per_page' => 5]);
             } catch (RuntimeException $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
                 continue;
@@ -139,7 +143,7 @@ class CheckNewVersionCommand extends ContainerAwareCommand
                 ];
 
                 try {
-                    $newRelease = $this->client->api('repo')->releases()->tag($username, $repoName, $tag['name']);
+                    $newRelease = $this->github->api('repo')->releases()->tag($username, $repoName, $tag['name']);
 
                     // use same key as tag to store the content of the release
                     $newRelease['message'] = $newRelease['body'];
@@ -147,11 +151,10 @@ class CheckNewVersionCommand extends ContainerAwareCommand
                     // catch this
                     //   [Github\Exception\ApiLimitExceedException]
                     //   You have reached GitHub hourly limit! Actual limit is: 5000
-                    $commit = $this->client->api('git')->commits()->show($username, $repoName, $tag['commit']['sha']);
+                    $commit = $this->github->api('git')->commits()->show($username, $repoName, $tag['commit']['sha']);
 
                     $newRelease += [
                         'name' => $tag['name'],
-                        'draft' => false,
                         'prerelease' => false,
                         'published_at' => $commit['author']['date'],
                         'message' => $commit['message'],
@@ -161,9 +164,10 @@ class CheckNewVersionCommand extends ContainerAwareCommand
                 // render markdown in plain html and use default markdown file if it fails
                 if (isset($newRelease['message']) && strlen(trim($newRelease['message'])) > 0) {
                     try {
-                        $newRelease['message'] = $this->client->api('markdown')->render($newRelease['message'], 'gfm', $repo->getFullName());
+                        $newRelease['message'] = $this->github->api('markdown')->render($newRelease['message'], 'gfm', $repo->getFullName());
                     } catch (RuntimeException $e) {
                         $output->writeln('<error>Failed to parse markdown: ' . $e->getMessage() . '</error>');
+                        continue;
                     }
                 }
 

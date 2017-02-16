@@ -38,7 +38,7 @@ label {
  * These are some useful classes which I will need
  */
 .l-box {
-    padding: 1em;
+    padding: 0 1em;
 }
 
 .l-box-lrg {
@@ -115,9 +115,11 @@ a.pure-button-primary:hover {
     color: #FFAB80;
     font-weight: 400;
     font-size: 120%;
+    float: left;
 }
 
-.home-menu .pure-menu-selected a {
+.home-menu .pure-menu-selected a,
+.home-menu .pure-menu-selected a:visited {
     color: white;
 }
 
@@ -138,28 +140,26 @@ a.pure-button-primary:hover {
  */
 .splash-container {
     background: #2B687F;
-    z-index: 1;
-    overflow: hidden;
-    /* The following styles are required for the "scroll-over" effect */
-    width: 100%;
-    height: 70%;
-    top: 0;
-    left: 0;
-    position: fixed !important;
+    padding: 130px 0 70px;
 }
 
 .splash {
     /* absolute center .splash within .splash-container */
     width: 80%;
     height: 50%;
-    margin: auto;
-    position: absolute;
+    margin: 0 auto;
+    /*position: absolute;*/
     top: 0px;
     left: 0;
     bottom: 0;
     right: 0;
     text-align: center;
     text-transform: uppercase;
+}
+
+.splash p {
+    color: #D5E1E5;
+    letter-spacing: 0.05em;
 }
 
 /* This is the main heading that appears on the blue section */
@@ -174,30 +174,25 @@ a.pure-button-primary:hover {
     line-height: 1em;
 }
 
-/* This is the subheading that appears on the blue section */
-.splash-subhead {
-    color: white;
-    letter-spacing: 0.05em;
-    opacity: 0.8;
-}
-
 /*
  * -- CONTENT STYLES --
  * This represents the content area (everything below the blue section)
  */
 .content-wrapper {
     /* These styles are required for the "scroll-over" effect */
-    position: absolute;
+    /*position: absolute;*/
     top: 69%;
-    width: 100%;
-    min-height: 12%;
-    z-index: 2;
-    background: white;
+    /*width: 100%;*/
+    /*min-height: 12%;*/
+    /*z-index: 2;*/
+    background: #2B687F;
+    margin: 0 auto;
 }
 
 /* We want to give the content area some more padding */
 .content {
-    padding: 1em 1em 3em;
+    padding: 1em;
+    background: white;
 }
 
 /* This is the class used for the main content headers (<h2>) */
@@ -227,13 +222,16 @@ a.pure-button-primary:hover {
     color: #aaa;
 }
 
+.image-productivity,
+.image-megaphone {
+    display: none;
+}
+
 /* This is the class used for the footer */
 .footer {
     background: #10556B;
     color: #E6E6E6;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+    padding: 1em;
 }
 
 .footer a {
@@ -262,32 +260,28 @@ a.pure-button-primary:hover {
     .home-menu {
         text-align: left;
     }
-        .home-menu ul {
-            float: right;
-        }
 
-    /* We increase the height of the splash-container */
-/*    .splash-container {
-        height: 500px;
-    }*/
-
-    /* We decrease the width of the .splash, since we have more width
-    to work with */
-    .splash {
-        width: 60%;
-        height: 50%;
+    .home-menu ul {
+        float: right;
     }
 
     .splash-head {
         font-size: 250%;
     }
 
-
     /* We remove the border-separator assigned to .l-box-lrg */
     .l-box-lrg {
         border: none;
     }
 
+    .content {
+        padding: 1em 1em 3em;
+    }
+
+    .image-productivity,
+    .image-megaphone {
+        display: initial;
+    }
 }
 
 /*
@@ -299,5 +293,14 @@ a.pure-button-primary:hover {
     /* We increase the header font size even more */
     .splash-head {
         font-size: 300%;
+    }
+
+    .middle-content {
+        width: 980px;
+        margin: 0 auto;
+    }
+
+    .l-box {
+        padding: 1em;
     }
 }

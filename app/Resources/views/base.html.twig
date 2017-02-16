@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Banditore retrieve all new releases from your starred repositories and put them in a RSS feed, just for you.">
+    <meta name="description" content="Banditore retrieves new releases from your Github starred repositories and put them in a RSS feed, just for you.">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     <title>{% block title %}Bandito.re{% endblock %}</title>
 
@@ -18,33 +18,34 @@
 
     <div class="header">
         <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
-            <a class="pure-menu-heading" href="/">Bandito.re</a>
+            <div class="middle-content">
+                <a class="pure-menu-heading" href="/">Bandito.re</a>
 
-            <ul class="pure-menu-list">
-                <li class="pure-menu-item pure-menu-selected"><a href="https://github.com/j0k3r/banditore" class="pure-menu-link">View it on Github</a></li>
-                {% if app.user %}
-                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Logged in as <b>{{ app.user.username }}</b></a></li>
-                    <li class="pure-menu-item"><a href="{{ url('rss_user', { uuid: app.user.uuid }) }}" class="pure-menu-link">Your RSS feed</a></li>
-                {% endif %}
-            </ul>
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item pure-menu-selected"><a href="https://github.com/j0k3r/banditore" class="pure-menu-link">View it on Github</a></li>
+                    {% if app.user %}
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link">Logged in as <b>{{ app.user.username }}</b></a></li>
+                        <li class="pure-menu-item"><a href="{{ url('rss_user', { uuid: app.user.uuid }) }}" class="pure-menu-link">Your RSS feed</a></li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     </div>
 
-    {% block splash %}
-        <div class="splash-container">
-            <div class="splash">
-                <h1 class="splash-head">Get new release in your RSS!</h1>
-                <p class="splash-subhead">
-                    We gather new releases from your starred Github repositories and generate a RSS feed with them. <u>Just for you</u>.
-                </p>
-                <p>
-                    <a href="{{ url('github_connect') }}" class="pure-button pure-button-primary">Try it!</a>
-                </p>
-            </div>
-        </div>
-    {% endblock %}
-
     <div class="content-wrapper">
+        {% block splash %}
+            <div class="splash-container middle-content">
+                <div class="splash">
+                    <h1 class="splash-head">Get new release in your RSS!</h1>
+                    <p>We gather new releases from your starred Github repositories and generate a RSS feed with them.</p>
+                    <p>Just for you.</p>
+                    <p>
+                        <a href="{{ url('github_connect') }}" class="pure-button pure-button-primary">Try it!</a>
+                    </p>
+                </div>
+            </div>
+        {% endblock %}
+
         {% block body %}{% endblock %}
 
         <div class="footer l-box is-center">
