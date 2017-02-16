@@ -155,7 +155,6 @@ class CheckNewVersionCommand extends ContainerAwareCommand
 
                     $newRelease += [
                         'name' => $tag['name'],
-                        'draft' => false,
                         'prerelease' => false,
                         'published_at' => $commit['author']['date'],
                         'message' => $commit['message'],
