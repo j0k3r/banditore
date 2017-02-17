@@ -23,6 +23,7 @@ class CheckNewVersionCommand extends ContainerAwareCommand
     private $em;
     private $repoRepository;
     private $versionRepository;
+    private $hubPublisher;
     private $github;
 
     protected function configure()
@@ -57,7 +58,7 @@ class CheckNewVersionCommand extends ContainerAwareCommand
         $this->em = $this->getContainer()->get('doctrine')->getManager();
         $this->repoRepository = $this->getContainer()->get('banditore.repository.repo');
         $this->versionRepository = $this->getContainer()->get('banditore.repository.version');
-        // $this->publisher = $this->getContainer()->get('swarrot.publisher');
+        $this->hubPublisher = $this->getContainer()->get('banditore.pubsubhubbub.publisher');
 
         $this->github = $this->getContainer()->get('banditore.client.github.application');
         $this->github->addCache(new RedisCachePool($this->getContainer()->get('banditore.client.redis')));
@@ -86,27 +87,32 @@ class CheckNewVersionCommand extends ContainerAwareCommand
             return 1;
         }
 
-        // push content using the right tool
-        if ($input->getOption('use_queue')) {
-            // $newVersion = $this->fetchNewVersionsUsingQueue($contents);
-        } else {
-            $newVersion = $this->fetchNewVersions($output, $repos);
+        $newVersion = $this->fetchNewVersions($output, $repos);
+
+        // notify pubsubhubbub
+        $this->hubPublisher->pingHub(array_keys($newVersion));
+
+        $total = 0;
+        foreach ($newVersion as $id => $count) {
+            $total += $count;
         }
 
-        $output->writeln('<info>New version found: ' . $newVersion . '</info>');
+        $output->writeln('<info>New version found: ' . $total . '</info>');
 
         return 0;
     }
 
     private function fetchNewVersions(OutputInterface $output, array $repos)
     {
-        $globalNewVersion = 0;
+        $globalNewVersion = [];
         $totalRepos = count($repos);
 
         foreach ($repos as $i => $repoId) {
             ++$i;
-            $newVersion = 0;
             $repo = $this->repoRepository->find($repoId);
+
+            $newVersion = 0;
+            $globalNewVersion[$repo->getId()] = 0;
 
             $rateLimit = $this->github->api('rate_limit')->getRateLimits();
             $output->write('[' . $rateLimit['resources']['core']['remaining'] . ' - ' . $i . '/' . $totalRepos . '] Check <info>' . $repo->getFullName() . '</info> ... ');
@@ -177,7 +183,7 @@ class CheckNewVersionCommand extends ContainerAwareCommand
                 $this->em->persist($version);
 
                 ++$newVersion;
-                ++$globalNewVersion;
+                ++$globalNewVersion[$repo->getId()];
             }
 
             $output->writeln($newVersion);

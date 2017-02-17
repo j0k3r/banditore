@@ -13,3 +13,6 @@ parameters:
     redis_host: 127.0.0.1
     redis_port: 6379
     redis_database: 2
+
+    project_host: banditore.com
+    project_scheme: http

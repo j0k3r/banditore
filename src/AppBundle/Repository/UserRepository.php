@@ -10,4 +10,20 @@ namespace AppBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * Retrieve user.
+     *
+     * @param array $repoIds
+     *
+     * @return array
+     */
+    public function findByRepoIds(array $repoIds)
+    {
+        return $this->createQueryBuilder('u')
+            ->select('DISTINCT u.uuid')
+            ->leftJoin('u.stars', 's')
+            ->andWhere('s.repo IN (:ids)')->setParameter('ids', $repoIds)
+            ->getQuery()
+            ->getArrayResult();
+    }
 }
