@@ -62,7 +62,9 @@ services:
     banditore.pubsubhubbub.publisher:
         class: AppBundle\PubSubHubbub\Publisher
         arguments:
-            hub: "http://pubsubhubbub.appspot.com"
-            router: "@router"
-            client: "@banditore.client.guzzle"
-            userRepository: "@banditore.repository.user"
+            - "http://pubsubhubbub.appspot.com"
+            - "@router"
+            - "@banditore.client.guzzle"
+            - "@banditore.repository.user"
+            - "%project_host%"
+            - "%project_scheme%"

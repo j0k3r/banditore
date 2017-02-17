@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class Publisher
 {
-    protected $hub = '';
+    protected $hub;
     protected $router;
     protected $client;
     protected $userRepository;
@@ -24,13 +24,21 @@ class Publisher
      * @param Router         $router         Symfony Router to generate the feed xml
      * @param Client         $client         Guzzle client to send the request
      * @param UserRepository $userRepository
+     * @param string         $host           Host of the project (used to generate route from a command)
+     * @param string         $scheme         Scheme of the project (used to generate route from a command)
      */
-    public function __construct($hub, Router $router, Client $client, UserRepository $userRepository)
+    public function __construct($hub, Router $router, Client $client, UserRepository $userRepository, $host, $scheme)
     {
         $this->hub = $hub;
         $this->router = $router;
         $this->client = $client;
         $this->userRepository = $userRepository;
+
+        // allow generating url from command to use the correct host/scheme (instead of http://localhost)
+        // @see http://symfony.com/doc/current/console/request_context.html
+        $context = $router->getContext();
+        $context->setHost($host);
+        $context->setScheme($scheme);
     }
 
     /**
