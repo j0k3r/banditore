@@ -40,8 +40,18 @@ services:
         calls:
             - [ authenticate, [ "%github_client_id%", "%github_client_secret%", !php/const:Github\Client::AUTH_URL_CLIENT_ID ] ]
 
-    banditore.writer.atom:
+    banditore.writer.webfeeds:
+        class: AppBundle\Webfeeds\WebfeedsWriter
+        tags:
+            - { name: marcw_rss_writer.extension.writer }
+
+    banditore.writer.rss:
         class: MarcW\RssWriter\RssWriter
-        calls:
-            - [ registerWriter, [ "@marcw_rss_writer.writer.core" ] ]
-            - [ registerWriter, [ "@marcw_rss_writer.writer.atom" ] ]
+        arguments:
+            - ~
+            -
+                core: "@marcw_rss_writer.writer.core"
+                webfeeds: "@banditore.writer.webfeeds"
+                atom: "@marcw_rss_writer.writer.atom"
+            - true
+            - "    "

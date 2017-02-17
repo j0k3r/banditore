@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Repo;
 use AppBundle\Entity\Star;
 use AppBundle\Entity\User;
+use AppBundle\Webfeeds\Webfeeds;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
 use MarcW\RssWriter\Extension\Atom\AtomLink;
 use MarcW\RssWriter\Extension\Core\Channel;
@@ -106,8 +107,23 @@ class DefaultController extends Controller
         $feedUrl = $this->generateUrl('rss_user', ['uuid' => $user->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $channel = new Channel();
-        $channel->addExtension((new AtomLink())->setRel('self')->setHref($feedUrl)->setType('application/rss+xml'));
-        $channel->addExtension((new AtomLink())->setRel('hub')->setHref('http://pubsubhubbub.appspot.com/'));
+        $channel->addExtension(
+            (new AtomLink())
+                ->setRel('self')
+                ->setHref($feedUrl)
+                ->setType('application/rss+xml')
+        );
+        $channel->addExtension(
+            (new AtomLink())
+                ->setRel('hub')
+                ->setHref('http://pubsubhubbub.appspot.com/')
+        );
+        $channel->addExtension(
+            (new Webfeeds())
+                ->setLogo($user->getAvatar())
+                ->setIcon($user->getAvatar())
+                ->setAccentColor('10556B')
+        );
         $channel->setTitle('New releases from starred repo of ' . $user->getUserName())
             ->setLink($feedUrl)
             ->setDescription('Here are all the new releases from all repos starred by ' . $user->getUserName())
@@ -127,6 +143,6 @@ class DefaultController extends Controller
             $channel->addItem($item);
         }
 
-        return new RssStreamedResponse($channel, $this->get('banditore.writer.atom'));
+        return new RssStreamedResponse($channel, $this->get('banditore.writer.rss'));
     }
 }
