@@ -48,17 +48,7 @@ class Publisher
             return false;
         }
 
-        // retrieve feed urls
-        $users = $this->userRepository->findByRepoIds($repoIds);
-
-        $urls = [];
-        foreach ($users as $user) {
-            $urls[] = $this->router->generate(
-                'rss_user',
-                ['uuid' => $user['uuid']],
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-        }
+        $urls = $this->retrieveFeedUrls($repoIds);
 
         // ping publisher
         // https://github.com/pubsubhubbub/php-publisher/blob/master/library/Publisher.php
@@ -81,5 +71,28 @@ class Publisher
 
         // hub should response 204 if everything went fine
         return !($response->getStatusCode() !== 204);
+    }
+
+    /**
+     * Retrieve user feed urls from a list of repository ids.
+     *
+     * @param array $repoIds
+     *
+     * @return array
+     */
+    private function retrieveFeedUrls(array $repoIds)
+    {
+        $users = $this->userRepository->findByRepoIds($repoIds);
+
+        $urls = [];
+        foreach ($users as $user) {
+            $urls[] = $this->router->generate(
+                'rss_user',
+                ['uuid' => $user['uuid']],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+        }
+
+        return $urls;
     }
 }

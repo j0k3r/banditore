@@ -23,6 +23,7 @@ class CheckNewVersionCommand extends ContainerAwareCommand
     private $em;
     private $repoRepository;
     private $versionRepository;
+    private $hubPublisher;
     private $github;
 
     protected function configure()
