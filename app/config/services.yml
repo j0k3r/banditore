@@ -1,4 +1,7 @@
 services:
+    banditore.client.guzzle:
+        class: GuzzleHttp\Client
+
     banditore.github.authenticator:
         class: AppBundle\Security\GithubAuthenticator
         autowire: true
@@ -55,3 +58,11 @@ services:
                 atom: "@marcw_rss_writer.writer.atom"
             - true
             - "    "
+
+    banditore.pubsubhubbub.publisher:
+        class: AppBundle\PubSubHubbub\Publisher
+        arguments:
+            hub: "http://pubsubhubbub.appspot.com"
+            router: "@router"
+            client: "@banditore.client.guzzle"
+            userRepository: "@banditore.repository.user"
