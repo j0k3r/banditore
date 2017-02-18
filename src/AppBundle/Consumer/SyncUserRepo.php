@@ -24,6 +24,7 @@ class SyncUserRepo implements ProcessorInterface
     private $userRepository;
     private $starRepository;
     private $repoRepository;
+    private $client;
 
     public function __construct(EntityManager $em, UserRepository $userRepository, StarRepository $starRepository, RepoRepository $repoRepository, LoggerInterface $logger)
     {
@@ -32,6 +33,19 @@ class SyncUserRepo implements ProcessorInterface
         $this->starRepository = $starRepository;
         $this->repoRepository = $repoRepository;
         $this->logger = $logger;
+        $this->client = new Client();
+    }
+
+    /**
+     * Mostly for test to be able to override the client.
+     *
+     * @todo refacto to use a global client
+     *
+     * @param Client $client Github client
+     */
+    public function setClient(Client $client)
+    {
+        $this->client = $client;
     }
 
     public function process(Message $message, array $options)
@@ -48,11 +62,10 @@ class SyncUserRepo implements ProcessorInterface
 
         $this->logger->notice('Consume banditore.sync_user_repo message', ['user' => $user->getUsername()]);
 
-        $client = new Client();
-        $client->authenticate($user->getAccessToken(), null, Client::AUTH_HTTP_TOKEN);
+        $this->client->authenticate($user->getAccessToken(), null, Client::AUTH_HTTP_TOKEN);
 
         try {
-            $nbRepos = $this->doSyncRepo($client, $user);
+            $nbRepos = $this->doSyncRepo($user);
         } catch (\Exception $e) {
             $this->logger->error('Error while sending data to user', ['exception' => $e->getMessage(), 'user' => $user->getUsername()]);
 
@@ -65,18 +78,17 @@ class SyncUserRepo implements ProcessorInterface
     /**
      * Do the job to sync repo & star of a user.
      *
-     * @param Client $client Github client
-     * @param User   $user   User to work on
+     * @param User $user User to work on
      */
-    private function doSyncRepo(Client $client, User $user)
+    private function doSyncRepo(User $user)
     {
         $newStars = [];
         $page = 1;
         $perPage = 100;
-        $starredRepos = $client->api('current_user')->starring()->all($page, $perPage);
+        $starredRepos = $this->client->api('current_user')->starring()->all($page, $perPage);
 
         do {
-            $rateLimit = $client->api('rate_limit')->getRateLimits();
+            $rateLimit = $this->client->api('rate_limit')->getRateLimits();
             $this->logger->info('    sync ' . count($starredRepos) . ' starred repos', [
                 'user' => $user->getUsername(),
                 'rate' => $rateLimit['resources']['core']['remaining'],
@@ -108,7 +120,7 @@ class SyncUserRepo implements ProcessorInterface
                 $this->em->flush();
             }
 
-            $starredRepos = $client->api('current_user')->starring()->all($page++, $perPage);
+            $starredRepos = $this->client->api('current_user')->starring()->all($page++, $perPage);
         } while (!empty($starredRepos));
 
         // now remove unstarred repos
@@ -138,7 +150,7 @@ class SyncUserRepo implements ProcessorInterface
 
         $starIds = [];
         foreach ($starsToRemove as $starToRemove) {
-            $starIds[] = $this->repoRepository->findOneBy(['fullName' => $starsToRemove])->getId();
+            $starIds[] = $this->repoRepository->findOneBy(['fullName' => $starToRemove])->getId();
         }
 
         $this->logger->notice('Removed stars: ' . count($starIds), ['user' => $user->getUsername()]);
