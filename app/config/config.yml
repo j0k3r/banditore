@@ -49,6 +49,7 @@ doctrine:
         user: "%database_user%"
         password: "%database_password%"
         charset: utf8mb4
+        server_version: 5.6
 
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"

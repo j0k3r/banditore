@@ -23,7 +23,7 @@ matrix:
         - php: nightly
 
 install:
-    - composer --prefer-dist install --no-interaction
+    - composer --prefer-dist install --no-interaction -o --no-progress
 
 before_script:
     - echo 'date.timezone = "Europe/Paris"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
