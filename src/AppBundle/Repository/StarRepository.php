@@ -47,6 +47,7 @@ class StarRepository extends \Doctrine\ORM\EntityRepository
         return $this->createQueryBuilder('s')
             ->delete()
             ->where('s.repo IN (:ids)')->setParameter('ids', $starIds)
+            ->andWhere('s.repo = :userId')->setParameter('userId', $userId)
             ->getQuery()
             ->execute();
     }

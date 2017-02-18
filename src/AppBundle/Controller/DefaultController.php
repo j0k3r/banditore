@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Repo;
 use AppBundle\Entity\User;
 use AppBundle\Webfeeds\Webfeeds;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
