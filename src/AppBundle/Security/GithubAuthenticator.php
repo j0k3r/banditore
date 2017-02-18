@@ -8,6 +8,8 @@ use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\Provider\GithubClient;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
 use League\OAuth2\Client\Provider\Exception\GithubIdentityProviderException;
+use Swarrot\Broker\Message;
+use Swarrot\SwarrotBundle\Broker\Publisher;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -20,12 +22,14 @@ class GithubAuthenticator extends SocialAuthenticator
     private $clientRegistry;
     private $em;
     private $router;
+    private $publisher;
 
-    public function __construct(ClientRegistry $clientRegistry, EntityManager $em, RouterInterface $router)
+    public function __construct(ClientRegistry $clientRegistry, EntityManager $em, RouterInterface $router, Publisher $publisher)
     {
         $this->clientRegistry = $clientRegistry;
         $this->em = $em;
         $this->router = $router;
+        $this->publisher = $publisher;
     }
 
     public function getCredentials(Request $request)
@@ -76,7 +80,16 @@ class GithubAuthenticator extends SocialAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        return new RedirectResponse($this->router->generate('update_repo'));
+        $message = [
+            'user_id' => $token->getUser()->getId(),
+        ];
+
+        $this->publisher->publish(
+            'banditore.sync_user_repo.publisher',
+            new Message(json_encode($message))
+        );
+
+        return new RedirectResponse($this->router->generate('homepage') . '?sync=1');
     }
 
     public function start(Request $request, AuthenticationException $authException = null)

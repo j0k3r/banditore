@@ -1,5 +1,9 @@
 language: php
 
+services:
+    - rabbitmq
+    - redis
+
 sudo: false
 
 cache:
@@ -23,6 +27,9 @@ install:
 
 before_script:
     - echo 'date.timezone = "Europe/Paris"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+    - ./bin/console doctrine:database:create
+    - ./bin/console doctrine:schema:create
+    - ./bin/rabbit vhost:mapping:create -p guest app/config/rabbit_vhost.yml
 
 script:
     - ./bin/simple-phpunit -v

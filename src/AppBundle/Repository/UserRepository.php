@@ -22,7 +22,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         return $this->createQueryBuilder('u')
             ->select('DISTINCT u.uuid')
             ->leftJoin('u.stars', 's')
-            ->andWhere('s.repo IN (:ids)')->setParameter('ids', $repoIds)
+            ->where('s.repo IN (:ids)')->setParameter('ids', $repoIds)
             ->getQuery()
             ->getArrayResult();
     }

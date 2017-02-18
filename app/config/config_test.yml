@@ -11,3 +11,6 @@ framework:
 web_profiler:
     toolbar: false
     intercept_redirects: false
+
+parameters:
+    swarrot.publisher.class: Swarrot\SwarrotBundle\Broker\BlackholePublisher

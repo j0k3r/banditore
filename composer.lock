@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "be176c15f0ec7bb3ddd1a581d127af7a",
+    "content-hash": "60a596b005a76b9620e644c7d419a880",
     "packages": [
         {
             "name": "cache/adapter-common",
@@ -1708,6 +1708,57 @@
             "time": "2016-11-26T00:15:39+00:00"
         },
         {
+            "name": "odolbeau/rabbit-mq-admin-toolkit",
+            "version": "v3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/odolbeau/rabbit-mq-admin-toolkit.git",
+                "reference": "ebb2416e64d448a47d43b3d9f1046b3d13e40702"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/odolbeau/rabbit-mq-admin-toolkit/zipball/ebb2416e64d448a47d43b3d9f1046b3d13e40702",
+                "reference": "ebb2416e64d448a47d43b3d9f1046b3d13e40702",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "swarrot/swarrot": "~2.0",
+                "symfony/console": "^2.7|^3.0",
+                "symfony/yaml": "^2.4|^3.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~1.12",
+                "phpunit/phpunit": ">=4.8"
+            },
+            "bin": [
+                "rabbit"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Bab\\RabbitMq": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "RabbitMQ administration toolkit",
+            "keywords": [
+                "AMQP",
+                "admin",
+                "rabbitmq",
+                "toolkit"
+            ],
+            "time": "2016-11-15T16:29:18+00:00"
+        },
+        {
             "name": "paragonie/random_compat",
             "version": "v2.0.4",
             "source": {
@@ -1754,6 +1805,76 @@
                 "random"
             ],
             "time": "2016-11-07T23:38:38+00:00"
+        },
+        {
+            "name": "php-amqplib/php-amqplib",
+            "version": "v2.6.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-amqplib/php-amqplib.git",
+                "reference": "fa2f0d4410a11008cb36b379177291be7ee9e4f6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/fa2f0d4410a11008cb36b379177291be7ee9e4f6",
+                "reference": "fa2f0d4410a11008cb36b379177291be7ee9e4f6",
+                "shasum": ""
+            },
+            "require": {
+                "ext-bcmath": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.3.0"
+            },
+            "replace": {
+                "videlalvaro/php-amqplib": "self.version"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8",
+                "scrutinizer/ocular": "^1.1",
+                "squizlabs/php_codesniffer": "^2.5"
+            },
+            "suggest": {
+                "ext-sockets": "Use AMQPSocketConnection"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PhpAmqpLib\\": "PhpAmqpLib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1"
+            ],
+            "authors": [
+                {
+                    "name": "Alvaro Videla",
+                    "role": "Original Maintainer"
+                },
+                {
+                    "name": "John Kelly",
+                    "email": "johnmkelly86@gmail.com",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Raúl Araya",
+                    "email": "nubeiro@gmail.com",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Formerly videlalvaro/php-amqplib.  This library is a pure PHP implementation of the AMQP protocol. It's been tested against RabbitMQ.",
+            "homepage": "https://github.com/php-amqplib/php-amqplib/",
+            "keywords": [
+                "message",
+                "queue",
+                "rabbitmq"
+            ],
+            "time": "2016-04-11T14:30:01+00:00"
         },
         {
             "name": "php-http/cache-plugin",
@@ -2611,6 +2732,126 @@
             "time": "2016-09-23T18:09:57+00:00"
         },
         {
+            "name": "swarrot/swarrot",
+            "version": "v2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swarrot/swarrot.git",
+                "reference": "52d0ef764fdd0dc934cab1077822b6c3f08d8051"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swarrot/swarrot/zipball/52d0ef764fdd0dc934cab1077822b6c3f08d8051",
+                "reference": "52d0ef764fdd0dc934cab1077822b6c3f08d8051",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.4 || ^7.0",
+                "psr/log": "^1.0",
+                "symfony/options-resolver": "^2.3 || ^3.0"
+            },
+            "require-dev": {
+                "aws/aws-sdk-php": "^2.8",
+                "doctrine/common": "^2.3",
+                "doctrine/dbal": "^2.2",
+                "php-amqplib/php-amqplib": "^2.1",
+                "phpunit/phpunit": "^4.8.27 || ^5.0"
+            },
+            "suggest": {
+                "aws/aws-sdk-php": "^2.8",
+                "pecl-amqp": "*",
+                "php-amqplib/php-amqplib": "^2.1",
+                "symfony/console": "^2.4 || ^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Swarrot\\": "src/Swarrot"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Olivier Dolbeau",
+                    "homepage": "http://odolbeau.fr/"
+                }
+            ],
+            "description": "A simple lib to consume RabbitMQ queues",
+            "keywords": [
+                "AMQP",
+                "queue",
+                "swarrot",
+                "worker"
+            ],
+            "time": "2016-12-28T14:53:53+00:00"
+        },
+        {
+            "name": "swarrot/swarrot-bundle",
+            "version": "v1.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swarrot/SwarrotBundle.git",
+                "reference": "ab3021ab8e61c6a74771e6ad79c323981a632bec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/ab3021ab8e61c6a74771e6ad79c323981a632bec",
+                "reference": "ab3021ab8e61c6a74771e6ad79c323981a632bec",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "psr/log": "~1.0",
+                "swarrot/swarrot": "^2.1.1",
+                "symfony/console": "~2.4|~3.0",
+                "symfony/framework-bundle": "~2.4|~3.0"
+            },
+            "require-dev": {
+                "doctrine/common": "~2.2",
+                "doctrine/dbal": "~2.2",
+                "phpunit/phpunit": "~4.5",
+                "symfony/phpunit-bridge": "~2.8|~3.0"
+            },
+            "suggest": {
+                "php-amqplib/php-amqplib": "Required if using amqp_lib"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Swarrot\\SwarrotBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Olivier Dolbeau",
+                    "homepage": "http://odolbeau.fr/"
+                }
+            ],
+            "description": "SwarrotBundle",
+            "keywords": [
+                "bundle",
+                "swarrot"
+            ],
+            "time": "2016-07-19T09:36:09+00:00"
+        },
+        {
             "name": "symfony/monolog-bundle",
             "version": "v3.0.3",
             "source": {
@@ -3009,16 +3250,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v3.2.3",
+            "version": "v3.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "6306409b3836ed2936c7b0454f00711d0128748c"
+                "reference": "141569be5b33a7cf0d141fb88422649fe11b0c47"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/6306409b3836ed2936c7b0454f00711d0128748c",
-                "reference": "6306409b3836ed2936c7b0454f00711d0128748c",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/141569be5b33a7cf0d141fb88422649fe11b0c47",
+                "reference": "141569be5b33a7cf0d141fb88422649fe11b0c47",
                 "shasum": ""
             },
             "require": {
@@ -3148,7 +3389,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2017-02-06T13:15:43+00:00"
+            "time": "2017-02-17T00:00:43+00:00"
         },
         {
             "name": "twig/twig",
@@ -3422,7 +3663,7 @@
         },
         {
             "name": "symfony/phpunit-bridge",
-            "version": "v3.2.3",
+            "version": "v3.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/phpunit-bridge.git",
@@ -3602,5 +3843,8 @@
     "platform": {
         "php": ">=5.5.9"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "platform-overrides": {
+        "php": "5.6.30"
+    }
 }

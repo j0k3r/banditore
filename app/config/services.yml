@@ -4,7 +4,11 @@ services:
 
     banditore.github.authenticator:
         class: AppBundle\Security\GithubAuthenticator
-        autowire: true
+        arguments:
+            - "@knpu.oauth2.registry"
+            - "@doctrine.orm.default_entity_manager"
+            - "@router"
+            - "@swarrot.publisher"
 
     banditore.client.redis:
         class: Redis
@@ -68,3 +72,13 @@ services:
             - "@banditore.repository.user"
             - "%project_host%"
             - "%project_scheme%"
+
+    # consumers
+    banditore.consumer.sync_user_repo:
+        class: AppBundle\Consumer\SyncUserRepo
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@banditore.repository.user"
+            - "@banditore.repository.star"
+            - "@banditore.repository.repo"
+            - "@logger"

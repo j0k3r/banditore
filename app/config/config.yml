@@ -66,3 +66,26 @@ knpu_oauth2_client:
             # a route name you'll create
             redirect_route: github_callback
             redirect_params: {}
+
+swarrot:
+    provider: amqp_lib # pecl or amqp_lib
+    connections:
+        rabbitmq:
+            host: '%rabbitmq_host%'
+            port: '%rabbitmq_port%'
+            login: '%rabbitmq_login%'
+            password: '%rabbitmq_password%'
+            vhost: '/'
+    consumers:
+        banditore.sync_user_repo:
+            processor: banditore.consumer.sync_user_repo
+            extras:
+                poll_interval: 500000
+                requeue_on_error: false
+            middleware_stack:
+                - configurator: swarrot.processor.exception_catcher
+                - configurator: swarrot.processor.ack
+    messages_types:
+        banditore.sync_user_repo.publisher:
+            connection: rabbitmq
+            exchange: banditore.sync_user_repo

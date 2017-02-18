@@ -1,0 +1,17 @@
+'/':
+    parameters:
+        # If true, all queues will have a dl and the corresponding mapping with the exchange "dl"
+        with_dl: false
+        # If true, all exchange will be declared with an unroutable config
+        with_unroutable: false
+
+    exchanges:
+        banditore.sync_user_repo:
+            type: direct
+            durable: true
+
+    queues:
+        banditore.sync_user_repo:
+            durable: true
+            bindings:
+                - exchange: banditore.sync_user_repo
