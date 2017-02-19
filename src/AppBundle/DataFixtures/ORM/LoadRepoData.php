@@ -21,11 +21,24 @@ class LoadRepoData extends AbstractFixture implements OrderedFixtureInterface
                 'avatar_url' => 'http://0.0.0.0/test.jpg',
             ],
         ]);
-
         $manager->persist($repo1);
+
+        $repo2 = new Repo();
+        $repo2->hydrateFromGithub([
+            'id' => 555,
+            'name' => 'symfony',
+            'full_name' => 'symfony/symfony',
+            'description' => 'The Symfony PHP framework',
+            'owner' => [
+                'avatar_url' => 'https://avatars2.githubusercontent.com/u/143937?v=3',
+            ],
+        ]);
+        $manager->persist($repo2);
+
         $manager->flush();
 
         $this->addReference('repo1', $repo1);
+        $this->addReference('repo2', $repo2);
     }
 
     /**

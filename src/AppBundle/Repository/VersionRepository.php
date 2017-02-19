@@ -37,7 +37,7 @@ class VersionRepository extends \Doctrine\ORM\EntityRepository
      * DQL query to retrieve last version of each repo starred by a user.
      * We use DQL because it was to complex to use a query builder.
      *
-     * @param  int $userId User ID
+     * @param int $userId User ID
      *
      * @return array
      */

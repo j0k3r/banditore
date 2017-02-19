@@ -42,12 +42,12 @@ class StarRepository extends \Doctrine\ORM\EntityRepository
      *
      * @return mixed
      */
-    public function removeFromUser($starIds, $userId)
+    public function removeFromUser(array $starIds, $userId)
     {
         return $this->createQueryBuilder('s')
             ->delete()
             ->where('s.repo IN (:ids)')->setParameter('ids', $starIds)
-            ->andWhere('s.repo = :userId')->setParameter('userId', $userId)
+            ->andWhere('s.user = :userId')->setParameter('userId', $userId)
             ->getQuery()
             ->execute();
     }
