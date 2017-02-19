@@ -38,10 +38,6 @@ class DefaultController extends Controller
             return $this->redirect($this->generateUrl('homepage'));
         }
 
-        if ($request->query->has('sync')) {
-            // display message about sync in progress
-        }
-
         return $this->render('default/dashboard.html.twig', [
             'repos' => $this->get('banditore.repository.version')->findLastVersionForEachRepoForUser($this->getUser()->getId()),
         ]);
