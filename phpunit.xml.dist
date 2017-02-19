@@ -22,9 +22,8 @@
         <whitelist>
             <directory>src</directory>
             <exclude>
-                <directory>src/*Bundle/Resources</directory>
-                <directory>src/*/*Bundle/Resources</directory>
-                <directory>src/*/Bundle/*Bundle/Resources</directory>
+                <directory>src/AppBundle/Resources</directory>
+                <directory>src/AppBundle/DataFixtures</directory>
             </exclude>
         </whitelist>
     </filter>

@@ -140,7 +140,7 @@ a.pure-button-primary:hover {
  */
 .splash-container {
     background: #2B687F;
-    padding: 130px 0 70px;
+    padding: 80px 0 70px;
 }
 
 .splash {
@@ -181,12 +181,13 @@ a.pure-button-primary:hover {
 .content-wrapper {
     /* These styles are required for the "scroll-over" effect */
     /*position: absolute;*/
-    top: 69%;
+    /*top: 69%;*/
     /*width: 100%;*/
     /*min-height: 12%;*/
     /*z-index: 2;*/
     background: #2B687F;
     margin: 0 auto;
+    padding-top: 51px;
 }
 
 /* We want to give the content area some more padding */
@@ -216,10 +217,18 @@ a.pure-button-primary:hover {
     margin-right: 7px;
 }
 
+.pure-table {
+    margin: 0 auto;
+}
+
 /* This is the class used for the dark-background areas. */
 .ribbon {
     background: #10556B;
     color: #aaa;
+}
+
+img.repo-avatar {
+    vertical-align: middle;
 }
 
 .image-productivity,

@@ -2,8 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Repo;
-use AppBundle\Entity\Star;
 use AppBundle\Entity\User;
 use AppBundle\Webfeeds\Webfeeds;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
@@ -24,53 +22,29 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        // replace this example code with whatever you need
-        return $this->render('default/index.html.twig', [
-            'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..') . DIRECTORY_SEPARATOR,
-        ]);
+        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return $this->redirect($this->generateUrl('dashboard'));
+        }
+
+        return $this->render('default/index.html.twig');
     }
 
     /**
-     * @Route("/update_repo", name="update_repo")
+     * @Route("/dashboard", name="dashboard")
      */
-    public function updateRepoAction()
+    public function dashboardAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $client = new \Github\Client();
-        $client->authenticate($this->getUser()->getAccessToken(), null, \Github\Client::AUTH_HTTP_TOKEN);
+        if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return $this->redirect($this->generateUrl('homepage'));
+        }
 
-        $page = 1;
-        $perPage = 50;
-        $starredRepos = $client->api('current_user')->starring()->all($page, $perPage);
+        if ($request->query->has('sync')) {
+            // display message about sync in progress
+        }
 
-        do {
-            foreach ($starredRepos as $starredRepo) {
-                $repo = $this->getDoctrine()->getRepository('AppBundle:Repo')
-                    ->find($starredRepo['id']);
-
-                if (null === $repo) {
-                    $repo = new Repo();
-                    $repo->hydrateFromGithub($starredRepo);
-
-                    $em->persist($repo);
-                }
-
-                $star = $this->getDoctrine()->getRepository('AppBundle:Star')
-                    ->findOneBy(['repo' => $starredRepo['id'], 'user' => $this->getUser()]);
-
-                if (null === $star) {
-                    $star = new Star($this->getUser(), $repo);
-
-                    $em->persist($star);
-                }
-
-                $em->flush();
-            }
-
-            $starredRepos = $client->api('current_user')->starring()->all($page++, $perPage);
-        } while (!empty($starredRepos));
-
-        return $this->redirect($this->generateUrl('homepage'));
+        return $this->render('default/dashboard.html.twig', [
+            'repos' => $this->get('banditore.repository.version')->findLastVersionForEachRepoForUser($this->getUser()->getId()),
+        ]);
     }
 
     /**
@@ -93,7 +67,8 @@ class DefaultController extends Controller
     {
         return $this->get('oauth2.registry')
             ->getClient('github')
-            ->redirect(['user']);
+            // scopes requested
+            ->redirect(['user', 'repo']);
     }
 
     /**

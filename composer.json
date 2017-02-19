@@ -34,12 +34,17 @@
         "php-http/guzzle6-adapter": "^1.1",
         "knpuniversity/oauth2-client-bundle": "^1.9",
         "ramsey/uuid": "^3.5",
-        "cache/redis-adapter": "^0.4.2"
+        "cache/redis-adapter": "^0.4.2",
+        "odolbeau/rabbit-mq-admin-toolkit": "^3.2",
+        "swarrot/swarrot-bundle": "^1.4",
+        "php-amqplib/php-amqplib": "^2.6",
+        "twig/extensions": "^1.4"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "~2.0",
         "sensio/generator-bundle": "^3.0",
-        "symfony/phpunit-bridge": "^3.0"
+        "symfony/phpunit-bridge": "^3.0",
+        "doctrine/doctrine-fixtures-bundle": "^2.3"
     },
     "scripts": {
         "symfony-scripts": [
@@ -57,6 +62,9 @@
         ]
     },
     "config": {
+        "platform": {
+            "php": "5.6.30"
+        },
         "bin-dir": "bin"
     },
     "extra": {

@@ -124,6 +124,11 @@ class CheckNewVersionCommand extends ContainerAwareCommand
                 // using that way we retrieve all tags
                 $tags = $this->github->api('git')->tags()->all($username, $repoName);
             } catch (RuntimeException $e) {
+                if ($e->getCode() === 404) {
+                    $output->writeln('0 <comment>(No tags / releases)</comment>');
+                    continue;
+                }
+
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
                 continue;
             }

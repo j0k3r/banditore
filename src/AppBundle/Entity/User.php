@@ -316,7 +316,7 @@ class User implements UserInterface
     /**
      * Set accessToken.
      *
-     * @param \DateTime $accessToken
+     * @param string $accessToken
      *
      * @return User
      */

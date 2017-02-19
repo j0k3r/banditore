@@ -1,6 +1,17 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+<div class="splash-container middle-content">
+    <div class="splash">
+        <h1 class="splash-head">Get new release in your RSS!</h1>
+        <p>We gather new releases from your starred Github repositories and generate a RSS feed with them.</p>
+        <p>Just for you.</p>
+        <p>
+            <a href="{{ url('github_connect') }}" class="pure-button pure-button-primary">Try it!</a>
+        </p>
+    </div>
+</div>
+
 <div class="content">
     <div class="middle-content">
         <h2 class="content-head is-center">What Banditore can do for me?</h2>

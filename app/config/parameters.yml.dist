@@ -1,7 +1,7 @@
 parameters:
     database_host: 127.0.0.1
     database_port: ~
-    database_name: symfony
+    database_name: banditore
     database_user: root
     database_password: ~
 
@@ -14,5 +14,12 @@ parameters:
     redis_port: 6379
     redis_database: 2
 
+    # used to generate url from the backend
     project_host: banditore.com
     project_scheme: http
+
+    # rabbit
+    rabbitmq_host: 127.0.0.1
+    rabbitmq_port: 5672
+    rabbitmq_login: 'guest'
+    rabbitmq_password: 'guest'
