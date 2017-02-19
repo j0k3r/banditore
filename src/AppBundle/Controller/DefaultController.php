@@ -20,7 +20,7 @@ class DefaultController extends Controller
     /**
      * @Route("/", name="homepage")
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('dashboard'));
@@ -32,14 +32,10 @@ class DefaultController extends Controller
     /**
      * @Route("/dashboard", name="dashboard")
      */
-    public function dashboardAction(Request $request)
+    public function dashboardAction()
     {
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('homepage'));
-        }
-
-        if ($request->query->has('sync')) {
-            // display message about sync in progress
         }
 
         return $this->render('default/dashboard.html.twig', [
@@ -53,7 +49,7 @@ class DefaultController extends Controller
      *
      * @Route("/callback", name="github_callback")
      */
-    public function githubCallbackAction(Request $request)
+    public function githubCallbackAction()
     {
         return $this->redirect($this->generateUrl('github_connect'));
     }
@@ -75,7 +71,7 @@ class DefaultController extends Controller
      * @Route("/{uuid}.atom", name="rss_user")
      * @ParamConverter("user", class="AppBundle:User")
      */
-    public function rssAction(Request $request, User $user)
+    public function rssAction(User $user)
     {
         $releases = $this->get('banditore.repository.version')->findForUser($user->getId());
 

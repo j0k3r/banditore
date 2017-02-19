@@ -12,6 +12,7 @@ body {
     line-height: 1.7em;
     color: #7f8c8d;
     font-size: 13px;
+    background: #10556B;
 }
 
 a {
@@ -229,11 +230,72 @@ a.pure-button-primary:hover {
 
 img.repo-avatar {
     vertical-align: middle;
+    width: 25px;
 }
 
 .image-productivity,
 .image-megaphone {
     display: none;
+}
+
+/*
+ * -- ALERTS --
+ *
+ * From https://isabelcastillo.com/error-info-messages-css
+ */
+.alert_info, .alert_success, .alert_warning, .alert_error {
+    margin: 10px 0px;
+    padding: 12px;
+    border-radius: .5em;
+}
+.alert_info {
+    color: #00529B;
+    background-color: #BDE5F8;
+}
+.alert_success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+}
+.alert_warning {
+    color: #9F6000;
+    background-color: #FEEFB3;
+}
+.alert_error {
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+
+/*
+ * -- LABELS --
+ *
+ * From http://www.gumbyframework.com/docs/ui-kit/#!/indicators
+ */
+.label_info, .label_success, .label_warning, .label_error, .label_prerelease {
+    padding: 0 5px;
+    font-size: 12px;
+    border-radius: 2px;
+    height: 20px;
+    display: inline-block;
+    font-weight: bold;
+    line-height: 20px;
+    text-align: center;
+    color: #fff;
+}
+.label_info {
+    background: #4a4d50;
+}
+.label_success {
+    background: #58c026;
+}
+.label_warning {
+    background: #f6b83f;
+    color: #644405;
+}
+.label_error {
+    background: #ca3838;
+}
+.label_prerelease {
+    background: #ffab80;
 }
 
 /* This is the class used for the footer */
