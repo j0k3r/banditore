@@ -89,7 +89,7 @@ class GithubAuthenticator extends SocialAuthenticator
             new Message(json_encode($message))
         );
 
-        return new RedirectResponse($this->router->generate('homepage') . '?sync=1');
+        return new RedirectResponse($this->router->generate('dashboard') . '?sync=1');
     }
 
     public function start(Request $request, AuthenticationException $authException = null)

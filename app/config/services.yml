@@ -82,3 +82,15 @@ services:
             - "@banditore.repository.star"
             - "@banditore.repository.repo"
             - "@logger"
+
+    # twig extensions
+    banditore.twig_extension.repo_version:
+        class: AppBundle\Twig\RepoVersionExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+
+    twig.extension.date:
+        class: Twig_Extensions_Extension_Date
+        tags:
+            - { name: twig.extension }

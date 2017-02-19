@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="content">
+    <div class="middle-content">
+        <h2 class="content-head is-center">Your starred repos</h2>
+
+        <table class="pure-table">
+            <thead>
+                <tr>
+                    <th>Repository</th>
+                    <th>Last version</th>
+                    <th>Published at</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for repo in repos -%}
+                    <tr{% if loop.index is odd %} class="pure-table-odd"{% endif %}>
+                        <td>
+                            <img class="repo-avatar" src="{{ repo.ownerAvatar }}&amp;size=20"/>
+                            <a href="https://github.com/{{ repo.fullName }}">{{ repo.fullName }}</a>
+                        </td>
+                        <td>
+                            {%- if repo.name -%}
+                                {{ repo.name }} (<a href="{{ repo|link_to_version }}">{{ repo.tagName }}</a>)
+                            {%- else -%}
+                                <a href="{{ repo|link_to_version }}">{{ repo.tagName }}</a>
+                            {%- endif -%}
+                        </td>
+                        <td><time datetime="{{ repo.createdAt|date("c") }}" title="{{ repo.createdAt|date("c") }}">{{ repo.createdAt|time_diff }}</time></td>
+                    </tr>
+                {% endfor -%}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

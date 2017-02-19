@@ -22,11 +22,29 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return $this->redirect($this->generateUrl('dashboard'));
+        }
+
+        return $this->render('default/index.html.twig');
+    }
+
+    /**
+     * @Route("/dashboard", name="dashboard")
+     */
+    public function dashboardAction(Request $request)
+    {
+        if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return $this->redirect($this->generateUrl('homepage'));
+        }
+
         if ($request->query->has('sync')) {
             // display message about sync in progress
         }
 
-        return $this->render('default/index.html.twig');
+        return $this->render('default/dashboard.html.twig', [
+            'repos' => $this->get('banditore.repository.version')->findLastVersionForEachRepoForUser($this->getUser()->getId()),
+        ]);
     }
 
     /**

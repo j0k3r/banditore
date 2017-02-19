@@ -19,7 +19,7 @@
     <div class="header">
         <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
             <div class="middle-content">
-                <a class="pure-menu-heading" href="/">Bandito.re</a>
+                <a class="pure-menu-heading" href="{{ url('homepage') }}">Bandito.re</a>
 
                 <ul class="pure-menu-list">
                     <li class="pure-menu-item pure-menu-selected"><a href="https://github.com/j0k3r/banditore" class="pure-menu-link">View it on Github</a></li>
@@ -33,19 +33,6 @@
     </div>
 
     <div class="content-wrapper">
-        {% block splash %}
-            <div class="splash-container middle-content">
-                <div class="splash">
-                    <h1 class="splash-head">Get new release in your RSS!</h1>
-                    <p>We gather new releases from your starred Github repositories and generate a RSS feed with them.</p>
-                    <p>Just for you.</p>
-                    <p>
-                        <a href="{{ url('github_connect') }}" class="pure-button pure-button-primary">Try it!</a>
-                    </p>
-                </div>
-            </div>
-        {% endblock %}
-
         {% block body %}{% endblock %}
 
         <div class="footer l-box is-center">

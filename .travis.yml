@@ -27,8 +27,9 @@ install:
 
 before_script:
     - echo 'date.timezone = "Europe/Paris"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-    - ./bin/console doctrine:database:create
-    - ./bin/console doctrine:schema:create
+    - ./bin/console doctrine:database:create --env=test
+    - ./bin/console doctrine:schema:create --env=test
+    - ./bin/console doctrine:fixtures:load --env=test -n
     - ./bin/rabbit vhost:mapping:create -p guest app/config/rabbit_vhost.yml
 
 script:

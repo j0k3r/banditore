@@ -8,6 +8,17 @@ framework:
     profiler:
         collect: false
 
+doctrine:
+    dbal:
+        driver: pdo_mysql
+        host: "127.0.0.1"
+        port: ~
+        dbname: "banditore_test"
+        user: "root"
+        password: ~
+        charset: utf8mb4
+        server_version: 5.6
+
 web_profiler:
     toolbar: false
     intercept_redirects: false
