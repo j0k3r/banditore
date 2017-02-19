@@ -120,8 +120,9 @@ class CheckNewVersionCommand extends ContainerAwareCommand
             list($username, $repoName) = explode('/', $repo->getFullName());
 
             try {
-                // retrieve only the last 5 tags (we don't need more)
-                $tags = $this->github->api('repo')->tags($username, $repoName, ['per_page' => 5]);
+                // use git/refs/tags because tags aren't order by date creation
+                // using that way we retrieve all tags
+                $tags = $this->github->api('git')->tags()->all($username, $repoName);
             } catch (RuntimeException $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
                 continue;
@@ -134,6 +135,8 @@ class CheckNewVersionCommand extends ContainerAwareCommand
             }
 
             foreach ($tags as $tag) {
+                // it'll be like `refs/tags/2.2.1`
+                $tag['name'] = str_replace('refs/tags/', '', $tag['ref']);
                 $version = $this->versionRepository->findOneBy([
                     'tagName' => $tag['name'],
                     'repo' => $repo->getId(),
@@ -154,17 +157,30 @@ class CheckNewVersionCommand extends ContainerAwareCommand
                     // use same key as tag to store the content of the release
                     $newRelease['message'] = $newRelease['body'];
                 } catch (RuntimeException $e) {
-                    // catch this
-                    //   [Github\Exception\ApiLimitExceedException]
-                    //   You have reached GitHub hourly limit! Actual limit is: 5000
-                    $commit = $this->github->api('git')->commits()->show($username, $repoName, $tag['commit']['sha']);
+                    // when a tag isn't a release, it'll be catched here
+                    switch ($tag['object']['type']) {
+                        // https://api.github.com/repos/ampproject/amphtml/git/tags/694b8cc3983f52209029605300910507bec700b4
+                        case 'tag':
+                            $tagInfo = $this->github->api('git')->tags()->show($username, $repoName, $tag['object']['sha']);
 
-                    $newRelease += [
-                        'name' => $tag['name'],
-                        'prerelease' => false,
-                        'published_at' => $commit['author']['date'],
-                        'message' => $commit['message'],
-                    ];
+                            $newRelease += [
+                                'name' => $tag['name'],
+                                'prerelease' => false,
+                                'published_at' => $tagInfo['tagger']['date'],
+                                'message' => $tagInfo['message'],
+                            ];
+                            break;
+                        // https://api.github.com/repos/ampproject/amphtml/git/commits/c0a5834b32ae4b45b4bacf677c391e0f9cca82fb
+                        case 'commit':
+                            $commitInfo = $this->github->api('git')->commits()->show($username, $repoName, $tag['object']['sha']);
+
+                            $newRelease += [
+                                'name' => $tag['name'],
+                                'prerelease' => false,
+                                'published_at' => $commitInfo['author']['date'],
+                                'message' => $commitInfo['message'],
+                            ];
+                    }
                 }
 
                 // render markdown in plain html and use default markdown file if it fails
