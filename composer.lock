@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "94d5013263c4053092bd70e18ececb6f",
+    "content-hash": "bcfea0b3bd6eb47f82a37b0912698ac5",
     "packages": [
         {
             "name": "cache/adapter-common",
@@ -1195,6 +1195,61 @@
                 "orm"
             ],
             "time": "2016-12-18T15:42:34+00:00"
+        },
+        {
+            "name": "ekino/newrelic-bundle",
+            "version": "1.3.2",
+            "target-dir": "Ekino/Bundle/NewRelicBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ekino/EkinoNewRelicBundle.git",
+                "reference": "dd57044d7b8a38c1fe2ad20d408918b9f862e158"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ekino/EkinoNewRelicBundle/zipball/dd57044d7b8a38c1fe2ad20d408918b9f862e158",
+                "reference": "dd57044d7b8a38c1fe2ad20d408918b9f862e158",
+                "shasum": ""
+            },
+            "require-dev": {
+                "silex/silex": "~1.0",
+                "symfony/console": "~2.2|~3.0",
+                "symfony/framework-bundle": "~2.2|~3.0",
+                "twig/twig": "1.*"
+            },
+            "suggest": {
+                "sonata-project/block-bundle": "2.2.*@dev"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Ekino\\Bundle\\NewRelicBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Thomas Rabaix",
+                    "email": "thomas.rabaix@ekino.com",
+                    "homepage": "http://ekino.com"
+                }
+            ],
+            "description": "Integrate New Relic into Symfony2",
+            "homepage": "https://github.com/ekino/EkinoNewRelicBundle",
+            "keywords": [
+                "metric",
+                "monitoring",
+                "performance"
+            ],
+            "time": "2015-11-12T08:59:07+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

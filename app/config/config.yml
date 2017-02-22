@@ -95,3 +95,14 @@ swarrot:
         banditore.sync_user_repo.publisher:
             connection: rabbitmq
             exchange: banditore.sync_user_repo
+
+ekino_new_relic:
+    enabled: false
+    application_name: banditore
+    api_key: "%newrelic_api_key%"
+    logging: true
+    log_commands: true
+    using_symfony_cache: false
+    transaction_naming: route
+    ignored_commands:
+        - "cache:clear"
