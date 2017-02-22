@@ -17,6 +17,8 @@ class LoadRepoData extends AbstractFixture implements OrderedFixtureInterface
             'name' => 'test',
             'full_name' => 'test/test',
             'description' => 'This is a test repo',
+            'homepage' => 'http://homepage.io',
+            'language' => 'Go',
             'owner' => [
                 'avatar_url' => 'http://0.0.0.0/test.jpg',
             ],
@@ -29,6 +31,8 @@ class LoadRepoData extends AbstractFixture implements OrderedFixtureInterface
             'name' => 'symfony',
             'full_name' => 'symfony/symfony',
             'description' => 'The Symfony PHP framework',
+            'homepage' => 'http://symfony.com',
+            'language' => 'PHP',
             'owner' => [
                 'avatar_url' => 'https://avatars2.githubusercontent.com/u/143937?v=3',
             ],

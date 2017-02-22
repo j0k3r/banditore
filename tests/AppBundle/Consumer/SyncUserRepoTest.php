@@ -111,6 +111,8 @@ class SyncUserRepoTest extends WebTestCase
             // first /user/starred
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'description' => 'banditore',
+                'homepage' => 'http://banditore.io',
+                'language' => 'PHP',
                 'name' => 'banditore',
                 'full_name' => 'j0k3r/banditore',
                 'id' => 666,
@@ -155,6 +157,8 @@ class SyncUserRepoTest extends WebTestCase
             // first /user/starred
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'description' => 'banditore',
+                'homepage' => 'http://banditore.io',
+                'language' => 'PHP',
                 'name' => 'banditore',
                 'full_name' => 'j0k3r/banditore',
                 'id' => 777,
@@ -167,6 +171,8 @@ class SyncUserRepoTest extends WebTestCase
             // second /user/starred
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'description' => 'This is a test repo',
+                'homepage' => 'http://test.io',
+                'language' => 'Ruby',
                 'name' => 'test',
                 'full_name' => 'test/test',
                 'id' => 666,

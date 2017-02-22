@@ -30,7 +30,7 @@
                             <a href="https://github.com/{{ repo.fullName }}">{{ repo.fullName }}</a>
                         </td>
                         <td>
-                            {% if repo.name -%}
+                            {% if repo.name and repo.name != repo.tagName -%}
                                 {{ repo.name }} (<a href="{{ repo|link_to_version }}">{{ repo.tagName }}</a>)
                             {%- else -%}
                                 <a href="{{ repo|link_to_version }}">{{ repo.tagName }}</a>

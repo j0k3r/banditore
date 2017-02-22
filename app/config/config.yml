@@ -57,6 +57,10 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
 
+doctrine_migrations:
+    dir_name: "%kernel.root_dir%/migrations"
+    name: Banditore Migrations
+
 knpu_oauth2_client:
     clients:
         # will create service: "knpu.oauth2.client.github"

@@ -38,7 +38,8 @@
         "odolbeau/rabbit-mq-admin-toolkit": "^3.2",
         "swarrot/swarrot-bundle": "^1.4",
         "php-amqplib/php-amqplib": "^2.6",
-        "twig/extensions": "^1.4"
+        "twig/extensions": "^1.4",
+        "doctrine/doctrine-migrations-bundle": "^1.2"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "~2.0",
