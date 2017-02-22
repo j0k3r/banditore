@@ -23,3 +23,5 @@ parameters:
     rabbitmq_port: 5672
     rabbitmq_login: 'guest'
     rabbitmq_password: 'guest'
+
+    sentry_dsn: https://xxx:xxx@sentry.io/666

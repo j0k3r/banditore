@@ -12,10 +12,20 @@ monolog:
         main:
             type: fingers_crossed
             action_level: error
-            handler: nested
-        nested:
+            handler: grouped_main
+        grouped_main:
+            type: group
+            members: [streamed_main, sentry]
+        streamed_main:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
+        sentry:
+            type: raven
+            dsn: "%sentry_dsn%"
+            level: error
         console:
             type: console
+
+sentry:
+    dsn: "%sentry_dsn%"
