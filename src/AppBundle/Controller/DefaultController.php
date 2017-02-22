@@ -115,11 +115,9 @@ class DefaultController extends Controller
                      </a>
                   </td>
                   <td>
-                     <p>
-                        <b><a href="https://github.com/' . $release['fullName'] . '">' . $release['fullName'] . '</a></b>
-                        ' . $repoHome . '
-                     </p>
-                     <p>' . $release['description'] . '</p>
+                     <b><a href="https://github.com/' . $release['fullName'] . '">' . $release['fullName'] . '</a></b>
+                     ' . $repoHome . '<br/>
+                     ' . $release['description'] . '<br/>
                      ' . $repoLanguage . '
                   </td>
                </tr>
