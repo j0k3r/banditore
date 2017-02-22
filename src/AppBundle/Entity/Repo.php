@@ -50,6 +50,20 @@ class Repo
     /**
      * @var string
      *
+     * @ORM\Column(name="homepage", type="string", nullable=true)
+     */
+    private $homepage;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="language", type="string", nullable=true)
+     */
+    private $language;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="owner_avatar", type="string", length=191)
      */
     private $ownerAvatar;
@@ -205,6 +219,54 @@ class Repo
     }
 
     /**
+     * Set homepage.
+     *
+     * @param string $homepage
+     *
+     * @return Repo
+     */
+    public function setHomepage($homepage)
+    {
+        $this->homepage = $homepage;
+
+        return $this;
+    }
+
+    /**
+     * Get homepage.
+     *
+     * @return string
+     */
+    public function getHomepage()
+    {
+        return $this->homepage;
+    }
+
+    /**
+     * Set language.
+     *
+     * @param string $language
+     *
+     * @return Repo
+     */
+    public function setLanguage($language)
+    {
+        $this->language = $language;
+
+        return $this;
+    }
+
+    /**
+     * Get language.
+     *
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+    /**
      * Set ownerAvatar.
      *
      * @param string $ownerAvatar
@@ -292,6 +354,8 @@ class Repo
     {
         $this->setId($data['id']);
         $this->setName($data['name']);
+        $this->setHomepage($data['homepage']);
+        $this->setLanguage($data['language']);
         $this->setFullName($data['full_name']);
         $this->setDescription($data['description']);
         $this->setOwnerAvatar($data['owner']['avatar_url']);

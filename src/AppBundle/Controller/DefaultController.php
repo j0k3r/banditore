@@ -104,10 +104,32 @@ class DefaultController extends Controller
             ->setGenerator('banditore');
 
         foreach ($releases as $release) {
+            // build repo top information
+            $repoHome = $release['homepage'] ? '(<a href="' . $release['homepage'] . '">' . $release['homepage'] . '</a>)' : '';
+            $repoLanguage = $release['language'] ? '<p>#' . $release['language'] . '</p>' : '';
+            $repoInformation = '<table>
+               <tr>
+                  <td>
+                     <a href="https://github.com/' . $release['fullName'] . '">
+                        <img src="' . $release['ownerAvatar'] . '&amp;s=80" alt="' . $release['fullName'] . '" title="' . $release['fullName'] . '" />
+                     </a>
+                  </td>
+                  <td>
+                     <p>
+                        <b><a href="https://github.com/' . $release['fullName'] . '">' . $release['fullName'] . '</a></b>
+                        ' . $repoHome . '
+                     </p>
+                     <p>' . $release['description'] . '</p>
+                     ' . $repoLanguage . '
+                  </td>
+               </tr>
+            </table>
+            <hr/>';
+
             $item = new Item();
             $item->setTitle($release['fullName'] . ' ' . $release['tagName'])
                 ->setLink('https://github.com/' . $release['fullName'] . '/releases/' . $release['tagName'])
-                ->setDescription($release['body'])
+                ->setDescription($repoInformation . $release['body'])
                 ->setPubDate($release['createdAt'])
                 ->setGuid((new Guid())->setIsPermaLink(true)->setGuid('https://github.com/' . $release['fullName'] . '/releases/' . $release['tagName']))
             ;

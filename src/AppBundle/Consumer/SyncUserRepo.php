@@ -101,10 +101,12 @@ class SyncUserRepo implements ProcessorInterface
 
                 if (null === $repo) {
                     $repo = new Repo();
-                    $repo->hydrateFromGithub($starredRepo);
-
-                    $this->em->persist($repo);
                 }
+
+                // always update repo information
+                $repo->hydrateFromGithub($starredRepo);
+
+                $this->em->persist($repo);
 
                 $star = $this->starRepository->findOneBy([
                     'repo' => $starredRepo['id'],
