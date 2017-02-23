@@ -111,7 +111,7 @@ class DefaultController extends Controller
                <tr>
                   <td>
                      <a href="https://github.com/' . $release['fullName'] . '">
-                        <img src="' . $release['ownerAvatar'] . '&amp;s=80" alt="' . $release['fullName'] . '" title="' . $release['fullName'] . '" />
+                        <img src="' . $release['ownerAvatar'] . '&amp;s=140" alt="' . $release['fullName'] . '" title="' . $release['fullName'] . '" />
                      </a>
                   </td>
                   <td>
