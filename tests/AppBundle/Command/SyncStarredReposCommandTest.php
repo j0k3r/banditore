@@ -2,13 +2,13 @@
 
 namespace Tests\AppBundle\Command;
 
-use AppBundle\Command\SyncUserCommand;
+use AppBundle\Command\SyncStarredReposCommand;
 use Swarrot\Broker\Message;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class SyncUserCommandTest extends WebTestCase
+class SyncStarredReposCommandTest extends WebTestCase
 {
     public function testCommandSyncAllUsersWithoutQueue()
     {
@@ -21,7 +21,7 @@ class SyncUserCommandTest extends WebTestCase
         $publisher->expects($this->never())
             ->method('publish');
 
-        $syncUser = $this->getMockBuilder('AppBundle\Consumer\SyncUserRepo')
+        $syncUser = $this->getMockBuilder('AppBundle\Consumer\SyncStarredRepos')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -33,12 +33,12 @@ class SyncUserCommandTest extends WebTestCase
             );
 
         self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_user_repo', $syncUser);
+        self::$kernel->getContainer()->set('banditore.consumer.sync_starred_repos', $syncUser);
 
         $application = new Application($client->getKernel());
-        $application->add(new SyncUserCommand());
+        $application->add(new SyncStarredReposCommand());
 
-        $command = $application->find('banditore:user:sync');
+        $command = $application->find('banditore:sync:starred-repos');
 
         $tester = new CommandTester($command);
         $tester->execute([
@@ -59,11 +59,11 @@ class SyncUserCommandTest extends WebTestCase
         $publisher->expects($this->once())
             ->method('publish')
             ->with(
-                'banditore.sync_user_repo.publisher',
+                'banditore.sync_starred_repos.publisher',
                 new Message(json_encode(['user_id' => 123]))
             );
 
-        $syncUser = $this->getMockBuilder('AppBundle\Consumer\SyncUserRepo')
+        $syncUser = $this->getMockBuilder('AppBundle\Consumer\SyncStarredRepos')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -71,12 +71,12 @@ class SyncUserCommandTest extends WebTestCase
             ->method('process');
 
         self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_user_repo', $syncUser);
+        self::$kernel->getContainer()->set('banditore.consumer.sync_starred_repos', $syncUser);
 
         $application = new Application($client->getKernel());
-        $application->add(new SyncUserCommand());
+        $application->add(new SyncStarredReposCommand());
 
-        $command = $application->find('banditore:user:sync');
+        $command = $application->find('banditore:sync:starred-repos');
 
         $tester = new CommandTester($command);
         $tester->execute([
@@ -98,11 +98,11 @@ class SyncUserCommandTest extends WebTestCase
         $publisher->expects($this->once())
             ->method('publish')
             ->with(
-                'banditore.sync_user_repo.publisher',
+                'banditore.sync_starred_repos.publisher',
                 new Message(json_encode(['user_id' => 123]))
             );
 
-        $syncUser = $this->getMockBuilder('AppBundle\Consumer\SyncUserRepo')
+        $syncUser = $this->getMockBuilder('AppBundle\Consumer\SyncStarredRepos')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -110,12 +110,12 @@ class SyncUserCommandTest extends WebTestCase
             ->method('process');
 
         self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_user_repo', $syncUser);
+        self::$kernel->getContainer()->set('banditore.consumer.sync_starred_repos', $syncUser);
 
         $application = new Application($client->getKernel());
-        $application->add(new SyncUserCommand());
+        $application->add(new SyncStarredReposCommand());
 
-        $command = $application->find('banditore:user:sync');
+        $command = $application->find('banditore:sync:starred-repos');
 
         $tester = new CommandTester($command);
         $tester->execute([
@@ -139,7 +139,7 @@ class SyncUserCommandTest extends WebTestCase
         $publisher->expects($this->never())
             ->method('publish');
 
-        $syncUser = $this->getMockBuilder('AppBundle\Consumer\SyncUserRepo')
+        $syncUser = $this->getMockBuilder('AppBundle\Consumer\SyncStarredRepos')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -151,12 +151,12 @@ class SyncUserCommandTest extends WebTestCase
             );
 
         self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_user_repo', $syncUser);
+        self::$kernel->getContainer()->set('banditore.consumer.sync_starred_repos', $syncUser);
 
         $application = new Application($client->getKernel());
-        $application->add(new SyncUserCommand());
+        $application->add(new SyncStarredReposCommand());
 
-        $command = $application->find('banditore:user:sync');
+        $command = $application->find('banditore:sync:starred-repos');
 
         $tester = new CommandTester($command);
         $tester->execute([
@@ -179,7 +179,7 @@ class SyncUserCommandTest extends WebTestCase
         $publisher->expects($this->never())
             ->method('publish');
 
-        $syncUser = $this->getMockBuilder('AppBundle\Consumer\SyncUserRepo')
+        $syncUser = $this->getMockBuilder('AppBundle\Consumer\SyncStarredRepos')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -187,12 +187,12 @@ class SyncUserCommandTest extends WebTestCase
             ->method('process');
 
         self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_user_repo', $syncUser);
+        self::$kernel->getContainer()->set('banditore.consumer.sync_starred_repos', $syncUser);
 
         $application = new Application($client->getKernel());
-        $application->add(new SyncUserCommand());
+        $application->add(new SyncStarredReposCommand());
 
-        $command = $application->find('banditore:user:sync');
+        $command = $application->find('banditore:sync:starred-repos');
 
         $tester = new CommandTester($command);
         $tester->execute([

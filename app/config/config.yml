@@ -83,8 +83,8 @@ swarrot:
             password: '%rabbitmq_password%'
             vhost: '/'
     consumers:
-        banditore.sync_user_repo:
-            processor: banditore.consumer.sync_user_repo
+        banditore.sync_starred_repos:
+            processor: banditore.consumer.sync_starred_repos
             extras:
                 poll_interval: 500000
                 requeue_on_error: false
@@ -92,9 +92,9 @@ swarrot:
                 - configurator: swarrot.processor.exception_catcher
                 - configurator: swarrot.processor.ack
     messages_types:
-        banditore.sync_user_repo.publisher:
+        banditore.sync_starred_repos.publisher:
             connection: rabbitmq
-            exchange: banditore.sync_user_repo
+            exchange: banditore.sync_starred_repos
 
 ekino_new_relic:
     enabled: false

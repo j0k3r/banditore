@@ -15,9 +15,13 @@ use Swarrot\Broker\Message;
 use Swarrot\Processor\ProcessorInterface;
 
 /**
- * Consumer message to sync user repo (usually happen after a successful login).
+ * Consumer message to sync starred repos from user.
+ *
+ * It might come from:
+ *     - when user logged in
+ *     - when we periodically sync user starred repos
  */
-class SyncUserRepo implements ProcessorInterface
+class SyncStarredRepos implements ProcessorInterface
 {
     private $logger;
     private $em;
@@ -60,7 +64,7 @@ class SyncUserRepo implements ProcessorInterface
             return;
         }
 
-        $this->logger->notice('Consume banditore.sync_user_repo message', ['user' => $user->getUsername()]);
+        $this->logger->notice('Consume banditore.sync_starred_repos message', ['user' => $user->getUsername()]);
 
         $this->client->authenticate($user->getAccessToken(), null, Client::AUTH_HTTP_TOKEN);
 

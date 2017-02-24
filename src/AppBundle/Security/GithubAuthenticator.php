@@ -85,7 +85,7 @@ class GithubAuthenticator extends SocialAuthenticator
         ];
 
         $this->publisher->publish(
-            'banditore.sync_user_repo.publisher',
+            'banditore.sync_starred_repos.publisher',
             new Message(json_encode($message))
         );
 

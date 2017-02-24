@@ -74,8 +74,8 @@ services:
             - "%project_scheme%"
 
     # consumers
-    banditore.consumer.sync_user_repo:
-        class: AppBundle\Consumer\SyncUserRepo
+    banditore.consumer.sync_starred_repos:
+        class: AppBundle\Consumer\SyncStarredRepos
         arguments:
             - "@doctrine.orm.default_entity_manager"
             - "@banditore.repository.user"

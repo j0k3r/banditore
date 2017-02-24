@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *     - right away, might take longer to process
  *     - by publishing a message in a queue
  */
-class SyncUserCommand extends ContainerAwareCommand
+class SyncStarredReposCommand extends ContainerAwareCommand
 {
     private $userRepository;
     private $publisher;
@@ -24,8 +24,8 @@ class SyncUserCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('banditore:user:sync')
-            ->setDescription('Retrieve all users and sync starred repos for them')
+            ->setName('banditore:sync:starred-repos')
+            ->setDescription('Sync starred repos for all users')
             ->addOption(
                 'id',
                 null,
@@ -52,7 +52,7 @@ class SyncUserCommand extends ContainerAwareCommand
         // define services for a later use
         $this->userRepository = $this->getContainer()->get('banditore.repository.user');
         $this->publisher = $this->getContainer()->get('swarrot.publisher');
-        $this->syncUser = $this->getContainer()->get('banditore.consumer.sync_user_repo');
+        $this->syncUser = $this->getContainer()->get('banditore.consumer.sync_starred_repos');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -91,7 +91,7 @@ class SyncUserCommand extends ContainerAwareCommand
 
             if ($input->getOption('use_queue')) {
                 $this->publisher->publish(
-                    'banditore.sync_user_repo.publisher',
+                    'banditore.sync_starred_repos.publisher',
                     $message
                 );
             } else {
