@@ -71,7 +71,7 @@ class SyncStarredRepos implements ProcessorInterface
         try {
             $nbRepos = $this->doSyncRepo($user);
         } catch (\Exception $e) {
-            $this->logger->error('Error while sending data to user', ['exception' => $e->getMessage(), 'user' => $user->getUsername()]);
+            $this->logger->error('Error while syncing starred repos', ['exception' => $e->getMessage(), 'user' => $user->getUsername()]);
 
             return;
         }

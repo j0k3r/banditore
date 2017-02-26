@@ -42,7 +42,7 @@ class SyncStarredReposCommand extends ContainerAwareCommand
                 'use_queue',
                 null,
                 InputOption::VALUE_NONE,
-                'Push each repo into a queue instead of fetching it right away'
+                'Push each user into a queue instead of fetching it right away'
             )
         ;
     }

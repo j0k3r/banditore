@@ -9,9 +9,16 @@
         banditore.sync_starred_repos:
             type: direct
             durable: true
+        banditore.sync_versions:
+            type: direct
+            durable: true
 
     queues:
         banditore.sync_starred_repos:
             durable: true
             bindings:
                 - exchange: banditore.sync_starred_repos
+        banditore.sync_versions:
+            durable: true
+            bindings:
+                - exchange: banditore.sync_versions
