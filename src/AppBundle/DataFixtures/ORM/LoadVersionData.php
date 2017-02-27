@@ -13,7 +13,7 @@ class LoadVersionData extends AbstractFixture implements OrderedFixtureInterface
     {
         $version1 = new Version($this->getReference('repo1'));
         $version1->hydrateFromGithub([
-            'tag_name' => 'v1.0.0',
+            'tag_name' => '1.0.0',
             'name' => 'First release',
             'prerelease' => false,
             'message' => 'YAY',

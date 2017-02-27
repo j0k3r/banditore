@@ -67,7 +67,6 @@ class DefaultControllerTest extends WebTestCase
 
         $table = $crawler->filter('table')->text();
         $this->assertContains('test/test', $table, 'Repo test/test exist in a table');
-        $this->assertContains('First release (v1.0.0)', $table, 'First release of test/test exist in a table');
     }
 
     public function testRss()

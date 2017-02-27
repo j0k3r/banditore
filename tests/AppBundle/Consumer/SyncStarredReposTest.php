@@ -2,21 +2,22 @@
 
 namespace Tests\AppBundle\Consumer;
 
-use AppBundle\Consumer\SyncUserRepo;
+use AppBundle\Consumer\SyncStarredRepos;
 use AppBundle\Entity\User;
-use Github\Api\CurrentUser;
-use Github\Api\RateLimit;
+use Github\Client as GithubClient;
+use Github\HttpClient\Builder;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use Http\Adapter\Guzzle6\Client as Guzzle6Client;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use Psr\Log\NullLogger;
 use Swarrot\Broker\Message;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class SyncUserRepoTest extends WebTestCase
+class SyncStarredReposTest extends WebTestCase
 {
     public function testProcessNoUser()
     {
@@ -48,7 +49,7 @@ class SyncUserRepoTest extends WebTestCase
         $githubClient->expects($this->never())
             ->method('authenticate');
 
-        $processor = new SyncUserRepo(
+        $processor = new SyncStarredRepos(
             $em,
             $userRepository,
             $starRepository,
@@ -132,7 +133,7 @@ class SyncUserRepoTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $processor = new SyncUserRepo(
+        $processor = new SyncStarredRepos(
             $em,
             $userRepository,
             $starRepository,
@@ -145,7 +146,7 @@ class SyncUserRepoTest extends WebTestCase
 
         $records = $logHandler->getRecords();
 
-        $this->assertSame('Consume banditore.sync_user_repo message', $records[0]['message']);
+        $this->assertSame('Consume banditore.sync_starred_repos message', $records[0]['message']);
         $this->assertSame('    sync 1 starred repos', $records[1]['message']);
         $this->assertSame('Removed stars: 1', $records[2]['message']);
         $this->assertSame('Synced repos: 1', $records[3]['message']);
@@ -191,7 +192,7 @@ class SyncUserRepoTest extends WebTestCase
         $client = static::createClient();
         $container = $client->getContainer();
 
-        $processor = $container->get('banditore.consumer.sync_user_repo');
+        $processor = $container->get('banditore.consumer.sync_starred_repos');
         $processor->setClient($githubClient);
 
         // before import
@@ -216,32 +217,14 @@ class SyncUserRepoTest extends WebTestCase
     private function getMockClient($responses)
     {
         $clientHandler = HandlerStack::create($responses);
+
         $guzzleClient = new Client([
-            'base_uri' => 'https://github.api',
             'handler' => $clientHandler,
         ]);
 
-        $githubClient = $this->getMockBuilder('Github\Client')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $githubUser = new CurrentUser($githubClient);
-        $githubRate = new RateLimit($githubClient);
-
-        $githubClient->expects($this->any())
-            ->method('api')
-            ->will($this->returnCallback(function ($arg) use ($githubUser, $githubRate) {
-                switch ($arg) {
-                    case 'current_user':
-                        return $githubUser;
-                    case 'rate_limit':
-                        return $githubRate;
-                }
-            }));
-
-        $githubClient->expects($this->any())
-            ->method('getHttpClient')
-            ->will($this->returnValue($guzzleClient));
+        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpBuilder = new Builder($httpClient);
+        $githubClient = new GithubClient($httpBuilder);
 
         return $githubClient;
     }

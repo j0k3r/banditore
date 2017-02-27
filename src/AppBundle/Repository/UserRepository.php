@@ -26,4 +26,25 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getArrayResult();
     }
+
+    /**
+     * Retrieve all users to be synced.
+     * We only retrieve ids to be as fast as possible.
+     *
+     * @return array
+     */
+    public function findAllToSync()
+    {
+        $data = $this->createQueryBuilder('u')
+            ->select('u.id')
+            ->getQuery()
+            ->getArrayResult();
+
+        $return = [];
+        foreach ($data as $oneData) {
+            $return[] = $oneData['id'];
+        }
+
+        return $return;
+    }
 }

@@ -77,14 +77,26 @@ services:
         class: AppBundle\Rss\Generator
 
     # consumers
-    banditore.consumer.sync_user_repo:
-        class: AppBundle\Consumer\SyncUserRepo
+    banditore.consumer.sync_starred_repos:
+        class: AppBundle\Consumer\SyncStarredRepos
         arguments:
             - "@doctrine.orm.default_entity_manager"
             - "@banditore.repository.user"
             - "@banditore.repository.star"
             - "@banditore.repository.repo"
             - "@logger"
+
+    banditore.consumer.sync_versions:
+        class: AppBundle\Consumer\SyncVersions
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@banditore.repository.repo"
+            - "@banditore.repository.version"
+            - "@banditore.pubsubhubbub.publisher"
+            - "@logger"
+        calls:
+            - [ setClient, [ "@banditore.client.github.application" ] ]
+            - [ setClientCache, [ "@banditore.client.redis" ] ]
 
     # twig extensions
     banditore.twig_extension.repo_version:

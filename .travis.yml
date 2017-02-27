@@ -22,11 +22,14 @@ matrix:
     allow_failures:
         - php: nightly
 
+before_install:
+    - echo 'date.timezone = "Europe/Paris"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+    - echo "extension=redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+
 install:
     - composer --prefer-dist install --no-interaction -o --no-progress
 
 before_script:
-    - echo 'date.timezone = "Europe/Paris"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - ./bin/console doctrine:database:create --env=test
     - ./bin/console doctrine:schema:create --env=test
     - ./bin/console doctrine:fixtures:load --env=test -n
