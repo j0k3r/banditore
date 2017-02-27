@@ -27,7 +27,7 @@
                     <tr{% if loop.index is odd %} class="pure-table-odd"{% endif %}>
                         <td>
                             <img class="repo-avatar" src="{{ repo.ownerAvatar }}&amp;s=25"/>
-                            <a href="https://github.com/{{ repo.fullName }}">{{ repo.fullName }}</a>
+                            <a href="https://github.com/{{ repo.fullName }}" title="{{ repo.description }}">{{ repo.fullName }}</a>
                         </td>
                         <td>
                             {% if repo.name and repo.name != repo.tagName -%}

@@ -44,7 +44,7 @@ class VersionRepository extends \Doctrine\ORM\EntityRepository
     public function findLastVersionForEachRepoForUser($userId)
     {
         $query = $this->getEntityManager()->createQuery("
-            SELECT v1.tagName, v1.name, v1.createdAt, r.fullName, r.ownerAvatar, v1.prerelease
+            SELECT v1.tagName, v1.name, v1.createdAt, r.fullName, r.description, r.ownerAvatar, v1.prerelease
             FROM AppBundle\Entity\Version v1
             LEFT JOIN AppBundle\Entity\Version v2 WITH ( v1.repo = v2.repo AND v1.createdAt < v2.createdAt )
             LEFT JOIN AppBundle\Entity\Star s WITH s.repo = v1.repo
