@@ -73,6 +73,9 @@ services:
             - "%project_host%"
             - "%project_scheme%"
 
+    banditore.rss.generator:
+        class: AppBundle\Rss\Generator
+
     # consumers
     banditore.consumer.sync_user_repo:
         class: AppBundle\Consumer\SyncUserRepo
