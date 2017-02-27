@@ -73,6 +73,17 @@ class GithubAuthenticator extends SocialAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+        $versions = $this->em->getRepository('AppBundle:Version')->findLastVersionForEachRepoForUser($token->getUser()->getId());
+
+        // if no versions were found, it means the user logged in for the first time
+        // and we need to display an explanation message
+        $message = 'Successfully logged in!';
+        if (empty($versions)) {
+            $message = 'Successfully logged in. Your starred repo will soon be synced. In the meantime you can grab your RSS link in the top menu!';
+        }
+
+        $request->getSession()->getFlashBag()->add('info', $message);
+
         $message = [
             'user_id' => $token->getUser()->getId(),
         ];
@@ -82,7 +93,7 @@ class GithubAuthenticator extends SocialAuthenticator
             new Message(json_encode($message))
         );
 
-        return new RedirectResponse($this->router->generate('dashboard') . '?sync=1');
+        return new RedirectResponse($this->router->generate('dashboard'));
     }
 
     public function start(Request $request, AuthenticationException $authException = null)

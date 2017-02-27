@@ -3,8 +3,10 @@
 {% block body %}
 <div class="content">
     <div class="middle-content">
-        {% if app.request.query.has('sync') %}
-            <div class="alert_success">Successfully logged in. Your starred repo will soon be synced. You can grab your RSS link in the top menu!</div>
+        {% if app.session.flashBag.has('info') %}
+            <div class="alert_success">
+                {{ app.session.flashBag.get('info')|first }}
+            </div>
         {% endif %}
 
         <h2 class="content-head is-center">Your starred repos</h2>
