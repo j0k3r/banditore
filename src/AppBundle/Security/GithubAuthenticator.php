@@ -50,20 +50,13 @@ class GithubAuthenticator extends SocialAuthenticator
     {
         $githubUser = $this->getGithubClient()->fetchUserFromToken($credentials);
 
-        $existingUser = $this->em->getRepository('AppBundle:User')
-            ->find($githubUser->getId());
+        $user = $this->em->getRepository('AppBundle:User')->find($githubUser->getId());
 
-        if ($existingUser) {
-            // always update the access token
-            $existingUser->setAccessToken($credentials->getToken());
-
-            $this->em->persist($existingUser);
-            $this->em->flush();
-
-            return $existingUser;
+        // always update user information at login
+        if (null === $user) {
+            $user = new User();
         }
 
-        $user = new User();
         $user->setAccessToken($credentials->getToken());
         $user->hydrateFromGithub($githubUser);
 
