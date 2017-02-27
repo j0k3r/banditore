@@ -19,6 +19,8 @@ matrix:
         - php: 7.0
         - php: 7.1
         - php: nightly
+        - php: 7.0
+          env: COVERAGE=run
     allow_failures:
         - php: nightly
 
@@ -34,7 +36,14 @@ before_script:
     - ./bin/console doctrine:schema:create --env=test
     - ./bin/console doctrine:fixtures:load --env=test -n
     - ./bin/rabbit vhost:mapping:create -p guest app/config/rabbit_vhost.yml
+    - if [ $COVERAGE = run ]; then PHPUNIT_FLAGS="--coverage-clover build/logs/clover.xml"; fi;
 
 script:
-    - ./bin/simple-phpunit -v
+    - ./bin/simple-phpunit -v $PHPUNIT_FLAGS
     - if [ "$CS_FIXER" = "run" ]; then php bin/php-cs-fixer fix --verbose --dry-run ; fi;
+
+after_success:
+    - |
+        if [ $COVERAGE = run ]; then
+            php bin/coveralls -v
+        fi

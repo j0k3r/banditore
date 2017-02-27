@@ -47,7 +47,8 @@
         "friendsofphp/php-cs-fixer": "~2.0",
         "sensio/generator-bundle": "^3.0",
         "symfony/phpunit-bridge": "^3.0",
-        "doctrine/doctrine-fixtures-bundle": "^2.3"
+        "doctrine/doctrine-fixtures-bundle": "^2.3",
+        "satooshi/php-coveralls": "dev-master"
     },
     "scripts": {
         "symfony-scripts": [
