@@ -87,7 +87,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertSame('http://pubsubhubbub.appspot.com/', $link->getNode(1)->getAttribute('href'));
 
         $this->assertSame('http://localhost/' . $user->getUuid() . '.atom', $crawler->filter('channel>link')->text());
-        $this->assertSame('test/test v1.0.0', $crawler->filter('item>title')->text());
+        $this->assertSame('test/test 1.0.0', $crawler->filter('item>title')->text());
     }
 
     private function logIn(User $user)

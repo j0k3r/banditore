@@ -50,7 +50,7 @@ class GithubAuthenticatorTest extends WebTestCase
             ->getMock();
         $publisher->expects($this->once())
             ->method('publish')
-            ->with('banditore.sync_user_repo.publisher', new Message(json_encode(['user_id' => 123])));
+            ->with('banditore.sync_starred_repos.publisher', new Message(json_encode(['user_id' => 123])));
 
         $container->set('swarrot.publisher', $publisher);
         $container->set('banditore.client.github.application', $githubClient);
@@ -108,7 +108,7 @@ class GithubAuthenticatorTest extends WebTestCase
             ->getMock();
         $publisher->expects($this->once())
             ->method('publish')
-            ->with('banditore.sync_user_repo.publisher', new Message(json_encode(['user_id' => 456])));
+            ->with('banditore.sync_starred_repos.publisher', new Message(json_encode(['user_id' => 456])));
 
         $container->set('swarrot.publisher', $publisher);
         $container->set('banditore.client.github.application', $githubClient);
