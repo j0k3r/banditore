@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(
  *     name="star",
- *     options={"collate"="utf8mb4_unicode_ci", "charset"="utf8mb4"},
  *     uniqueConstraints={@ORM\UniqueConstraint(name="user_repo_unique", columns={"user_id","repo_id"})}
  * )
  * @ORM\Entity(repositoryClass="AppBundle\Repository\StarRepository")

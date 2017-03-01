@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(
  *     name="version",
- *     options={"collate"="utf8mb4_unicode_ci", "charset"="utf8mb4"},
  *     uniqueConstraints={@ORM\UniqueConstraint(name="repo_version_unique", columns={"repo_id","tag_name"})},
  *     indexes={
  *         @ORM\Index(name="created_at_idx", columns={"created_at"}),

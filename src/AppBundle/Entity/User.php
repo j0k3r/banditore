@@ -13,7 +13,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *
  * @ORM\Table(
  *     name="user",
- *     options={"collate"="utf8mb4_unicode_ci", "charset"="utf8mb4"},
  *     uniqueConstraints={@ORM\UniqueConstraint(name="uuid", columns={"uuid"})}
  * )
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
