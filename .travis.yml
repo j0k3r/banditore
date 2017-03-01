@@ -32,6 +32,8 @@ install:
     - composer --prefer-dist install --no-interaction -o --no-progress
 
 before_script:
+    # this version is both compatible with PHP 5 & 7
+    - echo yes | pecl install apcu-4.0.11
     - ./bin/console doctrine:database:create --env=test
     - ./bin/console doctrine:schema:create --env=test
     - ./bin/console doctrine:fixtures:load --env=test -n

@@ -4556,6 +4556,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
+        "ext-apcu": "*",
         "php": ">=5.5.9"
     },
     "platform-dev": [],
