@@ -11,10 +11,13 @@ services:
             - "@swarrot.publisher"
 
     banditore.client.redis:
-        class: Redis
-        calls:
-            - [ connect, [ "%redis_host%", "%redis_port%" ] ]
-            - [ select, [ "%redis_database%" ] ]
+        class: Predis\Client
+        arguments:
+            -
+                host: '%redis_host%'
+                port: '%redis_port%'
+                schema: tcp
+                database: "%redis_database%"
 
     # repository as a service
     banditore.repository.repo:
@@ -41,11 +44,18 @@ services:
         arguments:
             - AppBundle:Version
 
-    # global Github application client
-    banditore.client.github.application:
+    banditore.client.github:
         class: Github\Client
-        calls:
-            - [ authenticate, [ "%github_client_id%", "%github_client_secret%", !php/const:Github\Client::AUTH_URL_CLIENT_ID ] ]
+        factory: [ "@banditore.github.client_discovery", find ]
+
+    banditore.github.client_discovery:
+        class: AppBundle\Github\ClientDiscovery
+        arguments:
+            - "@banditore.repository.user"
+            - "@banditore.client.redis"
+            - "%github_client_id%"
+            - "%github_client_secret%"
+            - "@logger"
 
     banditore.writer.webfeeds:
         class: AppBundle\Webfeeds\WebfeedsWriter
@@ -93,10 +103,11 @@ services:
             - "@banditore.repository.repo"
             - "@banditore.repository.version"
             - "@banditore.pubsubhubbub.publisher"
+            - "@banditore.client.github"
             - "@logger"
-        calls:
-            - [ setClient, [ "@banditore.client.github.application" ] ]
-            - [ setClientCache, [ "@banditore.client.redis" ] ]
+        # to avoid triggering Github Client Discovery
+        # which will make a doctrine query on Travis because the default limit to Github will be reached
+        lazy: true
 
     # twig extensions
     banditore.twig_extension.repo_version:
