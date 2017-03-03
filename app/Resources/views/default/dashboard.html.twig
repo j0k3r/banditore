@@ -3,8 +3,10 @@
 {% block body %}
 <div class="content">
     <div class="middle-content">
-        {% if app.request.query.has('sync') %}
-            <div class="alert_success">Successfully logged in. Your starred repo will soon be synced. You can grab your RSS link in the top menu!</div>
+        {% if app.session.flashBag.has('info') %}
+            <div class="alert_success">
+                {{ app.session.flashBag.get('info')|first }}
+            </div>
         {% endif %}
 
         <h2 class="content-head is-center">Your starred repos</h2>
@@ -27,7 +29,7 @@
                     <tr{% if loop.index is odd %} class="pure-table-odd"{% endif %}>
                         <td>
                             <img class="repo-avatar" src="{{ repo.ownerAvatar }}&amp;s=25"/>
-                            <a href="https://github.com/{{ repo.fullName }}">{{ repo.fullName }}</a>
+                            <a href="https://github.com/{{ repo.fullName }}" title="{{ repo.description }}">{{ repo.fullName }}</a>
                         </td>
                         <td>
                             {% if repo.name and repo.name != repo.tagName -%}

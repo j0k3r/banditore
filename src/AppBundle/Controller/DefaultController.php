@@ -56,6 +56,10 @@ class DefaultController extends Controller
      */
     public function connectAction()
     {
+        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return $this->redirect($this->generateUrl('dashboard'));
+        }
+
         return $this->get('oauth2.registry')
             ->getClient('github')
             // scopes requested

@@ -27,6 +27,8 @@ matrix:
 before_install:
     - echo 'date.timezone = "Europe/Paris"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - echo "extension=redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - if [[ $TRAVIS_PHP_VERSION = '5.6' ]]; then echo yes | pecl install apcu-4.0.11; fi
+    - if [[ $TRAVIS_PHP_VERSION = 7.* ]]; then echo yes | pecl install apcu-5.1.8; fi
 
 install:
     - composer --prefer-dist install --no-interaction -o --no-progress
@@ -36,7 +38,7 @@ before_script:
     - ./bin/console doctrine:schema:create --env=test
     - ./bin/console doctrine:fixtures:load --env=test -n
     - ./bin/rabbit vhost:mapping:create -p guest app/config/rabbit_vhost.yml
-    - if [ $COVERAGE = run ]; then PHPUNIT_FLAGS="--coverage-clover build/logs/clover.xml"; fi;
+    - if [ "$COVERAGE" = "run" ]; then PHPUNIT_FLAGS="--coverage-clover build/logs/clover.xml"; fi;
 
 script:
     - ./bin/simple-phpunit -v $PHPUNIT_FLAGS

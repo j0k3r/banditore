@@ -8,10 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Repo.
  *
- * @ORM\Table(
- *     name="repo",
- *     options={"collate"="utf8mb4_unicode_ci", "charset"="utf8mb4"}
- * )
+ * @ORM\Table(name="repo")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\RepoRepository")
  * @ORM\HasLifecycleCallbacks()
  */

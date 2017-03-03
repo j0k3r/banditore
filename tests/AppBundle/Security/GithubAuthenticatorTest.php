@@ -71,7 +71,10 @@ class GithubAuthenticatorTest extends WebTestCase
         $this->assertSame('http://avat.ar/my.png', $user->getAvatar());
 
         $this->assertSame(302, $client->getResponse()->getStatusCode());
-        $this->assertSame('/dashboard?sync=1', $client->getResponse()->getTargetUrl());
+        $this->assertSame('/dashboard', $client->getResponse()->getTargetUrl());
+
+        $message = $container->get('session')->getFlashBag()->get('info');
+        $this->assertSame('Successfully logged in!', $message[0]);
     }
 
     public function testCallbackWithNewUser()
@@ -130,6 +133,9 @@ class GithubAuthenticatorTest extends WebTestCase
         $this->assertSame('Any', $user->getName());
 
         $this->assertSame(302, $client->getResponse()->getStatusCode());
-        $this->assertSame('/dashboard?sync=1', $client->getResponse()->getTargetUrl());
+        $this->assertSame('/dashboard', $client->getResponse()->getTargetUrl());
+
+        $message = $container->get('session')->getFlashBag()->get('info');
+        $this->assertSame('Successfully logged in. Your starred repo will soon be synced. In the meantime you can grab your RSS link in the top menu!', $message[0]);
     }
 }
