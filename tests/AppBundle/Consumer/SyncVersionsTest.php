@@ -171,7 +171,7 @@ class SyncVersionsTest extends WebTestCase
                     'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/commits/694b8cc3983f52209029605300910507bec700b5',
                 ],
                 'tag' => '1.0.2',
-                'message' => 'weekly release',
+                'message' => "weekly release\n-----BEGIN PGP SIGNATURE-----\nVersion: GnuPG v2\n\niF4EABEIAAYFAliw58IACgkQ64qmmlZsB5VNFwD+L1M86cO76oohqSy4TCbubPAL\n6341glOKJpfkwyjQnUkBAPCTZSBbe8CFHLxLUvypIiQSMn+AIkPfvzvSEahA40Vz\n=SaF+\n-----END PGP SIGNATURE-----\n",
             ])),
             // markdown
             new Response(200, ['Content-Type' => 'text/html'], '<p>weekly release</p>'),
@@ -291,6 +291,7 @@ class SyncVersionsTest extends WebTestCase
         $this->assertSame('1.0.0', $versions[0]->getTagName(), 'Repo 666 has 4 version. First one is 1.0.0');
         $this->assertSame('1.0.1', $versions[1]->getTagName(), 'Repo 666 has 4 version. Second one is 1.0.1');
         $this->assertSame('1.0.2', $versions[2]->getTagName(), 'Repo 666 has 4 version. Third one is 1.0.2');
+        $this->assertSame('<p>weekly release</p>', $versions[2]->getBody(), 'Version 1.0.2 does NOT have a PGP signature');
         $this->assertSame('2.0.1', $versions[3]->getTagName(), 'Repo 666 has 4 version. Fourth one is 2.0.1');
     }
 }

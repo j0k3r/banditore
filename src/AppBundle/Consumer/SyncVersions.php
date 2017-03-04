@@ -174,6 +174,8 @@ class SyncVersions implements ProcessorInterface
                             'message' => $commitInfo['message'],
                         ];
                 }
+
+                $newRelease['message'] = $this->removePgpSignature($newRelease['message']);
             }
 
             // render markdown in plain html and use default markdown file if it fails
@@ -197,5 +199,21 @@ class SyncVersions implements ProcessorInterface
         $this->em->flush();
 
         return $newVersion;
+    }
+
+    /**
+     * Remove PGP signature from commit / tag.
+     *
+     * @param string $message
+     *
+     * @return string
+     */
+    private function removePgpSignature($message)
+    {
+        if ($pos = stripos($message, '-----BEGIN PGP SIGNATURE-----')) {
+            return trim(substr($message, 0, $pos));
+        }
+
+        return $message;
     }
 }
