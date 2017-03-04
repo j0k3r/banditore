@@ -57,19 +57,7 @@ class SyncStarredReposCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $users = [];
-
-        if ($input->getOption('id')) {
-            $users = [$input->getOption('id')];
-        } elseif ($input->getOption('username')) {
-            $user = $this->userRepository->findOneByUsername($input->getOption('username'));
-
-            if ($user) {
-                $users = [$user->getId()];
-            }
-        } else {
-            $users = $this->userRepository->findAllToSync();
-        }
+        $users = $this->retrieveUsers($input);
 
         if (count(array_filter($users)) <= 0) {
             $output->writeln('<error>No users found</error>');
@@ -105,5 +93,31 @@ class SyncStarredReposCommand extends ContainerAwareCommand
         $output->writeln('<info>User synced: ' . $userSynced . '</info>');
 
         return 0;
+    }
+
+    /**
+     * Retrieve users to work on.
+     *
+     * @param InputInterface $input
+     *
+     * @return array
+     */
+    private function retrieveUsers(InputInterface $input)
+    {
+        if ($input->getOption('id')) {
+            return [$input->getOption('id')];
+        }
+
+        if ($input->getOption('username')) {
+            $user = $this->userRepository->findOneByUsername($input->getOption('username'));
+
+            if ($user) {
+                return [$user->getId()];
+            }
+
+            return [];
+        }
+
+        return $this->userRepository->findAllToSync();
     }
 }
