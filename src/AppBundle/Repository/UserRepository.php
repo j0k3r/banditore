@@ -47,4 +47,20 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 
         return $return;
     }
+
+    /**
+     * Retrieve all tokens available.
+     * This is used for the GithubClientDiscovery.
+     *
+     * @return array
+     */
+    public function findAllTokens()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u.id', 'u.username', 'u.accessToken')
+            ->getQuery()
+            ->useResultCache(true)
+            ->setResultCacheLifetime(10 * 60)
+            ->getArrayResult();
+    }
 }

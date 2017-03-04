@@ -7,7 +7,6 @@ use AppBundle\Entity\Version;
 use AppBundle\PubSubHubbub\Publisher;
 use AppBundle\Repository\RepoRepository;
 use AppBundle\Repository\VersionRepository;
-use Cache\Adapter\Redis\RedisCachePool;
 use Doctrine\ORM\EntityManager;
 use Github\Client;
 use Psr\Log\LoggerInterface;
@@ -26,36 +25,14 @@ class SyncVersions implements ProcessorInterface
     private $logger;
     private $client;
 
-    public function __construct(EntityManager $em, RepoRepository $repoRepository, VersionRepository $versionRepository, Publisher $pubsubhubbub, LoggerInterface $logger)
+    public function __construct(EntityManager $em, RepoRepository $repoRepository, VersionRepository $versionRepository, Publisher $pubsubhubbub, Client $client, LoggerInterface $logger)
     {
         $this->em = $em;
         $this->repoRepository = $repoRepository;
         $this->versionRepository = $versionRepository;
         $this->pubsubhubbub = $pubsubhubbub;
-        $this->logger = $logger;
-        $this->client = new Client();
-    }
-
-    /**
-     * Mostly for test to be able to override the client.
-     *
-     * @todo refacto to use a global client
-     *
-     * @param Client $client Github client
-     */
-    public function setClient(Client $client)
-    {
         $this->client = $client;
-    }
-
-    /**
-     * Add http cache to the Github client.
-     *
-     * @param \Redis $redis
-     */
-    public function setClientCache(\Redis $redis)
-    {
-        $this->client->addCache(new RedisCachePool($redis));
+        $this->logger = $logger;
     }
 
     public function process(Message $message, array $options)

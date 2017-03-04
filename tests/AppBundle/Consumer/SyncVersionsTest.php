@@ -55,9 +55,9 @@ class SyncVersionsTest extends WebTestCase
             $repoRepository,
             $versionRepository,
             $pubsubhubbub,
+            $githubClient,
             new NullLogger()
         );
-        $processor->setClient($githubClient);
 
         $processor->process(new Message(json_encode(['repo_id' => 123])), []);
     }
@@ -250,9 +250,9 @@ class SyncVersionsTest extends WebTestCase
             $repoRepository,
             $versionRepository,
             $pubsubhubbub,
+            $githubClient,
             $logger
         );
-        $processor->setClient($githubClient);
 
         $processor->process(new Message(json_encode(['repo_id' => 123])), []);
 
@@ -263,6 +263,9 @@ class SyncVersionsTest extends WebTestCase
         $this->assertSame('[10] <comment>3</comment> new versions for <info>bob/wow</info>', $records[2]['message']);
     }
 
+    /**
+     * Using only mocks for request.
+     */
     public function testFunctionalConsumer()
     {
         $clientHandler = HandlerStack::create($this->getWorkingResponses());
@@ -277,8 +280,10 @@ class SyncVersionsTest extends WebTestCase
         $client = static::createClient();
         $container = $client->getContainer();
 
+        // override factory to avoid real call to Github
+        $container->set('banditore.client.github', $githubClient);
+
         $processor = $container->get('banditore.consumer.sync_versions');
-        $processor->setClient($githubClient);
 
         $versions = $container->get('banditore.repository.version')->findBy(['repo' => 666]);
         $this->assertCount(1, $versions, 'Repo 666 has 1 version');

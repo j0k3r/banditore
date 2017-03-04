@@ -34,9 +34,9 @@ install:
     - composer --prefer-dist install --no-interaction -o --no-progress
 
 before_script:
-    - ./bin/console doctrine:database:create --env=test
-    - ./bin/console doctrine:schema:create --env=test
-    - ./bin/console doctrine:fixtures:load --env=test -n
+    - php bin/console doctrine:database:create --env=test
+    - php bin/console doctrine:schema:create --env=test
+    - php bin/console doctrine:fixtures:load --env=test -n
     - ./bin/rabbit vhost:mapping:create -p guest app/config/rabbit_vhost.yml
     - if [ "$COVERAGE" = "run" ]; then PHPUNIT_FLAGS="--coverage-clover build/logs/clover.xml"; fi;
 
