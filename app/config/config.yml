@@ -90,8 +90,14 @@ swarrot:
             processor: banditore.consumer.sync_starred_repos
             extras:
                 poll_interval: 500000
-                requeue_on_error: false
             middleware_stack:
+                - configurator: swarrot.processor.new_relic
+                  extras:
+                      new_relic_app_name: banditore
+                - configurator: swarrot.processor.max_messages
+                  extras:
+                      max_messages: 5
+                - configurator: swarrot.processor.retry
                 - configurator: swarrot.processor.exception_catcher
                 - configurator: swarrot.processor.ack
         banditore.sync_versions:
@@ -100,6 +106,14 @@ swarrot:
                 poll_interval: 500000
                 requeue_on_error: false
             middleware_stack:
+                - configurator: swarrot.processor.new_relic
+                  extras:
+                      new_relic_app_name: banditore
+                # stop workers after 50 messages to avoid eating too much memory
+                - configurator: swarrot.processor.max_messages
+                  extras:
+                      max_messages: 50
+                - configurator: swarrot.processor.retry
                 - configurator: swarrot.processor.exception_catcher
                 - configurator: swarrot.processor.ack
     messages_types:
