@@ -135,6 +135,11 @@ a.pure-button-primary:hover {
     color: #AECFE5;
 }
 
+.pure-menu-item.item-logged-in,
+.pure-menu-item.item-github {
+    display: none;
+}
+
 /*
  * -- SPLASH STYLES --
  * This is the blue top section that appears on the page.
@@ -277,22 +282,6 @@ img.repo-avatar {
     border-left-width: 0;
 }
 
-@media (min-width: 480px) {
-    .pure-table td:before {
-        display: none;
-    }
-
-    .pure-table tr {
-        border-top: 0;
-        border-bottom: 0;
-    }
-
-    .pure-table th, .pure-table td {
-        display: table-cell;
-        border-left: 1px solid #cbcbcb;
-    }
-}
-
 /*
  * -- ALERTS --
  *
@@ -375,7 +364,6 @@ img.repo-avatar {
  * of the mobile styles.
  */
 @media (min-width: 48em) {
-
     /* We increase the body font size */
     body {
         font-size: 16px;
@@ -389,6 +377,11 @@ img.repo-avatar {
 
     .home-menu ul {
         float: right;
+    }
+
+    .pure-menu-item.item-logged-in,
+    .pure-menu-item.item-github {
+        display: inline-block;
     }
 
     .splash-head {
@@ -407,6 +400,20 @@ img.repo-avatar {
     .image-productivity,
     .image-megaphone {
         display: initial;
+    }
+
+    .pure-table td:before {
+        display: none;
+    }
+
+    .pure-table tr {
+        border-top: 0;
+        border-bottom: 0;
+    }
+
+    .pure-table th, .pure-table td {
+        display: table-cell;
+        border-left: 1px solid #cbcbcb;
     }
 }
 
