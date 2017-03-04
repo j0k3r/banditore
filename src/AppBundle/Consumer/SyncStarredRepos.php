@@ -5,6 +5,7 @@ namespace AppBundle\Consumer;
 use AppBundle\Entity\Repo;
 use AppBundle\Entity\Star;
 use AppBundle\Entity\User;
+use AppBundle\Github\RateLimitTrait;
 use AppBundle\Repository\RepoRepository;
 use AppBundle\Repository\StarRepository;
 use AppBundle\Repository\UserRepository;
@@ -23,6 +24,8 @@ use Swarrot\Processor\ProcessorInterface;
  */
 class SyncStarredRepos implements ProcessorInterface
 {
+    use RateLimitTrait;
+
     private $logger;
     private $em;
     private $userRepository;
@@ -92,10 +95,9 @@ class SyncStarredRepos implements ProcessorInterface
         $starredRepos = $this->client->api('current_user')->starring()->all($page, $perPage);
 
         do {
-            $rateLimit = $this->client->api('rate_limit')->getRateLimits();
             $this->logger->info('    sync ' . count($starredRepos) . ' starred repos', [
                 'user' => $user->getUsername(),
-                'rate' => $rateLimit['resources']['core']['remaining'],
+                'rate' => $this->getRateLimits($this->client, $this->logger),
             ]);
 
             foreach ($starredRepos as $starredRepo) {
