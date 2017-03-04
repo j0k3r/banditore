@@ -4306,7 +4306,7 @@
             "support": {
                 "source": "https://github.com/j0k3r/RedisMock/tree/predis-1.x"
             },
-            "time": "2017-03-03T14:29:12+00:00"
+            "time": "2017-03-03 14:29:12"
         },
         {
             "name": "satooshi/php-coveralls",

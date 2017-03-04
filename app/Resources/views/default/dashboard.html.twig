@@ -27,11 +27,11 @@
             <tbody>
                 {% for repo in repos -%}
                     <tr{% if loop.index is odd %} class="pure-table-odd"{% endif %}>
-                        <td>
+                        <td data-th="Repo">
                             <img class="repo-avatar" src="{{ repo.ownerAvatar }}&amp;s=25"/>
                             <a href="https://github.com/{{ repo.fullName }}" title="{{ repo.description }}">{{ repo.fullName }}</a>
                         </td>
-                        <td>
+                        <td data-th="Last">
                             {% if repo.name and repo.name != repo.tagName -%}
                                 {{ repo.name }} (<a href="{{ repo|link_to_version }}">{{ repo.tagName }}</a>)
                             {%- else -%}
@@ -42,27 +42,29 @@
                                 <span class="label_prerelease">pre-release</span>
                             {% endif -%}
                         </td>
-                        <td><time datetime="{{ repo.createdAt|date("c") }}" title="{{ repo.createdAt|date("c") }}">{{ repo.createdAt|time_diff }}</time></td>
+                        <td data-th="Date">
+                            <time datetime="{{ repo.createdAt|date("c") }}" title="{{ repo.createdAt|date("c") }}">{{ repo.createdAt|time_diff }}</time>
+                        </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td>
+                        <td data-th="Repo">
                             <img class="repo-avatar" src="https://avatars2.githubusercontent.com/u/5909549?v=3&amp;s=25"/>
                             <a href="#">sample/sample</a>
                         </td>
-                        <td>First release (<a href="#">v1.0.0</a>)</td>
-                        <td><time datetime="{{ app.user.createdAt|date("c") }}" title="{{ app.user.createdAt|date("c") }}">{{ app.user.createdAt|time_diff }}</time></td>
+                        <td data-th="Last">First release (<a href="#">v1.0.0</a>)</td>
+                        <td data-th="Date"><time datetime="{{ app.user.createdAt|date("c") }}" title="{{ app.user.createdAt|date("c") }}">{{ app.user.createdAt|time_diff }}</time></td>
                     </tr>
-                    <tr>
-                        <td>
+                    <tr class="pure-table-odd">
+                        <td data-th="Repo">
                             <img class="repo-avatar" src="https://avatars2.githubusercontent.com/u/5909549?v=3&amp;s=25"/>
                             <a href="#">sample/sample</a>
                         </td>
-                        <td>
+                        <td data-th="Last">
                             Prepare first release (<a href="#">v1.0.0-alpha.1</a>)
                             <span class="label_prerelease">pre-release</span>
                         </td>
-                        <td><time datetime="{{ date("-2days")|date("c") }}" title="{{ date("-2days")|date("c") }}">{{ date("-2days")|time_diff }}</time></td>
+                        <td data-th="Date"><time datetime="{{ date("-2days")|date("c") }}" title="{{ date("-2days")|date("c") }}">{{ date("-2days")|time_diff }}</time></td>
                     </tr>
                 {% endfor -%}
             </tbody>

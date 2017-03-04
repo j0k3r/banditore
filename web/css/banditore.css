@@ -135,6 +135,11 @@ a.pure-button-primary:hover {
     color: #AECFE5;
 }
 
+.pure-menu-item.item-logged-in,
+.pure-menu-item.item-github {
+    display: none;
+}
+
 /*
  * -- SPLASH STYLES --
  * This is the blue top section that appears on the page.
@@ -218,10 +223,6 @@ a.pure-button-primary:hover {
     margin-right: 7px;
 }
 
-.pure-table {
-    margin: 0 auto;
-}
-
 /* This is the class used for the dark-background areas. */
 .ribbon {
     background: #10556B;
@@ -236,6 +237,49 @@ img.repo-avatar {
 .image-productivity,
 .image-megaphone {
     display: none;
+}
+
+/*
+ * -- DASHBOARD TABLE --
+ *
+ * From https://codepen.io/geoffyuen/pen/FCBEg?editors=1100
+ */
+.pure-table {
+    margin: 0 auto;
+    min-width: 300px;
+}
+
+.pure-table tr {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+
+.pure-table th {
+    display: none;
+}
+
+.pure-table td {
+    display: block;
+}
+
+.pure-table td:first-child {
+    padding-top: .5em;
+}
+
+.pure-table td:last-child {
+    padding-bottom: .5em;
+}
+
+.pure-table td:before {
+    content: attr(data-th) ": ";
+    font-weight: bold;
+    width: 3.5em;
+    display: inline-block;
+}
+
+.pure-table th, .pure-table td {
+    text-align: left;
+    border-left-width: 0;
 }
 
 /*
@@ -320,7 +364,6 @@ img.repo-avatar {
  * of the mobile styles.
  */
 @media (min-width: 48em) {
-
     /* We increase the body font size */
     body {
         font-size: 16px;
@@ -334,6 +377,11 @@ img.repo-avatar {
 
     .home-menu ul {
         float: right;
+    }
+
+    .pure-menu-item.item-logged-in,
+    .pure-menu-item.item-github {
+        display: inline-block;
     }
 
     .splash-head {
@@ -352,6 +400,20 @@ img.repo-avatar {
     .image-productivity,
     .image-megaphone {
         display: initial;
+    }
+
+    .pure-table td:before {
+        display: none;
+    }
+
+    .pure-table tr {
+        border-top: 0;
+        border-bottom: 0;
+    }
+
+    .pure-table th, .pure-table td {
+        display: table-cell;
+        border-left: 1px solid #cbcbcb;
     }
 }
 
