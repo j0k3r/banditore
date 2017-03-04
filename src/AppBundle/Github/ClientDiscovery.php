@@ -5,7 +5,6 @@ namespace AppBundle\Github;
 use AppBundle\Repository\UserRepository;
 use Cache\Adapter\Predis\PredisCachePool;
 use Github\Client as GithubClient;
-use Http\Client\Exception\HttpException;
 use Predis\Client as RedisClient;
 use Psr\Log\LoggerInterface;
 
@@ -17,6 +16,8 @@ use Psr\Log\LoggerInterface;
  */
 class ClientDiscovery
 {
+    use RateLimitTrait;
+
     const THRESHOLD_BAD_AUTH = 50;
 
     private $userRepository;
@@ -72,8 +73,8 @@ class ClientDiscovery
         // try with the application default client
         $this->client->authenticate($this->clientId, $this->clientSecret, GithubClient::AUTH_URL_CLIENT_ID);
 
-        if ($this->getRateLimits() >= self::THRESHOLD_BAD_AUTH) {
-            $this->logger->info('RateLimit ok with default application');
+        if ($this->getRateLimits($this->client, $this->logger) >= self::THRESHOLD_BAD_AUTH) {
+            $this->logger->notice('RateLimit ok with default application');
 
             return $this->client;
         }
@@ -84,32 +85,13 @@ class ClientDiscovery
         foreach ($users as $user) {
             $this->client->authenticate($user['accessToken'], null, GithubClient::AUTH_HTTP_TOKEN);
 
-            if ($this->getRateLimits() >= self::THRESHOLD_BAD_AUTH) {
-                $this->logger->info('RateLimit ok with user: ' . $user['username']);
+            if ($this->getRateLimits($this->client, $this->logger) >= self::THRESHOLD_BAD_AUTH) {
+                $this->logger->notice('RateLimit ok with user: ' . $user['username']);
 
                 return $this->client;
             }
         }
 
         throw new \RuntimeException('No way to authenticate a client with enough rate limit remaining :(');
-    }
-
-    /**
-     * Retrieve rate limit for the current authenticated client.
-     * It's in a separate method to be able to catch error in case of glimpse on the Github side.
-     *
-     * @return false|int
-     */
-    private function getRateLimits()
-    {
-        try {
-            $rateLimit = $this->client->api('rate_limit')->getRateLimits();
-
-            return $rateLimit['resources']['core']['remaining'];
-        } catch (HttpException $e) {
-            $this->logger->error('RateLimit call goes bad.', ['exception' => $e]);
-
-            return false;
-        }
     }
 }

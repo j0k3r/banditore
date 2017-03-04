@@ -4,6 +4,7 @@ namespace AppBundle\Consumer;
 
 use AppBundle\Entity\Repo;
 use AppBundle\Entity\Version;
+use AppBundle\Github\RateLimitTrait;
 use AppBundle\PubSubHubbub\Publisher;
 use AppBundle\Repository\RepoRepository;
 use AppBundle\Repository\VersionRepository;
@@ -18,6 +19,8 @@ use Swarrot\Processor\ProcessorInterface;
  */
 class SyncVersions implements ProcessorInterface
 {
+    use RateLimitTrait;
+
     private $em;
     private $repoRepository;
     private $versionRepository;
@@ -49,8 +52,7 @@ class SyncVersions implements ProcessorInterface
 
         $this->logger->notice('Consume banditore.sync_versions message', ['repo' => $repo->getFullName()]);
 
-        $rateLimit = $this->client->api('rate_limit')->getRateLimits();
-        $this->logger->notice('[' . $rateLimit['resources']['core']['remaining'] . '] Check <info>' . $repo->getFullName() . '</info> … ');
+        $this->logger->notice('[' . $this->getRateLimits($this->client, $this->logger) . '] Check <info>' . $repo->getFullName() . '</info> … ');
 
         try {
             $nbVersions = $this->doSyncVersions($repo);
@@ -65,8 +67,7 @@ class SyncVersions implements ProcessorInterface
             $this->pubsubhubbub->pingHub([$data['repo_id']]);
         }
 
-        $rateLimit = $this->client->api('rate_limit')->getRateLimits();
-        $this->logger->notice('[' . $rateLimit['resources']['core']['remaining'] . '] <comment>' . $nbVersions . '</comment> new versions for <info>' . $repo->getFullName() . '</info>');
+        $this->logger->notice('[' . $this->getRateLimits($this->client, $this->logger) . '] <comment>' . $nbVersions . '</comment> new versions for <info>' . $repo->getFullName() . '</info>');
     }
 
     /**
