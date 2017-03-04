@@ -196,30 +196,6 @@ class User implements UserInterface
     }
 
     /**
-     * Set githubId.
-     *
-     * @param int $githubId
-     *
-     * @return User
-     */
-    public function setGithubId($githubId)
-    {
-        $this->githubId = $githubId;
-
-        return $this;
-    }
-
-    /**
-     * Get githubId.
-     *
-     * @return int
-     */
-    public function getGithubId()
-    {
-        return $this->githubId;
-    }
-
-    /**
      * Set createdAt.
      *
      * @param \DateTime $createdAt
