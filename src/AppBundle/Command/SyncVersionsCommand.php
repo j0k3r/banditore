@@ -59,19 +59,7 @@ class SyncVersionsCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $repos = [];
-
-        if ($input->getOption('repo_id')) {
-            $repos = [$input->getOption('repo_id')];
-        } elseif ($input->getOption('repo_name')) {
-            $repo = $this->repoRepository->findOneByFullName($input->getOption('repo_name'));
-
-            if ($repo) {
-                $repos = [$repo->getId()];
-            }
-        } else {
-            $repos = $this->repoRepository->findAllForRelease();
-        }
+        $repos = $this->retrieveRepos($input);
 
         if (count(array_filter($repos)) <= 0) {
             $output->writeln('<error>No repos found</error>');
@@ -107,5 +95,31 @@ class SyncVersionsCommand extends ContainerAwareCommand
         $output->writeln('<info>Repo checked: ' . $repoChecked . '</info>');
 
         return 0;
+    }
+
+    /**
+     * Retrieve repos to work on.
+     *
+     * @param InputInterface $input
+     *
+     * @return array
+     */
+    private function retrieveRepos(InputInterface $input)
+    {
+        if ($input->getOption('repo_id')) {
+            return [$input->getOption('repo_id')];
+        }
+
+        if ($input->getOption('repo_name')) {
+            $repo = $this->repoRepository->findOneByFullName($input->getOption('repo_name'));
+
+            if ($repo) {
+                return [$repo->getId()];
+            }
+
+            return [];
+        }
+
+        return $this->repoRepository->findAllForRelease();
     }
 }

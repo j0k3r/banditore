@@ -123,7 +123,7 @@ class SyncVersionsTest extends WebTestCase
                 'documentation_url' => 'https://developer.github.com/v3',
             ])),
             // retrieve tag information from the commit (since the release does not exist)
-            new Response(202, ['Content-Type' => 'application/json'], json_encode([
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([
                 'sha' => '4845571072d49c2794b165482420b66c206a942a',
                 'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/commits/4845571072d49c2794b165482420b66c206a942a',
                 'html_url' => 'https://github.com/snc/SncRedisBundle/commit/4845571072d49c2794b165482420b66c206a942a',
@@ -157,7 +157,7 @@ class SyncVersionsTest extends WebTestCase
                 'documentation_url' => 'https://developer.github.com/v3',
             ])),
             // retrieve tag information from the tag (since the release does not exist)
-            new Response(202, ['Content-Type' => 'application/json'], json_encode([
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([
                 'sha' => '694b8cc3983f52209029605300910507bec700b4',
                 'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/tags/694b8cc3983f52209029605300910507bec700b4',
                 'tagger' => [
@@ -261,6 +261,444 @@ class SyncVersionsTest extends WebTestCase
         $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
         $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
         $this->assertSame('[10] <comment>3</comment> new versions for <info>bob/wow</info>', $records[2]['message']);
+    }
+
+    /**
+     * The call to repo/tags will return a bad response.
+     */
+    public function testProcessRepoTagFailed()
+    {
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repo = new Repo();
+        $repo->setId(123);
+        $repo->setFullName('bob/wow');
+        $repo->setName('wow');
+
+        $repoRepository = $this->getMockBuilder('AppBundle\Repository\RepoRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repoRepository->expects($this->once())
+            ->method('find')
+            ->with(123)
+            ->will($this->returnValue($repo));
+
+        $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $pubsubhubbub = $this->getMockBuilder('AppBundle\PubSubHubbub\Publisher')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $pubsubhubbub->expects($this->never())
+            ->method('pingHub');
+
+        $responses = new MockHandler([
+            // rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            // repo/tags generate a bad request
+            new Response(400, ['Content-Type' => 'application/json']),
+            // rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+        ]);
+
+        $clientHandler = HandlerStack::create($responses);
+        $guzzleClient = new Client([
+            'handler' => $clientHandler,
+        ]);
+
+        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpBuilder = new Builder($httpClient);
+        $githubClient = new GithubClient($httpBuilder);
+
+        $logger = new Logger('foo');
+        $logHandler = new TestHandler();
+        $logger->pushHandler($logHandler);
+
+        $processor = new SyncVersions(
+            $em,
+            $repoRepository,
+            $versionRepository,
+            $pubsubhubbub,
+            $githubClient,
+            $logger
+        );
+
+        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+
+        $records = $logHandler->getRecords();
+
+        $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
+        $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
+        $this->assertContains('(repo/tags) <error>', $records[2]['message']);
+    }
+
+    /**
+     * The call to markdown will return a bad response.
+     */
+    public function testProcessMarkdownFailed()
+    {
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repo = new Repo();
+        $repo->setId(123);
+        $repo->setFullName('bob/wow');
+        $repo->setName('wow');
+
+        $repoRepository = $this->getMockBuilder('AppBundle\Repository\RepoRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repoRepository->expects($this->once())
+            ->method('find')
+            ->with(123)
+            ->will($this->returnValue($repo));
+
+        $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $versionRepository->expects($this->once())
+            ->method('findOneBy')
+            ->willReturn(null);
+
+        $pubsubhubbub = $this->getMockBuilder('AppBundle\PubSubHubbub\Publisher')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $pubsubhubbub->expects($this->never())
+            ->method('pingHub');
+
+        $responses = new MockHandler([
+            // rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            // repo/tags
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+                'name' => '2.0.1',
+                'zipball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/zipball/2.0.1',
+                'tarball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/tarball/2.0.1',
+                'commit' => [
+                    'sha' => '02c808d157c79ac32777e19f3ec31af24a32d2df',
+                    'url' => 'https://api.github.com/repos/snc/SncRedisBundle/commits/02c808d157c79ac32777e19f3ec31af24a32d2df',
+                ],
+            ]])),
+            // git/refs/tags generate a bad request
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                [
+                    'ref' => 'refs/tags/1.0.0',
+                    'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/refs/tags/1.0.0',
+                    'object' => [
+                        'sha' => '04b99722e0c25bfc45926cd3a1081c04a8e950ed',
+                        'type' => 'commit',
+                        'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/commits/04b99722e0c25bfc45926cd3a1081c04a8e950ed',
+                    ],
+                ],
+            ])),
+            // now tag 1.0.0 which is a release
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                'tag_name' => '1.0.0',
+                'name' => '1.0.0',
+                'prerelease' => false,
+                'published_at' => '2017-02-19T13:27:32Z',
+                'body' => 'yay',
+            ])),
+            // markdown failed
+            new Response(400, ['Content-Type' => 'text/html'], 'booboo'),
+            // rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+        ]);
+
+        $clientHandler = HandlerStack::create($responses);
+        $guzzleClient = new Client([
+            'handler' => $clientHandler,
+        ]);
+
+        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpBuilder = new Builder($httpClient);
+        $githubClient = new GithubClient($httpBuilder);
+
+        $logger = new Logger('foo');
+        $logHandler = new TestHandler();
+        $logger->pushHandler($logHandler);
+
+        $processor = new SyncVersions(
+            $em,
+            $repoRepository,
+            $versionRepository,
+            $pubsubhubbub,
+            $githubClient,
+            $logger
+        );
+
+        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+
+        $records = $logHandler->getRecords();
+
+        $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
+        $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
+        $this->assertContains('<error>Failed to parse markdown', $records[2]['message']);
+    }
+
+    /**
+     * No tag found for that repo.
+     */
+    public function testProcessNoTagFound()
+    {
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repo = new Repo();
+        $repo->setId(123);
+        $repo->setFullName('bob/wow');
+        $repo->setName('wow');
+
+        $repoRepository = $this->getMockBuilder('AppBundle\Repository\RepoRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repoRepository->expects($this->once())
+            ->method('find')
+            ->with(123)
+            ->will($this->returnValue($repo));
+
+        $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $pubsubhubbub = $this->getMockBuilder('AppBundle\PubSubHubbub\Publisher')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $pubsubhubbub->expects($this->never())
+            ->method('pingHub');
+
+        $responses = new MockHandler([
+            // rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            // repo/tags
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
+            // rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+        ]);
+
+        $clientHandler = HandlerStack::create($responses);
+        $guzzleClient = new Client([
+            'handler' => $clientHandler,
+        ]);
+
+        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpBuilder = new Builder($httpClient);
+        $githubClient = new GithubClient($httpBuilder);
+
+        $logger = new Logger('foo');
+        $logHandler = new TestHandler();
+        $logger->pushHandler($logHandler);
+
+        $processor = new SyncVersions(
+            $em,
+            $repoRepository,
+            $versionRepository,
+            $pubsubhubbub,
+            $githubClient,
+            $logger
+        );
+
+        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+
+        $records = $logHandler->getRecords();
+
+        $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
+        $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
+        $this->assertSame('[10] <comment>0</comment> new versions for <info>bob/wow</info>', $records[2]['message']);
+    }
+
+    /**
+     * Generate an unexpected error (like from MySQL).
+     */
+    public function testProcessUnexpectedError()
+    {
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repo = new Repo();
+        $repo->setId(123);
+        $repo->setFullName('bob/wow');
+        $repo->setName('wow');
+
+        $repoRepository = $this->getMockBuilder('AppBundle\Repository\RepoRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repoRepository->expects($this->once())
+            ->method('find')
+            ->with(123)
+            ->will($this->returnValue($repo));
+
+        $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $versionRepository->expects($this->once())
+            ->method('findOneBy')
+            ->will($this->throwException(new \Exception('booboo')));
+
+        $pubsubhubbub = $this->getMockBuilder('AppBundle\PubSubHubbub\Publisher')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $pubsubhubbub->expects($this->never())
+            ->method('pingHub');
+
+        $responses = new MockHandler([
+            // rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            // repo/tags
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+                'name' => '2.0.1',
+                'zipball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/zipball/2.0.1',
+                'tarball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/tarball/2.0.1',
+                'commit' => [
+                    'sha' => '02c808d157c79ac32777e19f3ec31af24a32d2df',
+                    'url' => 'https://api.github.com/repos/snc/SncRedisBundle/commits/02c808d157c79ac32777e19f3ec31af24a32d2df',
+                ],
+            ]])),
+            // git/refs/tags
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                [
+                    'ref' => 'refs/tags/1.0.0',
+                    'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/refs/tags/1.0.0',
+                    'object' => [
+                        'sha' => '04b99722e0c25bfc45926cd3a1081c04a8e950ed',
+                        'type' => 'commit',
+                        'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/commits/04b99722e0c25bfc45926cd3a1081c04a8e950ed',
+                    ],
+                ],
+            ])),
+            // rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+        ]);
+
+        $clientHandler = HandlerStack::create($responses);
+        $guzzleClient = new Client([
+            'handler' => $clientHandler,
+        ]);
+
+        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpBuilder = new Builder($httpClient);
+        $githubClient = new GithubClient($httpBuilder);
+
+        $logger = new Logger('foo');
+        $logHandler = new TestHandler();
+        $logger->pushHandler($logHandler);
+
+        $processor = new SyncVersions(
+            $em,
+            $repoRepository,
+            $versionRepository,
+            $pubsubhubbub,
+            $githubClient,
+            $logger
+        );
+
+        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+
+        $records = $logHandler->getRecords();
+
+        $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
+        $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
+        $this->assertSame('Error while syncing repo', $records[2]['message']);
+    }
+
+    /**
+     * The call to git/refs/tags will return a bad response.
+     */
+    public function testProcessGitRefTagFailed()
+    {
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repo = new Repo();
+        $repo->setId(123);
+        $repo->setFullName('bob/wow');
+        $repo->setName('wow');
+
+        $repoRepository = $this->getMockBuilder('AppBundle\Repository\RepoRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repoRepository->expects($this->once())
+            ->method('find')
+            ->with(123)
+            ->will($this->returnValue($repo));
+
+        $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $pubsubhubbub = $this->getMockBuilder('AppBundle\PubSubHubbub\Publisher')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $pubsubhubbub->expects($this->never())
+            ->method('pingHub');
+
+        $responses = new MockHandler([
+            // rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            // repo/tags
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+                'name' => '2.0.1',
+                'zipball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/zipball/2.0.1',
+                'tarball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/tarball/2.0.1',
+                'commit' => [
+                    'sha' => '02c808d157c79ac32777e19f3ec31af24a32d2df',
+                    'url' => 'https://api.github.com/repos/snc/SncRedisBundle/commits/02c808d157c79ac32777e19f3ec31af24a32d2df',
+                ],
+            ]])),
+            // git/refs/tags generate a bad request
+            new Response(400, ['Content-Type' => 'application/json']),
+            // rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+        ]);
+
+        $clientHandler = HandlerStack::create($responses);
+        $guzzleClient = new Client([
+            'handler' => $clientHandler,
+        ]);
+
+        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpBuilder = new Builder($httpClient);
+        $githubClient = new GithubClient($httpBuilder);
+
+        $logger = new Logger('foo');
+        $logHandler = new TestHandler();
+        $logger->pushHandler($logHandler);
+
+        $processor = new SyncVersions(
+            $em,
+            $repoRepository,
+            $versionRepository,
+            $pubsubhubbub,
+            $githubClient,
+            $logger
+        );
+
+        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+
+        $records = $logHandler->getRecords();
+
+        $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
+        $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
+        $this->assertContains('(git/refs/tags) <error>', $records[2]['message']);
     }
 
     /**

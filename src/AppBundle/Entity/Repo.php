@@ -120,30 +120,6 @@ class Repo
     }
 
     /**
-     * Set repoId.
-     *
-     * @param int $repoId
-     *
-     * @return Repo
-     */
-    public function setRepoId($repoId)
-    {
-        $this->repoId = $repoId;
-
-        return $this;
-    }
-
-    /**
-     * Get repoId.
-     *
-     * @return int
-     */
-    public function getRepoId()
-    {
-        return $this->repoId;
-    }
-
-    /**
      * Set name.
      *
      * @param string $name
