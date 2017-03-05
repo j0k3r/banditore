@@ -24,7 +24,7 @@
                 <ul class="pure-menu-list">
                     <li class="pure-menu-item item-github pure-menu-selected"><a href="https://github.com/j0k3r/banditore" class="pure-menu-link">View it on Github</a></li>
                     {% if app.user %}
-                        <li class="pure-menu-item item-logged-in"><a href="#" class="pure-menu-link">Logged in as <b>{{ app.user.username }}</b></a></li>
+                        <li class="pure-menu-item item-logged-in"><a href="{{ url('logout') }}" title="Logout?" class="pure-menu-link">Logged in as <b>{{ app.user.username }}</b></a></li>
                         <li class="pure-menu-item item-rss"><a href="{{ url('rss_user', { uuid: app.user.uuid }) }}" class="pure-menu-link">Your RSS feed</a></li>
                     {% endif %}
                 </ul>
