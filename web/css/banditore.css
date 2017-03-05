@@ -283,6 +283,32 @@ img.repo-avatar {
 }
 
 /*
+ * Read more "button"
+ *
+ * From https://codepen.io/Idered/pen/AeBgF?editors=1100
+ */
+.read-more-state,
+.read-more-target {
+    display: none;
+}
+
+.read-more-state:checked ~ .pure-table .read-more-wrap .read-more-target {
+    display: table-row;
+}
+
+.read-more-state ~ .is-center .read-more-trigger:before {
+    content: 'Show more (' attr(data-more-items) ')';
+}
+
+.read-more-state:checked ~ .is-center .read-more-trigger:before {
+    content: 'Show less';
+}
+
+.read-more-trigger {
+    cursor: pointer;
+}
+
+/*
  * -- ALERTS --
  *
  * From https://isabelcastillo.com/error-info-messages-css
