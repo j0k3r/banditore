@@ -9,11 +9,13 @@
             </div>
         {% endif %}
 
-        <h2 class="content-head is-center">Your starred repos</h2>
+        <h2 class="content-head is-center">Your latest releases</h2>
 
         {% if repos is empty %}
             <p><i>Here are some sample display.</i></p>
         {% endif %}
+
+        <input type="checkbox" class="read-more-state" id="read-more" />
 
         <table class="pure-table">
             <thead>
@@ -24,9 +26,9 @@
                 </tr>
             </thead>
 
-            <tbody>
+            <tbody class="read-more-wrap">
                 {% for repo in repos -%}
-                    <tr{% if loop.index is odd %} class="pure-table-odd"{% endif %}>
+                    <tr class="{% if loop.index is odd %}pure-table-odd{% endif %} {% if loop.index > 10 %}read-more-target{% endif %}">
                         <td data-th="Repo">
                             <img class="repo-avatar" src="{{ repo.ownerAvatar }}&amp;s=25"/>
                             <a href="https://github.com/{{ repo.fullName }}" title="{{ repo.description }}">{{ repo.fullName }}</a>
@@ -69,6 +71,12 @@
                 {% endfor -%}
             </tbody>
         </table>
+
+        {% if repos|length > 10 %}
+            <p class="is-center">
+                <label for="read-more" class="read-more-trigger pure-button" data-more-items="{{ repos|length-10 }}"></label>
+            </p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
