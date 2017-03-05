@@ -77,6 +77,43 @@
                 <label for="read-more" class="read-more-trigger pure-button" data-more-items="{{ repos|length-10 }}"></label>
             </p>
         {% endif %}
+
+        <h2 class="content-head is-center">Got some questions? Here is a FAQ</h2>
+
+        <div>
+            <h4>
+                <i class="fa fa-clock-o"></i>
+                How often does the app check for new release?
+            </h4>
+            <p>
+                Banditore will check for new release <b>every 10 minutes</b>.
+            </p>
+
+            <h4>
+                <i class="fa fa-clock-o"></i>
+                How often does the app check for my starred repos?
+            </h4>
+            <p>
+                Banditore will sync your starred repos <b>every 5 minutes</b>. You can also force it by logged out / logged in.
+            </p>
+
+            <h4>
+                <i class="fa fa-eye-slash"></i>
+                Why do I not see all my starred repos on the dashboard?
+            </h4>
+            <p>
+                First, they can still be in sync. This could be the case if it's the very first time you logged in here.
+                Second, not all repos got tag or release (which is sad). In that case, they'll never show up on your dashboard.
+            </p>
+
+            <h4>
+                <i class="fa fa-question-circle-o"></i>
+                Another question?
+            </h4>
+            <p>
+                Feel free to <a href="https://github.com/j0k3r/banditore/issues/new">open an issue</a>.
+            </p>
+        </div>
     </div>
 </div>
 {% endblock %}
