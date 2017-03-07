@@ -21,14 +21,12 @@ class VersionRepository extends \Doctrine\ORM\EntityRepository
     public function findForUser($userId)
     {
         return $this->createQueryBuilder('v')
-            ->select('v.id', 'v.tagName', 'v.createdAt', 'v.body', 'r.fullName', 'r.ownerAvatar', 'r.ownerAvatar', 'r.homepage', 'r.language', 'r.description')
+            ->select('v.tagName', 'v.createdAt', 'v.body', 'r.fullName', 'r.ownerAvatar', 'r.ownerAvatar', 'r.homepage', 'r.language', 'r.description')
             ->leftJoin('v.repo', 'r')
             ->leftJoin('r.stars', 's')
-            ->leftJoin('s.user', 'u')
             ->where('s.user = :userId')->setParameter('userId', $userId)
-            ->andWhere('v.createdAt >= u.createdAt')
             ->orderBy('v.createdAt', 'desc')
-            ->setMaxResults(10)
+            ->setMaxResults(20)
             ->getQuery()
             ->getArrayResult();
     }
