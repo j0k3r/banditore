@@ -54,9 +54,9 @@ class SyncStarredReposTest extends WebTestCase
             $userRepository,
             $starRepository,
             $repoRepository,
+            $githubClient,
             new NullLogger()
         );
-        $processor->setClient($githubClient);
 
         $processor->process(new Message(json_encode(['user_id' => 123])), []);
     }
@@ -138,9 +138,9 @@ class SyncStarredReposTest extends WebTestCase
             $userRepository,
             $starRepository,
             $repoRepository,
+            $githubClient,
             $logger
         );
-        $processor->setClient($githubClient);
 
         $processor->process(new Message(json_encode(['user_id' => 123])), []);
 
@@ -227,9 +227,9 @@ class SyncStarredReposTest extends WebTestCase
             $userRepository,
             $starRepository,
             $repoRepository,
+            $githubClient,
             $logger
         );
-        $processor->setClient($githubClient);
 
         $processor->process(new Message(json_encode(['user_id' => 123])), []);
 
@@ -316,9 +316,9 @@ class SyncStarredReposTest extends WebTestCase
             $userRepository,
             $starRepository,
             $repoRepository,
+            $githubClient,
             $logger
         );
-        $processor->setClient($githubClient);
 
         $processor->process(new Message(json_encode(['user_id' => 123])), []);
 
@@ -369,8 +369,10 @@ class SyncStarredReposTest extends WebTestCase
         $client = static::createClient();
         $container = $client->getContainer();
 
+        // override factory to avoid real call to Github
+        $container->set('banditore.client.github', $githubClient);
+
         $processor = $container->get('banditore.consumer.sync_starred_repos');
-        $processor->setClient($githubClient);
 
         // before import
         $stars = $container->get('banditore.repository.star')->findAllByUser(123);
