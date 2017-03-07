@@ -13,7 +13,6 @@ use Http\Adapter\Guzzle6\Client as Guzzle6Client;
 use M6Web\Component\RedisMock\RedisMockFactory;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
-use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ClientDiscoveryTest extends WebTestCase
@@ -58,7 +57,7 @@ class ClientDiscoveryTest extends WebTestCase
         $records = $logHandler->getRecords();
 
         $this->assertInstanceOf('Github\Client', $resClient);
-        $this->assertSame('RateLimit ok with default application', $records[0]['message']);
+        $this->assertSame('RateLimit ok (' . (ClientDiscovery::THRESHOLD_BAD_AUTH + 1) . ') with default application', $records[0]['message']);
     }
 
     public function testUseUserToken()
@@ -120,13 +119,9 @@ class ClientDiscoveryTest extends WebTestCase
         $records = $logHandler->getRecords();
 
         $this->assertInstanceOf('Github\Client', $resClient);
-        $this->assertSame('RateLimit ok with user: lion', $records[0]['message']);
+        $this->assertSame('RateLimit ok (' . (ClientDiscovery::THRESHOLD_BAD_AUTH + 150) . ') with user: lion', $records[0]['message']);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage No way to authenticate a client with enough rate limit remaining :(
-     */
     public function testNoTokenAvailable()
     {
         $userRepository = $this->getMockBuilder('AppBundle\Repository\UserRepository')
@@ -161,18 +156,26 @@ class ClientDiscoveryTest extends WebTestCase
 
         $redis = (new RedisMockFactory())->getAdapter('Predis\Client', true);
 
+        $logger = new Logger('foo');
+        $logHandler = new TestHandler();
+        $logger->pushHandler($logHandler);
+
         $disco = new ClientDiscovery(
             $userRepository,
             $redis,
             'client_id',
             'client_secret',
-            new NullLogger()
+            $logger
         );
         $disco->setGithubClient($githubClient);
 
         $resClient = $disco->find();
 
-        $this->assertInstanceOf('Github\Client', $resClient);
+        $records = $logHandler->getRecords();
+
+        $this->assertFalse($resClient);
+
+        $this->assertSame('No way to authenticate a client with enough rate limit remaining :(', $records[0]['message']);
     }
 
     public function testOneCallFail()
@@ -228,7 +231,7 @@ class ClientDiscoveryTest extends WebTestCase
 
         $this->assertInstanceOf('Github\Client', $resClient);
         $this->assertSame('RateLimit call goes bad.', $records[0]['message']);
-        $this->assertSame('RateLimit ok with user: bob', $records[1]['message']);
+        $this->assertSame('RateLimit ok (' . (ClientDiscovery::THRESHOLD_BAD_AUTH + 100) . ') with user: bob', $records[1]['message']);
     }
 
     /**

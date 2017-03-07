@@ -28,7 +28,10 @@ class SyncVersions implements ProcessorInterface
     private $logger;
     private $client;
 
-    public function __construct(EntityManager $em, RepoRepository $repoRepository, VersionRepository $versionRepository, Publisher $pubsubhubbub, Client $client, LoggerInterface $logger)
+    /**
+     * Client parameter isn't casted because it can be false when no available client were found by the Github Client Discovery.
+     */
+    public function __construct(EntityManager $em, RepoRepository $repoRepository, VersionRepository $versionRepository, Publisher $pubsubhubbub, $client, LoggerInterface $logger)
     {
         $this->em = $em;
         $this->repoRepository = $repoRepository;
@@ -40,6 +43,13 @@ class SyncVersions implements ProcessorInterface
 
     public function process(Message $message, array $options)
     {
+        // in case no client with safe RateLimit were found
+        if (false === $this->client) {
+            $this->logger->error('No client provided');
+
+            return;
+        }
+
         $data = json_decode($message->getBody(), true);
 
         $repo = $this->repoRepository->find($data['repo_id']);
