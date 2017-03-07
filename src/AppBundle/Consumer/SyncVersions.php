@@ -162,7 +162,9 @@ class SyncVersions implements ProcessorInterface
                     $newRelease['message'] = $this->client->api('markdown')->render($newRelease['message'], 'gfm', $repo->getFullName());
                 } catch (\Exception $e) {
                     $this->logger->warning('<error>Failed to parse markdown: ' . $e->getMessage() . '</error>');
-                    continue;
+
+                    // it is usually a problem from the abuse detection mechanism, to avoid multiple call, we just skip to the next repo
+                    return $newVersion;
                 }
             }
 
