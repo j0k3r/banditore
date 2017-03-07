@@ -28,7 +28,7 @@
 
             <tbody class="read-more-wrap">
                 {% for repo in repos -%}
-                    <tr class="{% if loop.index is odd %}pure-table-odd{% endif %} {% if loop.index > 10 %}read-more-target{% endif %}">
+                    <tr class="{% if loop.index is odd %}pure-table-odd{% endif %} {% if loop.index > 20 %}read-more-target{% endif %}">
                         <td data-th="Repo">
                             <img class="repo-avatar" src="{{ repo.ownerAvatar }}&amp;s=25"/>
                             <a href="https://github.com/{{ repo.fullName }}" title="{{ repo.description }}">{{ repo.fullName }}</a>
@@ -72,9 +72,9 @@
             </tbody>
         </table>
 
-        {% if repos|length > 10 %}
+        {% if repos|length > 20 %}
             <p class="is-center">
-                <label for="read-more" class="read-more-trigger pure-button" data-more-items="{{ repos|length-10 }}"></label>
+                <label for="read-more" class="read-more-trigger pure-button" data-more-items="{{ repos|length-20 }}"></label>
             </p>
         {% endif %}
 
