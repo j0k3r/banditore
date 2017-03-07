@@ -94,7 +94,11 @@ services:
             - "@banditore.repository.user"
             - "@banditore.repository.star"
             - "@banditore.repository.repo"
+            - "@banditore.client.github"
             - "@logger"
+        # to avoid triggering Github Client Discovery
+        # which will make a doctrine query on Travis because the default limit to Github will be reached
+        lazy: true
 
     banditore.consumer.sync_versions:
         class: AppBundle\Consumer\SyncVersions

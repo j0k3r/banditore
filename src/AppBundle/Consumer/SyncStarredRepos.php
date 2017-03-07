@@ -33,26 +33,14 @@ class SyncStarredRepos implements ProcessorInterface
     private $repoRepository;
     private $client;
 
-    public function __construct(EntityManager $em, UserRepository $userRepository, StarRepository $starRepository, RepoRepository $repoRepository, LoggerInterface $logger)
+    public function __construct(EntityManager $em, UserRepository $userRepository, StarRepository $starRepository, RepoRepository $repoRepository, Client $client, LoggerInterface $logger)
     {
         $this->em = $em;
         $this->userRepository = $userRepository;
         $this->starRepository = $starRepository;
         $this->repoRepository = $repoRepository;
-        $this->logger = $logger;
-        $this->client = new Client();
-    }
-
-    /**
-     * Mostly for test to be able to override the client.
-     *
-     * @todo refacto to use a global client
-     *
-     * @param Client $client Github client
-     */
-    public function setClient(Client $client)
-    {
         $this->client = $client;
+        $this->logger = $logger;
     }
 
     public function process(Message $message, array $options)
@@ -68,8 +56,6 @@ class SyncStarredRepos implements ProcessorInterface
         }
 
         $this->logger->notice('Consume banditore.sync_starred_repos message', ['user' => $user->getUsername()]);
-
-        $this->client->authenticate($user->getAccessToken(), null, Client::AUTH_HTTP_TOKEN);
 
         try {
             $nbRepos = $this->doSyncRepo($user);
@@ -92,7 +78,7 @@ class SyncStarredRepos implements ProcessorInterface
         $newStars = [];
         $page = 1;
         $perPage = 100;
-        $starredRepos = $this->client->api('current_user')->starring()->all($page, $perPage);
+        $starredRepos = $this->client->api('user')->starred($user->getUsername(), $page, $perPage);
 
         do {
             $this->logger->info('    sync ' . count($starredRepos) . ' starred repos', [
@@ -128,7 +114,7 @@ class SyncStarredRepos implements ProcessorInterface
                 $this->em->flush();
             }
 
-            $starredRepos = $this->client->api('current_user')->starring()->all($page++, $perPage);
+            $starredRepos = $this->client->api('user')->starred($user->getUsername(), $page++, $perPage);
         } while (!empty($starredRepos));
 
         // now remove unstarred repos
