@@ -20,7 +20,7 @@ class SyncStarredReposCommand extends ContainerAwareCommand
     private $userRepository;
     private $publisher;
     private $syncUser;
-    private $rabbitChannel;
+    private $amqplibFactory;
 
     protected function configure()
     {

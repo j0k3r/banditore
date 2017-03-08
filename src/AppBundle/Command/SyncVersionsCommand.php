@@ -2,7 +2,6 @@
 
 namespace AppBundle\Command;
 
-use AppBundle\Entity\Version;
 use Swarrot\Broker\Message;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,7 +21,7 @@ class SyncVersionsCommand extends ContainerAwareCommand
     private $repoRepository;
     private $publisher;
     private $syncVersions;
-    private $rabbitChannel;
+    private $amqplibFactory;
 
     protected function configure()
     {
