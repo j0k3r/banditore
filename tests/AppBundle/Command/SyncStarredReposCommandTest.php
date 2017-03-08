@@ -3,6 +3,7 @@
 namespace Tests\AppBundle\Command;
 
 use AppBundle\Command\SyncStarredReposCommand;
+use PhpAmqpLib\Message\AMQPMessage;
 use Swarrot\Broker\Message;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -70,6 +71,7 @@ class SyncStarredReposCommandTest extends WebTestCase
         $syncUser->expects($this->never())
             ->method('process');
 
+        self::$kernel->getContainer()->set('swarrot.factory.default', $this->getAmqpMessage(0));
         self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
         self::$kernel->getContainer()->set('banditore.consumer.sync_starred_repos', $syncUser);
 
@@ -85,6 +87,42 @@ class SyncStarredReposCommandTest extends WebTestCase
         ]);
 
         $this->assertContains('Sync user 123 …', $tester->getDisplay());
+    }
+
+    public function testCommandSyncAllUsersWithQueueFull()
+    {
+        $client = static::createClient();
+
+        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $publisher->expects($this->never())
+            ->method('publish');
+
+        $syncUser = $this->getMockBuilder('AppBundle\Consumer\SyncStarredRepos')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $syncUser->expects($this->never())
+            ->method('process');
+
+        self::$kernel->getContainer()->set('swarrot.factory.default', $this->getAmqpMessage(10));
+        self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
+        self::$kernel->getContainer()->set('banditore.consumer.sync_starred_repos', $syncUser);
+
+        $application = new Application($client->getKernel());
+        $application->add(new SyncStarredReposCommand());
+
+        $command = $application->find('banditore:sync:starred-repos');
+
+        $tester = new CommandTester($command);
+        $tester->execute([
+            'command' => $command->getName(),
+            '--use_queue' => true,
+        ]);
+
+        $this->assertContains('Current queue as too much messages (10), skipping.', $tester->getDisplay());
     }
 
     public function testCommandSyncOneUserById()
@@ -109,6 +147,7 @@ class SyncStarredReposCommandTest extends WebTestCase
         $syncUser->expects($this->never())
             ->method('process');
 
+        self::$kernel->getContainer()->set('swarrot.factory.default', $this->getAmqpMessage(0));
         self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
         self::$kernel->getContainer()->set('banditore.consumer.sync_starred_repos', $syncUser);
 
@@ -201,5 +240,33 @@ class SyncStarredReposCommandTest extends WebTestCase
         ]);
 
         $this->assertContains('No users found', $tester->getDisplay());
+    }
+
+    private function getAmqpMessage($totalMessage = 0)
+    {
+        $message = new AMQPMessage();
+        $message->delivery_info = [
+            'message_count' => $totalMessage,
+        ];
+
+        $amqpChannel = $this->getMockBuilder('PhpAmqpLib\Channel\AMQPChannel')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $amqpChannel->expects($this->once())
+            ->method('basic_get')
+            ->with('banditore.sync_starred_repos')
+            ->willReturn($message);
+
+        $amqpLibFactory = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\AmqpLibFactory')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $amqpLibFactory->expects($this->once())
+            ->method('getChannel')
+            ->with('rabbitmq')
+            ->willReturn($amqpChannel);
+
+        return $amqpLibFactory;
     }
 }

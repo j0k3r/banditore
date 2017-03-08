@@ -22,6 +22,7 @@ class SyncVersionsCommand extends ContainerAwareCommand
     private $repoRepository;
     private $publisher;
     private $syncVersions;
+    private $rabbitChannel;
 
     protected function configure()
     {
@@ -55,10 +56,24 @@ class SyncVersionsCommand extends ContainerAwareCommand
         $this->repoRepository = $this->getContainer()->get('banditore.repository.repo');
         $this->publisher = $this->getContainer()->get('swarrot.publisher');
         $this->syncVersions = $this->getContainer()->get('banditore.consumer.sync_versions');
+        $this->amqplibFactory = $this->getContainer()->get('swarrot.factory.default');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($input->getOption('use_queue')) {
+            // check that queue is empty before pushing new messages
+            $message = $this->amqplibFactory
+                ->getChannel('rabbitmq')
+                ->basic_get('banditore.sync_versions');
+
+            if (null !== $message && 0 < $message->delivery_info['message_count']) {
+                $output->writeln('Current queue as too much messages (<error>' . $message->delivery_info['message_count'] . '</error>), <comment>skipping</comment>.');
+
+                return 1;
+            }
+        }
+
         $repos = $this->retrieveRepos($input);
 
         if (count(array_filter($repos)) <= 0) {

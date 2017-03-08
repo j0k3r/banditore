@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e1f303d102ff33fcfbd6e173d83a4a32",
+    "content-hash": "327b22cefce8736c0240cd2427ad8bb6",
     "packages": [
         {
             "name": "cache/adapter-common",
@@ -3218,16 +3218,16 @@
         },
         {
             "name": "swarrot/swarrot-bundle",
-            "version": "v1.4.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swarrot/SwarrotBundle.git",
-                "reference": "ab3021ab8e61c6a74771e6ad79c323981a632bec"
+                "reference": "fb5ca96479fbb57cf16d1122645219a4d8a6bad4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/ab3021ab8e61c6a74771e6ad79c323981a632bec",
-                "reference": "ab3021ab8e61c6a74771e6ad79c323981a632bec",
+                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/fb5ca96479fbb57cf16d1122645219a4d8a6bad4",
+                "reference": "fb5ca96479fbb57cf16d1122645219a4d8a6bad4",
                 "shasum": ""
             },
             "require": {
@@ -3235,7 +3235,8 @@
                 "psr/log": "~1.0",
                 "swarrot/swarrot": "^2.1.1",
                 "symfony/console": "~2.4|~3.0",
-                "symfony/framework-bundle": "~2.4|~3.0"
+                "symfony/framework-bundle": "~2.4|~3.0",
+                "symfony/yaml": "~2.4|~3.0"
             },
             "require-dev": {
                 "doctrine/common": "~2.2",
@@ -3272,7 +3273,7 @@
                 "bundle",
                 "swarrot"
             ],
-            "time": "2016-07-19T09:36:09+00:00"
+            "time": "2017-03-07 16:29:34"
         },
         {
             "name": "symfony/monolog-bundle",
@@ -4711,6 +4712,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "php-http/cache-plugin": 20,
+        "swarrot/swarrot-bundle": 20,
         "satooshi/php-coveralls": 20,
         "m6web/redis-mock": 20
     },
