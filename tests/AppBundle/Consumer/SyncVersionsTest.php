@@ -701,6 +701,50 @@ class SyncVersionsTest extends WebTestCase
         $this->assertContains('(git/refs/tags) <error>', $records[2]['message']);
     }
 
+    public function testProcessWithBadClient()
+    {
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repoRepository = $this->getMockBuilder('AppBundle\Repository\RepoRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repoRepository->expects($this->never())
+            ->method('find');
+
+        $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $pubsubhubbub = $this->getMockBuilder('AppBundle\PubSubHubbub\Publisher')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $pubsubhubbub->expects($this->never())
+            ->method('pingHub');
+
+        $logger = new Logger('foo');
+        $logHandler = new TestHandler();
+        $logger->pushHandler($logHandler);
+
+        $processor = new SyncVersions(
+            $em,
+            $repoRepository,
+            $versionRepository,
+            $pubsubhubbub,
+            false, // simulate a bad client
+            $logger
+        );
+
+        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+
+        $records = $logHandler->getRecords();
+
+        $this->assertSame('No client provided', $records[0]['message']);
+    }
+
     /**
      * Using only mocks for request.
      */

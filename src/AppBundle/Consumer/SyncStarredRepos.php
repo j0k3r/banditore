@@ -33,7 +33,10 @@ class SyncStarredRepos implements ProcessorInterface
     private $repoRepository;
     private $client;
 
-    public function __construct(EntityManager $em, UserRepository $userRepository, StarRepository $starRepository, RepoRepository $repoRepository, Client $client, LoggerInterface $logger)
+    /**
+     * Client parameter isn't casted because it can be false when no available client were found by the Github Client Discovery.
+     */
+    public function __construct(EntityManager $em, UserRepository $userRepository, StarRepository $starRepository, RepoRepository $repoRepository, $client, LoggerInterface $logger)
     {
         $this->em = $em;
         $this->userRepository = $userRepository;
@@ -45,6 +48,13 @@ class SyncStarredRepos implements ProcessorInterface
 
     public function process(Message $message, array $options)
     {
+        // in case no client with safe RateLimit were found
+        if (false === $this->client) {
+            $this->logger->error('No client provided');
+
+            return;
+        }
+
         $data = json_decode($message->getBody(), true);
 
         $user = $this->userRepository->find($data['user_id']);

@@ -329,6 +329,53 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame('Synced repos: 1', $records[2]['message']);
     }
 
+    public function testProcessWithBadClient()
+    {
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $userRepository = $this->getMockBuilder('AppBundle\Repository\UserRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $userRepository->expects($this->never())
+            ->method('find');
+
+        $starRepository = $this->getMockBuilder('AppBundle\Repository\StarRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $starRepository->expects($this->never())
+            ->method('findAllByUser');
+
+        $repoRepository = $this->getMockBuilder('AppBundle\Repository\RepoRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repoRepository->expects($this->never())
+            ->method('findOneBy');
+
+        $logger = new Logger('foo');
+        $logHandler = new TestHandler();
+        $logger->pushHandler($logHandler);
+
+        $processor = new SyncStarredRepos(
+            $em,
+            $userRepository,
+            $starRepository,
+            $repoRepository,
+            false, // simulate a bad client
+            $logger
+        );
+
+        $processor->process(new Message(json_encode(['user_id' => 123])), []);
+
+        $records = $logHandler->getRecords();
+
+        $this->assertSame('No client provided', $records[0]['message']);
+    }
+
     public function testFunctionalConsumer()
     {
         $responses = new MockHandler([

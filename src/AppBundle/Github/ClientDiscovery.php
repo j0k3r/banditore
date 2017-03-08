@@ -55,7 +55,7 @@ class ClientDiscovery
      *     - if the rate limit is too low for the application client, loop on all user to check their rate limit
      *     - if none client have enough rate limit, we'll have a problem to perform further request, stop every thing !
      *
-     * @return GithubClient
+     * @return GithubClient|false
      */
     public function find()
     {
@@ -73,8 +73,9 @@ class ClientDiscovery
         // try with the application default client
         $this->client->authenticate($this->clientId, $this->clientSecret, GithubClient::AUTH_URL_CLIENT_ID);
 
-        if ($this->getRateLimits($this->client, $this->logger) >= self::THRESHOLD_BAD_AUTH) {
-            $this->logger->notice('RateLimit ok with default application');
+        $remaining = $this->getRateLimits($this->client, $this->logger);
+        if ($remaining >= self::THRESHOLD_BAD_AUTH) {
+            $this->logger->notice('RateLimit ok (' . $remaining . ') with default application');
 
             return $this->client;
         }
@@ -85,13 +86,16 @@ class ClientDiscovery
         foreach ($users as $user) {
             $this->client->authenticate($user['accessToken'], null, GithubClient::AUTH_HTTP_TOKEN);
 
-            if ($this->getRateLimits($this->client, $this->logger) >= self::THRESHOLD_BAD_AUTH) {
-                $this->logger->notice('RateLimit ok with user: ' . $user['username']);
+            $remaining = $this->getRateLimits($this->client, $this->logger);
+            if ($remaining >= self::THRESHOLD_BAD_AUTH) {
+                $this->logger->notice('RateLimit ok (' . $remaining . ') with user: ' . $user['username']);
 
                 return $this->client;
             }
         }
 
-        throw new \RuntimeException('No way to authenticate a client with enough rate limit remaining :(');
+        $this->logger->warning('No way to authenticate a client with enough rate limit remaining :(');
+
+        return false;
     }
 }
