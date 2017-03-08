@@ -38,7 +38,7 @@
         "ramsey/uuid": "^3.5",
         "cache/predis-adapter": "^0.4.2",
         "odolbeau/rabbit-mq-admin-toolkit": "^3.2",
-        "swarrot/swarrot-bundle": "^1.4",
+        "swarrot/swarrot-bundle": "dev-master",
         "php-amqplib/php-amqplib": "^2.6",
         "twig/extensions": "^1.4",
         "doctrine/doctrine-migrations-bundle": "^1.2",

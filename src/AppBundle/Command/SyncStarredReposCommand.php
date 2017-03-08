@@ -20,6 +20,7 @@ class SyncStarredReposCommand extends ContainerAwareCommand
     private $userRepository;
     private $publisher;
     private $syncUser;
+    private $amqplibFactory;
 
     protected function configure()
     {
@@ -53,10 +54,24 @@ class SyncStarredReposCommand extends ContainerAwareCommand
         $this->userRepository = $this->getContainer()->get('banditore.repository.user');
         $this->publisher = $this->getContainer()->get('swarrot.publisher');
         $this->syncUser = $this->getContainer()->get('banditore.consumer.sync_starred_repos');
+        $this->amqplibFactory = $this->getContainer()->get('swarrot.factory.default');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($input->getOption('use_queue')) {
+            // check that queue is empty before pushing new messages
+            $message = $this->amqplibFactory
+                ->getChannel('rabbitmq')
+                ->basic_get('banditore.sync_starred_repos');
+
+            if (null !== $message && 0 < $message->delivery_info['message_count']) {
+                $output->writeln('Current queue as too much messages (<error>' . $message->delivery_info['message_count'] . '</error>), <comment>skipping</comment>.');
+
+                return 1;
+            }
+        }
+
         $users = $this->retrieveUsers($input);
 
         if (count(array_filter($users)) <= 0) {
