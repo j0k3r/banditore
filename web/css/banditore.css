@@ -95,49 +95,89 @@ a.pure-button-primary:hover {
  * -- MENU STYLES --
  * I want to customize how my .pure-menu looks at the top of the page
  */
-.home-menu {
-    padding: 0.5em;
-    text-align: center;
-    box-shadow: 0 1px 1px rgba(0,0,0, 0.10);
+.menu-wrapper {
+    background-color: #10556B;
+    /*margin-bottom: 1em;*/
+    /*-webkit-font-smoothing: antialiased;*/
+    height: 3.8em;
+    padding: 8px 0;
+    overflow: hidden;
+    -webkit-transition: height 0.5s;
+    -moz-transition: height 0.5s;
+    -ms-transition: height 0.5s;
+    transition: height 0.5s;
+    /*box-shadow: 0 1px 1px rgba(0,0,0, 0.10);*/
 }
 
-.home-menu {
-    background: #10556B;
-}
-
-.pure-menu.pure-menu-fixed {
-    /* Fixed menus normally have a border at the bottom. */
-    border-bottom: none;
-    /* I need a higher z-index here because of the scroll-over effect. */
-    z-index: 4;
-}
-
-.home-menu .pure-menu-heading {
-    color: #FFAB80;
-    font-weight: 400;
-    font-size: 120%;
-    float: left;
-}
-
-.home-menu .pure-menu-selected a,
-.home-menu .pure-menu-selected a:visited {
+.pure-menu li a {
     color: white;
 }
 
-.home-menu a {
+.pure-menu li a:hover,
+.pure-menu li a:focus {
     color: #6FBEF3;
+    background-color: #10556B;
 }
 
-.home-menu li a:hover,
-.home-menu li a:focus {
-    background: none;
-    border: none;
-    color: #AECFE5;
+.pure-menu-heading {
+    color: #FFAB80;
+    font-weight: 400;
+    font-size: 120%;
 }
 
-.pure-menu-item.item-logged-in,
-.pure-menu-item.item-github {
-    display: none;
+.menu-wrapper.open {
+    height: 15em;
+}
+
+.menu-can-transform {
+    text-align: left;
+}
+
+.menu-toggle {
+    width: 34px;
+    height: 34px;
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: block;
+    margin: 7px;
+}
+
+.menu-toggle .bar {
+    background-color: #777;
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 100px;
+    position: absolute;
+    top: 18px;
+    right: 7px;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -ms-transition: all 0.5s;
+    transition: all 0.5s;
+}
+
+.menu-toggle .bar:first-child {
+    -webkit-transform: translateY(-6px);
+    -moz-transform: translateY(-6px);
+    -ms-transform: translateY(-6px);
+    transform: translateY(-6px);
+}
+
+.menu-toggle.x .bar {
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.menu-toggle.x .bar:first-child {
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
 }
 
 /*
@@ -191,9 +231,9 @@ a.pure-button-primary:hover {
     /*width: 100%;*/
     /*min-height: 12%;*/
     /*z-index: 2;*/
-    background: #2B687F;
+    /*background: #2B687F;*/
     margin: 0 auto;
-    padding-top: 51px;
+    /*padding-top: 51px;*/
 }
 
 /* We want to give the content area some more padding */
@@ -244,40 +284,40 @@ img.repo-avatar {
  *
  * From https://codepen.io/geoffyuen/pen/FCBEg?editors=1100
  */
-.pure-table {
+.pure-table-rwd {
     margin: 0 auto;
     min-width: 300px;
 }
 
-.pure-table tr {
+.pure-table-rwd tr {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 }
 
-.pure-table th {
+.pure-table-rwd th {
     display: none;
 }
 
-.pure-table td {
+.pure-table-rwd td {
     display: block;
 }
 
-.pure-table td:first-child {
+.pure-table-rwd td:first-child {
     padding-top: .5em;
 }
 
-.pure-table td:last-child {
+.pure-table-rwd td:last-child {
     padding-bottom: .5em;
 }
 
-.pure-table td:before {
+.pure-table-rwd td:before {
     content: attr(data-th) ": ";
     font-weight: bold;
     width: 3.5em;
     display: inline-block;
 }
 
-.pure-table th, .pure-table td {
+.pure-table-rwd th, .pure-table-rwd td {
     text-align: left;
     border-left-width: 0;
 }
@@ -403,8 +443,6 @@ img.repo-avatar {
 
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
- * On tablets and other medium-sized devices, we want to customize some
- * of the mobile styles.
  */
 @media (min-width: 48em) {
     /* We increase the body font size */
@@ -424,6 +462,14 @@ img.repo-avatar {
     .pure-menu-item.item-logged-in,
     .pure-menu-item.item-github {
         display: inline-block;
+    }
+
+    .menu-can-transform {
+        text-align: right;
+    }
+
+    .menu-toggle {
+        display: none;
     }
 
     .splash-head {
@@ -466,8 +512,6 @@ img.repo-avatar {
 
 /*
  * -- DESKTOP (AND UP) MEDIA QUERIES --
- * On desktops and other large devices, we want to over-ride some
- * of the mobile and tablet styles.
  */
 @media (min-width: 78em) {
     /* We increase the header font size even more */
