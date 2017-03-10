@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use AshleyDawson\SimplePagination\Exception\InvalidPageNumberException;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -27,14 +28,40 @@ class DefaultController extends Controller
     /**
      * @Route("/dashboard", name="dashboard")
      */
-    public function dashboardAction()
+    public function dashboardAction(Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('homepage'));
         }
 
+        $repoVersion = $this->get('banditore.repository.version');
+        $userId = $this->getUser()->getId();
+        $paginator = $this->get('ashley_dawson_simple_pagination.paginator');
+
+        // Pass the item total
+        $paginator->setItemTotalCallback(function () use ($repoVersion, $userId) {
+            return $repoVersion->countLastVersionForEachRepoForUser($userId);
+        });
+
+        // Pass the slice
+        $paginator->setSliceCallback(function ($offset, $length) use ($repoVersion, $userId) {
+            return $repoVersion->findLastVersionForEachRepoForUser($userId, $offset, $length);
+        });
+
+        // Paginate using the current page number
+        try {
+            $pagination = $paginator->paginate((int) $request->query->get('page', 1));
+        } catch (InvalidPageNumberException $e) {
+            throw $this->createNotFoundException($e->getMessage());
+        }
+
+        // Avoid displaying empty page when page is too high
+        if ($request->query->get('page') > $pagination->getTotalNumberOfPages()) {
+            return $this->redirect($this->generateUrl('dashboard'));
+        }
+
         return $this->render('default/dashboard.html.twig', [
-            'repos' => $this->get('banditore.repository.version')->findLastVersionForEachRepoForUser($this->getUser()->getId()),
+            'pagination' => $pagination,
         ]);
     }
 
