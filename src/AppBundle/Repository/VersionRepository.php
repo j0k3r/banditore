@@ -42,7 +42,7 @@ class VersionRepository extends \Doctrine\ORM\EntityRepository
      */
     public function findLastVersionForEachRepoForUser($userId, $offset = 0, $length = 30)
     {
-        $query = 'SELECT v1.tagName, v1.name, v1.createdAt, r.fullName, r.description, r.ownerAvatar, v1.prerelease ' . $this->getBaseQueryForLastVersionForEachRepoForUser();
+        $query = 'SELECT v1.tagName, v1.name, v1.createdAt, r.fullName, r.description, r.ownerAvatar, v1.prerelease ' . $this->getBaseQueryForLastVersionForEachRepoForUser($userId);
 
         return $this->getEntityManager()->createQuery($query)
             ->setFirstResult($offset)
@@ -60,7 +60,7 @@ class VersionRepository extends \Doctrine\ORM\EntityRepository
      */
     public function countLastVersionForEachRepoForUser($userId)
     {
-        $query = 'SELECT count(v1.id) ' . $this->getBaseQueryForLastVersionForEachRepoForUser();
+        $query = 'SELECT count(v1.id) ' . $this->getBaseQueryForLastVersionForEachRepoForUser($userId);
 
         return (int) $this->getEntityManager()->createQuery($query)
             ->setParameter('userId', $userId)
@@ -68,19 +68,73 @@ class VersionRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * DQL query to retrieve last version of each repo starred by a user.
+     * Retrieve latest version of each repo.
+     *
+     * @param  integer $length Number of items
+     *
+     * @return array
+     */
+    public function findLastVersionForEachRepo($length = 10)
+    {
+        $query = 'SELECT v1.tagName, v1.name, v1.createdAt, r.fullName, r.description, r.ownerAvatar, v1.prerelease ' . $this->getBaseQueryForLastVersionForEachRepoForUser();
+
+        return $this->getEntityManager()->createQuery($query)
+            ->setFirstResult(0)
+            ->setMaxResults($length)
+            ->getArrayResult();
+    }
+
+    /**
+     * Count total versions.
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return $this->createQueryBuilder('v')
+            ->select('COUNT(v.id) as total')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Retrieve repos with the most releases.
+     * Used for stats.
+     *
+     * @return array
+     */
+    public function mostVersionsPerRepo()
+    {
+        return $this->createQueryBuilder('v')
+            ->select('r.fullName', 'r.description', 'r.ownerAvatar', 'count(v.id) as total')
+            ->leftJoin('v.repo', 'r')
+            ->groupBy('r.fullName')
+            ->orderBy('total', 'desc')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getArrayResult();
+    }
+
+    /**
+     * DQL query to retrieve last version of each repo starred by a user (or globally).
      * We use DQL because it was to complex to use a query builder.
+     *
+     * @param int $userId User ID
      *
      * @return string
      */
-    private function getBaseQueryForLastVersionForEachRepoForUser()
+    private function getBaseQueryForLastVersionForEachRepoForUser($userId = null)
     {
-        return "FROM AppBundle\Entity\Version v1
+        $query = 'FROM AppBundle\Entity\Version v1
             LEFT JOIN AppBundle\Entity\Version v2 WITH ( v1.repo = v2.repo AND v1.createdAt < v2.createdAt )
             LEFT JOIN AppBundle\Entity\Star s WITH s.repo = v1.repo
             LEFT JOIN AppBundle\Entity\Repo r WITH r.id = s.repo
-            WHERE v2.repo IS NULL
-            AND s.user = :userId
-            ORDER BY v1.createdAt DESC";
+            WHERE v2.repo IS NULL ';
+
+        if (null !== $userId) {
+            $query .= 'AND s.user = :userId ';
+        }
+
+        return $query . 'ORDER BY v1.createdAt DESC';
     }
 }

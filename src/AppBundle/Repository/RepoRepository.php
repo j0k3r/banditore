@@ -29,4 +29,17 @@ class RepoRepository extends \Doctrine\ORM\EntityRepository
 
         return $return;
     }
+
+    /**
+     * Count total repos.
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return $this->createQueryBuilder('r')
+            ->select('COUNT(r.id) as total')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

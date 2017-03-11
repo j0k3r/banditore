@@ -51,4 +51,17 @@ class StarRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * Count total stars.
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return $this->createQueryBuilder('s')
+            ->select('COUNT(s.id) as total')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

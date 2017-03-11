@@ -63,4 +63,17 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->setResultCacheLifetime(10 * 60)
             ->getArrayResult();
     }
+
+    /**
+     * Count total users.
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id) as total')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
