@@ -42,12 +42,9 @@ class VersionRepository extends \Doctrine\ORM\EntityRepository
      */
     public function findLastVersionForEachRepoForUser($userId, $offset = 0, $length = 30)
     {
-        $baseQuery = $this->getBaseQueryForLastVersionForEachRepoForUser($userId);
+        $query = 'SELECT v1.tagName, v1.name, v1.createdAt, r.fullName, r.description, r.ownerAvatar, v1.prerelease ' . $this->getBaseQueryForLastVersionForEachRepoForUser();
 
-        return $this->getEntityManager()->createQuery('
-                SELECT v1.tagName, v1.name, v1.createdAt, r.fullName, r.description, r.ownerAvatar, v1.prerelease
-                ' . $baseQuery
-            )
+        return $this->getEntityManager()->createQuery($query)
             ->setFirstResult($offset)
             ->setMaxResults($length)
             ->setParameter('userId', $userId)
@@ -63,12 +60,9 @@ class VersionRepository extends \Doctrine\ORM\EntityRepository
      */
     public function countLastVersionForEachRepoForUser($userId)
     {
-        $baseQuery = $this->getBaseQueryForLastVersionForEachRepoForUser($userId);
+        $query = 'SELECT count(v1.id) ' . $this->getBaseQueryForLastVersionForEachRepoForUser();
 
-        return (int) $this->getEntityManager()->createQuery('
-                SELECT count(v1.id)
-                ' . $baseQuery
-            )
+        return (int) $this->getEntityManager()->createQuery($query)
             ->setParameter('userId', $userId)
             ->getSingleScalarResult();
     }
@@ -77,11 +71,9 @@ class VersionRepository extends \Doctrine\ORM\EntityRepository
      * DQL query to retrieve last version of each repo starred by a user.
      * We use DQL because it was to complex to use a query builder.
      *
-     * @param int $userId User ID
-     *
      * @return string
      */
-    private function getBaseQueryForLastVersionForEachRepoForUser($userId)
+    private function getBaseQueryForLastVersionForEachRepoForUser()
     {
         return "FROM AppBundle\Entity\Version v1
             LEFT JOIN AppBundle\Entity\Version v2 WITH ( v1.repo = v2.repo AND v1.createdAt < v2.createdAt )
