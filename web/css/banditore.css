@@ -283,29 +283,46 @@ img.repo-avatar {
 }
 
 /*
- * Read more "button"
+ * Pagination
  *
- * From https://codepen.io/Idered/pen/AeBgF?editors=1100
+ * From https://www.bypeople.com/quick-and-simple-pagination-cssdeck/
  */
-.read-more-state,
-.read-more-target {
+.pagination {
+    text-align: center;
+    margin: 20px
+}
+
+.pagination a.previous,
+.pagination a.next {
     display: none;
 }
 
-.read-more-state:checked ~ .pure-table .read-more-wrap .read-more-target {
-    display: table-row;
+.pagination a, .pagination strong {
+    color: #4A4A4A;
+    border: 0;
+    outline: 0;
+    background: #fff;
+    display: inline-block;
+    margin-right: 3px;
+    padding: 4px 12px;
+    text-decoration: none;
+    line-height: 1.5em;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+.pagination a:hover {
+    background-color: #10556B;
+    color: #fff;
 }
 
-.read-more-state ~ .is-center .read-more-trigger:before {
-    content: 'Show more (' attr(data-more-items) ')';
+.pagination a:active {
+    background: rgba(190, 190, 190, 0.75);
 }
 
-.read-more-state:checked ~ .is-center .read-more-trigger:before {
-    content: 'Show less';
-}
-
-.read-more-trigger {
-    cursor: pointer;
+.pagination strong {
+    color: #fff;
+    background-color: #FFAB80;
 }
 
 /*
@@ -395,8 +412,7 @@ img.repo-avatar {
         font-size: 16px;
     }
 
-    /* We can align the menu header to the left, but float the
-    menu items to the right. */
+    /* We can align the menu header to the left, but float the menu items to the right. */
     .home-menu {
         text-align: left;
     }
@@ -440,6 +456,11 @@ img.repo-avatar {
     .pure-table th, .pure-table td {
         display: table-cell;
         border-left: 1px solid #cbcbcb;
+    }
+
+    .pagination a.previous,
+    .pagination a.next {
+        display: inline-block;
     }
 }
 

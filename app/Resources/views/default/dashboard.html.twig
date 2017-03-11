@@ -11,11 +11,20 @@
 
         <h2 class="content-head is-center">Your latest releases</h2>
 
-        {% if repos is empty %}
+        {% if pagination.items %}
+            {% if pagination.totalNumberOfPages > 1 %}
+                <p class="is-center">
+                    {{ simple_pagination_render(
+                        pagination,
+                        'dashboard',
+                        'page',
+                        app.request.query.all
+                    ) }}
+                </p>
+            {% endif %}
+        {% else %}
             <p><i>Here are some sample display.</i></p>
         {% endif %}
-
-        <input type="checkbox" class="read-more-state" id="read-more" />
 
         <table class="pure-table">
             <thead>
@@ -26,9 +35,9 @@
                 </tr>
             </thead>
 
-            <tbody class="read-more-wrap">
-                {% for repo in repos -%}
-                    <tr class="{% if loop.index is odd %}pure-table-odd{% endif %} {% if loop.index > 20 %}read-more-target{% endif %}">
+            <tbody>
+                {% for repo in pagination.items -%}
+                    <tr class="{% if loop.index is odd %}pure-table-odd{% endif %}">
                         <td data-th="Repo">
                             <img class="repo-avatar" src="{{ repo.ownerAvatar }}&amp;s=25"/>
                             <a href="https://github.com/{{ repo.fullName }}" title="{{ repo.description }}">{{ repo.fullName }}</a>
@@ -72,9 +81,14 @@
             </tbody>
         </table>
 
-        {% if repos|length > 20 %}
+        {% if pagination.items and pagination.totalNumberOfPages > 1 %}
             <p class="is-center">
-                <label for="read-more" class="read-more-trigger pure-button" data-more-items="{{ repos|length-20 }}"></label>
+                {{ simple_pagination_render(
+                    pagination,
+                    'dashboard',
+                    'page',
+                    app.request.query.all
+                ) }}
             </p>
         {% endif %}
 

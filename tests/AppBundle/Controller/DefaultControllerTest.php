@@ -44,6 +44,17 @@ class DefaultControllerTest extends WebTestCase
         $this->assertContains('https://github.com/login/oauth/authorize?scope=user%2Crepo', $this->client->getResponse()->getTargetUrl());
     }
 
+    public function testConnectWithLoggedInUser()
+    {
+        $user = $this->client->getContainer()->get('banditore.repository.user')->find(123);
+
+        $this->logIn($user);
+        $this->client->request('GET', '/connect');
+
+        $this->assertSame(302, $this->client->getResponse()->getStatusCode());
+        $this->assertContains('dashboard', $this->client->getResponse()->getTargetUrl());
+    }
+
     public function testDashboardNotLoggedIn()
     {
         $this->client->request('GET', '/dashboard');
@@ -67,6 +78,27 @@ class DefaultControllerTest extends WebTestCase
 
         $table = $crawler->filter('table')->text();
         $this->assertContains('test/test', $table, 'Repo test/test exist in a table');
+    }
+
+    public function testDashboardPageTooHigh()
+    {
+        $user = $this->client->getContainer()->get('banditore.repository.user')->find(123);
+
+        $this->logIn($user);
+        $crawler = $this->client->request('GET', '/dashboard?page=20000');
+
+        $this->assertSame(302, $this->client->getResponse()->getStatusCode());
+        $this->assertContains('dashboard', $this->client->getResponse()->getTargetUrl());
+    }
+
+    public function testDashboardBadPage()
+    {
+        $user = $this->client->getContainer()->get('banditore.repository.user')->find(123);
+
+        $this->logIn($user);
+        $crawler = $this->client->request('GET', '/dashboard?page=dsdsds');
+
+        $this->assertSame(404, $this->client->getResponse()->getStatusCode());
     }
 
     public function testRss()

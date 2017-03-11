@@ -1,0 +1,28 @@
+
+<div class="pagination">
+
+    {% if pagination.firstPageNumber and pagination.firstPageNumber != pagination.currentPageNumber %}
+        <a class="previous" href="{{ path(routeName, queryParameters | merge({(pageParameterName): pagination.firstPageNumber})) }}"><i class="fa fa-angle-double-left"></i></a>
+    {% endif %}
+
+    {% if pagination.previousPageNumber %}
+        <a class="previous" href="{{ path(routeName, queryParameters | merge({(pageParameterName): pagination.previousPageNumber})) }}"><i class="fa fa-angle-left"></i></a>
+    {% endif %}
+
+    {% for page in pagination.pages %}
+        {% if page == pagination.currentPageNumber %}
+            <strong>{{ page }}</strong>
+        {% else %}
+            <a href="{{ path(routeName, queryParameters | merge({(pageParameterName): page})) }}">{{ page }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if pagination.nextPageNumber %}
+        <a class="next" href="{{ path(routeName, queryParameters | merge({(pageParameterName): pagination.nextPageNumber})) }}"><i class="fa fa-angle-right"></i></a>
+    {% endif %}
+
+    {% if pagination.lastPageNumber and pagination.lastPageNumber != pagination.currentPageNumber %}
+        <a class="next" href="{{ path(routeName, queryParameters | merge({(pageParameterName): pagination.lastPageNumber})) }}"><i class="fa fa-angle-double-right"></i></a>
+    {% endif %}
+
+</div>

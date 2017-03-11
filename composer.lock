@@ -4,8 +4,115 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "dd01bfab79908c4ef59d98fcb4fafd03",
+    "content-hash": "7accd3cfb235411449fa442a9d66b2d7",
     "packages": [
+        {
+            "name": "ashleydawson/simple-pagination",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AshleyDawson/SimplePagination.git",
+                "reference": "a155be1e3338d41dec5aae840e2ec17e575e4b66"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AshleyDawson/SimplePagination/zipball/a155be1e3338d41dec5aae840e2ec17e575e4b66",
+                "reference": "a155be1e3338d41dec5aae840e2ec17e575e4b66",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "AshleyDawson\\SimplePagination\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ashley Dawson",
+                    "email": "ashley@ashleydawson.co.uk"
+                }
+            ],
+            "description": "Simple, lightweight and universal service that implements pagination on collections of things",
+            "keywords": [
+                "Flexible",
+                "Simple",
+                "easy",
+                "lightweight",
+                "lite",
+                "pager",
+                "pagination",
+                "paginator",
+                "universal"
+            ],
+            "time": "2015-05-20T18:16:52+00:00"
+        },
+        {
+            "name": "ashleydawson/simple-pagination-bundle",
+            "version": "1.0.3",
+            "target-dir": "AshleyDawson/SimplePaginationBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AshleyDawson/SimplePaginationBundle.git",
+                "reference": "bcbbef4371a3874252897f6606cb0fe6f3c01f15"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AshleyDawson/SimplePaginationBundle/zipball/bcbbef4371a3874252897f6606cb0fe6f3c01f15",
+                "reference": "bcbbef4371a3874252897f6606cb0fe6f3c01f15",
+                "shasum": ""
+            },
+            "require": {
+                "ashleydawson/simple-pagination": "1.0.*",
+                "php": ">=5.3.3",
+                "symfony/symfony": "~2.3|~3.0"
+            },
+            "require-dev": {
+                "phpunit/php-code-coverage": "3.0.*@dev",
+                "phpunit/phpunit": "4.3.*@dev",
+                "phpunit/phpunit-mock-objects": "2.3.*@dev"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "AshleyDawson\\SimplePaginationBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ashley Dawson",
+                    "email": "ashley@ashleydawson.co.uk"
+                }
+            ],
+            "description": "Symfony2 bundle for Simple Pagination, the simple, lightweight and universal paginator that implements pagination on collections of things",
+            "keywords": [
+                "Flexible",
+                "Simple",
+                "Symfony2",
+                "bundle",
+                "easy",
+                "lightweight",
+                "lite",
+                "pager",
+                "pagination",
+                "paginator",
+                "universal"
+            ],
+            "time": "2016-11-25T15:02:04+00:00"
+        },
         {
             "name": "cache/adapter-common",
             "version": "0.3.3",

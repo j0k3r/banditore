@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             new Ekino\Bundle\NewRelicBundle\EkinoNewRelicBundle(),
             new Swarrot\SwarrotBundle\SwarrotBundle(),
             new Sentry\SentryBundle\SentryBundle(),
+            new AshleyDawson\SimplePaginationBundle\AshleyDawsonSimplePaginationBundle(),
             new AppBundle\AppBundle(),
         ];
 
