@@ -370,24 +370,31 @@ img.repo-avatar {
  *
  * From https://isabelcastillo.com/error-info-messages-css
  */
-.alert_info, .alert_success, .alert_warning, .alert_error {
+.alert {
     margin: 10px 0px;
     padding: 12px;
     border-radius: .5em;
 }
-.alert_info {
+.alert span {
+    float: right;
+    margin-top: -10px;
+    padding-left: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+.alert.info {
     color: #00529B;
     background-color: #BDE5F8;
 }
-.alert_success {
+.alert.success {
     color: #4F8A10;
     background-color: #DFF2BF;
 }
-.alert_warning {
+.alert.warning {
     color: #9F6000;
     background-color: #FEEFB3;
 }
-.alert_error {
+.alert.error {
     color: #D8000C;
     background-color: #FFBABA;
 }
