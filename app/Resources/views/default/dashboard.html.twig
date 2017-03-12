@@ -10,21 +10,6 @@
             </div>
         {% endif %}
 
-        <script type="text/javascript">
-            (function (document) {
-                // close alert messages
-                document.querySelectorAll('span.close').forEach(function (closeButton) {
-                    closeButton.addEventListener('click', function (event) {
-                        event
-                            .srcElement // font awesome element
-                            .parentElement // span element
-                            .parentElement // alert element
-                            .style.display = 'none'
-                    }, false)
-                })
-            })(this.document);
-        </script>
-
         <h2 class="content-head is-center">Your latest releases</h2>
 
         {% if pagination.items %}
