@@ -70,7 +70,7 @@ class VersionRepository extends \Doctrine\ORM\EntityRepository
     /**
      * Retrieve latest version of each repo.
      *
-     * @param  integer $length Number of items
+     * @param int $length Number of items
      *
      * @return array
      */
