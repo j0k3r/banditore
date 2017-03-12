@@ -110,12 +110,12 @@ a.pure-button-primary:hover {
 }
 
 .pure-menu li a {
-    color: white;
+    color: #6FBEF3;
 }
 
 .pure-menu li a:hover,
 .pure-menu li a:focus {
-    color: #6FBEF3;
+    color: white;
     background-color: #10556B;
 }
 
