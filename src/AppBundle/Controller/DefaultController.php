@@ -107,4 +107,28 @@ class DefaultController extends Controller
 
         return new RssStreamedResponse($channel, $this->get('banditore.writer.rss'));
     }
+
+    /**
+     * Display some global stats.
+     *
+     * @Route("/stats", name="stats")
+     */
+    public function statsAction()
+    {
+        $nbRepos = $this->get('banditore.repository.repo')->count();
+        $nbReleases = $this->get('banditore.repository.version')->count();
+        $nbStars = $this->get('banditore.repository.star')->count();
+        $nbUsers = $this->get('banditore.repository.user')->count();
+
+        return $this->render('default/stats.html.twig', [
+            'counters' => [
+                'nbRepos' => $nbRepos,
+                'nbReleases' => $nbReleases,
+                'avgReleasePerRepo' => round($nbReleases / $nbRepos, 2),
+                'avgStarPerUser' => round($nbStars / $nbUsers, 2),
+            ],
+            'mostReleases' => $this->get('banditore.repository.version')->mostVersionsPerRepo(),
+            'lastestReleases' => $this->get('banditore.repository.version')->findLastVersionForEachRepo(),
+        ]);
+    }
 }

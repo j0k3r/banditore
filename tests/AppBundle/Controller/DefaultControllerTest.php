@@ -122,6 +122,13 @@ class DefaultControllerTest extends WebTestCase
         $this->assertSame('test/test 1.0.0', $crawler->filter('item>title')->text());
     }
 
+    public function testStats()
+    {
+        $crawler = $this->client->request('GET', '/stats');
+
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+    }
+
     private function logIn(User $user)
     {
         $session = $this->client->getContainer()->get('session');
