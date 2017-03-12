@@ -8,7 +8,7 @@ use AppBundle\Github\RateLimitTrait;
 use AppBundle\PubSubHubbub\Publisher;
 use AppBundle\Repository\RepoRepository;
 use AppBundle\Repository\VersionRepository;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Github\Client;
 use Psr\Log\LoggerInterface;
 use Swarrot\Broker\Message;
@@ -21,7 +21,7 @@ class SyncVersions implements ProcessorInterface
 {
     use RateLimitTrait;
 
-    private $em;
+    private $doctrine;
     private $repoRepository;
     private $versionRepository;
     private $pubsubhubbub;
@@ -31,9 +31,9 @@ class SyncVersions implements ProcessorInterface
     /**
      * Client parameter isn't casted because it can be false when no available client were found by the Github Client Discovery.
      */
-    public function __construct(EntityManager $em, RepoRepository $repoRepository, VersionRepository $versionRepository, Publisher $pubsubhubbub, $client, LoggerInterface $logger)
+    public function __construct(Registry $doctrine, RepoRepository $repoRepository, VersionRepository $versionRepository, Publisher $pubsubhubbub, $client, LoggerInterface $logger)
     {
-        $this->em = $em;
+        $this->doctrine = $doctrine;
         $this->repoRepository = $repoRepository;
         $this->versionRepository = $versionRepository;
         $this->pubsubhubbub = $pubsubhubbub;
@@ -88,6 +88,7 @@ class SyncVersions implements ProcessorInterface
     private function doSyncVersions(Repo $repo)
     {
         $newVersion = 0;
+        $em = $this->doctrine->getManager();
 
         list($username, $repoName) = explode('/', $repo->getFullName());
 
@@ -181,12 +182,12 @@ class SyncVersions implements ProcessorInterface
             $version = new Version($repo);
             $version->hydrateFromGithub($newRelease);
 
-            $this->em->persist($version);
+            $em->persist($version);
 
             ++$newVersion;
         }
 
-        $this->em->flush();
+        $em->flush();
 
         return $newVersion;
     }

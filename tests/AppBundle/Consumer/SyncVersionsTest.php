@@ -22,7 +22,7 @@ class SyncVersionsTest extends WebTestCase
 {
     public function testProcessNoRepo()
     {
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -51,7 +51,7 @@ class SyncVersionsTest extends WebTestCase
             ->method('authenticate');
 
         $processor = new SyncVersions(
-            $em,
+            $doctrine,
             $repoRepository,
             $versionRepository,
             $pubsubhubbub,
@@ -197,6 +197,13 @@ class SyncVersionsTest extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->willReturn($em);
+
         $repo = new Repo();
         $repo->setId(123);
         $repo->setFullName('bob/wow');
@@ -246,7 +253,7 @@ class SyncVersionsTest extends WebTestCase
         $logger->pushHandler($logHandler);
 
         $processor = new SyncVersions(
-            $em,
+            $doctrine,
             $repoRepository,
             $versionRepository,
             $pubsubhubbub,
@@ -271,6 +278,13 @@ class SyncVersionsTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->willReturn($em);
 
         $repo = new Repo();
         $repo->setId(123);
@@ -320,7 +334,7 @@ class SyncVersionsTest extends WebTestCase
         $logger->pushHandler($logHandler);
 
         $processor = new SyncVersions(
-            $em,
+            $doctrine,
             $repoRepository,
             $versionRepository,
             $pubsubhubbub,
@@ -345,6 +359,13 @@ class SyncVersionsTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->willReturn($em);
 
         $repo = new Repo();
         $repo->setId(123);
@@ -428,7 +449,7 @@ class SyncVersionsTest extends WebTestCase
         $logger->pushHandler($logHandler);
 
         $processor = new SyncVersions(
-            $em,
+            $doctrine,
             $repoRepository,
             $versionRepository,
             $pubsubhubbub,
@@ -453,6 +474,13 @@ class SyncVersionsTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->willReturn($em);
 
         $repo = new Repo();
         $repo->setId(123);
@@ -502,7 +530,7 @@ class SyncVersionsTest extends WebTestCase
         $logger->pushHandler($logHandler);
 
         $processor = new SyncVersions(
-            $em,
+            $doctrine,
             $repoRepository,
             $versionRepository,
             $pubsubhubbub,
@@ -527,6 +555,13 @@ class SyncVersionsTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->willReturn($em);
 
         $repo = new Repo();
         $repo->setId(123);
@@ -600,7 +635,7 @@ class SyncVersionsTest extends WebTestCase
         $logger->pushHandler($logHandler);
 
         $processor = new SyncVersions(
-            $em,
+            $doctrine,
             $repoRepository,
             $versionRepository,
             $pubsubhubbub,
@@ -625,6 +660,13 @@ class SyncVersionsTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->willReturn($em);
 
         $repo = new Repo();
         $repo->setId(123);
@@ -684,7 +726,7 @@ class SyncVersionsTest extends WebTestCase
         $logger->pushHandler($logHandler);
 
         $processor = new SyncVersions(
-            $em,
+            $doctrine,
             $repoRepository,
             $versionRepository,
             $pubsubhubbub,
@@ -703,7 +745,7 @@ class SyncVersionsTest extends WebTestCase
 
     public function testProcessWithBadClient()
     {
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -730,7 +772,7 @@ class SyncVersionsTest extends WebTestCase
         $logger->pushHandler($logHandler);
 
         $processor = new SyncVersions(
-            $em,
+            $doctrine,
             $repoRepository,
             $versionRepository,
             $pubsubhubbub,
@@ -764,6 +806,15 @@ class SyncVersionsTest extends WebTestCase
 
         // override factory to avoid real call to Github
         $container->set('banditore.client.github', $githubClient);
+
+        $guzzleClientPub = $this->getMockBuilder('GuzzleHttp\Client')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $guzzleClientPub->expects($this->once())
+            ->method('__call') // post
+            ->willReturn(new Response(204));
+
+        $container->set('banditore.client.guzzle', $guzzleClientPub);
 
         $processor = $container->get('banditore.consumer.sync_versions');
 
