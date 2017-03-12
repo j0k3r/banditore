@@ -9,7 +9,7 @@ use AppBundle\Github\RateLimitTrait;
 use AppBundle\Repository\RepoRepository;
 use AppBundle\Repository\StarRepository;
 use AppBundle\Repository\UserRepository;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Github\Client;
 use Psr\Log\LoggerInterface;
 use Swarrot\Broker\Message;
@@ -27,7 +27,7 @@ class SyncStarredRepos implements ProcessorInterface
     use RateLimitTrait;
 
     private $logger;
-    private $em;
+    private $doctrine;
     private $userRepository;
     private $starRepository;
     private $repoRepository;
@@ -36,9 +36,9 @@ class SyncStarredRepos implements ProcessorInterface
     /**
      * Client parameter isn't casted because it can be false when no available client were found by the Github Client Discovery.
      */
-    public function __construct(EntityManager $em, UserRepository $userRepository, StarRepository $starRepository, RepoRepository $repoRepository, $client, LoggerInterface $logger)
+    public function __construct(Registry $doctrine, UserRepository $userRepository, StarRepository $starRepository, RepoRepository $repoRepository, $client, LoggerInterface $logger)
     {
-        $this->em = $em;
+        $this->doctrine = $doctrine;
         $this->userRepository = $userRepository;
         $this->starRepository = $starRepository;
         $this->repoRepository = $repoRepository;
@@ -89,6 +89,7 @@ class SyncStarredRepos implements ProcessorInterface
         $page = 1;
         $perPage = 100;
         $starredRepos = $this->client->api('user')->starred($user->getUsername(), $page, $perPage);
+        $em = $this->doctrine->getManager();
 
         do {
             $this->logger->info('    sync ' . count($starredRepos) . ' starred repos', [
@@ -108,7 +109,7 @@ class SyncStarredRepos implements ProcessorInterface
                 // always update repo information
                 $repo->hydrateFromGithub($starredRepo);
 
-                $this->em->persist($repo);
+                $em->persist($repo);
 
                 $star = $this->starRepository->findOneBy([
                     'repo' => $starredRepo['id'],
@@ -118,10 +119,10 @@ class SyncStarredRepos implements ProcessorInterface
                 if (null === $star) {
                     $star = new Star($user, $repo);
 
-                    $this->em->persist($star);
+                    $em->persist($star);
                 }
 
-                $this->em->flush();
+                $em->flush();
             }
 
             $starredRepos = $this->client->api('user')->starred($user->getUsername(), $page++, $perPage);

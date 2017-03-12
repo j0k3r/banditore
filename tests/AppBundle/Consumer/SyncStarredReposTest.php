@@ -21,7 +21,7 @@ class SyncStarredReposTest extends WebTestCase
 {
     public function testProcessNoUser()
     {
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -50,7 +50,7 @@ class SyncStarredReposTest extends WebTestCase
             ->method('authenticate');
 
         $processor = new SyncStarredRepos(
-            $em,
+            $doctrine,
             $userRepository,
             $starRepository,
             $repoRepository,
@@ -66,6 +66,13 @@ class SyncStarredReposTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->willReturn($em);
 
         $user = new User();
         $user->setId(123);
@@ -134,7 +141,7 @@ class SyncStarredReposTest extends WebTestCase
         $logger->pushHandler($logHandler);
 
         $processor = new SyncStarredRepos(
-            $em,
+            $doctrine,
             $userRepository,
             $starRepository,
             $repoRepository,
@@ -157,6 +164,13 @@ class SyncStarredReposTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->willReturn($em);
 
         $user = new User();
         $user->setId(123);
@@ -223,7 +237,7 @@ class SyncStarredReposTest extends WebTestCase
         $logger->pushHandler($logHandler);
 
         $processor = new SyncStarredRepos(
-            $em,
+            $doctrine,
             $userRepository,
             $starRepository,
             $repoRepository,
@@ -248,6 +262,13 @@ class SyncStarredReposTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->willReturn($em);
 
         $user = new User();
         $user->setId(123);
@@ -312,7 +333,7 @@ class SyncStarredReposTest extends WebTestCase
         $logger->pushHandler($logHandler);
 
         $processor = new SyncStarredRepos(
-            $em,
+            $doctrine,
             $userRepository,
             $starRepository,
             $repoRepository,
@@ -331,7 +352,7 @@ class SyncStarredReposTest extends WebTestCase
 
     public function testProcessWithBadClient()
     {
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -361,7 +382,7 @@ class SyncStarredReposTest extends WebTestCase
         $logger->pushHandler($logHandler);
 
         $processor = new SyncStarredRepos(
-            $em,
+            $doctrine,
             $userRepository,
             $starRepository,
             $repoRepository,
