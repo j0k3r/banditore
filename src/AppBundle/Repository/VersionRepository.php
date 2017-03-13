@@ -108,7 +108,7 @@ class VersionRepository extends \Doctrine\ORM\EntityRepository
         return $this->createQueryBuilder('v')
             ->select('r.fullName', 'r.description', 'r.ownerAvatar', 'count(v.id) as total')
             ->leftJoin('v.repo', 'r')
-            ->groupBy('r.fullName')
+            ->groupBy('r.fullName', 'r.description', 'r.ownerAvatar')
             ->orderBy('total', 'desc')
             ->setMaxResults(5)
             ->getQuery()
