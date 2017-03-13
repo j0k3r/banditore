@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "7accd3cfb235411449fa442a9d66b2d7",
+    "content-hash": "127e45dda583eddbdc5d7a2d69ab6fec",
     "packages": [
         {
             "name": "ashleydawson/simple-pagination",
@@ -1637,16 +1637,16 @@
         },
         {
             "name": "knplabs/github-api",
-            "version": "2.0.1",
+            "version": "dev-user-starred-parameters",
             "source": {
                 "type": "git",
-                "url": "https://github.com/KnpLabs/php-github-api.git",
-                "reference": "a86aa7afb3bcb06703ecf9e917df61ad341cd991"
+                "url": "https://github.com/j0k3r/php-github-api.git",
+                "reference": "70eba99627fe41bceb58fa2eab0edddfcb8c48d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/a86aa7afb3bcb06703ecf9e917df61ad341cd991",
-                "reference": "a86aa7afb3bcb06703ecf9e917df61ad341cd991",
+                "url": "https://api.github.com/repos/j0k3r/php-github-api/zipball/70eba99627fe41bceb58fa2eab0edddfcb8c48d3",
+                "reference": "70eba99627fe41bceb58fa2eab0edddfcb8c48d3",
                 "shasum": ""
             },
             "require": {
@@ -1668,7 +1668,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0.x-dev"
+                    "dev-master": "2.1.x-dev"
                 }
             },
             "autoload": {
@@ -1676,19 +1676,18 @@
                     "Github\\": "lib/Github/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "authors": [
                 {
+                    "name": "KnpLabs Team",
+                    "homepage": "http://knplabs.com"
+                },
+                {
                     "name": "Thibault Duplessis",
                     "email": "thibault.duplessis@gmail.com",
                     "homepage": "http://ornicar.github.com"
-                },
-                {
-                    "name": "KnpLabs Team",
-                    "homepage": "http://knplabs.com"
                 }
             ],
             "description": "GitHub API v3 client",
@@ -1699,7 +1698,10 @@
                 "gist",
                 "github"
             ],
-            "time": "2016-12-13T13:09:53+00:00"
+            "support": {
+                "source": "https://github.com/j0k3r/php-github-api/tree/user-starred-parameters"
+            },
+            "time": "2017-03-07 11:00:11"
         },
         {
             "name": "knpuniversity/oauth2-client-bundle",
@@ -1933,16 +1935,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "1.22.0",
+            "version": "1.22.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "bad29cb8d18ab0315e6c477751418a82c850d558"
+                "reference": "1e044bc4b34e91743943479f1be7a1d5eb93add0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/bad29cb8d18ab0315e6c477751418a82c850d558",
-                "reference": "bad29cb8d18ab0315e6c477751418a82c850d558",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/1e044bc4b34e91743943479f1be7a1d5eb93add0",
+                "reference": "1e044bc4b34e91743943479f1be7a1d5eb93add0",
                 "shasum": ""
             },
             "require": {
@@ -2007,7 +2009,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2016-11-26T00:15:39+00:00"
+            "time": "2017-03-13T07:08:03+00:00"
         },
         {
             "name": "ocramius/proxy-manager",
@@ -4822,6 +4824,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "knplabs/github-api": 20,
         "php-http/cache-plugin": 20,
         "swarrot/swarrot-bundle": 20,
         "satooshi/php-coveralls": 20,
