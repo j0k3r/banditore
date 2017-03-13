@@ -1,4 +1,16 @@
 (function (window, document) {
+    // close alert messages
+    document.querySelectorAll('span.close').forEach(function (closeButton) {
+        closeButton.addEventListener('click', function (event) {
+            event
+                .srcElement // font awesome element
+                .parentElement // span element
+                .parentElement // alert element
+                .style.display = 'none'
+        }, false)
+    })
+
+    // handle rwd menu
     var menu = document.getElementById('menu'),
     WINDOW_CHANGE_EVENT = ('onorientationchange' in window) ? 'orientationchange':'resize';
 
