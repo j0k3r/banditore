@@ -124,8 +124,8 @@ class DefaultController extends Controller
             'counters' => [
                 'nbRepos' => $nbRepos,
                 'nbReleases' => $nbReleases,
-                'avgReleasePerRepo' => round($nbReleases / $nbRepos, 2),
-                'avgStarPerUser' => round($nbStars / $nbUsers, 2),
+                'avgReleasePerRepo' => ($nbRepos > 0) ? round($nbReleases / $nbRepos, 2) : 0,
+                'avgStarPerUser' => ($nbUsers > 0) ? round($nbStars / $nbUsers, 2) : 0,
             ],
             'mostReleases' => $this->get('banditore.repository.version')->mostVersionsPerRepo(),
             'lastestReleases' => $this->get('banditore.repository.version')->findLastVersionForEachRepo(),

@@ -58,28 +58,27 @@
         },
         {
             "name": "ashleydawson/simple-pagination-bundle",
-            "version": "1.0.3",
+            "version": "1.1.0",
             "target-dir": "AshleyDawson/SimplePaginationBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AshleyDawson/SimplePaginationBundle.git",
-                "reference": "bcbbef4371a3874252897f6606cb0fe6f3c01f15"
+                "reference": "f486175374030bfdeab7cc17e308fdd3e1992601"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AshleyDawson/SimplePaginationBundle/zipball/bcbbef4371a3874252897f6606cb0fe6f3c01f15",
-                "reference": "bcbbef4371a3874252897f6606cb0fe6f3c01f15",
+                "url": "https://api.github.com/repos/AshleyDawson/SimplePaginationBundle/zipball/f486175374030bfdeab7cc17e308fdd3e1992601",
+                "reference": "f486175374030bfdeab7cc17e308fdd3e1992601",
                 "shasum": ""
             },
             "require": {
                 "ashleydawson/simple-pagination": "1.0.*",
                 "php": ">=5.3.3",
-                "symfony/symfony": "~2.3|~3.0"
+                "symfony/symfony": "~2.3|~3.0",
+                "twig/twig": "~1.23"
             },
             "require-dev": {
-                "phpunit/php-code-coverage": "3.0.*@dev",
-                "phpunit/phpunit": "4.3.*@dev",
-                "phpunit/phpunit-mock-objects": "2.3.*@dev"
+                "symfony/phpunit-bridge": "^3.0"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -111,7 +110,7 @@
                 "paginator",
                 "universal"
             ],
-            "time": "2016-11-25T15:02:04+00:00"
+            "time": "2017-03-13T10:05:59+00:00"
         },
         {
             "name": "cache/adapter-common",
