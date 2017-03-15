@@ -193,15 +193,31 @@ class SyncVersionsTest extends WebTestCase
 
     public function testProcessSuccessfulMessage()
     {
+        $uow = $this->getMockBuilder('Doctrine\ORM\UnitOfWork')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $uow->expects($this->exactly(3))
+            ->method('getScheduledEntityInsertions')
+            ->willReturn([]);
+
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(false); // simulate a closing manager
+        $em->expects($this->exactly(3))
+            ->method('getUnitOfWork')
+            ->willReturn($uow);
 
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
             ->method('getManager')
+            ->willReturn($em);
+        $doctrine->expects($this->once())
+            ->method('resetManager')
             ->willReturn($em);
 
         $repo = new Repo();
@@ -278,6 +294,9 @@ class SyncVersionsTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(true);
 
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -356,9 +375,22 @@ class SyncVersionsTest extends WebTestCase
      */
     public function testProcessMarkdownFailed()
     {
+        $uow = $this->getMockBuilder('Doctrine\ORM\UnitOfWork')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $uow->expects($this->once())
+            ->method('getScheduledEntityInsertions')
+            ->willReturn([]);
+
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(true);
+        $em->expects($this->once())
+            ->method('getUnitOfWork')
+            ->willReturn($uow);
 
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -474,6 +506,9 @@ class SyncVersionsTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(true);
 
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -549,12 +584,18 @@ class SyncVersionsTest extends WebTestCase
 
     /**
      * Generate an unexpected error (like from MySQL).
+     *
+     * @expectedException \Exception
+     * @expectedExceptionMessage booboo
      */
     public function testProcessUnexpectedError()
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(true);
 
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -630,26 +671,16 @@ class SyncVersionsTest extends WebTestCase
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
-        $logger = new Logger('foo');
-        $logHandler = new TestHandler();
-        $logger->pushHandler($logHandler);
-
         $processor = new SyncVersions(
             $doctrine,
             $repoRepository,
             $versionRepository,
             $pubsubhubbub,
             $githubClient,
-            $logger
+            new NullLogger()
         );
 
         $processor->process(new Message(json_encode(['repo_id' => 123])), []);
-
-        $records = $logHandler->getRecords();
-
-        $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
-        $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
-        $this->assertSame('Error while syncing repo', $records[2]['message']);
     }
 
     /**
@@ -660,6 +691,9 @@ class SyncVersionsTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(true);
 
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -788,7 +822,7 @@ class SyncVersionsTest extends WebTestCase
     }
 
     /**
-     * Using only mocks for request.
+     * Using mocks only for request.
      */
     public function testFunctionalConsumer()
     {
@@ -825,11 +859,97 @@ class SyncVersionsTest extends WebTestCase
         $processor->process(new Message(json_encode(['repo_id' => 666])), []);
 
         $versions = $container->get('banditore.repository.version')->findBy(['repo' => 666]);
-        $this->assertCount(4, $versions, 'Repo 666 has now 3 versions');
+        $this->assertCount(4, $versions, 'Repo 666 has now 4 versions');
         $this->assertSame('1.0.0', $versions[0]->getTagName(), 'Repo 666 has 4 version. First one is 1.0.0');
         $this->assertSame('1.0.1', $versions[1]->getTagName(), 'Repo 666 has 4 version. Second one is 1.0.1');
         $this->assertSame('1.0.2', $versions[2]->getTagName(), 'Repo 666 has 4 version. Third one is 1.0.2');
         $this->assertSame('<p>weekly release</p>', $versions[2]->getBody(), 'Version 1.0.2 does NOT have a PGP signature');
         $this->assertSame('2.0.1', $versions[3]->getTagName(), 'Repo 666 has 4 version. Fourth one is 2.0.1');
+    }
+
+    public function testFunctionalConsumerWithTagCaseInsensitive()
+    {
+        $responses = new MockHandler([
+            // rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            // repo/tags
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+                'name' => 'v2.11.0',
+                'zipball_url' => 'https://api.github.com/repos/mozilla/metrics-graphics/zipball/v2.11.0',
+                'tarball_url' => 'https://api.github.com/repos/mozilla/metrics-graphics/tarball/v2.11.0',
+            ]])),
+            // git/refs/tags
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                [
+                    'ref' => 'refs/tags/V1.1.0',
+                    'url' => 'https://api.github.com/repos/mozilla/metrics-graphics/git/refs/tags/V1.1.0',
+                    'object' => [
+                        'sha' => '6402716c3165eb90cdace5729a18706ea2921187',
+                        'type' => 'commit',
+                        'url' => 'https://api.github.com/repos/mozilla/metrics-graphics/git/commits/6402716c3165eb90cdace5729a18706ea2921187',
+                    ],
+                ],
+                [
+                    'ref' => 'refs/tags/v1.1.0',
+                    'url' => 'https://api.github.com/repos/mozilla/metrics-graphics/git/refs/tags/v1.1.0',
+                    'object' => [
+                        'sha' => '15a4703db568342043f156b5635d10b17ebe98cb',
+                        'type' => 'commit',
+                        'url' => 'https://api.github.com/repos/mozilla/metrics-graphics/git/commits/15a4703db568342043f156b5635d10b17ebe98cb',
+                    ],
+                ],
+            ])),
+            // TAG V1.1.0
+            // now tag V1.1.0 which is a release
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                'tag_name' => 'V1.1.0',
+                'name' => 'V1.1.0',
+                'prerelease' => false,
+                'published_at' => '2014-12-01T18:28:39Z',
+                'body' => 'This is the first release after our major push.',
+            ])),
+            // markdown
+            new Response(200, ['Content-Type' => 'text/html'], '<p>This is the first release after our major push.</p>'),
+            // rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+        ]);
+
+        $clientHandler = HandlerStack::create($responses);
+        $guzzleClient = new Client([
+            'handler' => $clientHandler,
+        ]);
+
+        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpBuilder = new Builder($httpClient);
+        $githubClient = new GithubClient($httpBuilder);
+
+        $client = static::createClient();
+        $container = $client->getContainer();
+
+        // override factory to avoid real call to Github
+        $container->set('banditore.client.github', $githubClient);
+
+        $guzzleClientPub = $this->getMockBuilder('GuzzleHttp\Client')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $guzzleClientPub->expects($this->once())
+            ->method('__call') // post
+            ->willReturn(new Response(204));
+
+        $container->set('banditore.client.guzzle', $guzzleClientPub);
+
+        $processor = $container->get('banditore.consumer.sync_versions');
+
+        $versions = $container->get('banditore.repository.version')->findBy(['repo' => 555]);
+        $this->assertCount(1, $versions, 'Repo 555 has 1 version');
+        $this->assertSame('1.0.21', $versions[0]->getTagName(), 'Repo 555 has 1 version, which is 1.0.21');
+
+        $processor->process(new Message(json_encode(['repo_id' => 555])), []);
+
+        $versions = $container->get('banditore.repository.version')->findBy(['repo' => 555]);
+        $this->assertCount(2, $versions, 'Repo 555 has now 2 versions');
+        $this->assertSame('1.0.21', $versions[0]->getTagName(), 'Repo 555 has 2 version. First one is 1.0.21');
+        $this->assertSame('V1.1.0', $versions[1]->getTagName(), 'Repo 555 has 2 version. Second one is V1.1.0');
+        $this->assertSame('<p>This is the first release after our major push.</p>', $versions[1]->getBody(), 'Version V1.1.0 body is ok');
     }
 }

@@ -64,13 +64,8 @@ class SyncVersions implements ProcessorInterface
 
         $this->logger->notice('[' . $this->getRateLimits($this->client, $this->logger) . '] Check <info>' . $repo->getFullName() . '</info> … ');
 
-        try {
-            $nbVersions = $this->doSyncVersions($repo);
-        } catch (\Exception $e) {
-            $this->logger->error('Error while syncing repo', ['exception' => get_class($e), 'message' => $e->getMessage(), 'repo' => $repo->getFullName()]);
-
-            return;
-        }
+        // this shouldn't be catched so the worker will die when an exception is thrown
+        $nbVersions = $this->doSyncVersions($repo);
 
         // notify pubsubhubbub for that repo
         if ($nbVersions > 0) {
@@ -89,6 +84,11 @@ class SyncVersions implements ProcessorInterface
     {
         $newVersion = 0;
         $em = $this->doctrine->getManager();
+
+        // in case of the manager is closed following a previous exception
+        if (!$em->isOpen()) {
+            $em = $this->doctrine->resetManager();
+        }
 
         list($username, $repoName) = explode('/', $repo->getFullName());
 
@@ -126,6 +126,16 @@ class SyncVersions implements ProcessorInterface
 
             if (null !== $version) {
                 continue;
+            }
+
+            // check for scheduled version to be persisted later
+            // in rare case where the tag name is almost equal, like "v1.1.0" & "V1.1.0" in might avoid error
+            foreach ($em->getUnitOfWork()->getScheduledEntityInsertions() as $entity) {
+                if ($entity instanceof Version && strtolower($entity->getTagName()) === strtolower($tag['name'])) {
+                    $this->logger->info($tag['name'] . ' skipped because it seems to be already scheduled');
+
+                    continue 2;
+                }
             }
 
             // is there an associated release?

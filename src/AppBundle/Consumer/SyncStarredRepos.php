@@ -91,6 +91,11 @@ class SyncStarredRepos implements ProcessorInterface
         $starredRepos = $this->client->api('user')->starred($user->getUsername(), $page, $perPage);
         $em = $this->doctrine->getManager();
 
+        // in case of the manager is closed following a previous exception
+        if (!$em->isOpen()) {
+            $em = $this->doctrine->resetManager();
+        }
+
         do {
             $this->logger->info('    sync ' . count($starredRepos) . ' starred repos', [
                 'user' => $user->getUsername(),
