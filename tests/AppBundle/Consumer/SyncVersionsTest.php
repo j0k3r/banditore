@@ -203,6 +203,9 @@ class SyncVersionsTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(false); // simulate a closing manager
         $em->expects($this->exactly(3))
             ->method('getUnitOfWork')
             ->willReturn($uow);
@@ -212,6 +215,9 @@ class SyncVersionsTest extends WebTestCase
             ->getMock();
         $doctrine->expects($this->once())
             ->method('getManager')
+            ->willReturn($em);
+        $doctrine->expects($this->once())
+            ->method('resetManager')
             ->willReturn($em);
 
         $repo = new Repo();
@@ -288,6 +294,9 @@ class SyncVersionsTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(true);
 
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -376,6 +385,9 @@ class SyncVersionsTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(true);
         $em->expects($this->once())
             ->method('getUnitOfWork')
             ->willReturn($uow);
@@ -494,6 +506,9 @@ class SyncVersionsTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(true);
 
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -578,6 +593,9 @@ class SyncVersionsTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(true);
 
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -673,6 +691,9 @@ class SyncVersionsTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(true);
 
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()

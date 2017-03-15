@@ -85,6 +85,11 @@ class SyncVersions implements ProcessorInterface
         $newVersion = 0;
         $em = $this->doctrine->getManager();
 
+        // in case of the manager is closed following a previous exception
+        if (!$em->isOpen()) {
+            $em = $this->doctrine->resetManager();
+        }
+
         list($username, $repoName) = explode('/', $repo->getFullName());
 
         // this is a simple call to retrieve at least one tag from the selected repo

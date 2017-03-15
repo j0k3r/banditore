@@ -66,6 +66,9 @@ class SyncStarredReposTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(true);
 
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -164,6 +167,9 @@ class SyncStarredReposTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(true);
 
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -262,12 +268,18 @@ class SyncStarredReposTest extends WebTestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(false); // simulate a closing manager
 
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
             ->method('getManager')
+            ->willReturn($em);
+        $doctrine->expects($this->once())
+            ->method('resetManager')
             ->willReturn($em);
 
         $user = new User();
