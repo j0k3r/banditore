@@ -105,7 +105,6 @@ swarrot:
             processor: banditore.consumer.sync_versions
             extras:
                 poll_interval: 500000
-                requeue_on_error: false
             middleware_stack:
                 - configurator: swarrot.processor.new_relic
                   extras:
