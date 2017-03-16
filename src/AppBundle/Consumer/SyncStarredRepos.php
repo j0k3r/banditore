@@ -52,7 +52,7 @@ class SyncStarredRepos implements ProcessorInterface
         if (false === $this->client) {
             $this->logger->error('No client provided');
 
-            return;
+            return false;
         }
 
         $data = json_decode($message->getBody(), true);
@@ -67,13 +67,8 @@ class SyncStarredRepos implements ProcessorInterface
 
         $this->logger->notice('Consume banditore.sync_starred_repos message', ['user' => $user->getUsername()]);
 
-        try {
-            $nbRepos = $this->doSyncRepo($user);
-        } catch (\Exception $e) {
-            $this->logger->error('Error while syncing starred repos', ['exception' => $e->getMessage(), 'user' => $user->getUsername()]);
-
-            return;
-        }
+        // this shouldn't be catched so the worker will die when an exception is thrown
+        $nbRepos = $this->doSyncRepo($user);
 
         $this->logger->notice('Synced repos: ' . $nbRepos, ['user' => $user->getUsername()]);
     }

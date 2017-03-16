@@ -162,6 +162,10 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame('Synced repos: 1', $records[3]['message']);
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage booboo
+     */
     public function testProcessUnexpectedError()
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
@@ -238,26 +242,16 @@ class SyncStarredReposTest extends WebTestCase
 
         $githubClient = $this->getMockClient($responses);
 
-        $logger = new Logger('foo');
-        $logHandler = new TestHandler();
-        $logger->pushHandler($logHandler);
-
         $processor = new SyncStarredRepos(
             $doctrine,
             $userRepository,
             $starRepository,
             $repoRepository,
             $githubClient,
-            $logger
+            new NullLogger()
         );
 
         $processor->process(new Message(json_encode(['user_id' => 123])), []);
-
-        $records = $logHandler->getRecords();
-
-        $this->assertSame('Consume banditore.sync_starred_repos message', $records[0]['message']);
-        $this->assertSame('    sync 1 starred repos', $records[1]['message']);
-        $this->assertSame('Error while syncing starred repos', $records[2]['message']);
     }
 
     /**

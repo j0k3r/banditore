@@ -47,7 +47,7 @@ class SyncVersions implements ProcessorInterface
         if (false === $this->client) {
             $this->logger->error('No client provided');
 
-            return;
+            return false;
         }
 
         $data = json_decode($message->getBody(), true);
@@ -62,7 +62,15 @@ class SyncVersions implements ProcessorInterface
 
         $this->logger->notice('Consume banditore.sync_versions message', ['repo' => $repo->getFullName()]);
 
-        $this->logger->notice('[' . $this->getRateLimits($this->client, $this->logger) . '] Check <info>' . $repo->getFullName() . '</info> … ');
+        $rateLimit = $this->getRateLimits($this->client, $this->logger);
+
+        $this->logger->notice('[' . $rateLimit . '] Check <info>' . $repo->getFullName() . '</info> … ');
+
+        if (0 === $rateLimit || false === $rateLimit) {
+            $this->logger->warning('RateLimit reached, stopping.');
+
+            return false;
+        }
 
         // this shouldn't be catched so the worker will die when an exception is thrown
         $nbVersions = $this->doSyncVersions($repo);
