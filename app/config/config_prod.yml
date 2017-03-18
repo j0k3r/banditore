@@ -1,12 +1,6 @@
 imports:
     - { resource: config.yml }
 
-doctrine:
-   orm:
-       metadata_cache_driver: apcu
-       result_cache_driver: apcu
-       query_cache_driver: apcu
-
 monolog:
     handlers:
         main:
@@ -32,3 +26,15 @@ sentry:
 
 ekino_new_relic:
     enabled: true
+
+snc_redis:
+    doctrine:
+        metadata_cache:
+            client: doctrine_cache
+            entity_manager: default
+        result_cache:
+            client: doctrine_cache
+            entity_manager: default
+        query_cache:
+            client: doctrine_cache
+            entity_manager: default

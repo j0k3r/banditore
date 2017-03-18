@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use Doctrine\ORM\AbstractQuery;
+
 /**
  * VersionRepository.
  *
@@ -10,6 +12,31 @@ namespace AppBundle\Repository;
  */
 class VersionRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * Find one version for a given tag name and repo id.
+     * This is exactly the same as `findOneBy` but this one use a result cache.
+     * Version doesn't change after being inserted and since we check to many times for a version
+     * it's faster to store result in a cache.
+     *
+     * @param string $tagName Tag name to search, like v1.0.0
+     * @param int    $repoId  Repository ID
+     *
+     * @return int|null
+     */
+    public function findExistingOne($tagName, $repoId)
+    {
+        $query = $this->createQueryBuilder('v')
+            ->select('v.id')
+            ->where('v.repo = :repoId')->setParameter('repoId', $repoId)
+            ->andWhere('v.tagName = :tagName')->setParameter('tagName', $tagName)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->useResultCache(true, 3600, 'version-' . $repoId . '-' . $tagName)
+        ;
+
+        return $query->getOneOrNullResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
+    }
+
     /**
      * Find all versions available for the given user.
      * They'll be put in a RSS feed.

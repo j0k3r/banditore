@@ -127,10 +127,7 @@ class SyncVersions implements ProcessorInterface
         foreach ($tags as $tag) {
             // it'll be like `refs/tags/2.2.1`
             $tag['name'] = str_replace('refs/tags/', '', $tag['ref']);
-            $version = $this->versionRepository->findOneBy([
-                'tagName' => $tag['name'],
-                'repo' => $repo->getId(),
-            ]);
+            $version = $this->versionRepository->findExistingOne($tag['name'], $repo->getId());
 
             if (null !== $version) {
                 continue;

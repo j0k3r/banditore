@@ -141,3 +141,14 @@ ashley_dawson_simple_pagination:
         items_per_page: 30
         pages_in_range: 5
         template: default/_pagination.html.twig
+
+snc_redis:
+    clients:
+        guzzle_cache:
+            type: predis
+            alias: guzzle_cache
+            dsn: "%redis_dsn_guzzle_cache%"
+        doctrine_cache:
+            type: predis
+            alias: doctrine_cache
+            dsn: "%redis_dsn_doctrine_cache%"
