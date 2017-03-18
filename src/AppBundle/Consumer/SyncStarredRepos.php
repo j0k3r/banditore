@@ -26,6 +26,8 @@ class SyncStarredRepos implements ProcessorInterface
 {
     use RateLimitTrait;
 
+    const DAYS_SINCE_LAST_UPDATE = 1;
+
     private $logger;
     private $doctrine;
     private $userRepository;
@@ -85,6 +87,7 @@ class SyncStarredRepos implements ProcessorInterface
         $perPage = 100;
         $starredRepos = $this->client->api('user')->starred($user->getUsername(), $page, $perPage);
         $em = $this->doctrine->getManager();
+        $currentStars = $this->starRepository->findAllByUser($user->getId());
 
         // in case of the manager is closed following a previous exception
         if (!$em->isOpen()) {
@@ -102,21 +105,18 @@ class SyncStarredRepos implements ProcessorInterface
 
                 $repo = $this->repoRepository->find($starredRepo['id']);
 
-                if (null === $repo) {
-                    $repo = new Repo();
+                // if repo doesn't exist
+                // OR repo doesn't get updated since XX days
+                if (null === $repo || $repo->getUpdatedAt()->diff(new \DateTime())->days > self::DAYS_SINCE_LAST_UPDATE) {
+                    if (null === $repo) {
+                        $repo = new Repo();
+                    }
+
+                    $repo->hydrateFromGithub($starredRepo);
+                    $em->persist($repo);
                 }
 
-                // always update repo information
-                $repo->hydrateFromGithub($starredRepo);
-
-                $em->persist($repo);
-
-                $star = $this->starRepository->findOneBy([
-                    'repo' => $starredRepo['id'],
-                    'user' => $user,
-                ]);
-
-                if (null === $star) {
+                if (false === in_array($repo->getFullName(), $currentStars, true)) {
                     $star = new Star($user, $repo);
 
                     $em->persist($star);
@@ -125,7 +125,7 @@ class SyncStarredRepos implements ProcessorInterface
                 $em->flush();
             }
 
-            $starredRepos = $this->client->api('user')->starred($user->getUsername(), $page++, $perPage);
+            $starredRepos = $this->client->api('user')->starred($user->getUsername(), ++$page, $perPage);
         } while (!empty($starredRepos));
 
         // now remove unstarred repos
