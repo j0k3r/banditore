@@ -2300,16 +2300,16 @@
         },
         {
             "name": "php-http/client-common",
-            "version": "v1.4.1",
+            "version": "v1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/client-common.git",
-                "reference": "6027a1d59064c11c614a9aa2b5e3b800add4d878"
+                "reference": "85b2501ad96a8746918527f34c0d7977424b2bb3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/client-common/zipball/6027a1d59064c11c614a9aa2b5e3b800add4d878",
-                "reference": "6027a1d59064c11c614a9aa2b5e3b800add4d878",
+                "url": "https://api.github.com/repos/php-http/client-common/zipball/85b2501ad96a8746918527f34c0d7977424b2bb3",
+                "reference": "85b2501ad96a8746918527f34c0d7977424b2bb3",
                 "shasum": ""
             },
             "require": {
@@ -2357,7 +2357,7 @@
                 "http",
                 "httplug"
             ],
-            "time": "2017-02-20T14:20:20+00:00"
+            "time": "2017-03-18T11:14:35+00:00"
         },
         {
             "name": "php-http/discovery",
@@ -2901,21 +2901,21 @@
         },
         {
             "name": "ramsey/uuid",
-            "version": "3.5.2",
+            "version": "3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "5677cfe02397dd6b58c861870dfaa5d9007d3954"
+                "reference": "0b7bdfb180e72c8d76e75a649ced67e392201458"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/5677cfe02397dd6b58c861870dfaa5d9007d3954",
-                "reference": "5677cfe02397dd6b58c861870dfaa5d9007d3954",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/0b7bdfb180e72c8d76e75a649ced67e392201458",
+                "reference": "0b7bdfb180e72c8d76e75a649ced67e392201458",
                 "shasum": ""
             },
             "require": {
                 "paragonie/random_compat": "^1.0|^2.0",
-                "php": ">=5.4"
+                "php": "^5.4 || ^7.0"
             },
             "replace": {
                 "rhumsaa/uuid": "self.version"
@@ -2979,7 +2979,7 @@
                 "identifier",
                 "uuid"
             ],
-            "time": "2016-11-22T19:21:44+00:00"
+            "time": "2017-03-18T15:38:09+00:00"
         },
         {
             "name": "sensio/distribution-bundle",
@@ -3395,12 +3395,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/swarrot/SwarrotBundle.git",
-                "reference": "fb5ca96479fbb57cf16d1122645219a4d8a6bad4"
+                "reference": "3bc08801ae23b0cdb2d36cd4d083164afecb3ecd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/fb5ca96479fbb57cf16d1122645219a4d8a6bad4",
-                "reference": "fb5ca96479fbb57cf16d1122645219a4d8a6bad4",
+                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/3bc08801ae23b0cdb2d36cd4d083164afecb3ecd",
+                "reference": "3bc08801ae23b0cdb2d36cd4d083164afecb3ecd",
                 "shasum": ""
             },
             "require": {
@@ -3446,7 +3446,7 @@
                 "bundle",
                 "swarrot"
             ],
-            "time": "2017-03-07 16:29:34"
+            "time": "2017-03-18 15:42:54"
         },
         {
             "name": "symfony/monolog-bundle",
