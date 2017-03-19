@@ -10,15 +10,6 @@ services:
             - "@router"
             - "@swarrot.publisher"
 
-    banditore.client.redis:
-        class: Predis\Client
-        arguments:
-            -
-                host: '%redis_host%'
-                port: '%redis_port%'
-                schema: tcp
-                database: "%redis_database%"
-
     # repository as a service
     banditore.repository.repo:
         class: AppBundle\Repository\RepoRepository
@@ -52,7 +43,7 @@ services:
         class: AppBundle\Github\ClientDiscovery
         arguments:
             - "@banditore.repository.user"
-            - "@banditore.client.redis"
+            - "@snc_redis.guzzle_cache"
             - "%github_client_id%"
             - "%github_client_secret%"
             - "@logger"

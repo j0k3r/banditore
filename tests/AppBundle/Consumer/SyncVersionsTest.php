@@ -239,10 +239,10 @@ class SyncVersionsTest extends WebTestCase
             ->getMock();
 
         $versionRepository->expects($this->exactly(4))
-            ->method('findOneBy')
-            ->will($this->returnCallback(function ($arg) use ($repo) {
+            ->method('findExistingOne')
+            ->will($this->returnCallback(function ($tagName, $repoId) use ($repo) {
                 // first version will exist, next one won't
-                if ($arg['tagName'] === '1.0.0') {
+                if ($tagName === '1.0.0') {
                     return new Version($repo);
                 }
             }));
@@ -496,7 +496,7 @@ class SyncVersionsTest extends WebTestCase
             ->getMock();
 
         $versionRepository->expects($this->once())
-            ->method('findOneBy')
+            ->method('findExistingOne')
             ->willReturn(null);
 
         $pubsubhubbub = $this->getMockBuilder('AppBundle\PubSubHubbub\Publisher')
@@ -701,7 +701,7 @@ class SyncVersionsTest extends WebTestCase
             ->getMock();
 
         $versionRepository->expects($this->once())
-            ->method('findOneBy')
+            ->method('findExistingOne')
             ->will($this->throwException(new \Exception('booboo')));
 
         $pubsubhubbub = $this->getMockBuilder('AppBundle\PubSubHubbub\Publisher')

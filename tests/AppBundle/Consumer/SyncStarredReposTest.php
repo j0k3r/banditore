@@ -95,7 +95,7 @@ class SyncStarredReposTest extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $starRepository->expects($this->once())
+        $starRepository->expects($this->exactly(2))
             ->method('findAllByUser')
             ->with(123)
             ->willReturn(['removed/star-repo']);
@@ -133,7 +133,21 @@ class SyncStarredReposTest extends WebTestCase
             ]])),
             // /rate_limit
             new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
-            // second /user/starred will return empty response which means, we reached the last page
+            // second /user/starred
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+                'description' => 'banditore',
+                'homepage' => 'http://banditore.io',
+                'language' => 'PHP',
+                'name' => 'banditore',
+                'full_name' => 'j0k3r/banditore',
+                'id' => 666,
+                'owner' => [
+                    'avatar_url' => 'http://avatar.api/banditore.jpg',
+                ],
+            ]])),
+            // /rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            // third /user/starred will return empty response which means, we reached the last page
             new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
         ]);
 
@@ -158,8 +172,9 @@ class SyncStarredReposTest extends WebTestCase
 
         $this->assertSame('Consume banditore.sync_starred_repos message', $records[0]['message']);
         $this->assertSame('    sync 1 starred repos', $records[1]['message']);
-        $this->assertSame('Removed stars: 1', $records[2]['message']);
-        $this->assertSame('Synced repos: 1', $records[3]['message']);
+        $this->assertSame('    sync 1 starred repos', $records[2]['message']);
+        $this->assertSame('Removed stars: 1', $records[3]['message']);
+        $this->assertSame('Synced repos: 2', $records[4]['message']);
     }
 
     /**
@@ -200,7 +215,7 @@ class SyncStarredReposTest extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $starRepository->expects($this->once())
+        $starRepository->expects($this->exactly(2))
             ->method('findAllByUser')
             ->with(123)
             ->willReturn(['removed/star-repo']);
@@ -294,7 +309,7 @@ class SyncStarredReposTest extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $starRepository->expects($this->once())
+        $starRepository->expects($this->exactly(2))
             ->method('findAllByUser')
             ->with(123)
             ->willReturn(['j0k3r/banditore']);

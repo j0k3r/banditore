@@ -21,6 +21,7 @@ class AppKernel extends Kernel
             new Swarrot\SwarrotBundle\SwarrotBundle(),
             new Sentry\SentryBundle\SentryBundle(),
             new AshleyDawson\SimplePaginationBundle\AshleyDawsonSimplePaginationBundle(),
+            new Snc\RedisBundle\SncRedisBundle(),
             new AppBundle\AppBundle(),
         ];
 
