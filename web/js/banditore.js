@@ -1,14 +1,23 @@
 (function (window, document) {
     // close alert messages
-    document.querySelectorAll('span.close').forEach(function (closeButton) {
-        closeButton.addEventListener('click', function (event) {
-            event
-                .srcElement // font awesome element
-                .parentElement // span element
-                .parentElement // alert element
-                .style.display = 'none'
+    var alerts = document.querySelectorAll('span.close')
+    for (var i = 0; i < alerts.length; ++i) {
+        alerts[i].addEventListener('click', function (event) {
+            // in case the font awesome element isn't loaded (might be the case on iOS)
+            if (event.srcElement.className === 'fa fa-close') {
+                event
+                    .srcElement // font awesome element
+                    .parentElement // span element
+                    .parentElement // alert element
+                    .style.display = 'none'
+            } else {
+                event
+                    .srcElement // span element
+                    .parentElement // alert element
+                    .style.display = 'none'
+            }
         }, false)
-    })
+    }
 
     // handle rwd menu
     var menu = document.getElementById('menu'),
