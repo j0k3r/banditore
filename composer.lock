@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d2036b573ab3be3bfd98555933625bd6",
+    "content-hash": "636ee7a2c01de95bf6a7f653f0cc1c35",
     "packages": [
         {
             "name": "ashleydawson/simple-pagination",
@@ -3391,16 +3391,16 @@
         },
         {
             "name": "swarrot/swarrot-bundle",
-            "version": "dev-master",
+            "version": "v1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swarrot/SwarrotBundle.git",
-                "reference": "3bc08801ae23b0cdb2d36cd4d083164afecb3ecd"
+                "reference": "84c7c57622e4666ae5706f33cd71842639b78755"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/3bc08801ae23b0cdb2d36cd4d083164afecb3ecd",
-                "reference": "3bc08801ae23b0cdb2d36cd4d083164afecb3ecd",
+                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/84c7c57622e4666ae5706f33cd71842639b78755",
+                "reference": "84c7c57622e4666ae5706f33cd71842639b78755",
                 "shasum": ""
             },
             "require": {
@@ -3446,7 +3446,7 @@
                 "bundle",
                 "swarrot"
             ],
-            "time": "2017-03-18 15:42:54"
+            "time": "2017-03-20T15:57:40+00:00"
         },
         {
             "name": "symfony/monolog-bundle",
@@ -4892,7 +4892,6 @@
     "stability-flags": {
         "knplabs/github-api": 20,
         "php-http/cache-plugin": 20,
-        "swarrot/swarrot-bundle": 20,
         "satooshi/php-coveralls": 20,
         "m6web/redis-mock": 20
     },
