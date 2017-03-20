@@ -101,8 +101,6 @@ class SyncStarredRepos implements ProcessorInterface
             ]);
 
             foreach ($starredRepos as $starredRepo) {
-                $newStars[] = $starredRepo['full_name'];
-
                 $repo = $this->repoRepository->find($starredRepo['id']);
 
                 // if repo doesn't exist
@@ -116,7 +114,11 @@ class SyncStarredRepos implements ProcessorInterface
                     $em->persist($repo);
                 }
 
-                if (false === in_array($repo->getFullName(), $currentStars, true)) {
+                // store current repo id to compare it later when we'll sync removed star
+                // using `id` instead of `full_name` to be more accurated (full_name can change)
+                $newStars[] = $repo->getId();
+
+                if (false === in_array($repo->getId(), $currentStars, true)) {
                     $star = new Star($user, $repo);
 
                     $em->persist($star);
@@ -139,7 +141,7 @@ class SyncStarredRepos implements ProcessorInterface
      * When user unstar a repo we also need to remove that association.
      *
      * @param User  $user
-     * @param array $newStars Current stars of the user
+     * @param array $newStars Current starred repos Id of the user
      *
      * @return mixed
      */
@@ -147,19 +149,14 @@ class SyncStarredRepos implements ProcessorInterface
     {
         $currentStars = $this->starRepository->findAllByUser($user->getId());
 
-        $starsToRemove = array_diff($currentStars, $newStars);
+        $repoIdsToRemove = array_diff($currentStars, $newStars);
 
-        if (empty($starsToRemove)) {
+        if (empty($repoIdsToRemove)) {
             return;
         }
 
-        $starIds = [];
-        foreach ($starsToRemove as $starToRemove) {
-            $starIds[] = $this->repoRepository->findOneBy(['fullName' => $starToRemove])->getId();
-        }
+        $this->logger->notice('Removed stars: ' . count($repoIdsToRemove), ['user' => $user->getUsername()]);
 
-        $this->logger->notice('Removed stars: ' . count($starIds), ['user' => $user->getUsername()]);
-
-        return $this->starRepository->removeFromUser($starIds, $user->getId());
+        return $this->starRepository->removeFromUser($repoIdsToRemove, $user->getId());
     }
 }

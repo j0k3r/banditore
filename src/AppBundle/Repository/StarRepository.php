@@ -20,7 +20,7 @@ class StarRepository extends \Doctrine\ORM\EntityRepository
     public function findAllByUser($userId)
     {
         $repos = $this->createQueryBuilder('s')
-            ->select('r.fullName')
+            ->select('r.id')
             ->leftJoin('s.repo', 'r')
             ->where('s.user = ' . $userId)
             ->getQuery()
@@ -28,7 +28,7 @@ class StarRepository extends \Doctrine\ORM\EntityRepository
 
         $res = [];
         foreach ($repos as $repo) {
-            $res[] = $repo['fullName'];
+            $res[] = $repo['id'];
         }
 
         return $res;
@@ -37,16 +37,16 @@ class StarRepository extends \Doctrine\ORM\EntityRepository
     /**
      * Remove stars for a user.
      *
-     * @param array $starIds
+     * @param array $repoIds
      * @param int   $userId
      *
      * @return mixed
      */
-    public function removeFromUser(array $starIds, $userId)
+    public function removeFromUser(array $repoIds, $userId)
     {
         return $this->createQueryBuilder('s')
             ->delete()
-            ->where('s.repo IN (:ids)')->setParameter('ids', $starIds)
+            ->where('s.repo IN (:ids)')->setParameter('ids', $repoIds)
             ->andWhere('s.user = :userId')->setParameter('userId', $userId)
             ->getQuery()
             ->execute();
