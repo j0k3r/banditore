@@ -3,6 +3,7 @@
 namespace Tests\AppBundle\Consumer;
 
 use AppBundle\Consumer\SyncStarredRepos;
+use AppBundle\Entity\Repo;
 use AppBundle\Entity\User;
 use Github\Client as GithubClient;
 use Github\HttpClient\Builder;
@@ -98,42 +99,29 @@ class SyncStarredReposTest extends WebTestCase
         $starRepository->expects($this->exactly(2))
             ->method('findAllByUser')
             ->with(123)
-            ->willReturn(['removed/star-repo']);
+            ->willReturn([666, 777]);
 
-        $star = $this->getMockBuilder('AppBundle\Entity\Star')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $starRepository->expects($this->once())
+            ->method('removeFromUser')
+            ->with([1 => 777], 123)
+            ->willReturn(true);
 
-        $star->expects($this->once())
-            ->method('getId')
-            ->with()
-            ->willReturn(1);
+        $repo = new Repo();
+        $repo->setId(666);
+        $repo->setFullName('j0k3r/banditore');
+        $repo->setUpdatedAt((new \DateTime())->setTimestamp(time() - 3600 * 72));
 
         $repoRepository = $this->getMockBuilder('AppBundle\Repository\RepoRepository')
             ->disableOriginalConstructor()
             ->getMock();
 
         $repoRepository->expects($this->once())
-            ->method('findOneBy')
-            ->with(['fullName' => 'removed/star-repo'])
-            ->willReturn($star);
+            ->method('find')
+            ->with(666)
+            ->willReturn($repo);
 
         $responses = new MockHandler([
             // first /user/starred
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
-                'description' => 'banditore',
-                'homepage' => 'http://banditore.io',
-                'language' => 'PHP',
-                'name' => 'banditore',
-                'full_name' => 'j0k3r/banditore',
-                'id' => 666,
-                'owner' => [
-                    'avatar_url' => 'http://avatar.api/banditore.jpg',
-                ],
-            ]])),
-            // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
-            // second /user/starred
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'description' => 'banditore',
                 'homepage' => 'http://banditore.io',
@@ -172,9 +160,8 @@ class SyncStarredReposTest extends WebTestCase
 
         $this->assertSame('Consume banditore.sync_starred_repos message', $records[0]['message']);
         $this->assertSame('    sync 1 starred repos', $records[1]['message']);
-        $this->assertSame('    sync 1 starred repos', $records[2]['message']);
-        $this->assertSame('Removed stars: 1', $records[3]['message']);
-        $this->assertSame('Synced repos: 2', $records[4]['message']);
+        $this->assertSame('Removed stars: 1', $records[2]['message']);
+        $this->assertSame('Synced repos: 1', $records[3]['message']);
     }
 
     /**
@@ -215,25 +202,18 @@ class SyncStarredReposTest extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $starRepository->expects($this->exactly(2))
+        $starRepository->expects($this->once())
             ->method('findAllByUser')
             ->with(123)
-            ->willReturn(['removed/star-repo']);
-
-        $star = $this->getMockBuilder('AppBundle\Entity\Star')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $star->expects($this->never())
-            ->method('getId');
+            ->willReturn([666]);
 
         $repoRepository = $this->getMockBuilder('AppBundle\Repository\RepoRepository')
             ->disableOriginalConstructor()
             ->getMock();
 
         $repoRepository->expects($this->once())
-            ->method('findOneBy')
-            ->with(['fullName' => 'removed/star-repo'])
+            ->method('find')
+            ->with(666)
             ->will($this->throwException(new \Exception('booboo')));
 
         $responses = new MockHandler([
@@ -312,21 +292,21 @@ class SyncStarredReposTest extends WebTestCase
         $starRepository->expects($this->exactly(2))
             ->method('findAllByUser')
             ->with(123)
-            ->willReturn(['j0k3r/banditore']);
+            ->willReturn([123]);
 
-        $star = $this->getMockBuilder('AppBundle\Entity\Star')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $star->expects($this->never())
-            ->method('getId');
+        $repo = new Repo();
+        $repo->setId(123);
+        $repo->setFullName('j0k3r/banditore');
+        $repo->setUpdatedAt((new \DateTime())->setTimestamp(time() - 3600 * 72));
 
         $repoRepository = $this->getMockBuilder('AppBundle\Repository\RepoRepository')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $repoRepository->expects($this->never())
-            ->method('findOneBy');
+        $repoRepository->expects($this->once())
+            ->method('find')
+            ->with(123)
+            ->willReturn($repo);
 
         $responses = new MockHandler([
             // first /user/starred
@@ -396,7 +376,7 @@ class SyncStarredReposTest extends WebTestCase
             ->getMock();
 
         $repoRepository->expects($this->never())
-            ->method('findOneBy');
+            ->method('find');
 
         $logger = new Logger('foo');
         $logHandler = new TestHandler();
@@ -466,8 +446,8 @@ class SyncStarredReposTest extends WebTestCase
         // before import
         $stars = $container->get('banditore.repository.star')->findAllByUser(123);
         $this->assertCount(2, $stars, 'User 123 has 2 starred repos');
-        $this->assertSame('symfony/symfony', $stars[0], 'User 123 has "symfony/symfony" starred repo');
-        $this->assertSame('test/test', $stars[1], 'User 123 has "test/test" starred repo');
+        $this->assertSame(555, $stars[0], 'User 123 has "symfony/symfony" starred repo');
+        $this->assertSame(666, $stars[1], 'User 123 has "test/test" starred repo');
 
         $processor->process(new Message(json_encode(['user_id' => 123])), []);
 
@@ -478,8 +458,8 @@ class SyncStarredReposTest extends WebTestCase
         // validate that `test/test` association got removed
         $stars = $container->get('banditore.repository.star')->findAllByUser(123);
         $this->assertCount(2, $stars, 'User 123 has 2 starred repos');
-        $this->assertSame('test/test', $stars[0], 'User 123 has "test/test" starred repo');
-        $this->assertSame('j0k3r/banditore', $stars[1], 'User 123 has "j0k3r/banditore" starred repo');
+        $this->assertSame(666, $stars[0], 'User 123 has "test/test" starred repo');
+        $this->assertSame(777, $stars[1], 'User 123 has "j0k3r/banditore" starred repo');
     }
 
     private function getMockClient($responses)

@@ -41,7 +41,7 @@
         "sensio/framework-extra-bundle": "^3.0.2",
         "sentry/sentry-symfony": "^0.7.1",
         "snc/redis-bundle": "^2.0",
-        "swarrot/swarrot-bundle": "dev-master",
+        "swarrot/swarrot-bundle": "^1.4.2",
         "symfony/monolog-bundle": "^3.0.2",
         "symfony/polyfill-apcu": "^1.0",
         "symfony/symfony": "3.2.*",
