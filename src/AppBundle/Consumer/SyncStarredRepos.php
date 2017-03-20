@@ -123,9 +123,9 @@ class SyncStarredRepos implements ProcessorInterface
 
                     $em->persist($star);
                 }
-
-                $em->flush();
             }
+
+            $em->flush();
 
             $starredRepos = $this->client->api('user')->starred($user->getUsername(), ++$page, $perPage);
         } while (!empty($starredRepos));
