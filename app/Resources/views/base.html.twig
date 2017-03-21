@@ -33,7 +33,6 @@
                         <li class="pure-menu-item"><a href="https://github.com/j0k3r/banditore" class="pure-menu-link">View it on Github</a></li>
                         <li class="pure-menu-item"><a href="{{ url('stats') }}" class="pure-menu-link">Stats</a></li>
                         {% if app.user %}
-                            <li class="pure-menu-item"><a href="{{ url('rss_user', { uuid: app.user.uuid }) }}" class="pure-menu-link">Your RSS feed</a></li>
                             <li class="pure-menu-item"><a href="{{ url('logout') }}" class="pure-menu-link">Logout ({{ app.user.username }})</a></li>
                         {% endif %}
                     </ul>
