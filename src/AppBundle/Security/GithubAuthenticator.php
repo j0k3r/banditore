@@ -79,7 +79,7 @@ class GithubAuthenticator extends SocialAuthenticator
         // and we need to display an explanation message
         $message = 'Successfully logged in!';
         if (empty($versions)) {
-            $message = 'Successfully logged in. Your starred repo will soon be synced. In the meantime you can grab your RSS link in the top menu!';
+            $message = 'Successfully logged in. Your starred repos will soon be synced!';
         }
 
         $request->getSession()->getFlashBag()->add('info', $message);

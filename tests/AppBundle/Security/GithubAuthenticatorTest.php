@@ -136,6 +136,6 @@ class GithubAuthenticatorTest extends WebTestCase
         $this->assertSame('/dashboard', $client->getResponse()->getTargetUrl());
 
         $message = $container->get('session')->getFlashBag()->get('info');
-        $this->assertSame('Successfully logged in. Your starred repo will soon be synced. In the meantime you can grab your RSS link in the top menu!', $message[0]);
+        $this->assertSame('Successfully logged in. Your starred repos will soon be synced!', $message[0]);
     }
 }
