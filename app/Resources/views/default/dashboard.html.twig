@@ -10,6 +10,10 @@
             </div>
         {% endif %}
 
+        <aside class="feed pure-u-lg-3-5 pure-u-md-4-5 pure-u-sm-5-5">
+            <p>You can grab your <b><a href="{{ url('rss_user', { uuid: app.user.uuid }) }}">RSS feed link</a></b> and add it to your favorite RSS reader. Every new release will show up in it!</p>
+        </aside>
+
         <h2 class="content-head is-center">Your latest releases</h2>
 
         {% if pagination.items %}
