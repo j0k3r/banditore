@@ -9,13 +9,13 @@
 
 Banditore retrieves new releases from your Github starred repositories and put them in a RSS feed, just for you.
 
-![](http://i.imgur.com/XDCWLJV.png)
+![](https://i.imgur.com/XDCWLJV.png)
 
 ## Requirements
 
- - PHP >=5.5.9 (with `pdo_mysql`)
+ - PHP >= 5.5.9 (with `pdo_mysql`)
  - MySQL >= 5.7
- - Redis (mostly to cache requests to the Github API)
+ - Redis (to cache requests to the Github API)
  - [RabbitMQ](https://www.rabbitmq.com/), which is optional (see below)
  - [Supervisor](http://supervisord.org/) (only if you use RabbitMQ)
 
@@ -56,7 +56,7 @@ Banditore retrieves new releases from your Github starred repositories and put t
 
 ## Running the instance
 
-Once the website is up, you know have to setup few things to retrieve new releases.
+Once the website is up, you now have to setup few things to retrieve new releases.
 You have two choices:
 - using crontab command (very simple and ok if you are alone)
 - using RabbitMQ (might be better if you plan to have more than few persons but it's more complex) :call_me_hand:
@@ -99,7 +99,6 @@ You just need to define these 2 cronjobs (replace all `/path/to/banditore` with 
 
  Once you've put the file in the supervisor conf repo, run `supervisorctl update && supervisorctl start all` (`update` will read your conf, `start all` will start all workers)
 
-
 ## Running the test suite
 
 If you plan to contribute (you're awesome, I know that :v:), you'll need to install the project in a different way (for example, to retrieve dev packages):
@@ -119,4 +118,56 @@ By default the `test` connexion login is `root` without password. You can change
 
 Ok, if you goes that deeper in the readme, it means you're a bit more than interested, I like that.
 
-_Coming soon…_
+### Retrieving new release / tag
+
+This is the complex part of the app. Here is a simplified solution to achieve it.
+
+#### New release
+
+It's not as easy as using the `/repos/:owner/:repo/releases` API endpoint to retrieve latest release for a given repo. Because not all repo owner use that feature (which is a shame in my case).
+
+All information for a release are available on that endpoint:
+- name of the tag (ie: v1.0.0)
+- name of the release (ie: yay first release)
+- published date
+- description of the release
+
+> Check a new release of that repo as example: https://api.github.com/repos/j0k3r/banditore/releases/5770680
+
+#### New tag
+
+Some owners also use tag which is a bit more complex to retrieve all information because a tag only contains information about the SHA-1 of the commit which was used to make the tag.
+We only have these information:
+- name of the tag (ie: v1.4.2)
+- name of the release will be the name of the tag, in that case
+
+> Check tag list of swarrot/SwarrotBundle as example: https://api.github.com/repos/swarrot/SwarrotBundle/tags
+
+After retrieving the tag, we need to retrieve the commit to get these information:
+- date of the commit
+- message of the commit
+
+> Check a commit from the previous tag list as example: https://api.github.com/repos/swarrot/SwarrotBundle/commits/84c7c57622e4666ae5706f33cd71842639b78755
+
+### Github Client Discovery
+
+This is the most important piece of the app. One thing that I ran though is hitting the rate limit on Github.
+The rate limit for a given authenticated client is 5.000 calls per hour. This limit is **never** reached when looking for new release (thanks to the [conditional requests](https://developer.github.com/v3/#conditional-requests) of the Github API) on a daily basis.
+
+But when new user sign in, we need to sync all its starred repositories and also all their releases / tags. And here come the gourmand part:
+- one call for the list of release
+- one call to retrieve information of each tag (if the repo doesn't have release)
+- one call for each release to convert markdown text to html
+
+Let's say the repo:
+- has 50 tags: 1 (get tag list) + 50 (get commit information) + 50 (convert markdown) = 101 calls.
+- has 50 releases: 1 (get tag list) + 50 (get each release) + 50 (convert markdown) = 101 calls.
+
+And keep in mind that some repos got also 1.000+ tags (!!).
+
+To avoid hitting the limit in such case and wait 1 hour to be able to make requests again I created the [Github Client Discovery class](src/AppBundle/Github/ClientDiscovery.php).
+It aims to find the best client with enough rate limit remain (defined as 50).
+- it first checks using the Github OAuth app
+- then it checks using all user Github token
+
+Which means, if you have 5 users on the app, you'll be able to make (1 + 5) x 5.000 = 25.000 calls per hour
