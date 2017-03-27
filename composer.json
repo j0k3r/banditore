@@ -27,7 +27,7 @@
         "doctrine/orm": "^2.5",
         "ekino/newrelic-bundle": "^1.3",
         "incenteev/composer-parameter-handler": "^2.0",
-        "knplabs/github-api": "dev-user-starred-parameters",
+        "knplabs/github-api": "^2.1@dev",
         "knpuniversity/oauth2-client-bundle": "^1.9",
         "league/oauth2-github": "^2.0",
         "marcw/rss-writer": "^0.3.3",
@@ -81,10 +81,6 @@
         {
             "type": "vcs",
             "url": "https://github.com/j0k3r/RedisMock"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/j0k3r/php-github-api"
         }
     ],
     "extra": {
