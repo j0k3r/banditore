@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3a566dc836a0396fb65cf48794ee94ac",
+    "content-hash": "6db89c9f5352a581222cf73a8cacaabd",
     "packages": [
         {
             "name": "ashleydawson/simple-pagination",
@@ -1636,21 +1636,21 @@
         },
         {
             "name": "knplabs/github-api",
-            "version": "dev-master",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/php-github-api.git",
-                "reference": "9b66e473522163f2dc36a02f21918f75be70dd2f"
+                "reference": "80cb9e9f8441f0e80cb39557dfcebed19863a45d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/9b66e473522163f2dc36a02f21918f75be70dd2f",
-                "reference": "9b66e473522163f2dc36a02f21918f75be70dd2f",
+                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/80cb9e9f8441f0e80cb39557dfcebed19863a45d",
+                "reference": "80cb9e9f8441f0e80cb39557dfcebed19863a45d",
                 "shasum": ""
             },
             "require": {
                 "php": "^5.5 || ^7.0",
-                "php-http/cache-plugin": "^1.2",
+                "php-http/cache-plugin": "^1.3",
                 "php-http/client-common": "^1.3",
                 "php-http/client-implementation": "^1.0",
                 "php-http/discovery": "^1.0",
@@ -1698,7 +1698,7 @@
                 "gist",
                 "github"
             ],
-            "time": "2017-03-26 12:45:46"
+            "time": "2017-03-28T07:59:30+00:00"
         },
         {
             "name": "knpuniversity/oauth2-client-bundle",
@@ -2242,16 +2242,16 @@
         },
         {
             "name": "php-http/cache-plugin",
-            "version": "dev-master",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/cache-plugin.git",
-                "reference": "77891394da09d7d371a9e9828933525ccfe539ba"
+                "reference": "9dcdfe4ff3687ed3b80a11bb468cf5860ee10e4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/cache-plugin/zipball/77891394da09d7d371a9e9828933525ccfe539ba",
-                "reference": "77891394da09d7d371a9e9828933525ccfe539ba",
+                "url": "https://api.github.com/repos/php-http/cache-plugin/zipball/9dcdfe4ff3687ed3b80a11bb468cf5860ee10e4e",
+                "reference": "9dcdfe4ff3687ed3b80a11bb468cf5860ee10e4e",
                 "shasum": ""
             },
             "require": {
@@ -2294,7 +2294,7 @@
                 "httplug",
                 "plugin"
             ],
-            "time": "2017-03-23 12:47:59"
+            "time": "2017-03-28T07:08:57+00:00"
         },
         {
             "name": "php-http/client-common",
@@ -4888,8 +4888,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "knplabs/github-api": 20,
-        "php-http/cache-plugin": 20,
         "satooshi/php-coveralls": 20,
         "m6web/redis-mock": 20
     },
