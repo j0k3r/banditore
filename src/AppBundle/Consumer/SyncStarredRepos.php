@@ -69,6 +69,16 @@ class SyncStarredRepos implements ProcessorInterface
 
         $this->logger->notice('Consume banditore.sync_starred_repos message', ['user' => $user->getUsername()]);
 
+        $rateLimit = $this->getRateLimits($this->client, $this->logger);
+
+        $this->logger->notice('[' . $rateLimit . '] Check <info>' . $user->getUsername() . '</info> … ');
+
+        if (0 === $rateLimit || false === $rateLimit) {
+            $this->logger->warning('RateLimit reached, stopping.');
+
+            return false;
+        }
+
         // this shouldn't be catched so the worker will die when an exception is thrown
         $nbRepos = $this->doSyncRepo($user);
 

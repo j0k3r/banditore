@@ -121,6 +121,8 @@ class SyncStarredReposTest extends WebTestCase
             ->willReturn($repo);
 
         $responses = new MockHandler([
+            // /rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
             // first /user/starred
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'description' => 'banditore',
@@ -159,9 +161,10 @@ class SyncStarredReposTest extends WebTestCase
         $records = $logHandler->getRecords();
 
         $this->assertSame('Consume banditore.sync_starred_repos message', $records[0]['message']);
-        $this->assertSame('    sync 1 starred repos', $records[1]['message']);
-        $this->assertSame('Removed stars: 1', $records[2]['message']);
-        $this->assertSame('Synced repos: 1', $records[3]['message']);
+        $this->assertSame('[10] Check <info>bob</info> … ', $records[1]['message']);
+        $this->assertSame('    sync 1 starred repos', $records[2]['message']);
+        $this->assertSame('Removed stars: 1', $records[3]['message']);
+        $this->assertSame('Synced repos: 1', $records[4]['message']);
     }
 
     /**
@@ -217,6 +220,8 @@ class SyncStarredReposTest extends WebTestCase
             ->will($this->throwException(new \Exception('booboo')));
 
         $responses = new MockHandler([
+            // /rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
             // first /user/starred
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'description' => 'banditore',
@@ -309,6 +314,8 @@ class SyncStarredReposTest extends WebTestCase
             ->willReturn($repo);
 
         $responses = new MockHandler([
+            // /rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
             // first /user/starred
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'description' => 'banditore',
@@ -347,8 +354,9 @@ class SyncStarredReposTest extends WebTestCase
         $records = $logHandler->getRecords();
 
         $this->assertSame('Consume banditore.sync_starred_repos message', $records[0]['message']);
-        $this->assertSame('    sync 1 starred repos', $records[1]['message']);
-        $this->assertSame('Synced repos: 1', $records[2]['message']);
+        $this->assertSame('[10] Check <info>bob</info> … ', $records[1]['message']);
+        $this->assertSame('    sync 1 starred repos', $records[2]['message']);
+        $this->assertSame('Synced repos: 1', $records[3]['message']);
     }
 
     public function testProcessWithBadClient()
@@ -398,9 +406,85 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame('No client provided', $records[0]['message']);
     }
 
+    public function testProcessWithRateLimitReached()
+    {
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $em->expects($this->never())
+            ->method('isOpen');
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $doctrine->expects($this->never())
+            ->method('getManager');
+
+        $user = new User();
+        $user->setId(123);
+        $user->setUsername('bob');
+        $user->setName('Bobby');
+
+        $userRepository = $this->getMockBuilder('AppBundle\Repository\UserRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $userRepository->expects($this->once())
+            ->method('find')
+            ->with(123)
+            ->will($this->returnValue($user));
+
+        $starRepository = $this->getMockBuilder('AppBundle\Repository\StarRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $starRepository->expects($this->never())
+            ->method('findAllByUser');
+
+        $starRepository->expects($this->never())
+            ->method('removeFromUser');
+
+        $repoRepository = $this->getMockBuilder('AppBundle\Repository\RepoRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repoRepository->expects($this->never())
+            ->method('find');
+
+        $responses = new MockHandler([
+            // /rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 0]]])),
+        ]);
+
+        $githubClient = $this->getMockClient($responses);
+
+        $logger = new Logger('foo');
+        $logHandler = new TestHandler();
+        $logger->pushHandler($logHandler);
+
+        $processor = new SyncStarredRepos(
+            $doctrine,
+            $userRepository,
+            $starRepository,
+            $repoRepository,
+            $githubClient,
+            $logger
+        );
+
+        $processor->process(new Message(json_encode(['user_id' => 123])), []);
+
+        $records = $logHandler->getRecords();
+
+        $this->assertSame('Consume banditore.sync_starred_repos message', $records[0]['message']);
+        $this->assertSame('[0] Check <info>bob</info> … ', $records[1]['message']);
+        $this->assertSame('RateLimit reached, stopping.', $records[2]['message']);
+    }
+
     public function testFunctionalConsumer()
     {
         $responses = new MockHandler([
+            // /rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
             // first /user/starred
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'description' => 'banditore',
