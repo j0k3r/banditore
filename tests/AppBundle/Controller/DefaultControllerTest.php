@@ -41,7 +41,7 @@ class DefaultControllerTest extends WebTestCase
         $this->client->request('GET', '/connect');
 
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('https://github.com/login/oauth/authorize?scope=user%2Crepo', $this->client->getResponse()->getTargetUrl());
+        $this->assertContains('https://github.com/login/oauth/authorize?', $this->client->getResponse()->getTargetUrl());
     }
 
     public function testConnectWithLoggedInUser()

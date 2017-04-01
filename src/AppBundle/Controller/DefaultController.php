@@ -89,8 +89,7 @@ class DefaultController extends Controller
 
         return $this->get('oauth2.registry')
             ->getClient('github')
-            // scopes requested
-            ->redirect(['user', 'repo']);
+            ->redirect();
     }
 
     /**
