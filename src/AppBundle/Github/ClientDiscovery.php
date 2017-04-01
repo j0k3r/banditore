@@ -18,7 +18,8 @@ class ClientDiscovery
 {
     use RateLimitTrait;
 
-    const THRESHOLD_BAD_AUTH = 50;
+    const THRESHOLD_RATE_REMAIN_APP = 200;
+    const THRESHOLD_RATE_REMAIN_USER = 2000;
 
     private $userRepository;
     private $redis;
@@ -74,7 +75,7 @@ class ClientDiscovery
         $this->client->authenticate($this->clientId, $this->clientSecret, GithubClient::AUTH_URL_CLIENT_ID);
 
         $remaining = $this->getRateLimits($this->client, $this->logger);
-        if ($remaining >= self::THRESHOLD_BAD_AUTH) {
+        if ($remaining >= self::THRESHOLD_RATE_REMAIN_APP) {
             $this->logger->notice('RateLimit ok (' . $remaining . ') with default application');
 
             return $this->client;
@@ -87,7 +88,7 @@ class ClientDiscovery
             $this->client->authenticate($user['accessToken'], null, GithubClient::AUTH_HTTP_TOKEN);
 
             $remaining = $this->getRateLimits($this->client, $this->logger);
-            if ($remaining >= self::THRESHOLD_BAD_AUTH) {
+            if ($remaining >= self::THRESHOLD_RATE_REMAIN_USER) {
                 $this->logger->notice('RateLimit ok (' . $remaining . ') with user: ' . $user['username']);
 
                 return $this->client;
