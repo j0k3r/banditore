@@ -41,6 +41,8 @@ class VersionRepository extends \Doctrine\ORM\EntityRepository
      * Find all versions available for the given user.
      *
      * @param int $userId
+     * @param int $offset
+     * @param int $length
      *
      * @return array
      */
