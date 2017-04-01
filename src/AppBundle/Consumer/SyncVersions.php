@@ -200,6 +200,11 @@ class SyncVersions implements ProcessorInterface
             $em->persist($version);
 
             ++$newVersion;
+
+            // for big repos, flush every 200 versions in case of hitting rate limit
+            if (($newVersion % 200) === 0) {
+                $em->flush();
+            }
         }
 
         $em->flush();
