@@ -73,7 +73,7 @@ class GithubAuthenticator extends SocialAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $versions = $this->em->getRepository('AppBundle:Version')->findLastVersionForEachRepoForUser($token->getUser()->getId());
+        $versions = $this->em->getRepository('AppBundle:Version')->findForUser($token->getUser()->getId());
 
         // if no versions were found, it means the user logged in for the first time
         // and we need to display an explanation message

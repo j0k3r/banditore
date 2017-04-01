@@ -40,12 +40,12 @@ class DefaultController extends Controller
 
         // Pass the item total
         $paginator->setItemTotalCallback(function () use ($repoVersion, $userId) {
-            return $repoVersion->countLastVersionForEachRepoForUser($userId);
+            return $repoVersion->countForUser($userId);
         });
 
         // Pass the slice
         $paginator->setSliceCallback(function ($offset, $length) use ($repoVersion, $userId) {
-            return $repoVersion->findLastVersionForEachRepoForUser($userId, $offset, $length);
+            return $repoVersion->findForUser($userId, $offset, $length);
         });
 
         // Paginate using the current page number
@@ -126,8 +126,8 @@ class DefaultController extends Controller
                 'avgReleasePerRepo' => ($nbRepos > 0) ? round($nbReleases / $nbRepos, 2) : 0,
                 'avgStarPerUser' => ($nbUsers > 0) ? round($nbStars / $nbUsers, 2) : 0,
             ],
-            'mostReleases' => $this->get('banditore.repository.version')->mostVersionsPerRepo(),
-            'lastestReleases' => $this->get('banditore.repository.version')->findLastVersionForEachRepo(),
+            'mostReleases' => $this->get('banditore.repository.repo')->mostVersionsPerRepo(),
+            'lastestReleases' => $this->get('banditore.repository.version')->findLastVersionForEachRepo(20),
         ]);
     }
 }
