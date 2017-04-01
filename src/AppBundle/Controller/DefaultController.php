@@ -40,12 +40,12 @@ class DefaultController extends Controller
 
         // Pass the item total
         $paginator->setItemTotalCallback(function () use ($repoVersion, $userId) {
-            return $repoVersion->countLastVersionForEachRepoForUser($userId);
+            return $repoVersion->countForUser($userId);
         });
 
         // Pass the slice
         $paginator->setSliceCallback(function ($offset, $length) use ($repoVersion, $userId) {
-            return $repoVersion->findLastVersionForEachRepoForUser($userId, $offset, $length);
+            return $repoVersion->findForUser($userId, $offset, $length);
         });
 
         // Paginate using the current page number
