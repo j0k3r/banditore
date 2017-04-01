@@ -42,4 +42,25 @@ class RepoRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * Retrieve repos with the most releases.
+     * Used for stats.
+     *
+     * @return array
+     */
+    public function mostVersionsPerRepo()
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r.fullName', 'r.description', 'r.ownerAvatar')
+            ->addSelect('(SELECT COUNT(v.id)
+                FROM AppBundle\Entity\Version v
+                WHERE v.repo = r.id) AS total'
+            )
+            ->groupBy('r.fullName', 'r.description', 'r.ownerAvatar')
+            ->orderBy('total', 'desc')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getArrayResult();
+    }
 }

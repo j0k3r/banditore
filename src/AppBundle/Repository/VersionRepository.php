@@ -132,24 +132,6 @@ class VersionRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * Retrieve repos with the most releases.
-     * Used for stats.
-     *
-     * @return array
-     */
-    public function mostVersionsPerRepo()
-    {
-        return $this->createQueryBuilder('v')
-            ->select('r.fullName', 'r.description', 'r.ownerAvatar', 'count(v.id) as total')
-            ->leftJoin('v.repo', 'r')
-            ->groupBy('r.fullName', 'r.description', 'r.ownerAvatar')
-            ->orderBy('total', 'desc')
-            ->setMaxResults(5)
-            ->getQuery()
-            ->getArrayResult();
-    }
-
-    /**
      * DQL query to retrieve last version of each repo starred by a user (or globally).
      * We use DQL because it was to complex to use a query builder.
      *
