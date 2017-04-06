@@ -57,7 +57,7 @@ class RepoRepository extends \Doctrine\ORM\EntityRepository
                 FROM AppBundle\Entity\Version v
                 WHERE v.repo = r.id) AS total'
             )
-            ->groupBy('r.fullName', 'r.description', 'r.ownerAvatar')
+            ->groupBy('r.fullName', 'r.description', 'r.ownerAvatar', 'total')
             ->orderBy('total', 'desc')
             ->setMaxResults(5)
             ->getQuery()
