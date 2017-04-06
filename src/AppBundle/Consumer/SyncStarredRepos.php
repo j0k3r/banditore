@@ -67,11 +67,11 @@ class SyncStarredRepos implements ProcessorInterface
             return;
         }
 
-        $this->logger->notice('Consume banditore.sync_starred_repos message', ['user' => $user->getUsername()]);
+        $this->logger->info('Consume banditore.sync_starred_repos message', ['user' => $user->getUsername()]);
 
         $rateLimit = $this->getRateLimits($this->client, $this->logger);
 
-        $this->logger->notice('[' . $rateLimit . '] Check <info>' . $user->getUsername() . '</info> … ');
+        $this->logger->info('[' . $rateLimit . '] Check <info>' . $user->getUsername() . '</info> … ');
 
         if (0 === $rateLimit || false === $rateLimit) {
             $this->logger->warning('RateLimit reached, stopping.');
@@ -82,7 +82,7 @@ class SyncStarredRepos implements ProcessorInterface
         // this shouldn't be catched so the worker will die when an exception is thrown
         $nbRepos = $this->doSyncRepo($user);
 
-        $this->logger->notice('Synced repos: ' . $nbRepos, ['user' => $user->getUsername()]);
+        $this->logger->notice('[' . $this->getRateLimits($this->client, $this->logger) . '] Synced repos: ' . $nbRepos, ['user' => $user->getUsername()]);
     }
 
     /**
@@ -165,7 +165,7 @@ class SyncStarredRepos implements ProcessorInterface
             return;
         }
 
-        $this->logger->notice('Removed stars: ' . count($repoIdsToRemove), ['user' => $user->getUsername()]);
+        $this->logger->info('Removed stars: ' . count($repoIdsToRemove), ['user' => $user->getUsername()]);
 
         return $this->starRepository->removeFromUser($repoIdsToRemove, $user->getId());
     }
