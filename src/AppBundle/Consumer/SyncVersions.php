@@ -60,11 +60,11 @@ class SyncVersions implements ProcessorInterface
             return;
         }
 
-        $this->logger->notice('Consume banditore.sync_versions message', ['repo' => $repo->getFullName()]);
+        $this->logger->info('Consume banditore.sync_versions message', ['repo' => $repo->getFullName()]);
 
         $rateLimit = $this->getRateLimits($this->client, $this->logger);
 
-        $this->logger->notice('[' . $rateLimit . '] Check <info>' . $repo->getFullName() . '</info> … ');
+        $this->logger->info('[' . $rateLimit . '] Check <info>' . $repo->getFullName() . '</info> … ');
 
         if (0 === $rateLimit || false === $rateLimit) {
             $this->logger->warning('RateLimit reached, stopping.');
