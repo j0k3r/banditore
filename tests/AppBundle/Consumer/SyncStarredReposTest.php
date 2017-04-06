@@ -139,6 +139,8 @@ class SyncStarredReposTest extends WebTestCase
             new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
             // third /user/starred will return empty response which means, we reached the last page
             new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
+            // /rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
         ]);
 
         $githubClient = $this->getMockClient($responses);
@@ -164,7 +166,7 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame('[10] Check <info>bob</info> … ', $records[1]['message']);
         $this->assertSame('    sync 1 starred repos', $records[2]['message']);
         $this->assertSame('Removed stars: 1', $records[3]['message']);
-        $this->assertSame('Synced repos: 1', $records[4]['message']);
+        $this->assertSame('[10] Synced repos: 1', $records[4]['message']);
     }
 
     /**
@@ -238,6 +240,8 @@ class SyncStarredReposTest extends WebTestCase
             new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
             // second /user/starred will return empty response which means, we reached the last page
             new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
+            // /rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
         ]);
 
         $githubClient = $this->getMockClient($responses);
@@ -332,6 +336,8 @@ class SyncStarredReposTest extends WebTestCase
             new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
             // second /user/starred will return empty response which means, we reached the last page
             new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
+            // /rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
         ]);
 
         $githubClient = $this->getMockClient($responses);
@@ -356,7 +362,7 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame('Consume banditore.sync_starred_repos message', $records[0]['message']);
         $this->assertSame('[10] Check <info>bob</info> … ', $records[1]['message']);
         $this->assertSame('    sync 1 starred repos', $records[2]['message']);
-        $this->assertSame('Synced repos: 1', $records[3]['message']);
+        $this->assertSame('[10] Synced repos: 1', $records[3]['message']);
     }
 
     public function testProcessWithBadClient()
@@ -515,6 +521,8 @@ class SyncStarredReposTest extends WebTestCase
             new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 8]]])),
             // third /user/starred will return empty response which means, we reached the last page
             new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
+            // /rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 6]]])),
         ]);
 
         $githubClient = $this->getMockClient($responses);
