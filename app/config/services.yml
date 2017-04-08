@@ -14,6 +14,14 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    AppBundle\EventListener\MoreVersionListener:
+        tags:
+            - { name: kernel.event_listener, event: repo.max_rss_items_reached, method: queue }
+
+    AppBundle\EventListener\VersionInfoListener:
+        tags:
+            - { name: kernel.event_listener, event: version.created, method: queue }
+
     # autorwire parameters
     AppBundle\Github\ClientDiscovery:
         arguments:
@@ -44,6 +52,9 @@ services:
             $redis: "@snc_redis.app_cache"
 
     AppBundle\Consumer\SyncVersions:
+        lazy: true
+
+    AppBundle\Consumer\SyncVersionsRss:
         lazy: true
 
     # github stuff

@@ -12,6 +12,12 @@
         banditore.sync_versions:
             type: direct
             durable: true
+        banditore.sync_versions_rss:
+            type: direct
+            durable: true
+        banditore.sync_versions_info:
+            type: direct
+            durable: true
 
     queues:
         banditore.sync_starred_repos:
@@ -22,3 +28,11 @@
             durable: true
             bindings:
                 - exchange: banditore.sync_versions
+        banditore.sync_versions_rss:
+            durable: true
+            bindings:
+                - exchange: banditore.sync_versions_rss
+        banditore.sync_versions_info:
+            durable: true
+            bindings:
+                - exchange: banditore.sync_versions_info

@@ -48,26 +48,7 @@
 
             <tbody>
                 {% for repo in pagination.items -%}
-                    <tr class="{% if loop.index is odd %}pure-table-odd{% endif %}">
-                        <td data-th="Repo">
-                            <img class="repo-avatar" src="{{ repo.ownerAvatar }}&amp;s=25"/>
-                            <a href="https://github.com/{{ repo.fullName }}" title="{{ repo.description }}">{{ repo.fullName }}</a>
-                        </td>
-                        <td data-th="Last">
-                            {% if repo.name and repo.name != repo.tagName -%}
-                                {{ repo.name }} (<a href="{{ repo|link_to_version }}">{{ repo.tagName }}</a>)
-                            {%- else -%}
-                                <a href="{{ repo|link_to_version }}">{{ repo.tagName }}</a>
-                            {%- endif %}
-
-                            {% if repo.prerelease -%}
-                                <span class="label_prerelease">pre-release</span>
-                            {% endif -%}
-                        </td>
-                        <td data-th="Date">
-                            <time datetime="{{ repo.createdAt|date("c") }}" title="{{ repo.createdAt|date("c") }}">{{ repo.createdAt|ago }}</time>
-                        </td>
-                    </tr>
+                    {% include 'default/_line_version.html.twig' with { 'loop': loop, 'repo': repo} %}
                 {% else %}
                     <tr>
                         <td data-th="Repo">

@@ -25,8 +25,8 @@ class SyncVersions implements ProcessorInterface
     private $repoRepository;
     private $versionRepository;
     private $pubsubhubbub;
-    private $logger;
     private $client;
+    private $logger;
 
     /**
      * Client parameter can be null when no available client were found by the Github Client Discovery.
@@ -41,7 +41,7 @@ class SyncVersions implements ProcessorInterface
         $this->logger = $logger;
     }
 
-    public function process(Message $message, array $options)
+    public function process(Message $message, array $options): bool
     {
         // in case no client with safe RateLimit were found
         if (null === $this->client) {

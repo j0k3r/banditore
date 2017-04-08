@@ -29,11 +29,19 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersions->expects($this->any())
             ->method('process');
 
+        $syncVersionsRss = $this->getMockBuilder('AppBundle\Consumer\SyncVersionsRss')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $syncVersionsRss->expects($this->never())
+            ->method('process');
+
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
             self::$kernel->getContainer()->get('banditore.repository.repo.test'),
             $publisher,
             $syncVersions,
+            $syncVersionsRss,
             self::$kernel->getContainer()->get('swarrot.factory.default')
         ));
 
@@ -66,11 +74,19 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersions->expects($this->never())
             ->method('process');
 
+        $syncVersionsRss = $this->getMockBuilder('AppBundle\Consumer\SyncVersionsRss')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $syncVersionsRss->expects($this->never())
+            ->method('process');
+
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
             self::$kernel->getContainer()->get('banditore.repository.repo.test'),
             $publisher,
             $syncVersions,
+            $syncVersionsRss,
             $this->getAmqpMessage(0)
         ));
 
@@ -103,11 +119,19 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersions->expects($this->never())
             ->method('process');
 
+        $syncVersionsRss = $this->getMockBuilder('AppBundle\Consumer\SyncVersionsRss')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $syncVersionsRss->expects($this->never())
+            ->method('process');
+
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
             self::$kernel->getContainer()->get('banditore.repository.repo.test'),
             $publisher,
             $syncVersions,
+            $syncVersionsRss,
             $this->getAmqpMessage(10)
         ));
 
@@ -144,11 +168,19 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersions->expects($this->never())
             ->method('process');
 
+        $syncVersionsRss = $this->getMockBuilder('AppBundle\Consumer\SyncVersionsRss')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $syncVersionsRss->expects($this->never())
+            ->method('process');
+
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
             self::$kernel->getContainer()->get('banditore.repository.repo.test'),
             $publisher,
             $syncVersions,
+            $syncVersionsRss,
             $this->getAmqpMessage(0)
         ));
 
@@ -187,11 +219,19 @@ class SyncVersionsCommandTest extends WebTestCase
                 []
             );
 
+        $syncVersionsRss = $this->getMockBuilder('AppBundle\Consumer\SyncVersionsRss')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $syncVersionsRss->expects($this->never())
+            ->method('process');
+
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
             self::$kernel->getContainer()->get('banditore.repository.repo.test'),
             $publisher,
             $syncVersions,
+            $syncVersionsRss,
             self::$kernel->getContainer()->get('swarrot.factory.default')
         ));
 
@@ -225,11 +265,19 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersions->expects($this->never())
             ->method('process');
 
+        $syncVersionsRss = $this->getMockBuilder('AppBundle\Consumer\SyncVersionsRss')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $syncVersionsRss->expects($this->never())
+            ->method('process');
+
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
             self::$kernel->getContainer()->get('banditore.repository.repo.test'),
             $publisher,
             $syncVersions,
+            $syncVersionsRss,
             self::$kernel->getContainer()->get('swarrot.factory.default')
         ));
 

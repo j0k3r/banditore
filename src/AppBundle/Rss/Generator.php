@@ -20,14 +20,16 @@ class Generator
     /**
      * It will return the RSS for the given user with all the latests releases given.
      *
-     * @param User   $user     User which require the RSS
-     * @param array  $releases An array of releases information
-     * @param string $feedUrl  The feed URL
+     * @param User      $user     User which require the RSS
+     * @param \Iterator $releases An array of releases information
+     * @param string    $feedUrl  The feed URL
      *
      * @return Channel Information to be dumped by `RssStreamedResponse` for example
      */
-    public function generate(User $user, array $releases, $feedUrl)
+    public function generate(User $user, \Iterator $releases, $feedUrl)
     {
+        $lastRelease = $releases->current();
+
         $channel = new Channel();
         $channel->addExtension(
             (new AtomLink())
@@ -51,8 +53,12 @@ class Generator
             ->setDescription(str_replace('%USERNAME%', $user->getUserName(), self::CHANNEL_DESCRIPTION))
             ->setLanguage('en')
             ->setCopyright('(c) ' . (new \DateTime())->format('Y') . ' banditore')
-            ->setLastBuildDate(isset($releases[0]) ? $releases[0]['createdAt'] : new \DateTime())
+            ->setLastBuildDate($lastRelease['createdAt'])
             ->setGenerator('banditore');
+
+        if (null === $lastRelease) {
+            return $channel;
+        }
 
         foreach ($releases as $release) {
             // build repo top information

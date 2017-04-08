@@ -17,7 +17,7 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
         $generator = new Generator();
         $channel = $generator->generate(
             $user,
-            [
+            new \ArrayIterator([
                 [
                     'homepage' => 'http://homepa.ge',
                     'language' => 'Thus',
@@ -28,7 +28,7 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
                     'body' => '<p>yay</p>',
                     'createdAt' => (new \DateTime())->setTimestamp(1171502725),
                 ],
-            ],
+            ]),
             'http://myfeed.api/.rss'
         );
 

@@ -210,12 +210,31 @@ class Version
         return $this->body;
     }
 
+    /**
+     * Get Repo.
+     *
+     * @return Repo
+     */
+    public function getRepo()
+    {
+        return $this->repo;
+    }
+
     public function hydrateFromGithub(array $data)
     {
         $this->setTagName($data['tag_name']);
         $this->setName($data['name']);
         $this->setPrerelease($data['prerelease']);
-        $this->setCreatedAt((new \DateTime())->setTimestamp(strtotime($data['published_at'])));
+
+        $date = $data['published_at'];
+        if (!$date instanceof \DateTime) {
+            $date = (new \DateTime())->setTimestamp(strtotime($data['published_at']));
+        }
+
+        // force timezone to be sure date is the same whenever the source we used to retrieve new release (API or RSS)
+        $date->setTimezone(new \DateTimeZone('UTC'));
+
+        $this->setCreatedAt($date);
         $this->setBody($data['message']);
     }
 }

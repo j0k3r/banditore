@@ -46,11 +46,11 @@ class VersionRepository extends ServiceEntityRepository
      * @param int $offset
      * @param int $length
      *
-     * @return array
+     * @return \Generator
      */
     public function findForUser($userId, $offset = 0, $length = 20)
     {
-        return $this->createQueryBuilder('v')
+        $releases = $this->createQueryBuilder('v')
             ->select('v.tagName', 'v.name', 'v.createdAt', 'v.body', 'v.prerelease', 'r.fullName', 'r.ownerAvatar', 'r.ownerAvatar', 'r.homepage', 'r.language', 'r.description')
             ->leftJoin('v.repo', 'r')
             ->leftJoin('r.stars', 's')
@@ -60,6 +60,21 @@ class VersionRepository extends ServiceEntityRepository
             ->setMaxResults($length)
             ->getQuery()
             ->getArrayResult();
+
+        /*
+         * Hacky stuff to convert a badly stored date without a timezone to the correct date
+         */
+        foreach ($releases as $release) {
+            // getTimestamp will retrieve the data and apply the default timezone
+            // we then convert the default timezone to UTC
+            $utcDate = str_replace(date('P'), 'Z', date('c', $release['createdAt']->getTimestamp()));
+            // and finally create a new date with the *REAL* UTC date
+            $newDate = (new \DateTime())->setTimestamp(strtotime($utcDate));
+
+            $release['createdAt'] = $newDate;
+
+            yield $release;
+        }
     }
 
     /**

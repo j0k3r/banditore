@@ -110,6 +110,32 @@ swarrot:
                 - configurator: swarrot.processor.retry
                 - configurator: swarrot.processor.exception_catcher
                 - configurator: swarrot.processor.ack
+        banditore.sync_versions_rss:
+            processor: AppBundle\Consumer\SyncVersionsRss
+            extras:
+                poll_interval: 500000
+            middleware_stack:
+                # stop workers after 100 messages to avoid eating too much memory
+                - configurator: swarrot.processor.max_messages
+                  extras:
+                      max_messages: 100
+                - configurator: swarrot.processor.doctrine_connection
+                - configurator: swarrot.processor.retry
+                - configurator: swarrot.processor.exception_catcher
+                - configurator: swarrot.processor.ack
+        banditore.sync_versions_info:
+            processor: AppBundle\Consumer\SyncVersionsInfo
+            extras:
+                poll_interval: 500000
+            middleware_stack:
+                # stop workers after 10 messages to avoid eating too much memory
+                - configurator: swarrot.processor.max_messages
+                  extras:
+                      max_messages: 10
+                - configurator: swarrot.processor.doctrine_connection
+                - configurator: swarrot.processor.retry
+                - configurator: swarrot.processor.exception_catcher
+                - configurator: swarrot.processor.ack
     messages_types:
         banditore.sync_starred_repos.publisher:
             connection: rabbitmq
@@ -117,6 +143,12 @@ swarrot:
         banditore.sync_versions.publisher:
             connection: rabbitmq
             exchange: banditore.sync_versions
+        banditore.sync_versions_rss.publisher:
+            connection: rabbitmq
+            exchange: banditore.sync_versions_rss
+        banditore.sync_versions_info.publisher:
+            connection: rabbitmq
+            exchange: banditore.sync_versions_info
 
 ashley_dawson_simple_pagination:
     defaults:

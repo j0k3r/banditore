@@ -26,6 +26,14 @@ services:
         alias: AppBundle\Consumer\SyncVersions
         public: true
 
+    banditore.consumer.sync_versions_rss.test:
+        alias: AppBundle\Consumer\SyncVersionsRss
+        public: true
+
+    banditore.consumer.sync_versions_info.test:
+        alias: AppBundle\Consumer\SyncVersionsInfo
+        public: true
+
     banditore.consumer.sync_starred_repos.test:
         alias: AppBundle\Consumer\SyncStarredRepos
         public: true

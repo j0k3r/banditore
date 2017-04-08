@@ -5,11 +5,27 @@
 [![Travis Status](https://travis-ci.org/j0k3r/banditore.svg?branch=master)](https://travis-ci.org/j0k3r/banditore)
 [![Coveralls Status](https://coveralls.io/repos/github/j0k3r/banditore/badge.svg?branch=master)](https://coveralls.io/github/j0k3r/banditore?branch=master)
 [![Scrutinizer Status](https://scrutinizer-ci.com/g/j0k3r/banditore/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/j0k3r/banditore/?branch=master)
-[![Say Thanks !](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/j0k3r)
 
 Banditore retrieves new releases from your GitHub starred repositories and put them in a RSS feed, just for you.
 
 ![](https://i.imgur.com/XDCWLJV.png)
+
+<!-- MarkdownTOC autolink="true" -->
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Running the instance](#running-the-instance)
+    - [Without RabbitMQ](#without-rabbitmq)
+    - [With RabbitMQ](#with-rabbitmq)
+    - [Monitoring](#monitoring)
+- [Running the test suite](#running-the-test-suite)
+- [How it works](#how-it-works)
+    - [Retrieving new release / tag](#retrieving-new-release--tag)
+        - [New release](#new-release)
+        - [New tag](#new-tag)
+    - [GitHub Client Discovery](#github-client-discovery)
+
+<!-- /MarkdownTOC -->
 
 ## Requirements
 
@@ -67,6 +83,7 @@ You just need to define these 2 cronjobs (replace all `/path/to/banditore` with 
 ```bash
 # retrieve new release of each repo every 10 minutes
 */10  *   *   *   *   php /path/to/banditore/bin/console -e prod banditore:sync:versions >> /path/to/banditore/var/logs/command-sync-versions.log 2>&1
+# */10  *   *   *   *   php /path/to/banditore/bin/console -e prod banditore:sync:versions-rss >> /path/to/banditore/var/logs/command-sync-versions-rss.log 2>&1
 # sync starred repos of each user every 5 minutes
 */5   *   *   *   *   php /path/to/banditore/bin/console -e prod banditore:sync:starred-repos >> /path/banditore/to/var/logs/command-sync-repos.log 2>&1
 ```
@@ -82,12 +99,15 @@ You just need to define these 2 cronjobs (replace all `/path/to/banditore` with 
 2. You now have two queues and two exchanges defined:
  - `banditore.sync_starred_repos`: will receive messages to sync starred repos of all users
  - `banditore.sync_versions`: will receive message to retrieve new release for repos
+ - `banditore.sync_versions_rss`: same as the previous one but to be fetched by consumer using RSS instead of GitHub API (much faster)
+ - `banditore.sync_versions_info`: used by the previous queue to retrieve more info from a version (because RSS don't have all information)
 
 3. Enable these 2 cronjobs which will periodically push messages in queues (replace all `/path/to/banditore` with real value):
 
  ```bash
  # retrieve new release of each repo every 10 minutes
  */10  *   *   *   *   php /path/to/banditore/bin/console -e prod banditore:sync:versions --use_queue >> /path/to/banditore/var/logs/command-sync-versions.log 2>&1
+ # */10  *   *   *   *   php /path/to/banditore/bin/console -e prod banditore:sync:versions-rss --use_queue >> /path/to/banditore/var/logs/command-sync-versions-rss.log 2>&1
  # sync starred repos of each user every 5 minutes
  */5   *   *   *   *   php /path/to/banditore/bin/console -e prod banditore:sync:starred-repos --use_queue >> /path/banditore/to/var/logs/command-sync-repos.log 2>&1
 ```
@@ -191,4 +211,4 @@ It aims to find the best client with enough rate limit remain (defined as 50).
 - it first checks using the GitHub OAuth app
 - then it checks using all user GitHub token
 
-Which means, if you have 5 users on the app, you'll be able to make (1 + 5) x 5.000 = 25.000 calls per hour
+Which means, if you have 5 users on the app, you'll be able to make (1 + 5) x 5.000 = 30.000 calls per hour

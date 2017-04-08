@@ -3,6 +3,7 @@
 namespace AppBundle\Command;
 
 use AppBundle\Consumer\SyncVersions;
+use AppBundle\Consumer\SyncVersionsRss;
 use AppBundle\Repository\RepoRepository;
 use Swarrot\Broker\Message;
 use Swarrot\SwarrotBundle\Broker\AmqpLibFactory;
@@ -13,25 +14,26 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * This command send contents to opt-in Messenger users.
- * It can send one content or many.
+ * This command sync new versions from repo(s) by using GitHub API OR GitHub RSS release feed.
  *
- * Options priority is build this way:
- *     - one content
- *     - many contents
+ * It can do it:
+ *     - right away, might take longer to process
+ *     - by publishing a message in a queue
  */
 class SyncVersionsCommand extends Command
 {
     private $repoRepository;
     private $publisher;
     private $syncVersions;
+    private $syncVersionsRss;
     private $amqplibFactory;
 
-    public function __construct(RepoRepository $repoRepository, Publisher $publisher, SyncVersions $syncVersions, AmqpLibFactory $amqplibFactory)
+    public function __construct(RepoRepository $repoRepository, Publisher $publisher, SyncVersions $syncVersions, SyncVersionsRss $syncVersionsRss, AmqpLibFactory $amqplibFactory)
     {
         $this->repoRepository = $repoRepository;
         $this->publisher = $publisher;
         $this->syncVersions = $syncVersions;
+        $this->syncVersionsRss = $syncVersionsRss;
         $this->amqplibFactory = $amqplibFactory;
 
         parent::__construct();
@@ -60,22 +62,44 @@ class SyncVersionsCommand extends Command
                 InputOption::VALUE_NONE,
                 'Push each repo into a queue instead of fetching it right away'
             )
+            ->addOption(
+                'use_rss',
+                null,
+                InputOption::VALUE_NONE,
+                'Use RSS feed instead of GitHub API'
+            )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $syncVersionsService = $this->syncVersions;
+        $messageType = 'banditore.sync_versions.publisher';
+        $queueName = 'banditore.sync_versions';
+        if ($input->getOption('use_rss')) {
+            $syncVersionsService = $this->syncVersionsRss;
+            $messageType = 'banditore.sync_versions_rss.publisher';
+            $queueName = 'banditore.sync_versions_rss';
+        }
+
         if ($input->getOption('use_queue')) {
             // check that queue is empty before pushing new messages
             $message = $this->amqplibFactory
                 ->getChannel('rabbitmq')
-                ->basic_get('banditore.sync_versions');
+                ->basic_get($queueName);
 
             if (null !== $message && 0 < $message->delivery_info['message_count']) {
                 $output->writeln('Current queue as too much messages (<error>' . $message->delivery_info['message_count'] . '</error>), <comment>skipping</comment>.');
 
                 return 1;
             }
+        }
+
+        $syncVersionsService = $this->syncVersions;
+        $messageType = 'banditore.sync_versions.publisher';
+        if ($input->getOption('use_rss')) {
+            $syncVersionsService = $this->syncVersionsRss;
+            $messageType = 'banditore.sync_versions_rss.publisher';
         }
 
         $repos = $this->retrieveRepos($input);
@@ -100,11 +124,11 @@ class SyncVersionsCommand extends Command
 
             if ($input->getOption('use_queue')) {
                 $this->publisher->publish(
-                    'banditore.sync_versions.publisher',
+                    $messageType,
                     $message
                 );
             } else {
-                $this->syncVersions->process(
+                $syncVersionsService->process(
                     $message,
                     []
                 );
