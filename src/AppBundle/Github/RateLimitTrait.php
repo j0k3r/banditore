@@ -24,6 +24,10 @@ trait RateLimitTrait
             $logger->error('RateLimit call goes bad.', ['exception' => $e]);
 
             return false;
+        } catch (\Exception $e) {
+            $logger->error('RateLimit call goes REALLY bad.', ['exception' => $e]);
+
+            return false;
         }
     }
 }
