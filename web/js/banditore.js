@@ -4,15 +4,15 @@
     for (var i = 0; i < alerts.length; ++i) {
         alerts[i].addEventListener('click', function (event) {
             // in case the font awesome element isn't loaded (might be the case on iOS)
-            if (event.srcElement.className === 'fa fa-close') {
+            if (event.target.className === 'fa fa-close') {
                 event
-                    .srcElement // font awesome element
+                    .target // font awesome element
                     .parentElement // span element
                     .parentElement // alert element
                     .style.display = 'none'
             } else {
                 event
-                    .srcElement // span element
+                    .target // span element
                     .parentElement // alert element
                     .style.display = 'none'
             }
