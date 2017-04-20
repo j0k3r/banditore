@@ -7,7 +7,7 @@
 [![Scrutinizer Status](https://scrutinizer-ci.com/g/j0k3r/banditore/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/j0k3r/banditore/?branch=master)
 [![Say Thanks !](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/j0k3r)
 
-Banditore retrieves new releases from your Github starred repositories and put them in a RSS feed, just for you.
+Banditore retrieves new releases from your GitHub starred repositories and put them in a RSS feed, just for you.
 
 ![](https://i.imgur.com/XDCWLJV.png)
 
@@ -15,7 +15,7 @@ Banditore retrieves new releases from your Github starred repositories and put t
 
  - PHP >= 5.5.9 (with `pdo_mysql`)
  - MySQL >= 5.7
- - Redis (to cache requests to the Github API)
+ - Redis (to cache requests to the GitHub API)
  - [RabbitMQ](https://www.rabbitmq.com/), which is optional (see below)
  - [Supervisor](http://supervisord.org/) (only if you use RabbitMQ)
 
@@ -27,7 +27,7 @@ Banditore retrieves new releases from your Github starred repositories and put t
     git clone https://github.com/j0k3r/banditore.git
     ```
 
-2. [Register a new OAuth Github application](https://github.com/settings/applications/new) and get the _Client ID_ & _Client Secret_ for the next step (for the _Authorization callback URL_ put `http://127.0.0.1:8000/callback`)
+2. [Register a new OAuth GitHub application](https://github.com/settings/applications/new) and get the _Client ID_ & _Client Secret_ for the next step (for the _Authorization callback URL_ put `http://127.0.0.1:8000/callback`)
 
 3. Install dependencies using [Composer](https://getcomposer.org/download/) and define your parameter during the installation
 
@@ -149,10 +149,10 @@ After retrieving the tag, we need to retrieve the commit to get these informatio
 
 > Check a commit from the previous tag list as example: https://api.github.com/repos/swarrot/SwarrotBundle/commits/84c7c57622e4666ae5706f33cd71842639b78755
 
-### Github Client Discovery
+### GitHub Client Discovery
 
-This is the most important piece of the app. One thing that I ran though is hitting the rate limit on Github.
-The rate limit for a given authenticated client is 5.000 calls per hour. This limit is **never** reached when looking for new release (thanks to the [conditional requests](https://developer.github.com/v3/#conditional-requests) of the Github API) on a daily basis.
+This is the most important piece of the app. One thing that I ran though is hitting the rate limit on GitHub.
+The rate limit for a given authenticated client is 5.000 calls per hour. This limit is **never** reached when looking for new release (thanks to the [conditional requests](https://developer.github.com/v3/#conditional-requests) of the GitHub API) on a daily basis.
 
 But when new user sign in, we need to sync all its starred repositories and also all their releases / tags. And here come the gourmand part:
 - one call for the list of release
@@ -165,9 +165,9 @@ Let's say the repo:
 
 And keep in mind that some repos got also 1.000+ tags (!!).
 
-To avoid hitting the limit in such case and wait 1 hour to be able to make requests again I created the [Github Client Discovery class](src/AppBundle/Github/ClientDiscovery.php).
+To avoid hitting the limit in such case and wait 1 hour to be able to make requests again I created the [GitHub Client Discovery class](src/AppBundle/Github/ClientDiscovery.php).
 It aims to find the best client with enough rate limit remain (defined as 50).
-- it first checks using the Github OAuth app
-- then it checks using all user Github token
+- it first checks using the GitHub OAuth app
+- then it checks using all user GitHub token
 
 Which means, if you have 5 users on the app, you'll be able to make (1 + 5) x 5.000 = 25.000 calls per hour

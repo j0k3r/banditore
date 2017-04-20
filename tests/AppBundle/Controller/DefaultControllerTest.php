@@ -72,7 +72,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
 
         $menu = $crawler->filter('.menu-wrapper')->text();
-        $this->assertContains('View it on Github', $menu, 'Link to Github is here');
+        $this->assertContains('View it on GitHub', $menu, 'Link to GitHub is here');
         $this->assertContains('Logout (admin)', $menu, 'Info about logged in user is here');
 
         $aside = $crawler->filter('aside.feed')->text();
