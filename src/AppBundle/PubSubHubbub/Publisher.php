@@ -78,7 +78,7 @@ class Publisher
         );
 
         // hub should response 204 if everything went fine
-        return !($response->getStatusCode() !== 204);
+        return !(204 !== $response->getStatusCode());
     }
 
     /**
