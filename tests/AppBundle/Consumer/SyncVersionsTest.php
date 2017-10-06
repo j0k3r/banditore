@@ -242,7 +242,7 @@ class SyncVersionsTest extends WebTestCase
             ->method('findExistingOne')
             ->will($this->returnCallback(function ($tagName, $repoId) use ($repo) {
                 // first version will exist, next one won't
-                if ($tagName === '1.0.0') {
+                if ('1.0.0' === $tagName) {
                     return new Version($repo);
                 }
             }));

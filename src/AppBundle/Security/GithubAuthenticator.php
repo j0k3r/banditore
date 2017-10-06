@@ -34,7 +34,7 @@ class GithubAuthenticator extends SocialAuthenticator
 
     public function getCredentials(Request $request)
     {
-        if ($request->getPathInfo() !== '/callback') {
+        if ('/callback' !== $request->getPathInfo()) {
             // don't auth
             return;
         }
