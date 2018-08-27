@@ -52,7 +52,7 @@
         "sensio/generator-bundle": "^3.0",
         "symfony/phpunit-bridge": "^3.0",
         "doctrine/doctrine-fixtures-bundle": "^2.3",
-        "satooshi/php-coveralls": "dev-master",
+        "php-coveralls/php-coveralls": "^2.0",
         "m6web/redis-mock": "dev-predis-1.x"
     },
     "scripts": {
