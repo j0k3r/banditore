@@ -75,14 +75,14 @@ class SyncVersionsCommand extends ContainerAwareCommand
 
         $repos = $this->retrieveRepos($input);
 
-        if (count(array_filter($repos)) <= 0) {
+        if (\count(array_filter($repos)) <= 0) {
             $output->writeln('<error>No repos found</error>');
 
             return 1;
         }
 
         $repoChecked = 0;
-        $totalRepos = count($repos);
+        $totalRepos = \count($repos);
 
         foreach ($repos as $repoId) {
             ++$repoChecked;
