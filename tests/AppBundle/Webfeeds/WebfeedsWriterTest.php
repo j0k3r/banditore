@@ -6,7 +6,7 @@ use AppBundle\Webfeeds\Webfeeds;
 use AppBundle\Webfeeds\WebfeedsWriter;
 use MarcW\RssWriter\RssWriter;
 
-class WebfeedsWriterTest extends \PHPUnit_Framework_TestCase
+class WebfeedsWriterTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {

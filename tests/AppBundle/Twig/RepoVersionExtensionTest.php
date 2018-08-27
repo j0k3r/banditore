@@ -4,7 +4,7 @@ namespace Tests\AppBundle\Twig;
 
 use AppBundle\Twig\RepoVersionExtension;
 
-class RepoVersionExtensionTest extends \PHPUnit_Framework_TestCase
+class RepoVersionExtensionTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {

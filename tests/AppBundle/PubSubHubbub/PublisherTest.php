@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
-class PublisherTest extends \PHPUnit_Framework_TestCase
+class PublisherTest extends \PHPUnit\Framework\TestCase
 {
     private $router;
 
