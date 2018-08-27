@@ -105,7 +105,7 @@ class SyncStarredRepos implements ProcessorInterface
         }
 
         do {
-            $this->logger->info('    sync ' . count($starredRepos) . ' starred repos', [
+            $this->logger->info('    sync ' . \count($starredRepos) . ' starred repos', [
                 'user' => $user->getUsername(),
                 'rate' => $this->getRateLimits($this->client, $this->logger),
             ]);
@@ -128,7 +128,7 @@ class SyncStarredRepos implements ProcessorInterface
                 // using `id` instead of `full_name` to be more accurated (full_name can change)
                 $newStars[] = $repo->getId();
 
-                if (false === in_array($repo->getId(), $currentStars, true)) {
+                if (false === \in_array($repo->getId(), $currentStars, true)) {
                     $star = new Star($user, $repo);
 
                     $em->persist($star);
@@ -143,7 +143,7 @@ class SyncStarredRepos implements ProcessorInterface
         // now remove unstarred repos
         $this->doCleanOldStar($user, $newStars);
 
-        return count($newStars);
+        return \count($newStars);
     }
 
     /**
@@ -165,7 +165,7 @@ class SyncStarredRepos implements ProcessorInterface
             return;
         }
 
-        $this->logger->info('Removed stars: ' . count($repoIdsToRemove), ['user' => $user->getUsername()]);
+        $this->logger->info('Removed stars: ' . \count($repoIdsToRemove), ['user' => $user->getUsername()]);
 
         return $this->starRepository->removeFromUser($repoIdsToRemove, $user->getId());
     }

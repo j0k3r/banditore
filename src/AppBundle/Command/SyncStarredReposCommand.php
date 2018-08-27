@@ -74,14 +74,14 @@ class SyncStarredReposCommand extends ContainerAwareCommand
 
         $users = $this->retrieveUsers($input);
 
-        if (count(array_filter($users)) <= 0) {
+        if (\count(array_filter($users)) <= 0) {
             $output->writeln('<error>No users found</error>');
 
             return 1;
         }
 
         $userSynced = 0;
-        $totalUsers = count($users);
+        $totalUsers = \count($users);
 
         foreach ($users as $userId) {
             ++$userSynced;

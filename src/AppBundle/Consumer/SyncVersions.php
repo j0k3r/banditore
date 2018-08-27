@@ -183,7 +183,7 @@ class SyncVersions implements ProcessorInterface
             }
 
             // render markdown in plain html and use default markdown file if it fails
-            if (isset($newRelease['message']) && strlen(trim($newRelease['message'])) > 0) {
+            if (isset($newRelease['message']) && \strlen(trim($newRelease['message'])) > 0) {
                 try {
                     $newRelease['message'] = $this->client->api('markdown')->render($newRelease['message'], 'gfm', $repo->getFullName());
                 } catch (\Exception $e) {
