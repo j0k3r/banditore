@@ -19,6 +19,7 @@ class RepoRepository extends \Doctrine\ORM\EntityRepository
     {
         $data = $this->createQueryBuilder('r')
             ->select('r.id')
+            ->where('r.removedAt IS NULL')
             ->getQuery()
             ->getArrayResult();
 

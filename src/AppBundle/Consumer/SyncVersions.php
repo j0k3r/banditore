@@ -108,6 +108,12 @@ class SyncVersions implements ProcessorInterface
         } catch (\Exception $e) {
             $this->logger->warning('(repo/tags) <error>' . $e->getMessage() . '</error>');
 
+            // repo not found? Ignore it in future loops
+            if (404 === $e->getCode()) {
+                $repo->setRemovedAt(new \DateTime());
+                $em->persist($repo);
+            }
+
             return;
         }
 

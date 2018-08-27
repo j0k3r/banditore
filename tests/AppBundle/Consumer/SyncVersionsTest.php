@@ -371,6 +371,92 @@ class SyncVersionsTest extends WebTestCase
     }
 
     /**
+     * The call to repo/tags will return a "404" then the repo will be flag as removed.
+     */
+    public function testProcessRepoNotFound()
+    {
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(true);
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->willReturn($em);
+
+        $repo = new Repo();
+        $repo->setId(123);
+        $repo->setFullName('bob/wow');
+        $repo->setName('wow');
+
+        $repoRepository = $this->getMockBuilder('AppBundle\Repository\RepoRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repoRepository->expects($this->once())
+            ->method('find')
+            ->with(123)
+            ->will($this->returnValue($repo));
+
+        $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $pubsubhubbub = $this->getMockBuilder('AppBundle\PubSubHubbub\Publisher')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $pubsubhubbub->expects($this->never())
+            ->method('pingHub');
+
+        $responses = new MockHandler([
+            // rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            // repo/tags generate a bad request
+            new Response(404, ['Content-Type' => 'application/json']),
+            // rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+        ]);
+
+        $clientHandler = HandlerStack::create($responses);
+        $guzzleClient = new Client([
+            'handler' => $clientHandler,
+        ]);
+
+        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpBuilder = new Builder($httpClient);
+        $githubClient = new GithubClient($httpBuilder);
+
+        $logger = new Logger('foo');
+        $logHandler = new TestHandler();
+        $logger->pushHandler($logHandler);
+
+        $processor = new SyncVersions(
+            $doctrine,
+            $repoRepository,
+            $versionRepository,
+            $pubsubhubbub,
+            $githubClient,
+            $logger
+        );
+
+        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+
+        $records = $logHandler->getRecords();
+
+        $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
+        $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
+        $this->assertContains('(repo/tags) <error>', $records[2]['message']);
+
+        $this->assertNotNull($repo->getRemovedAt());
+    }
+
+    /**
      * Not enough calls remaining.
      */
     public function testProcessCallsRemaingLow()

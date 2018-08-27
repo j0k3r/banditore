@@ -80,6 +80,13 @@ class Repo
     private $updatedAt;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="removed_at", type="datetime", nullable=true)
+     */
+    private $removedAt;
+
+    /**
      * @ORM\OneToMany(targetEntity="Star", mappedBy="repo")
      */
     private $stars;
@@ -332,5 +339,29 @@ class Repo
         $this->setFullName($data['full_name']);
         $this->setDescription($data['description']);
         $this->setOwnerAvatar($data['owner']['avatar_url']);
+    }
+
+    /**
+     * Set removedAt.
+     *
+     * @param \DateTime $removedAt
+     *
+     * @return Repo
+     */
+    public function setRemovedAt($removedAt)
+    {
+        $this->removedAt = $removedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get removedAt.
+     *
+     * @return \DateTime
+     */
+    public function getRemovedAt()
+    {
+        return $this->removedAt;
     }
 }
