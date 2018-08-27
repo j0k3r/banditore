@@ -5,7 +5,7 @@ namespace Tests\AppBundle\Rss;
 use AppBundle\Entity\User;
 use AppBundle\Rss\Generator;
 
-class GeneratorTest extends \PHPUnit_Framework_TestCase
+class GeneratorTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {

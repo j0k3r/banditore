@@ -4,7 +4,7 @@ namespace Tests\AppBundle\Webfeeds;
 
 use AppBundle\Webfeeds\Webfeeds;
 
-class WebfeedsTest extends \PHPUnit_Framework_TestCase
+class WebfeedsTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
