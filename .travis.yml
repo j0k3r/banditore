@@ -47,5 +47,5 @@ script:
 after_success:
     - |
         if [ "$COVERAGE" = "run" ]; then
-            php bin/coveralls -v
+            php bin/php-coveralls -v
         fi
