@@ -27,7 +27,7 @@ class DefaultControllerTest extends WebTestCase
 
     public function testIndexLoggedIn()
     {
-        $user = $this->client->getContainer()->get('banditore.repository.user')->find(123);
+        $user = $this->client->getContainer()->get('banditore.repository.user.test')->find(123);
 
         $this->logIn($user);
         $this->client->request('GET', '/');
@@ -46,7 +46,7 @@ class DefaultControllerTest extends WebTestCase
 
     public function testConnectWithLoggedInUser()
     {
-        $user = $this->client->getContainer()->get('banditore.repository.user')->find(123);
+        $user = $this->client->getContainer()->get('banditore.repository.user.test')->find(123);
 
         $this->logIn($user);
         $this->client->request('GET', '/connect');
@@ -64,7 +64,7 @@ class DefaultControllerTest extends WebTestCase
 
     public function testDashboard()
     {
-        $user = $this->client->getContainer()->get('banditore.repository.user')->find(123);
+        $user = $this->client->getContainer()->get('banditore.repository.user.test')->find(123);
 
         $this->logIn($user);
         $crawler = $this->client->request('GET', '/dashboard');
@@ -84,7 +84,7 @@ class DefaultControllerTest extends WebTestCase
 
     public function testDashboardPageTooHigh()
     {
-        $user = $this->client->getContainer()->get('banditore.repository.user')->find(123);
+        $user = $this->client->getContainer()->get('banditore.repository.user.test')->find(123);
 
         $this->logIn($user);
         $crawler = $this->client->request('GET', '/dashboard?page=20000');
@@ -95,7 +95,7 @@ class DefaultControllerTest extends WebTestCase
 
     public function testDashboardBadPage()
     {
-        $user = $this->client->getContainer()->get('banditore.repository.user')->find(123);
+        $user = $this->client->getContainer()->get('banditore.repository.user.test')->find(123);
 
         $this->logIn($user);
         $crawler = $this->client->request('GET', '/dashboard?page=dsdsds');
@@ -105,7 +105,7 @@ class DefaultControllerTest extends WebTestCase
 
     public function testRss()
     {
-        $user = $this->client->getContainer()->get('banditore.repository.user')->find(123);
+        $user = $this->client->getContainer()->get('banditore.repository.user.test')->find(123);
         $crawler = $this->client->request('GET', '/' . $user->getUuid() . '.atom');
 
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());

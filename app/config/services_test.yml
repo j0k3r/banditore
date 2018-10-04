@@ -1,0 +1,35 @@
+services:
+    # fixtures
+    AppBundle\DataFixtures\ORM\:
+        resource: '../../src/AppBundle/DataFixtures/ORM/*'
+        tags: ['doctrine.fixture.orm']
+        autowire: true
+
+    # see https://github.com/symfony/symfony/issues/24543
+    banditore.repository.user.test:
+        alias: banditore.repository.user
+        public: true
+
+    banditore.repository.version.test:
+        alias: banditore.repository.version
+        public: true
+
+    banditore.repository.repo.test:
+        alias: banditore.repository.repo
+        public: true
+
+    banditore.repository.star.test:
+        alias: banditore.repository.star
+        public: true
+
+    banditore.consumer.sync_versions.test:
+        alias: banditore.consumer.sync_versions
+        public: true
+
+    banditore.consumer.sync_starred_repos.test:
+        alias: banditore.consumer.sync_starred_repos
+        public: true
+
+    banditore.github.client_discovery.test:
+        alias: banditore.github.client_discovery
+        public: true

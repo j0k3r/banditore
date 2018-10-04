@@ -1014,15 +1014,15 @@ class SyncVersionsTest extends WebTestCase
 
         $container->set('banditore.client.guzzle', $guzzleClientPub);
 
-        $processor = $container->get('banditore.consumer.sync_versions');
+        $processor = $container->get('banditore.consumer.sync_versions.test');
 
-        $versions = $container->get('banditore.repository.version')->findBy(['repo' => 666]);
+        $versions = $container->get('banditore.repository.version.test')->findBy(['repo' => 666]);
         $this->assertCount(1, $versions, 'Repo 666 has 1 version');
         $this->assertSame('1.0.0', $versions[0]->getTagName(), 'Repo 666 has 1 version, which is 1.0.0');
 
         $processor->process(new Message(json_encode(['repo_id' => 666])), []);
 
-        $versions = $container->get('banditore.repository.version')->findBy(['repo' => 666]);
+        $versions = $container->get('banditore.repository.version.test')->findBy(['repo' => 666]);
         $this->assertCount(4, $versions, 'Repo 666 has now 4 versions');
         $this->assertSame('1.0.0', $versions[0]->getTagName(), 'Repo 666 has 4 version. First one is 1.0.0');
         $this->assertSame('1.0.1', $versions[1]->getTagName(), 'Repo 666 has 4 version. Second one is 1.0.1');
@@ -1102,15 +1102,15 @@ class SyncVersionsTest extends WebTestCase
 
         $container->set('banditore.client.guzzle', $guzzleClientPub);
 
-        $processor = $container->get('banditore.consumer.sync_versions');
+        $processor = $container->get('banditore.consumer.sync_versions.test');
 
-        $versions = $container->get('banditore.repository.version')->findBy(['repo' => 555]);
+        $versions = $container->get('banditore.repository.version.test')->findBy(['repo' => 555]);
         $this->assertCount(1, $versions, 'Repo 555 has 1 version');
         $this->assertSame('1.0.21', $versions[0]->getTagName(), 'Repo 555 has 1 version, which is 1.0.21');
 
         $processor->process(new Message(json_encode(['repo_id' => 555])), []);
 
-        $versions = $container->get('banditore.repository.version')->findBy(['repo' => 555]);
+        $versions = $container->get('banditore.repository.version.test')->findBy(['repo' => 555]);
         $this->assertCount(2, $versions, 'Repo 555 has now 2 versions');
         $this->assertSame('1.0.21', $versions[0]->getTagName(), 'Repo 555 has 2 version. First one is 1.0.21');
         $this->assertSame('V1.1.0', $versions[1]->getTagName(), 'Repo 555 has 2 version. Second one is V1.1.0');

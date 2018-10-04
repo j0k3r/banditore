@@ -59,14 +59,14 @@ class GithubAuthenticatorTest extends WebTestCase
         $container->get('session')->set(OAuth2Client::OAUTH2_SESSION_STATE_KEY, 'MyAwesomeState');
 
         // before login
-        $user = $container->get('banditore.repository.user')->find(123);
+        $user = $container->get('banditore.repository.user.test')->find(123);
         $this->assertSame('1234567890', $user->getAccessToken());
         $this->assertSame('http://0.0.0.0/avatar.jpg', $user->getAvatar());
 
         $client->request('GET', '/callback?state=MyAwesomeState&code=MyAwesomeCode');
 
         // after login
-        $user = $container->get('banditore.repository.user')->find(123);
+        $user = $container->get('banditore.repository.user.test')->find(123);
         $this->assertSame('blablabla', $user->getAccessToken());
         $this->assertSame('http://avat.ar/my.png', $user->getAvatar());
 
@@ -120,13 +120,13 @@ class GithubAuthenticatorTest extends WebTestCase
         $container->get('session')->set(OAuth2Client::OAUTH2_SESSION_STATE_KEY, 'MyAwesomeState');
 
         // before login
-        $user = $container->get('banditore.repository.user')->find(456);
+        $user = $container->get('banditore.repository.user.test')->find(456);
         $this->assertNull($user, 'User 456 does not YET exist');
 
         $client->request('GET', '/callback?state=MyAwesomeState&code=MyAwesomeCode');
 
         // after login
-        $user = $container->get('banditore.repository.user')->find(456);
+        $user = $container->get('banditore.repository.user.test')->find(456);
         $this->assertSame('superboum', $user->getAccessToken());
         $this->assertSame('http://avat.ar/down.png', $user->getAvatar());
         $this->assertSame('getdown', $user->getUsername());
