@@ -533,22 +533,22 @@ class SyncStarredReposTest extends WebTestCase
         // override factory to avoid real call to Github
         $container->set('banditore.client.github', $githubClient);
 
-        $processor = $container->get('banditore.consumer.sync_starred_repos');
+        $processor = $container->get('banditore.consumer.sync_starred_repos.test');
 
         // before import
-        $stars = $container->get('banditore.repository.star')->findAllByUser(123);
+        $stars = $container->get('banditore.repository.star.test')->findAllByUser(123);
         $this->assertCount(2, $stars, 'User 123 has 2 starred repos');
         $this->assertSame(555, $stars[0], 'User 123 has "symfony/symfony" starred repo');
         $this->assertSame(666, $stars[1], 'User 123 has "test/test" starred repo');
 
         $processor->process(new Message(json_encode(['user_id' => 123])), []);
 
-        $repo = $container->get('banditore.repository.repo')->find(777);
+        $repo = $container->get('banditore.repository.repo.test')->find(777);
         $this->assertNotNull($repo, 'Imported repo with id 777 exists');
         $this->assertSame('j0k3r/banditore', $repo->getFullName(), 'Imported repo with id 777 exists');
 
         // validate that `test/test` association got removed
-        $stars = $container->get('banditore.repository.star')->findAllByUser(123);
+        $stars = $container->get('banditore.repository.star.test')->findAllByUser(123);
         $this->assertCount(2, $stars, 'User 123 has 2 starred repos');
         $this->assertSame(666, $stars[0], 'User 123 has "test/test" starred repo');
         $this->assertSame(777, $stars[1], 'User 123 has "j0k3r/banditore" starred repo');

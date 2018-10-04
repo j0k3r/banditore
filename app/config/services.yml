@@ -115,3 +115,12 @@ services:
         class: Twig_Extensions_Extension_Date
         tags:
             - { name: twig.extension }
+
+    # commands
+    banditore.command.sync_starred_repos:
+        class: AppBundle\Command\SyncStarredReposCommand
+        tags: ['console.command']
+
+    banditore.command.sync_versions:
+        class: AppBundle\Command\SyncVersionsCommand
+        tags: ['console.command']

@@ -258,7 +258,7 @@ class ClientDiscoveryTest extends WebTestCase
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
-        $disco = $container->get('banditore.github.client_discovery');
+        $disco = $container->get('banditore.github.client_discovery.test');
         $disco->setGithubClient($githubClient);
 
         $resClient = $disco->find();
