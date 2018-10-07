@@ -24,9 +24,6 @@ monolog:
 sentry:
     dsn: "%sentry_dsn%"
 
-ekino_new_relic:
-    enabled: true
-
 snc_redis:
     doctrine:
         metadata_cache:

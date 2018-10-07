@@ -25,7 +25,6 @@
         "doctrine/doctrine-cache-bundle": "^1.2",
         "doctrine/doctrine-migrations-bundle": "^1.2",
         "doctrine/orm": "^2.5",
-        "ekino/newrelic-bundle": "^1.3",
         "incenteev/composer-parameter-handler": "^2.0",
         "knplabs/github-api": "^2.2",
         "knpuniversity/oauth2-client-bundle": "^1.9",

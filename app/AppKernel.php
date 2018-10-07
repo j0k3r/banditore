@@ -17,7 +17,6 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new MarcW\RssWriter\Bundle\MarcWRssWriterBundle(),
             new KnpU\OAuth2ClientBundle\KnpUOAuth2ClientBundle(),
-            new Ekino\Bundle\NewRelicBundle\EkinoNewRelicBundle(),
             new Swarrot\SwarrotBundle\SwarrotBundle(),
             new Sentry\SentryBundle\SentryBundle(),
             new AshleyDawson\SimplePaginationBundle\AshleyDawsonSimplePaginationBundle(),
