@@ -242,6 +242,12 @@ class ClientDiscoveryTest extends WebTestCase
         $client = static::createClient();
         $container = $client->getContainer();
 
+        try {
+            $container->get('snc_redis.guzzle_cache')->connect();
+        } catch (\Exception $e) {
+            $this->markTestSkipped('Redis is not installed/activated');
+        }
+
         $responses = new MockHandler([
             // first rate_limit request fail (Github booboo)
             new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_APP - 10]]])),

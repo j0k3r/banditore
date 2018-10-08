@@ -3,11 +3,11 @@
 namespace AppBundle\Security;
 
 use AppBundle\Entity\User;
-use Doctrine\ORM\EntityManager;
+use AppBundle\Entity\Version;
+use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\Provider\GithubClient;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
-use League\OAuth2\Client\Provider\Exception\GithubIdentityProviderException;
 use Swarrot\Broker\Message;
 use Swarrot\SwarrotBundle\Broker\Publisher;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,7 +24,7 @@ class GithubAuthenticator extends SocialAuthenticator
     private $router;
     private $publisher;
 
-    public function __construct(ClientRegistry $clientRegistry, EntityManager $em, RouterInterface $router, Publisher $publisher)
+    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $em, RouterInterface $router, Publisher $publisher)
     {
         $this->clientRegistry = $clientRegistry;
         $this->em = $em;
@@ -32,25 +32,21 @@ class GithubAuthenticator extends SocialAuthenticator
         $this->publisher = $publisher;
     }
 
+    public function supports(Request $request)
+    {
+        return 'github_callback' === $request->attributes->get('_route');
+    }
+
     public function getCredentials(Request $request)
     {
-        if ('/callback' !== $request->getPathInfo()) {
-            // don't auth
-            return;
-        }
-
-        try {
-            return $this->fetchAccessToken($this->getGithubClient());
-        } catch (GithubIdentityProviderException $e) {
-            return;
-        }
+        return $this->fetchAccessToken($this->getGithubClient());
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $githubUser = $this->getGithubClient()->fetchUserFromToken($credentials);
 
-        $user = $this->em->getRepository('AppBundle:User')->find($githubUser->getId());
+        $user = $this->em->getRepository(User::class)->find($githubUser->getId());
 
         // always update user information at login
         if (null === $user) {
@@ -73,7 +69,7 @@ class GithubAuthenticator extends SocialAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $versions = $this->em->getRepository('AppBundle:Version')->findForUser($token->getUser()->getId());
+        $versions = $this->em->getRepository(Version::class)->findForUser($token->getUser()->getId());
 
         // if no versions were found, it means the user logged in for the first time
         // and we need to display an explanation message

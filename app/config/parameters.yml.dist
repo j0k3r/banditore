@@ -17,8 +17,6 @@ parameters:
     project_host: banditore.com
     project_scheme: http
 
-    newrelic_api_key: xxx
-
     # rabbit
     rabbitmq_host: 127.0.0.1
     rabbitmq_port: 5672

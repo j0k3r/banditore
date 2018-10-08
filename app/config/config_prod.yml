@@ -20,12 +20,10 @@ monolog:
             level: error
         console:
             type: console
+            process_psr_3_messages: false
 
 sentry:
     dsn: "%sentry_dsn%"
-
-ekino_new_relic:
-    enabled: true
 
 snc_redis:
     doctrine:

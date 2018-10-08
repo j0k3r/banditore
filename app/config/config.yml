@@ -124,17 +124,6 @@ swarrot:
             connection: rabbitmq
             exchange: banditore.sync_versions
 
-ekino_new_relic:
-    enabled: false
-    application_name: banditore
-    api_key: "%newrelic_api_key%"
-    logging: true
-    log_commands: true
-    using_symfony_cache: false
-    transaction_naming: route
-    ignored_commands:
-        - "cache:clear"
-
 ashley_dawson_simple_pagination:
     defaults:
         items_per_page: 30

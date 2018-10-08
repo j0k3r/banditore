@@ -2,8 +2,12 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\Consumer\SyncVersions;
+use AppBundle\Repository\RepoRepository;
 use Swarrot\Broker\Message;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Swarrot\SwarrotBundle\Broker\AmqpLibFactory;
+use Swarrot\SwarrotBundle\Broker\Publisher;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,12 +20,22 @@ use Symfony\Component\Console\Output\OutputInterface;
  *     - one content
  *     - many contents
  */
-class SyncVersionsCommand extends ContainerAwareCommand
+class SyncVersionsCommand extends Command
 {
     private $repoRepository;
     private $publisher;
     private $syncVersions;
     private $amqplibFactory;
+
+    public function __construct(RepoRepository $repoRepository, Publisher $publisher, SyncVersions $syncVersions, AmqpLibFactory $amqplibFactory)
+    {
+        $this->repoRepository = $repoRepository;
+        $this->publisher = $publisher;
+        $this->syncVersions = $syncVersions;
+        $this->amqplibFactory = $amqplibFactory;
+
+        parent::__construct();
+    }
 
     protected function configure()
     {
@@ -47,15 +61,6 @@ class SyncVersionsCommand extends ContainerAwareCommand
                 'Push each repo into a queue instead of fetching it right away'
             )
         ;
-    }
-
-    protected function initialize(InputInterface $input, OutputInterface $output)
-    {
-        // define services for a later use
-        $this->repoRepository = $this->getContainer()->get('banditore.repository.repo');
-        $this->publisher = $this->getContainer()->get('swarrot.publisher');
-        $this->syncVersions = $this->getContainer()->get('banditore.consumer.sync_versions');
-        $this->amqplibFactory = $this->getContainer()->get('swarrot.factory.default');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

@@ -7,19 +7,19 @@ services:
 
     # see https://github.com/symfony/symfony/issues/24543
     banditore.repository.user.test:
-        alias: banditore.repository.user
+        alias: AppBundle\Repository\UserRepository
         public: true
 
     banditore.repository.version.test:
-        alias: banditore.repository.version
+        alias: AppBundle\Repository\VersionRepository
         public: true
 
     banditore.repository.repo.test:
-        alias: banditore.repository.repo
+        alias: AppBundle\Repository\RepoRepository
         public: true
 
     banditore.repository.star.test:
-        alias: banditore.repository.star
+        alias: AppBundle\Repository\StarRepository
         public: true
 
     banditore.consumer.sync_versions.test:
@@ -32,4 +32,12 @@ services:
 
     banditore.github.client_discovery.test:
         alias: banditore.github.client_discovery
+        public: true
+
+    banditore.client.guzzle.test:
+        alias: banditore.client.guzzle
+        public: true
+
+    banditore.client.github.test:
+        alias: banditore.client.github
         public: true

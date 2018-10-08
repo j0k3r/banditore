@@ -25,6 +25,6 @@ class RepoVersionExtension extends \Twig_Extension
 
     public function getName()
     {
-        return 'repo_verson_extension';
+        return 'repo_version_extension';
     }
 }

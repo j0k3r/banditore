@@ -10,7 +10,7 @@ class RepoVersionExtensionTest extends \PHPUnit\Framework\TestCase
     {
         $ext = new RepoVersionExtension();
 
-        $this->assertSame('repo_verson_extension', $ext->getName());
+        $this->assertSame('repo_version_extension', $ext->getName());
         $this->assertCount(1, $ext->getFilters(), 'Extension has only one filter');
 
         $this->assertNull($ext->linkToVersion([]));

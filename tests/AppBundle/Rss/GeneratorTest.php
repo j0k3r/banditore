@@ -38,7 +38,7 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('en', $channel->getLanguage());
         $this->assertContains('(c)', $channel->getCopyright());
         $this->assertContains('banditore', $channel->getCopyright());
-        $this->assertContains('15 Feb 2007 02:25:25', $channel->getLastBuildDate()->format('r'));
+        $this->assertContains('15 Feb 2007', $channel->getLastBuildDate()->format('r'));
         $this->assertSame('banditore', $channel->getGenerator());
 
         $items = $channel->getItems();
@@ -54,6 +54,6 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
         $this->assertContains('This is an awesome description', $items[0]->getDescription());
         $this->assertSame('https://github.com/test/test/releases/1.0.0', $items[0]->getGuid()->getGuid());
         $this->assertTrue($items[0]->getGuid()->getIsPermaLink());
-        $this->assertContains('15 Feb 2007 02:25:25', $items[0]->getPubDate()->format('r'));
+        $this->assertContains('15 Feb 2007', $items[0]->getPubDate()->format('r'));
     }
 }
