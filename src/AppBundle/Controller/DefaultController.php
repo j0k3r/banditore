@@ -3,12 +3,17 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use AppBundle\Repository\RepoRepository;
+use AppBundle\Repository\StarRepository;
+use AppBundle\Repository\UserRepository;
+use AppBundle\Repository\VersionRepository;
+use AppBundle\Rss\Generator;
 use AshleyDawson\SimplePagination\Exception\InvalidPageNumberException;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use MarcW\RssWriter\RssWriter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class DefaultController extends Controller
@@ -28,15 +33,14 @@ class DefaultController extends Controller
     /**
      * @Route("/dashboard", name="dashboard")
      */
-    public function dashboardAction(Request $request)
+    public function dashboardAction(Request $request, VersionRepository $repoVersion)
     {
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('homepage'));
         }
 
-        $repoVersion = $this->get('banditore.repository.version');
         $userId = $this->getUser()->getId();
-        $paginator = $this->get('ashley_dawson_simple_pagination.paginator');
+        $paginator = $this->get('ashley_dawson_simple_pagination.paginator_public');
 
         // Pass the item total
         $paginator->setItemTotalCallback(function () use ($repoVersion, $userId) {
@@ -94,17 +98,16 @@ class DefaultController extends Controller
 
     /**
      * @Route("/{uuid}.atom", name="rss_user")
-     * @ParamConverter("user", class="AppBundle:User")
      */
-    public function rssAction(User $user)
+    public function rssAction(User $user, Generator $rssGenerator, VersionRepository $repoVersion, RssWriter $rssWriter)
     {
-        $channel = $this->get('banditore.rss.generator')->generate(
+        $channel = $rssGenerator->generate(
             $user,
-            $this->get('banditore.repository.version')->findForUser($user->getId()),
+            $repoVersion->findForUser($user->getId()),
             $this->generateUrl('rss_user', ['uuid' => $user->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL)
         );
 
-        return new RssStreamedResponse($channel, $this->get('banditore.writer.rss'));
+        return new RssStreamedResponse($channel, $rssWriter);
     }
 
     /**
@@ -112,12 +115,12 @@ class DefaultController extends Controller
      *
      * @Route("/stats", name="stats")
      */
-    public function statsAction()
+    public function statsAction(RepoRepository $repoRepo, VersionRepository $repoVersion, StarRepository $repoStar, UserRepository $repoUser)
     {
-        $nbRepos = $this->get('banditore.repository.repo')->count();
-        $nbReleases = $this->get('banditore.repository.version')->count();
-        $nbStars = $this->get('banditore.repository.star')->count();
-        $nbUsers = $this->get('banditore.repository.user')->count();
+        $nbRepos = $repoRepo->countTotal();
+        $nbReleases = $repoVersion->countTotal();
+        $nbStars = $repoStar->countTotal();
+        $nbUsers = $repoUser->countTotal();
 
         return $this->render('default/stats.html.twig', [
             'counters' => [
@@ -126,8 +129,8 @@ class DefaultController extends Controller
                 'avgReleasePerRepo' => ($nbRepos > 0) ? round($nbReleases / $nbRepos, 2) : 0,
                 'avgStarPerUser' => ($nbUsers > 0) ? round($nbStars / $nbUsers, 2) : 0,
             ],
-            'mostReleases' => $this->get('banditore.repository.repo')->mostVersionsPerRepo(),
-            'lastestReleases' => $this->get('banditore.repository.version')->findLastVersionForEachRepo(20),
+            'mostReleases' => $repoRepo->mostVersionsPerRepo(),
+            'lastestReleases' => $repoVersion->findLastVersionForEachRepo(20),
         ]);
     }
 }

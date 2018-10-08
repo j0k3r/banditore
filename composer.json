@@ -15,10 +15,11 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
-        }
+        },
+        "files": [ "vendor/symfony/symfony/src/Symfony/Component/VarDumper/Resources/functions/dump.php" ]
     },
     "require": {
-        "php": ">=5.5.9",
+        "php": "^7.1",
         "ashleydawson/simple-pagination-bundle": "^1.0",
         "cache/predis-adapter": "^1.0",
         "doctrine/doctrine-bundle": "^1.6",
@@ -38,18 +39,19 @@
         "ramsey/uuid": "^3.5",
         "sensio/distribution-bundle": "^5.0",
         "sensio/framework-extra-bundle": "^5.0",
-        "sentry/sentry-symfony": "~0.7",
+        "sentry/sentry-symfony": "~2.0",
         "snc/redis-bundle": "^2.0",
         "swarrot/swarrot-bundle": "^1.4",
         "symfony/monolog-bundle": "^3.0",
         "symfony/polyfill-apcu": "^1.0",
         "symfony/symfony": "3.4.*",
-        "twig/extensions": "^1.4"
+        "twig/extensions": "^1.4",
+        "twig/twig": "^1.0||^2.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "~2.0",
         "sensio/generator-bundle": "^3.0",
-        "symfony/phpunit-bridge": "^3.0",
+        "symfony/phpunit-bridge": "^4.0",
         "doctrine/doctrine-fixtures-bundle": "^3.0",
         "php-coveralls/php-coveralls": "^2.0",
         "m6web/redis-mock": "dev-predis-1.x"
@@ -71,7 +73,7 @@
     },
     "config": {
         "platform": {
-            "php": "5.6.30"
+            "php": "7.1"
         },
         "bin-dir": "bin",
         "sort-packages": true

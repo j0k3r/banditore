@@ -987,6 +987,8 @@ class SyncVersionsTest extends WebTestCase
 
     /**
      * Using mocks only for request.
+     *
+     * @group only
      */
     public function testFunctionalConsumer()
     {
@@ -1003,8 +1005,9 @@ class SyncVersionsTest extends WebTestCase
         $container = $client->getContainer();
 
         // override factory to avoid real call to Github
-        $container->set('banditore.client.github', $githubClient);
+        $container->set('banditore.client.github.test', $githubClient);
 
+        // mock pubsubhubbub request
         $guzzleClientPub = $this->getMockBuilder('GuzzleHttp\Client')
             ->disableOriginalConstructor()
             ->getMock();
@@ -1012,7 +1015,7 @@ class SyncVersionsTest extends WebTestCase
             ->method('__call') // post
             ->willReturn(new Response(204));
 
-        $container->set('banditore.client.guzzle', $guzzleClientPub);
+        $container->set('banditore.client.guzzle.test', $guzzleClientPub);
 
         $processor = $container->get('banditore.consumer.sync_versions.test');
 
@@ -1091,8 +1094,9 @@ class SyncVersionsTest extends WebTestCase
         $container = $client->getContainer();
 
         // override factory to avoid real call to Github
-        $container->set('banditore.client.github', $githubClient);
+        $container->set('banditore.client.github.test', $githubClient);
 
+        // mock pubsubhubbub request
         $guzzleClientPub = $this->getMockBuilder('GuzzleHttp\Client')
             ->disableOriginalConstructor()
             ->getMock();
@@ -1100,7 +1104,7 @@ class SyncVersionsTest extends WebTestCase
             ->method('__call') // post
             ->willReturn(new Response(204));
 
-        $container->set('banditore.client.guzzle', $guzzleClientPub);
+        $container->set('banditore.client.guzzle.test', $guzzleClientPub);
 
         $processor = $container->get('banditore.consumer.sync_versions.test');
 

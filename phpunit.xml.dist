@@ -5,11 +5,15 @@
          xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
          backupGlobals="false"
          colors="true"
-         bootstrap="app/autoload.php"
+         bootstrap="vendor/autoload.php"
 >
     <php>
         <ini name="error_reporting" value="-1" />
-        <server name="KERNEL_DIR" value="app/" />
+        <server name="KERNEL_CLASS" value="AppKernel" />
+        <!--
+            Because of "Doctrine\Common\ClassLoader is deprecated."
+            doctrine/orm needs an update (latest version is v2.6.2)
+        -->
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak" />
     </php>
 

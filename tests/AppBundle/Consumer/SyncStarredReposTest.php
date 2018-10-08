@@ -531,7 +531,7 @@ class SyncStarredReposTest extends WebTestCase
         $container = $client->getContainer();
 
         // override factory to avoid real call to Github
-        $container->set('banditore.client.github', $githubClient);
+        $container->set('banditore.client.github.test', $githubClient);
 
         $processor = $container->get('banditore.consumer.sync_starred_repos.test');
 

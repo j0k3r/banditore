@@ -29,11 +29,13 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersions->expects($this->any())
             ->method('process');
 
-        self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_versions', $syncVersions);
-
         $application = new Application($client->getKernel());
-        $application->add(new SyncVersionsCommand());
+        $application->add(new SyncVersionsCommand(
+            self::$kernel->getContainer()->get('banditore.repository.repo.test'),
+            $publisher,
+            $syncVersions,
+            self::$kernel->getContainer()->get('swarrot.factory.default')
+        ));
 
         $command = $application->find('banditore:sync:versions');
 
@@ -64,12 +66,13 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersions->expects($this->never())
             ->method('process');
 
-        self::$kernel->getContainer()->set('swarrot.factory.default', $this->getAmqpMessage(0));
-        self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_versions', $syncVersions);
-
         $application = new Application($client->getKernel());
-        $application->add(new SyncVersionsCommand());
+        $application->add(new SyncVersionsCommand(
+            self::$kernel->getContainer()->get('banditore.repository.repo.test'),
+            $publisher,
+            $syncVersions,
+            $this->getAmqpMessage(0)
+        ));
 
         $command = $application->find('banditore:sync:versions');
 
@@ -100,12 +103,13 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersions->expects($this->never())
             ->method('process');
 
-        self::$kernel->getContainer()->set('swarrot.factory.default', $this->getAmqpMessage(10));
-        self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_versions', $syncVersions);
-
         $application = new Application($client->getKernel());
-        $application->add(new SyncVersionsCommand());
+        $application->add(new SyncVersionsCommand(
+            self::$kernel->getContainer()->get('banditore.repository.repo.test'),
+            $publisher,
+            $syncVersions,
+            $this->getAmqpMessage(10)
+        ));
 
         $command = $application->find('banditore:sync:versions');
 
@@ -140,12 +144,13 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersions->expects($this->never())
             ->method('process');
 
-        self::$kernel->getContainer()->set('swarrot.factory.default', $this->getAmqpMessage(0));
-        self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_versions', $syncVersions);
-
         $application = new Application($client->getKernel());
-        $application->add(new SyncVersionsCommand());
+        $application->add(new SyncVersionsCommand(
+            self::$kernel->getContainer()->get('banditore.repository.repo.test'),
+            $publisher,
+            $syncVersions,
+            $this->getAmqpMessage(0)
+        ));
 
         $command = $application->find('banditore:sync:versions');
 
@@ -182,11 +187,13 @@ class SyncVersionsCommandTest extends WebTestCase
                 []
             );
 
-        self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_versions', $syncVersions);
-
         $application = new Application($client->getKernel());
-        $application->add(new SyncVersionsCommand());
+        $application->add(new SyncVersionsCommand(
+            self::$kernel->getContainer()->get('banditore.repository.repo.test'),
+            $publisher,
+            $syncVersions,
+            self::$kernel->getContainer()->get('swarrot.factory.default')
+        ));
 
         $command = $application->find('banditore:sync:versions');
 
@@ -218,11 +225,13 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersions->expects($this->never())
             ->method('process');
 
-        self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_versions', $syncVersions);
-
         $application = new Application($client->getKernel());
-        $application->add(new SyncVersionsCommand());
+        $application->add(new SyncVersionsCommand(
+            self::$kernel->getContainer()->get('banditore.repository.repo.test'),
+            $publisher,
+            $syncVersions,
+            self::$kernel->getContainer()->get('swarrot.factory.default')
+        ));
 
         $command = $application->find('banditore:sync:versions');
 

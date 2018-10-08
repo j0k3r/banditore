@@ -33,11 +33,13 @@ class SyncStarredReposCommandTest extends WebTestCase
                 []
             );
 
-        self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_starred_repos', $syncUser);
-
         $application = new Application($client->getKernel());
-        $application->add(new SyncStarredReposCommand());
+        $application->add(new SyncStarredReposCommand(
+            self::$kernel->getContainer()->get('banditore.repository.user.test'),
+            $publisher,
+            $syncUser,
+            self::$kernel->getContainer()->get('swarrot.factory.default')
+        ));
 
         $command = $application->find('banditore:sync:starred-repos');
 
@@ -71,12 +73,13 @@ class SyncStarredReposCommandTest extends WebTestCase
         $syncUser->expects($this->never())
             ->method('process');
 
-        self::$kernel->getContainer()->set('swarrot.factory.default', $this->getAmqpMessage(0));
-        self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_starred_repos', $syncUser);
-
         $application = new Application($client->getKernel());
-        $application->add(new SyncStarredReposCommand());
+        $application->add(new SyncStarredReposCommand(
+            self::$kernel->getContainer()->get('banditore.repository.user.test'),
+            $publisher,
+            $syncUser,
+            $this->getAmqpMessage(0)
+        ));
 
         $command = $application->find('banditore:sync:starred-repos');
 
@@ -107,12 +110,13 @@ class SyncStarredReposCommandTest extends WebTestCase
         $syncUser->expects($this->never())
             ->method('process');
 
-        self::$kernel->getContainer()->set('swarrot.factory.default', $this->getAmqpMessage(10));
-        self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_starred_repos', $syncUser);
-
         $application = new Application($client->getKernel());
-        $application->add(new SyncStarredReposCommand());
+        $application->add(new SyncStarredReposCommand(
+            self::$kernel->getContainer()->get('banditore.repository.user.test'),
+            $publisher,
+            $syncUser,
+            $this->getAmqpMessage(10)
+        ));
 
         $command = $application->find('banditore:sync:starred-repos');
 
@@ -147,12 +151,13 @@ class SyncStarredReposCommandTest extends WebTestCase
         $syncUser->expects($this->never())
             ->method('process');
 
-        self::$kernel->getContainer()->set('swarrot.factory.default', $this->getAmqpMessage(0));
-        self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_starred_repos', $syncUser);
-
         $application = new Application($client->getKernel());
-        $application->add(new SyncStarredReposCommand());
+        $application->add(new SyncStarredReposCommand(
+            self::$kernel->getContainer()->get('banditore.repository.user.test'),
+            $publisher,
+            $syncUser,
+            $this->getAmqpMessage(0)
+        ));
 
         $command = $application->find('banditore:sync:starred-repos');
 
@@ -189,11 +194,13 @@ class SyncStarredReposCommandTest extends WebTestCase
                 []
             );
 
-        self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_starred_repos', $syncUser);
-
         $application = new Application($client->getKernel());
-        $application->add(new SyncStarredReposCommand());
+        $application->add(new SyncStarredReposCommand(
+            self::$kernel->getContainer()->get('banditore.repository.user.test'),
+            $publisher,
+            $syncUser,
+            self::$kernel->getContainer()->get('swarrot.factory.default')
+        ));
 
         $command = $application->find('banditore:sync:starred-repos');
 
@@ -225,11 +232,13 @@ class SyncStarredReposCommandTest extends WebTestCase
         $syncUser->expects($this->never())
             ->method('process');
 
-        self::$kernel->getContainer()->set('swarrot.publisher', $publisher);
-        self::$kernel->getContainer()->set('banditore.consumer.sync_starred_repos', $syncUser);
-
         $application = new Application($client->getKernel());
-        $application->add(new SyncStarredReposCommand());
+        $application->add(new SyncStarredReposCommand(
+            self::$kernel->getContainer()->get('banditore.repository.user.test'),
+            $publisher,
+            $syncUser,
+            self::$kernel->getContainer()->get('swarrot.factory.default')
+        ));
 
         $command = $application->find('banditore:sync:starred-repos');
 

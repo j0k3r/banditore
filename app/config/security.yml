@@ -17,4 +17,4 @@ security:
 
             guard:
                 authenticators:
-                    - banditore.github.authenticator
+                    - AppBundle\Security\GithubAuthenticator

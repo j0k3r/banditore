@@ -2,8 +2,12 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\Consumer\SyncStarredRepos;
+use AppBundle\Repository\UserRepository;
 use Swarrot\Broker\Message;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Swarrot\SwarrotBundle\Broker\AmqpLibFactory;
+use Swarrot\SwarrotBundle\Broker\Publisher;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,12 +19,22 @@ use Symfony\Component\Console\Output\OutputInterface;
  *     - right away, might take longer to process
  *     - by publishing a message in a queue
  */
-class SyncStarredReposCommand extends ContainerAwareCommand
+class SyncStarredReposCommand extends Command
 {
     private $userRepository;
     private $publisher;
     private $syncUser;
     private $amqplibFactory;
+
+    public function __construct(UserRepository $userRepository, Publisher $publisher, SyncStarredRepos $syncUser, AmqpLibFactory $amqplibFactory)
+    {
+        $this->userRepository = $userRepository;
+        $this->publisher = $publisher;
+        $this->syncUser = $syncUser;
+        $this->amqplibFactory = $amqplibFactory;
+
+        parent::__construct();
+    }
 
     protected function configure()
     {
@@ -46,15 +60,6 @@ class SyncStarredReposCommand extends ContainerAwareCommand
                 'Push each user into a queue instead of fetching it right away'
             )
         ;
-    }
-
-    protected function initialize(InputInterface $input, OutputInterface $output)
-    {
-        // define services for a later use
-        $this->userRepository = $this->getContainer()->get('banditore.repository.user');
-        $this->publisher = $this->getContainer()->get('swarrot.publisher');
-        $this->syncUser = $this->getContainer()->get('banditore.consumer.sync_starred_repos');
-        $this->amqplibFactory = $this->getContainer()->get('swarrot.factory.default');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
