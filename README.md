@@ -13,7 +13,7 @@ Banditore retrieves new releases from your GitHub starred repositories and put t
 
 ## Requirements
 
- - PHP >= 5.5.9 (with `pdo_mysql`)
+ - PHP >= 7.1 (with `pdo_mysql`)
  - MySQL >= 5.7
  - Redis (to cache requests to the GitHub API)
  - [RabbitMQ](https://www.rabbitmq.com/), which is optional (see below)
@@ -37,7 +37,6 @@ Banditore retrieves new releases from your GitHub starred repositories and put t
 
     If you want to use:
      - **Sentry** to retrieve all errors, [register here](https://sentry.io/signup/) and get your dsn (in Project Settings > DSN).
-     - **New Relic** to track performance, [register here](https://newrelic.com/signup) and get your New Relic API Key (in Account Settings > Integrations > API keys)
 
 5. Setup the database
 
