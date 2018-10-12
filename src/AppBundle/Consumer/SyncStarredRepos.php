@@ -9,11 +9,11 @@ use AppBundle\Github\RateLimitTrait;
 use AppBundle\Repository\RepoRepository;
 use AppBundle\Repository\StarRepository;
 use AppBundle\Repository\UserRepository;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Github\Client;
 use Psr\Log\LoggerInterface;
 use Swarrot\Broker\Message;
 use Swarrot\Processor\ProcessorInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * Consumer message to sync starred repos from user.
@@ -36,9 +36,9 @@ class SyncStarredRepos implements ProcessorInterface
     private $client;
 
     /**
-     * Client parameter isn't casted because it can be false when no available client were found by the Github Client Discovery.
+     * Client parameter can be null when no available client were found by the Github Client Discovery.
      */
-    public function __construct(Registry $doctrine, UserRepository $userRepository, StarRepository $starRepository, RepoRepository $repoRepository, $client, LoggerInterface $logger)
+    public function __construct(RegistryInterface $doctrine, UserRepository $userRepository, StarRepository $starRepository, RepoRepository $repoRepository, Client $client = null, LoggerInterface $logger)
     {
         $this->doctrine = $doctrine;
         $this->userRepository = $userRepository;
@@ -51,7 +51,7 @@ class SyncStarredRepos implements ProcessorInterface
     public function process(Message $message, array $options)
     {
         // in case no client with safe RateLimit were found
-        if (false === $this->client) {
+        if (null === $this->client) {
             $this->logger->error('No client provided');
 
             return false;

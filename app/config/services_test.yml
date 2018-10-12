@@ -23,15 +23,15 @@ services:
         public: true
 
     banditore.consumer.sync_versions.test:
-        alias: banditore.consumer.sync_versions
+        alias: AppBundle\Consumer\SyncVersions
         public: true
 
     banditore.consumer.sync_starred_repos.test:
-        alias: banditore.consumer.sync_starred_repos
+        alias: AppBundle\Consumer\SyncStarredRepos
         public: true
 
     banditore.github.client_discovery.test:
-        alias: banditore.github.client_discovery
+        alias: AppBundle\Github\ClientDiscovery
         public: true
 
     banditore.client.guzzle.test:

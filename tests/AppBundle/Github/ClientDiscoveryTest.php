@@ -173,7 +173,7 @@ class ClientDiscoveryTest extends WebTestCase
 
         $records = $logHandler->getRecords();
 
-        $this->assertFalse($resClient);
+        $this->assertNull($resClient);
 
         $this->assertSame('No way to authenticate a client with enough rate limit remaining :(', $records[0]['message']);
     }

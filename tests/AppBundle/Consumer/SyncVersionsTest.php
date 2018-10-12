@@ -974,7 +974,7 @@ class SyncVersionsTest extends WebTestCase
             $repoRepository,
             $versionRepository,
             $pubsubhubbub,
-            false, // simulate a bad client
+            null, // simulate a bad client
             $logger
         );
 

@@ -56,7 +56,7 @@ class ClientDiscovery
      *     - if the rate limit is too low for the application client, loop on all user to check their rate limit
      *     - if none client have enough rate limit, we'll have a problem to perform further request, stop every thing !
      *
-     * @return GithubClient|false
+     * @return GithubClient|null
      */
     public function find()
     {
@@ -96,7 +96,5 @@ class ClientDiscovery
         }
 
         $this->logger->warning('No way to authenticate a client with enough rate limit remaining :(');
-
-        return false;
     }
 }

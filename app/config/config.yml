@@ -86,7 +86,7 @@ swarrot:
             vhost: '/'
     consumers:
         banditore.sync_starred_repos:
-            processor: banditore.consumer.sync_starred_repos
+            processor: AppBundle\Consumer\SyncStarredRepos
             extras:
                 poll_interval: 500000
             middleware_stack:
@@ -101,7 +101,7 @@ swarrot:
                 - configurator: swarrot.processor.exception_catcher
                 - configurator: swarrot.processor.ack
         banditore.sync_versions:
-            processor: banditore.consumer.sync_versions
+            processor: AppBundle\Consumer\SyncVersions
             extras:
                 poll_interval: 500000
             middleware_stack:

@@ -4,8 +4,8 @@ namespace AppBundle\PubSubHubbub;
 
 use AppBundle\Repository\UserRepository;
 use GuzzleHttp\Client;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Publish feed to pubsubhubbub.appspot.com.
@@ -20,14 +20,14 @@ class Publisher
     /**
      * Create a new publisher.
      *
-     * @param string         $hub            A hub (url) to ping
-     * @param Router         $router         Symfony Router to generate the feed xml
-     * @param Client         $client         Guzzle client to send the request
-     * @param UserRepository $userRepository
-     * @param string         $host           Host of the project (used to generate route from a command)
-     * @param string         $scheme         Scheme of the project (used to generate route from a command)
+     * @param string          $hub            A hub (url) to ping
+     * @param RouterInterface $router         Symfony Router to generate the feed xml
+     * @param Client          $client         Guzzle client to send the request
+     * @param UserRepository  $userRepository
+     * @param string          $host           Host of the project (used to generate route from a command)
+     * @param string          $scheme         Scheme of the project (used to generate route from a command)
      */
-    public function __construct($hub, Router $router, Client $client, UserRepository $userRepository, $host, $scheme)
+    public function __construct($hub, RouterInterface $router, Client $client, UserRepository $userRepository, $host, $scheme)
     {
         $this->hub = $hub;
         $this->router = $router;

@@ -401,7 +401,7 @@ class SyncStarredReposTest extends WebTestCase
             $userRepository,
             $starRepository,
             $repoRepository,
-            false, // simulate a bad client
+            null, // simulate a bad client
             $logger
         );
 
