@@ -41,14 +41,14 @@ Banditore retrieves new releases from your GitHub starred repositories and put t
 5. Setup the database
 
     ```bash
-    php bin/console doctrine:database:create -e=prod
-    php bin/console doctrine:schema:create -e=prod
+    php bin/console doctrine:database:create -e prod
+    php bin/console doctrine:schema:create -e prod
     ```
 
 4. You can now launch the website:
 
     ```bash
-    php bin/console server:run -e=prod
+    php bin/console server:run -e prod
     ```
 
     And access it at this address: `http://127.0.0.1:8000`
@@ -66,9 +66,9 @@ You just need to define these 2 cronjobs (replace all `/path/to/banditore` with 
 
 ```bash
 # retrieve new release of each repo every 10 minutes
-*/10  *   *   *   *   php /path/to/banditore/bin/console -e=prod banditore:sync:versions >> /path/to/banditore/var/logs/command-sync-versions.log 2>&1
+*/10  *   *   *   *   php /path/to/banditore/bin/console -e prod banditore:sync:versions >> /path/to/banditore/var/logs/command-sync-versions.log 2>&1
 # sync starred repos of each user every 5 minutes
-*/5   *   *   *   *   php /path/to/banditore/bin/console -e=prod banditore:sync:starred-repos >> /path/banditore/to/var/logs/command-sync-repos.log 2>&1
+*/5   *   *   *   *   php /path/to/banditore/bin/console -e prod banditore:sync:starred-repos >> /path/banditore/to/var/logs/command-sync-repos.log 2>&1
 ```
 
 ### With RabbitMQ
@@ -87,9 +87,9 @@ You just need to define these 2 cronjobs (replace all `/path/to/banditore` with 
 
  ```bash
  # retrieve new release of each repo every 10 minutes
- */10  *   *   *   *   php /path/to/banditore/bin/console -e=prod banditore:sync:versions --use-queue >> /path/to/banditore/var/logs/command-sync-versions.log 2>&1
+ */10  *   *   *   *   php /path/to/banditore/bin/console -e prod banditore:sync:versions --use_queue >> /path/to/banditore/var/logs/command-sync-versions.log 2>&1
  # sync starred repos of each user every 5 minutes
- */5   *   *   *   *   php /path/to/banditore/bin/console -e=prod banditore:sync:starred-repos --use-queue >> /path/banditore/to/var/logs/command-sync-repos.log 2>&1
+ */5   *   *   *   *   php /path/to/banditore/bin/console -e prod banditore:sync:starred-repos --use_queue >> /path/banditore/to/var/logs/command-sync-repos.log 2>&1
 ```
 
 4. Setup Supervisor using the [sample file](data/supervisor.conf) from the repo. You can copy/paste it into `/etc/supervisor/conf.d/` and adjust path. The default file will launch:
