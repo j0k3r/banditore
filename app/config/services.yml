@@ -7,12 +7,37 @@ services:
     # autowire
     AppBundle\:
         resource: '../../src/AppBundle/*'
-        exclude: '../../src/AppBundle/{Entity,Consumer,DataFixtures,PubSubHubbub}'
+        exclude: '../../src/AppBundle/{Entity,DataFixtures}'
 
     AppBundle\Controller\:
         resource: '../../src/AppBundle/Controller'
         public: true
         tags: ['controller.service_arguments']
+
+    # autorwire parameters
+    AppBundle\Github\ClientDiscovery:
+        arguments:
+            $clientId: "%github_client_id%"
+            $clientSecret: "%github_client_secret%"
+
+    AppBundle\PubSubHubbub\Publisher:
+        arguments:
+            $hub: "http://pubsubhubbub.appspot.com"
+            $host: "%project_host%"
+            $scheme: "%project_scheme%"
+
+    AppBundle\Webfeeds\WebfeedsWriter:
+        tags:
+            - { name: marcw_rss_writer.extension.writer }
+
+    # lazy consumer
+    # to avoid triggering Github Client Discovery
+    # which will make a doctrine query on Travis because the default limit to Github will be reached
+    AppBundle\Consumer\SyncStarredRepos:
+        lazy: true
+
+    AppBundle\Consumer\SyncVersions:
+        lazy: true
 
     # github stuff
     banditore.client.guzzle:
@@ -20,30 +45,16 @@ services:
 
     banditore.client.github:
         class: Github\Client
-        factory: [ "@banditore.github.client_discovery", find ]
-
-    banditore.github.client_discovery:
-        class: AppBundle\Github\ClientDiscovery
-        arguments:
-            - "@AppBundle\\Repository\\UserRepository"
-            - "@snc_redis.guzzle_cache"
-            - "%github_client_id%"
-            - "%github_client_secret%"
-            - "@logger"
+        factory: [ "@AppBundle\\Github\\ClientDiscovery", find ]
 
     # feed stuff
-    banditore.writer.webfeeds:
-        class: AppBundle\Webfeeds\WebfeedsWriter
-        tags:
-            - { name: marcw_rss_writer.extension.writer }
-
     banditore.writer.rss:
         class: MarcW\RssWriter\RssWriter
         arguments:
             - ~
             -
                 core: "@marcw_rss_writer.writer.core"
-                webfeeds: "@banditore.writer.webfeeds"
+                webfeeds: "@AppBundle\\Webfeeds\\WebfeedsWriter"
                 atom: "@marcw_rss_writer.writer.atom"
             - true
             - "    "
@@ -51,65 +62,26 @@ services:
     # force this service to be injected at first instead of the default one (from marcw)
     MarcW\RssWriter\RssWriter: '@banditore.writer.rss'
 
-    banditore.pubsubhubbub.publisher:
-        class: AppBundle\PubSubHubbub\Publisher
-        arguments:
-            - "http://pubsubhubbub.appspot.com"
-            - "@router"
-            - "@banditore.client.guzzle"
-            - "@AppBundle\\Repository\\UserRepository"
-            - "%project_host%"
-            - "%project_scheme%"
-
-    banditore.rss.generator:
-        class: AppBundle\Rss\Generator
-
-    # consumers
-    banditore.consumer.sync_starred_repos:
-        class: AppBundle\Consumer\SyncStarredRepos
-        arguments:
-            - "@doctrine"
-            - "@AppBundle\\Repository\\UserRepository"
-            - "@AppBundle\\Repository\\StarRepository"
-            - "@AppBundle\\Repository\\RepoRepository"
-            - "@banditore.client.github"
-            - "@logger"
-        # to avoid triggering Github Client Discovery
-        # which will make a doctrine query on Travis because the default limit to Github will be reached
-        lazy: true
-
-    banditore.consumer.sync_versions:
-        class: AppBundle\Consumer\SyncVersions
-        arguments:
-            - "@doctrine"
-            - "@AppBundle\\Repository\\RepoRepository"
-            - "@AppBundle\\Repository\\VersionRepository"
-            - "@banditore.pubsubhubbub.publisher"
-            - "@banditore.client.github"
-            - "@logger"
-        # to avoid triggering Github Client Discovery
-        # which will make a doctrine query on Travis because the default limit to Github will be reached
-        lazy: true
-
     twig.extension.date:
         class: Twig_Extensions_Extension_Date
         tags:
             - { name: twig.extension }
 
-    # fucked alias I don't know why we must create them
-    # duplicate works of defining services ...
-    # Autowiring services based on the types they implement is deprecated since Symfony 3.3 and won't be supported in version 4.0. You should rename (or alias) the "servicename" service to "classname" instead.
+    # alias to service from their class name
     Swarrot\SwarrotBundle\Broker\AmqpLibFactory:
         alias: swarrot.factory.amqp_lib
 
-    AppBundle\Consumer\SyncStarredRepos:
-        alias: banditore.consumer.sync_starred_repos
-
-    AppBundle\Consumer\SyncVersions:
-        alias: banditore.consumer.sync_versions
-
     Swarrot\SwarrotBundle\Broker\Publisher:
         alias: swarrot.publisher
+
+    Predis\Client:
+        alias: snc_redis.guzzle_cache
+
+    GuzzleHttp\Client:
+        alias: banditore.client.guzzle
+
+    Github\Client:
+        alias: banditore.client.github
 
     # force public because the bundle isn't up to date
     ashley_dawson_simple_pagination.paginator_public:

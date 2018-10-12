@@ -8,11 +8,11 @@ use AppBundle\Github\RateLimitTrait;
 use AppBundle\PubSubHubbub\Publisher;
 use AppBundle\Repository\RepoRepository;
 use AppBundle\Repository\VersionRepository;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Github\Client;
 use Psr\Log\LoggerInterface;
 use Swarrot\Broker\Message;
 use Swarrot\Processor\ProcessorInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * Consumer message to sync user repo (usually happen after a successful login).
@@ -29,9 +29,9 @@ class SyncVersions implements ProcessorInterface
     private $client;
 
     /**
-     * Client parameter isn't casted because it can be false when no available client were found by the Github Client Discovery.
+     * Client parameter can be null when no available client were found by the Github Client Discovery.
      */
-    public function __construct(Registry $doctrine, RepoRepository $repoRepository, VersionRepository $versionRepository, Publisher $pubsubhubbub, $client, LoggerInterface $logger)
+    public function __construct(RegistryInterface $doctrine, RepoRepository $repoRepository, VersionRepository $versionRepository, Publisher $pubsubhubbub, Client $client = null, LoggerInterface $logger)
     {
         $this->doctrine = $doctrine;
         $this->repoRepository = $repoRepository;
@@ -44,7 +44,7 @@ class SyncVersions implements ProcessorInterface
     public function process(Message $message, array $options)
     {
         // in case no client with safe RateLimit were found
-        if (false === $this->client) {
+        if (null === $this->client) {
             $this->logger->error('No client provided');
 
             return false;
