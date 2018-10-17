@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "c34231f0f88662d8a6b4e9291cbc34ea",
@@ -3869,16 +3869,16 @@
         },
         {
             "name": "snc/redis-bundle",
-            "version": "2.1.6",
+            "version": "2.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/snc/SncRedisBundle.git",
-                "reference": "fd24b115b35d54ec2f0f356e36e793933ee57bb8"
+                "reference": "13dee3562945bbdbfc02286a476837f9f3ce9cd1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/fd24b115b35d54ec2f0f356e36e793933ee57bb8",
-                "reference": "fd24b115b35d54ec2f0f356e36e793933ee57bb8",
+                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/13dee3562945bbdbfc02286a476837f9f3ce9cd1",
+                "reference": "13dee3562945bbdbfc02286a476837f9f3ce9cd1",
                 "shasum": ""
             },
             "require": {
@@ -3931,7 +3931,7 @@
                 "redis",
                 "symfony"
             ],
-            "time": "2018-07-31T08:05:28+00:00"
+            "time": "2018-10-15T12:07:05+00:00"
         },
         {
             "name": "swarrot/swarrot",
@@ -4003,16 +4003,16 @@
         },
         {
             "name": "swarrot/swarrot-bundle",
-            "version": "v1.5.1",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swarrot/SwarrotBundle.git",
-                "reference": "ff440b04805a3e61768a2746e54f2a5471f2c827"
+                "reference": "1020707bef87d4610eb2afed2fde991f38dbff91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/ff440b04805a3e61768a2746e54f2a5471f2c827",
-                "reference": "ff440b04805a3e61768a2746e54f2a5471f2c827",
+                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/1020707bef87d4610eb2afed2fde991f38dbff91",
+                "reference": "1020707bef87d4610eb2afed2fde991f38dbff91",
                 "shasum": ""
             },
             "require": {
@@ -4026,8 +4026,9 @@
             "require-dev": {
                 "doctrine/common": "~2.2",
                 "doctrine/dbal": "~2.2",
-                "phpunit/phpunit": "~6.4",
-                "symfony/phpunit-bridge": "~2.8|~3.0|~4.0"
+                "phpunit/phpunit": "~6.5",
+                "sentry/sentry-symfony": ">=0.1.0",
+                "symfony/phpunit-bridge": "~4.0"
             },
             "suggest": {
                 "php-amqplib/php-amqplib": "Required if using amqp_lib"
@@ -4035,7 +4036,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.5-dev"
+                    "dev-master": "1.6-dev"
                 }
             },
             "autoload": {
@@ -4058,7 +4059,7 @@
                 "bundle",
                 "swarrot"
             ],
-            "time": "2017-12-25T11:23:25+00:00"
+            "time": "2018-10-17T06:16:22+00:00"
         },
         {
             "name": "symfony/monolog-bundle",
