@@ -179,7 +179,7 @@ class SyncVersionsTest extends WebTestCase
             // now tag 2.0.1 which is a release
             new Response(200, ['Content-Type' => 'application/json'], json_encode([
                 'tag_name' => '2.0.1',
-                'name' => '2.0.1',
+                'name' => 'Trade-off memory for compute, Windows support, 24 distributions with cdf, variance etc., dtypes, zero-dimensional Tensors, Tensor-Variable merge, , faster distributed, perf and bug fixes, CuDNN 7.1',
                 'prerelease' => false,
                 'published_at' => '2017-02-19T13:27:32Z',
                 'body' => 'yay',
