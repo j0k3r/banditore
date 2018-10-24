@@ -22,6 +22,7 @@ class AppKernel extends Kernel
             new Sentry\SentryBundle\SentryBundle(),
             new AshleyDawson\SimplePaginationBundle\AshleyDawsonSimplePaginationBundle(),
             new Snc\RedisBundle\SncRedisBundle(),
+            new Knp\Bundle\TimeBundle\KnpTimeBundle(),
             new AppBundle\AppBundle(),
         ];
 

@@ -28,6 +28,7 @@
         "doctrine/orm": "^2.5",
         "incenteev/composer-parameter-handler": "^2.0",
         "knplabs/github-api": "^2.2",
+        "knplabs/knp-time-bundle": "^1.8",
         "knpuniversity/oauth2-client-bundle": "^1.9",
         "league/oauth2-github": "^2.0",
         "marcw/rss-writer": "^0.4",
@@ -45,7 +46,6 @@
         "symfony/monolog-bundle": "^3.0",
         "symfony/polyfill-apcu": "^1.0",
         "symfony/symfony": "3.4.*",
-        "twig/extensions": "^1.4",
         "twig/twig": "^1.0||^2.0"
     },
     "require-dev": {

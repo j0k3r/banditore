@@ -33,6 +33,18 @@ class LoadVersionData extends AbstractFixture implements OrderedFixtureInterface
         $manager->persist($version2);
         $manager->flush();
 
+        $version3 = new Version($this->getReference('repo3'));
+        $version3->hydrateFromGithub([
+            'tag_name' => '0.0.21',
+            'name' => 'Outdated release',
+            'prerelease' => false,
+            'message' => 'YAY OLD',
+            'published_at' => date('Y') . '-06-15T07:49:21Z',
+        ]);
+
+        $manager->persist($version3);
+        $manager->flush();
+
         $this->addReference('version1', $version1);
         $this->addReference('version2', $version2);
     }

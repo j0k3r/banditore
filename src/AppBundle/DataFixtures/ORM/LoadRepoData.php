@@ -39,10 +39,25 @@ class LoadRepoData extends AbstractFixture implements OrderedFixtureInterface
         ]);
         $manager->persist($repo2);
 
+        $repo3 = new Repo();
+        $repo3->hydrateFromGithub([
+            'id' => 444,
+            'name' => 'graby',
+            'full_name' => 'j0k3r/graby',
+            'description' => 'graby',
+            'homepage' => 'http://graby.io',
+            'language' => 'PHP',
+            'owner' => [
+                'avatar_url' => 'http://0.0.0.0/graby.jpg',
+            ],
+        ]);
+        $manager->persist($repo3);
+
         $manager->flush();
 
         $this->addReference('repo1', $repo1);
         $this->addReference('repo2', $repo2);
+        $this->addReference('repo3', $repo3);
     }
 
     /**

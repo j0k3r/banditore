@@ -20,7 +20,7 @@ class RepoVersionExtension extends \Twig_Extension
             return;
         }
 
-        return 'https://github.com/' . $repo['fullName'] . '/releases/' . $repo['tagName'];
+        return 'https://github.com/' . $repo['fullName'] . '/releases/' . urlencode($repo['tagName']);
     }
 
     public function getName()
