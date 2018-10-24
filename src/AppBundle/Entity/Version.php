@@ -118,6 +118,11 @@ class Version
      */
     public function setName($name)
     {
+        // hard truncate name
+        if (mb_strlen($name) > 190) {
+            $name = mb_substr($name, 0, 190);
+        }
+
         $this->name = $name;
 
         return $this;
