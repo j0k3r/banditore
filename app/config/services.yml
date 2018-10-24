@@ -62,11 +62,6 @@ services:
     # force this service to be injected at first instead of the default one (from marcw)
     MarcW\RssWriter\RssWriter: '@banditore.writer.rss'
 
-    twig.extension.date:
-        class: Twig_Extensions_Extension_Date
-        tags:
-            - { name: twig.extension }
-
     # alias to service from their class name
     Swarrot\SwarrotBundle\Broker\AmqpLibFactory:
         alias: swarrot.factory.amqp_lib

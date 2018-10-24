@@ -80,6 +80,7 @@ class DefaultControllerTest extends WebTestCase
 
         $table = $crawler->filter('table')->text();
         $this->assertContains('test/test', $table, 'Repo test/test exist in a table');
+        $this->assertContains('ago', $table, 'Date is translated and ok');
     }
 
     public function testDashboardPageTooHigh()
