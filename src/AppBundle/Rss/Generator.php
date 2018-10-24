@@ -77,10 +77,10 @@ class Generator
 
             $item = new Item();
             $item->setTitle($release['fullName'] . ' ' . $release['tagName'])
-                ->setLink('https://github.com/' . $release['fullName'] . '/releases/' . $release['tagName'])
+                ->setLink('https://github.com/' . $release['fullName'] . '/releases/' . urlencode($release['tagName']))
                 ->setDescription($repoInformation . $release['body'])
                 ->setPubDate($release['createdAt'])
-                ->setGuid((new Guid())->setIsPermaLink(true)->setGuid('https://github.com/' . $release['fullName'] . '/releases/' . $release['tagName']))
+                ->setGuid((new Guid())->setIsPermaLink(true)->setGuid('https://github.com/' . $release['fullName'] . '/releases/' . urlencode($release['tagName'])))
             ;
             $channel->addItem($item);
         }
