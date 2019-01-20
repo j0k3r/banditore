@@ -17,7 +17,7 @@ class LoadVersionData extends AbstractFixture implements OrderedFixtureInterface
             'name' => 'First release',
             'prerelease' => false,
             'message' => 'YAY',
-            'published_at' => (date('Y') + 1) . '-10-15T07:49:21Z',
+            'published_at' => ((int) date('Y') + 1) . '-10-15T07:49:21Z',
         ]);
         $manager->persist($version1);
 
@@ -27,7 +27,7 @@ class LoadVersionData extends AbstractFixture implements OrderedFixtureInterface
             'name' => 'First release',
             'prerelease' => false,
             'message' => 'YAY 555',
-            'published_at' => (date('Y') + 1) . '-06-15T07:49:21Z',
+            'published_at' => ((int) date('Y') + 1) . '-06-15T07:49:21Z',
         ]);
 
         $manager->persist($version2);

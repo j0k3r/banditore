@@ -43,6 +43,7 @@ before_script:
 script:
     - ./bin/simple-phpunit -v $PHPUNIT_FLAGS
     - if [ "$CS_FIXER" = "run" ]; then php bin/php-cs-fixer fix --verbose --dry-run ; fi;
+    - if [ "$CS_FIXER" = "run" ]; then php bin/phpstan analyse src tests --no-progress --level 1 ; fi;
 
 after_success:
     - |
