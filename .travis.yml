@@ -14,15 +14,14 @@ cache:
 matrix:
     fast_finish: true
     include:
-        - php: 7.2
+        - php: 7.1
         - php: 7.3
         - php: nightly
-        - php: 7.1
+        - php: 7.2
           env: CS_FIXER=run
-        - php: 7.1
+        - php: 7.2
           env: COVERAGE=run
     allow_failures:
-        - php: 7.3
         - php: nightly
 
 before_install:
@@ -41,8 +40,9 @@ before_script:
     - if [ "$COVERAGE" = "run" ]; then PHPUNIT_FLAGS="--coverage-clover build/logs/clover.xml"; fi;
 
 script:
-    - ./bin/simple-phpunit -v $PHPUNIT_FLAGS
+    - SYMFONY_PHPUNIT_VERSION=6.5 ./bin/simple-phpunit -v $PHPUNIT_FLAGS
     - if [ "$CS_FIXER" = "run" ]; then php bin/php-cs-fixer fix --verbose --dry-run ; fi;
+    - if [ "$CS_FIXER" = "run" ]; then php bin/phpstan analyse src tests --no-progress --level 1 ; fi;
 
 after_success:
     - |

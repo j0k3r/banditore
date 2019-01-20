@@ -78,7 +78,7 @@ class GithubAuthenticator extends SocialAuthenticator
             $message = 'Successfully logged in. Your starred repos will soon be synced!';
         }
 
-        $request->getSession()->getFlashBag()->add('info', $message);
+        $request->getSession()->getBag('flashes')->add('info', $message);
 
         $message = [
             'user_id' => $token->getUser()->getId(),
