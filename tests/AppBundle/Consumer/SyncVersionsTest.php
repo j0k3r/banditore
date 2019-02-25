@@ -66,7 +66,7 @@ class SyncVersionsTest extends WebTestCase
     {
         return new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // repo/tags
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'name' => '2.0.1',
@@ -187,7 +187,7 @@ class SyncVersionsTest extends WebTestCase
             // markdown
             new Response(200, ['Content-Type' => 'text/html'], '<p>yay</p>'),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
         ]);
     }
 
@@ -332,11 +332,11 @@ class SyncVersionsTest extends WebTestCase
 
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // repo/tags generate a bad request
             new Response(400, ['Content-Type' => 'application/json']),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -416,11 +416,11 @@ class SyncVersionsTest extends WebTestCase
 
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // repo/tags generate a bad request
             new Response(404, ['Content-Type' => 'application/json']),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -500,7 +500,7 @@ class SyncVersionsTest extends WebTestCase
 
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 0]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 0]]])),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -594,7 +594,7 @@ class SyncVersionsTest extends WebTestCase
 
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // repo/tags
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'name' => '2.0.1',
@@ -628,7 +628,7 @@ class SyncVersionsTest extends WebTestCase
             // markdown failed
             new Response(400, ['Content-Type' => 'text/html'], 'booboo'),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -708,11 +708,11 @@ class SyncVersionsTest extends WebTestCase
 
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // repo/tags
             new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -799,7 +799,7 @@ class SyncVersionsTest extends WebTestCase
 
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // repo/tags
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'name' => '2.0.1',
@@ -823,7 +823,7 @@ class SyncVersionsTest extends WebTestCase
                 ],
             ])),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -893,7 +893,7 @@ class SyncVersionsTest extends WebTestCase
 
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // repo/tags
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'name' => '2.0.1',
@@ -907,7 +907,7 @@ class SyncVersionsTest extends WebTestCase
             // git/refs/tags generate a bad request
             new Response(400, ['Content-Type' => 'application/json']),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -1038,7 +1038,7 @@ class SyncVersionsTest extends WebTestCase
     {
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // repo/tags
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'name' => 'v2.11.0',
@@ -1078,7 +1078,7 @@ class SyncVersionsTest extends WebTestCase
             // markdown
             new Response(200, ['Content-Type' => 'text/html'], '<p>This is the first release after our major push.</p>'),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
         ]);
 
         $clientHandler = HandlerStack::create($responses);

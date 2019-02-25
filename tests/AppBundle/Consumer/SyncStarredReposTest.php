@@ -122,7 +122,7 @@ class SyncStarredReposTest extends WebTestCase
 
         $responses = new MockHandler([
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // first /user/starred
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'description' => 'banditore',
@@ -136,11 +136,11 @@ class SyncStarredReposTest extends WebTestCase
                 ],
             ]])),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // third /user/starred will return empty response which means, we reached the last page
             new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
         ]);
 
         $githubClient = $this->getMockClient($responses);
@@ -223,7 +223,7 @@ class SyncStarredReposTest extends WebTestCase
 
         $responses = new MockHandler([
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // first /user/starred
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'description' => 'banditore',
@@ -237,11 +237,11 @@ class SyncStarredReposTest extends WebTestCase
                 ],
             ]])),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // second /user/starred will return empty response which means, we reached the last page
             new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
         ]);
 
         $githubClient = $this->getMockClient($responses);
@@ -319,7 +319,7 @@ class SyncStarredReposTest extends WebTestCase
 
         $responses = new MockHandler([
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // first /user/starred
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'description' => 'banditore',
@@ -333,11 +333,11 @@ class SyncStarredReposTest extends WebTestCase
                 ],
             ]])),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // second /user/starred will return empty response which means, we reached the last page
             new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
         ]);
 
         $githubClient = $this->getMockClient($responses);
@@ -459,7 +459,7 @@ class SyncStarredReposTest extends WebTestCase
 
         $responses = new MockHandler([
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 0]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 0]]])),
         ]);
 
         $githubClient = $this->getMockClient($responses);
@@ -490,7 +490,7 @@ class SyncStarredReposTest extends WebTestCase
     {
         $responses = new MockHandler([
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // first /user/starred
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'description' => 'banditore',
@@ -504,7 +504,7 @@ class SyncStarredReposTest extends WebTestCase
                 ],
             ]])),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
             // second /user/starred
             new Response(200, ['Content-Type' => 'application/json'], json_encode([[
                 'description' => 'This is a test repo',
@@ -518,11 +518,11 @@ class SyncStarredReposTest extends WebTestCase
                 ],
             ]])),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 8]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 8]]])),
             // third /user/starred will return empty response which means, we reached the last page
             new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['remaining' => 6]]])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 6]]])),
         ]);
 
         $githubClient = $this->getMockClient($responses);
