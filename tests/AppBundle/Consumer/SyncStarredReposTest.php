@@ -90,7 +90,7 @@ class SyncStarredReposTest extends WebTestCase
         $userRepository->expects($this->once())
             ->method('find')
             ->with(123)
-            ->will($this->returnValue($user));
+            ->willReturn($user);
 
         $starRepository = $this->getMockBuilder('AppBundle\Repository\StarRepository')
             ->disableOriginalConstructor()
@@ -201,7 +201,7 @@ class SyncStarredReposTest extends WebTestCase
         $userRepository->expects($this->once())
             ->method('find')
             ->with(123)
-            ->will($this->returnValue($user));
+            ->willReturn($user);
 
         $starRepository = $this->getMockBuilder('AppBundle\Repository\StarRepository')
             ->disableOriginalConstructor()
@@ -292,7 +292,7 @@ class SyncStarredReposTest extends WebTestCase
         $userRepository->expects($this->once())
             ->method('find')
             ->with(123)
-            ->will($this->returnValue($user));
+            ->willReturn($user);
 
         $starRepository = $this->getMockBuilder('AppBundle\Repository\StarRepository')
             ->disableOriginalConstructor()
@@ -438,7 +438,7 @@ class SyncStarredReposTest extends WebTestCase
         $userRepository->expects($this->once())
             ->method('find')
             ->with(123)
-            ->will($this->returnValue($user));
+            ->willReturn($user);
 
         $starRepository = $this->getMockBuilder('AppBundle\Repository\StarRepository')
             ->disableOriginalConstructor()

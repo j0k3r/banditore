@@ -49,7 +49,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
         $userRepository->expects($this->once())
             ->method('findByRepoIds')
             ->with([123])
-            ->will($this->returnValue([['uuid' => '7fc8de31-5371-4f0a-b606-a7e164c41d46']]));
+            ->willReturn([['uuid' => '7fc8de31-5371-4f0a-b606-a7e164c41d46']]);
 
         $mock = new MockHandler([
             new Response(500),
@@ -73,7 +73,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
         $userRepository->expects($this->once())
             ->method('findByRepoIds')
             ->with([123])
-            ->will($this->returnValue([['uuid' => '7fc8de31-5371-4f0a-b606-a7e164c41d46']]));
+            ->willReturn([['uuid' => '7fc8de31-5371-4f0a-b606-a7e164c41d46']]);
 
         $mock = new MockHandler([
             new Response(204),
@@ -96,7 +96,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
         $userRepository->expects($this->once())
             ->method('findByRepoIds')
             ->with([123])
-            ->will($this->returnValue([['uuid' => '7fc8de31-5371-4f0a-b606-a7e164c41d46']]));
+            ->willReturn([['uuid' => '7fc8de31-5371-4f0a-b606-a7e164c41d46']]);
 
         $method = new \ReflectionMethod(
           'AppBundle\PubSubHubbub\Publisher', 'retrieveFeedUrls'
@@ -126,7 +126,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
         $loader
             ->expects($this->any())
             ->method('load')
-            ->will($this->returnValue($routes))
+            ->willReturn($routes)
         ;
 
         $sc = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\Container')->setMethods(['get'])->getMock();
@@ -134,7 +134,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
         $sc
             ->expects($this->any())
             ->method('get')
-            ->will($this->returnValue($loader))
+            ->willReturn($loader)
         ;
 
         return $sc;

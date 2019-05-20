@@ -232,7 +232,7 @@ class SyncVersionsTest extends WebTestCase
         $repoRepository->expects($this->once())
             ->method('find')
             ->with(123)
-            ->will($this->returnValue($repo));
+            ->willReturn($repo);
 
         $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
             ->disableOriginalConstructor()
@@ -240,12 +240,12 @@ class SyncVersionsTest extends WebTestCase
 
         $versionRepository->expects($this->exactly(4))
             ->method('findExistingOne')
-            ->will($this->returnCallback(function ($tagName, $repoId) use ($repo) {
+            ->willReturnCallback(function ($tagName, $repoId) use ($repo) {
                 // first version will exist, next one won't
                 if ('1.0.0' === $tagName) {
                     return new Version($repo);
                 }
-            }));
+            });
 
         $pubsubhubbub = $this->getMockBuilder('AppBundle\PubSubHubbub\Publisher')
             ->disableOriginalConstructor()
@@ -317,7 +317,7 @@ class SyncVersionsTest extends WebTestCase
         $repoRepository->expects($this->once())
             ->method('find')
             ->with(123)
-            ->will($this->returnValue($repo));
+            ->willReturn($repo);
 
         $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
             ->disableOriginalConstructor()
@@ -401,7 +401,7 @@ class SyncVersionsTest extends WebTestCase
         $repoRepository->expects($this->once())
             ->method('find')
             ->with(123)
-            ->will($this->returnValue($repo));
+            ->willReturn($repo);
 
         $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
             ->disableOriginalConstructor()
@@ -485,7 +485,7 @@ class SyncVersionsTest extends WebTestCase
         $repoRepository->expects($this->once())
             ->method('find')
             ->with(123)
-            ->will($this->returnValue($repo));
+            ->willReturn($repo);
 
         $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
             ->disableOriginalConstructor()
@@ -575,7 +575,7 @@ class SyncVersionsTest extends WebTestCase
         $repoRepository->expects($this->once())
             ->method('find')
             ->with(123)
-            ->will($this->returnValue($repo));
+            ->willReturn($repo);
 
         $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
             ->disableOriginalConstructor()
@@ -693,7 +693,7 @@ class SyncVersionsTest extends WebTestCase
         $repoRepository->expects($this->once())
             ->method('find')
             ->with(123)
-            ->will($this->returnValue($repo));
+            ->willReturn($repo);
 
         $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
             ->disableOriginalConstructor()
@@ -780,7 +780,7 @@ class SyncVersionsTest extends WebTestCase
         $repoRepository->expects($this->once())
             ->method('find')
             ->with(123)
-            ->will($this->returnValue($repo));
+            ->willReturn($repo);
 
         $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
             ->disableOriginalConstructor()
@@ -878,7 +878,7 @@ class SyncVersionsTest extends WebTestCase
         $repoRepository->expects($this->once())
             ->method('find')
             ->with(123)
-            ->will($this->returnValue($repo));
+            ->willReturn($repo);
 
         $versionRepository = $this->getMockBuilder('AppBundle\Repository\VersionRepository')
             ->disableOriginalConstructor()
