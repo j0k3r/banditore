@@ -4825,16 +4825,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.41.0",
+            "version": "v1.42.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "575cd5028362da591facde1ef5d7b94553c375c9"
+                "reference": "2983fcf2e20a4afe95f07e61d89a7590b3c8df2e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/575cd5028362da591facde1ef5d7b94553c375c9",
-                "reference": "575cd5028362da591facde1ef5d7b94553c375c9",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/2983fcf2e20a4afe95f07e61d89a7590b3c8df2e",
+                "reference": "2983fcf2e20a4afe95f07e61d89a7590b3c8df2e",
                 "shasum": ""
             },
             "require": {
@@ -4844,12 +4844,12 @@
             "require-dev": {
                 "psr/container": "^1.0",
                 "symfony/debug": "^2.7",
-                "symfony/phpunit-bridge": "^3.4.19|^4.1.8"
+                "symfony/phpunit-bridge": "^3.4.19|^4.1.8|^5.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.41-dev"
+                    "dev-master": "1.42-dev"
                 }
             },
             "autoload": {
@@ -4887,7 +4887,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-05-14T11:59:08+00:00"
+            "time": "2019-05-31T06:20:05+00:00"
         },
         {
             "name": "zendframework/zend-code",
