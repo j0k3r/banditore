@@ -141,14 +141,6 @@ snc_redis:
             alias: doctrine_cache
             dsn: "%redis_dsn_doctrine_cache%"
 
-# fix default options to remove a deprecated notif
-# > The \Raven_SanitizeDataProcessor class is deprecated since version 1.7 and will be removed in 2.0. Use the Raven_Processor_SanitizeDataProcessor class in the same namespace instead
-# https://github.com/getsentry/sentry-symfony/commit/4d34147b55c53aefa0c5378da37b14247ae5cd9e
-sentry:
-    options:
-        processors:
-            - Raven_Processor_SanitizeDataProcessor
-
 # see https://github.com/symfony/symfony-standard/pull/1133
 sensio_framework_extra:
    router:
