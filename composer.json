@@ -20,7 +20,7 @@
     },
     "require": {
         "php": "^7.1",
-        "ashleydawson/simple-pagination-bundle": "^1.0",
+        "ashleydawson/simple-pagination-bundle": "^2.0",
         "cache/predis-adapter": "^1.0",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/doctrine-cache-bundle": "^1.2",
