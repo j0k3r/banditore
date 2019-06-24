@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d50eab52b5f7a46c053cd7053e8110f0",
+    "content-hash": "f29fa95821028db7867a6639d32d54e0",
     "packages": [
         {
             "name": "ashleydawson/simple-pagination",
@@ -58,27 +58,27 @@
         },
         {
             "name": "ashleydawson/simple-pagination-bundle",
-            "version": "1.1.0",
+            "version": "2.0.0",
             "target-dir": "AshleyDawson/SimplePaginationBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AshleyDawson/SimplePaginationBundle.git",
-                "reference": "f486175374030bfdeab7cc17e308fdd3e1992601"
+                "reference": "9522d647220a8f0015318cc716673cccbb6212d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AshleyDawson/SimplePaginationBundle/zipball/f486175374030bfdeab7cc17e308fdd3e1992601",
-                "reference": "f486175374030bfdeab7cc17e308fdd3e1992601",
+                "url": "https://api.github.com/repos/AshleyDawson/SimplePaginationBundle/zipball/9522d647220a8f0015318cc716673cccbb6212d5",
+                "reference": "9522d647220a8f0015318cc716673cccbb6212d5",
                 "shasum": ""
             },
             "require": {
                 "ashleydawson/simple-pagination": "1.0.*",
                 "php": ">=5.3.3",
-                "symfony/symfony": "~2.3|~3.0",
-                "twig/twig": "~1.23"
+                "symfony/symfony": "~2.3|~3.0|~4.0",
+                "twig/twig": "~1.23|^2.7"
             },
             "require-dev": {
-                "symfony/phpunit-bridge": "^3.0"
+                "symfony/phpunit-bridge": "^4.0"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -110,7 +110,7 @@
                 "paginator",
                 "universal"
             ],
-            "time": "2017-03-13T10:05:59+00:00"
+            "time": "2019-06-24T09:21:22+00:00"
         },
         {
             "name": "cache/adapter-common",
@@ -4073,16 +4073,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "2.1.0",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "1f1704806820c16dcefcbf2e80b920024fda2234"
+                "reference": "8e27e6c5fcf6f01fc2e5235dd14cc0b2b347d793"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/1f1704806820c16dcefcbf2e80b920024fda2234",
-                "reference": "1f1704806820c16dcefcbf2e80b920024fda2234",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/8e27e6c5fcf6f01fc2e5235dd14cc0b2b347d793",
+                "reference": "8e27e6c5fcf6f01fc2e5235dd14cc0b2b347d793",
                 "shasum": ""
             },
             "require": {
@@ -4148,7 +4148,7 @@
                 "logging",
                 "sentry"
             ],
-            "time": "2019-05-22T07:44:47+00:00"
+            "time": "2019-06-13T11:27:23+00:00"
         },
         {
             "name": "sentry/sentry-symfony",
@@ -5040,21 +5040,22 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.42.2",
+            "version": "v2.11.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "21707d6ebd05476854805e4f91b836531941bcd4"
+                "reference": "699ed2342557c88789a15402de5eb834dedd6792"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/21707d6ebd05476854805e4f91b836531941bcd4",
-                "reference": "21707d6ebd05476854805e4f91b836531941bcd4",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/699ed2342557c88789a15402de5eb834dedd6792",
+                "reference": "699ed2342557c88789a15402de5eb834dedd6792",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.0",
-                "symfony/polyfill-ctype": "^1.8"
+                "php": "^7.0",
+                "symfony/polyfill-ctype": "^1.8",
+                "symfony/polyfill-mbstring": "^1.3"
             },
             "require-dev": {
                 "psr/container": "^1.0",
@@ -5064,7 +5065,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.42-dev"
+                    "dev-master": "2.11-dev"
                 }
             },
             "autoload": {
@@ -5102,7 +5103,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-06-18T15:35:16+00:00"
+            "time": "2019-06-18T15:37:11+00:00"
         },
         {
             "name": "zendframework/zend-code",
@@ -5902,7 +5903,7 @@
                     "homepage": "https://nette.org/contributors"
                 }
             ],
-            "description": "? Nette NEON: encodes and decodes NEON file format.",
+            "description": "🍸 Nette NEON: encodes and decodes NEON file format.",
             "homepage": "http://ne-on.org",
             "keywords": [
                 "export",
