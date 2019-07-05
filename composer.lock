@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f29fa95821028db7867a6639d32d54e0",
+    "content-hash": "27287e02742c2261327ae09b25d7877f",
     "packages": [
         {
             "name": "ashleydawson/simple-pagination",
@@ -58,23 +58,23 @@
         },
         {
             "name": "ashleydawson/simple-pagination-bundle",
-            "version": "2.0.0",
+            "version": "3.0.0",
             "target-dir": "AshleyDawson/SimplePaginationBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AshleyDawson/SimplePaginationBundle.git",
-                "reference": "9522d647220a8f0015318cc716673cccbb6212d5"
+                "reference": "e0ce435eb4aba01446f26e94eba5eb159603d23b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AshleyDawson/SimplePaginationBundle/zipball/9522d647220a8f0015318cc716673cccbb6212d5",
-                "reference": "9522d647220a8f0015318cc716673cccbb6212d5",
+                "url": "https://api.github.com/repos/AshleyDawson/SimplePaginationBundle/zipball/e0ce435eb4aba01446f26e94eba5eb159603d23b",
+                "reference": "e0ce435eb4aba01446f26e94eba5eb159603d23b",
                 "shasum": ""
             },
             "require": {
                 "ashleydawson/simple-pagination": "1.0.*",
                 "php": ">=5.3.3",
-                "symfony/symfony": "~2.3|~3.0|~4.0",
+                "symfony/symfony": "^3.0|^4.0",
                 "twig/twig": "~1.23|^2.7"
             },
             "require-dev": {
@@ -110,7 +110,7 @@
                 "paginator",
                 "universal"
             ],
-            "time": "2019-06-24T09:21:22+00:00"
+            "time": "2019-07-04T08:42:49+00:00"
         },
         {
             "name": "cache/adapter-common",
