@@ -4366,32 +4366,35 @@
         },
         {
             "name": "swarrot/swarrot-bundle",
-            "version": "v1.6.1",
+            "version": "v1.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swarrot/SwarrotBundle.git",
-                "reference": "35b422ba58d227fd856c8d6c964618778136f719"
+                "reference": "f3e5b8f83b38121262d29adf908e4bccae6d85ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/35b422ba58d227fd856c8d6c964618778136f719",
-                "reference": "35b422ba58d227fd856c8d6c964618778136f719",
+                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/f3e5b8f83b38121262d29adf908e4bccae6d85ea",
+                "reference": "f3e5b8f83b38121262d29adf908e4bccae6d85ea",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1",
-                "psr/log": "~1.0",
-                "swarrot/swarrot": "^2.1.1|^3.0",
-                "symfony/console": "~2.4|~3.0|~4.0",
-                "symfony/framework-bundle": "~2.4|~3.0|~4.0",
-                "symfony/yaml": "~2.4|~3.0|~4.0"
+                "php": "^7.1",
+                "psr/log": "^1.0",
+                "swarrot/swarrot": "^3.4",
+                "symfony/config": "^3.4|^4.1",
+                "symfony/console": "^3.4|^4.1",
+                "symfony/dependency-injection": "^3.4|^4.1",
+                "symfony/http-kernel": "^3.4|^4.1",
+                "symfony/yaml": "^3.4|^4.1"
             },
             "require-dev": {
-                "doctrine/common": "~2.2",
-                "doctrine/dbal": "~2.2",
-                "phpunit/phpunit": "~6.5",
-                "sentry/sentry-symfony": ">=0.1.0",
-                "symfony/phpunit-bridge": "~4.0"
+                "doctrine/common": "^2.2",
+                "doctrine/dbal": "^2.2",
+                "php-amqplib/php-amqplib": "^2.9",
+                "phpunit/phpunit": "^7.5",
+                "sentry/sentry-symfony": "^2.3",
+                "symfony/phpunit-bridge": "^4.0"
             },
             "suggest": {
                 "php-amqplib/php-amqplib": "Required if using amqp_lib"
@@ -4399,7 +4402,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.6-dev"
+                    "dev-master": "1.7-dev"
                 }
             },
             "autoload": {
@@ -4425,7 +4428,7 @@
                 "bundle",
                 "swarrot"
             ],
-            "time": "2019-02-11T20:17:06+00:00"
+            "time": "2019-07-28T22:03:26+00:00"
         },
         {
             "name": "symfony/monolog-bundle",
