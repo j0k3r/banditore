@@ -4229,20 +4229,20 @@
         },
         {
             "name": "snc/redis-bundle",
-            "version": "2.1.9",
+            "version": "2.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/snc/SncRedisBundle.git",
-                "reference": "af3ac967b0351ff880f646486bff87247abb5286"
+                "reference": "9ac8d92c0479dad8ef37d43c2edcc170e2c27c2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/af3ac967b0351ff880f646486bff87247abb5286",
-                "reference": "af3ac967b0351ff880f646486bff87247abb5286",
+                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/9ac8d92c0479dad8ef37d43c2edcc170e2c27c2d",
+                "reference": "9ac8d92c0479dad8ef37d43c2edcc170e2c27c2d",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3",
+                "php": "^5.3.3 || ^7.0",
                 "symfony/framework-bundle": "^2.7 || ^3.0 || ^4.0",
                 "symfony/yaml": "^2.7 || ^3.0 || ^4.0"
             },
@@ -4291,7 +4291,7 @@
                 "redis",
                 "symfony"
             ],
-            "time": "2019-02-20T07:03:43+00:00"
+            "time": "2019-04-09T13:29:53+00:00"
         },
         {
             "name": "swarrot/swarrot",
