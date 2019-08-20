@@ -1,10 +1,12 @@
 language: php
 
+# because of RabbitMQ not yet (really) available on Xenial
+dist: trusty
+
 services:
+    - mysql
     - rabbitmq
     - redis
-
-sudo: false
 
 cache:
     apt: true
@@ -16,18 +18,19 @@ matrix:
     include:
         - php: 7.1
         - php: 7.3
+        - php: 7.4
         - php: nightly
         - php: 7.2
           env: CS_FIXER=run
         - php: 7.2
           env: COVERAGE=run
     allow_failures:
+        - php: 7.4
         - php: nightly
 
 before_install:
     - echo 'date.timezone = "Europe/Paris"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - echo "extension=redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    - pecl list
 
 install:
     - composer --prefer-dist install --no-interaction -o --no-progress
