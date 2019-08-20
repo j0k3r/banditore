@@ -18,7 +18,6 @@ doctrine:
         user: "root"
         password: ~
         charset: utf8mb4
-        server_version: 5.7
 
 web_profiler:
     toolbar: false
