@@ -132,6 +132,15 @@ class DefaultControllerTest extends WebTestCase
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testStatus()
+    {
+        $crawler = $this->client->request('GET', '/status');
+
+        $data = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertTrue($data['is_fresh']);
+    }
+
     private function logIn(User $user)
     {
         $session = $this->client->getContainer()->get('session');
