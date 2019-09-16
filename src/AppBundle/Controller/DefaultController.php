@@ -31,6 +31,27 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/status", name="status")
+     */
+    public function statusAction(VersionRepository $repoVersion)
+    {
+        $latest = $repoVersion->findLatest();
+
+        if (null === $latest) {
+            return $this->json([]);
+        }
+
+        $diff = (new \DateTime())->getTimestamp() - $latest['createdAt']->getTimestamp();
+
+        return $this->json([
+            'latest' => $latest['createdAt'],
+            'diff' => $diff,
+            // assume latest version is at most 2h old
+            'is_fresh' => $diff / 60 < 120,
+        ]);
+    }
+
+    /**
      * @Route("/dashboard", name="dashboard")
      */
     public function dashboardAction(Request $request, VersionRepository $repoVersion)

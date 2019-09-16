@@ -117,4 +117,19 @@ class VersionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * Retrieve the latest version saved.
+     *
+     * @return mixed
+     */
+    public function findLatest()
+    {
+        return $this->createQueryBuilder('v')
+            ->select('v.createdAt')
+            ->orderBy('v.createdAt', 'desc')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
