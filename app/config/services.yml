@@ -20,6 +20,10 @@ services:
             $clientId: "%github_client_id%"
             $clientSecret: "%github_client_secret%"
 
+    AppBundle\Controller\DefaultController:
+        arguments:
+            $diffInterval: "%status_minute_interval_before_alert%"
+
     AppBundle\PubSubHubbub\Publisher:
         arguments:
             $hub: "http://pubsubhubbub.appspot.com"

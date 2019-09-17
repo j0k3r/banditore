@@ -98,6 +98,28 @@ You just need to define these 2 cronjobs (replace all `/path/to/banditore` with 
 
  Once you've put the file in the supervisor conf repo, run `supervisorctl update && supervisorctl start all` (`update` will read your conf, `start all` will start all workers)
 
+### Monitoring
+
+There is a status page available at `/status`, it returns a json with some information about the freshness of fetched versions:
+
+```json
+{
+    "latest": {
+        "date": "2019-09-17 19:50:50.000000",
+        "timezone_type": 3,
+        "timezone": "Europe\/Berlin"
+    },
+    "diff": 1736,
+    "is_fresh": true
+}
+```
+
+- `latest`: the latest created version as a DateTime
+- `diff`: the difference between now and the latest created version (in seconds)
+- `is_fresh`: indicate if everything is fine by comparing the `diff` above with the `status_minute_interval_before_alert` parameter
+
+For example, I've setup a check on [updown.io](https://updown.io/r/P7qer) to check that status page and if the page contains `"is_fresh":true`. So I receive an alert when `is_fresh` is false: which means there is a potential issue on the server.
+
 ## Running the test suite
 
 If you plan to contribute (you're awesome, I know that :v:), you'll need to install the project in a different way (for example, to retrieve dev packages):

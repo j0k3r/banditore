@@ -18,6 +18,25 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class DefaultController extends Controller
 {
+    private $repoVersion;
+    private $repoRepo;
+    private $repoStar;
+    private $repoUser;
+    private $rssGenerator;
+    private $rssWriter;
+    private $diffInterval;
+
+    public function __construct(VersionRepository $repoVersion, RepoRepository $repoRepo, StarRepository $repoStar, UserRepository $repoUser, Generator $rssGenerator, RssWriter $rssWriter, $diffInterval)
+    {
+        $this->repoVersion = $repoVersion;
+        $this->repoRepo = $repoRepo;
+        $this->repoStar = $repoStar;
+        $this->repoUser = $repoUser;
+        $this->rssGenerator = $rssGenerator;
+        $this->rssWriter = $rssWriter;
+        $this->diffInterval = $diffInterval;
+    }
+
     /**
      * @Route("/", name="homepage")
      */
@@ -33,9 +52,9 @@ class DefaultController extends Controller
     /**
      * @Route("/status", name="status")
      */
-    public function statusAction(VersionRepository $repoVersion)
+    public function statusAction()
     {
-        $latest = $repoVersion->findLatest();
+        $latest = $this->repoVersion->findLatest();
 
         if (null === $latest) {
             return $this->json([]);
@@ -46,15 +65,14 @@ class DefaultController extends Controller
         return $this->json([
             'latest' => $latest['createdAt'],
             'diff' => $diff,
-            // assume latest version is at most 2h old
-            'is_fresh' => $diff / 60 < 120,
+            'is_fresh' => $diff / 60 < $this->diffInterval,
         ]);
     }
 
     /**
      * @Route("/dashboard", name="dashboard")
      */
-    public function dashboardAction(Request $request, VersionRepository $repoVersion)
+    public function dashboardAction(Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('homepage'));
@@ -64,13 +82,13 @@ class DefaultController extends Controller
         $paginator = $this->get('ashley_dawson_simple_pagination.paginator_public');
 
         // Pass the item total
-        $paginator->setItemTotalCallback(function () use ($repoVersion, $userId) {
-            return $repoVersion->countForUser($userId);
+        $paginator->setItemTotalCallback(function () use ($userId) {
+            return $this->repoVersion->countForUser($userId);
         });
 
         // Pass the slice
-        $paginator->setSliceCallback(function ($offset, $length) use ($repoVersion, $userId) {
-            return $repoVersion->findForUser($userId, $offset, $length);
+        $paginator->setSliceCallback(function ($offset, $length) use ($userId) {
+            return $this->repoVersion->findForUser($userId, $offset, $length);
         });
 
         // Paginate using the current page number
@@ -120,15 +138,15 @@ class DefaultController extends Controller
     /**
      * @Route("/{uuid}.atom", name="rss_user")
      */
-    public function rssAction(User $user, Generator $rssGenerator, VersionRepository $repoVersion, RssWriter $rssWriter)
+    public function rssAction(User $user)
     {
-        $channel = $rssGenerator->generate(
+        $channel = $this->rssGenerator->generate(
             $user,
-            $repoVersion->findForUser($user->getId()),
+            $this->repoVersion->findForUser($user->getId()),
             $this->generateUrl('rss_user', ['uuid' => $user->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL)
         );
 
-        return new RssStreamedResponse($channel, $rssWriter);
+        return new RssStreamedResponse($channel, $this->rssWriter);
     }
 
     /**
@@ -136,12 +154,12 @@ class DefaultController extends Controller
      *
      * @Route("/stats", name="stats")
      */
-    public function statsAction(RepoRepository $repoRepo, VersionRepository $repoVersion, StarRepository $repoStar, UserRepository $repoUser)
+    public function statsAction()
     {
-        $nbRepos = $repoRepo->countTotal();
-        $nbReleases = $repoVersion->countTotal();
-        $nbStars = $repoStar->countTotal();
-        $nbUsers = $repoUser->countTotal();
+        $nbRepos = $this->repoRepo->countTotal();
+        $nbReleases = $this->repoVersion->countTotal();
+        $nbStars = $this->repoStar->countTotal();
+        $nbUsers = $this->repoUser->countTotal();
 
         return $this->render('default/stats.html.twig', [
             'counters' => [
@@ -150,8 +168,8 @@ class DefaultController extends Controller
                 'avgReleasePerRepo' => ($nbRepos > 0) ? round($nbReleases / $nbRepos, 2) : 0,
                 'avgStarPerUser' => ($nbUsers > 0) ? round($nbStars / $nbUsers, 2) : 0,
             ],
-            'mostReleases' => $repoRepo->mostVersionsPerRepo(),
-            'lastestReleases' => $repoVersion->findLastVersionForEachRepo(20),
+            'mostReleases' => $this->repoRepo->mostVersionsPerRepo(),
+            'lastestReleases' => $this->repoVersion->findLastVersionForEachRepo(20),
         ]);
     }
 }
