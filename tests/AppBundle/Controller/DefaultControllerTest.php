@@ -76,7 +76,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertContains('Logout (admin)', $menu, 'Info about logged in user is here');
 
         $aside = $crawler->filter('aside.feed')->text();
-        $this->assertContains('your feed link', $aside, 'RSS feed is here');
+        $this->assertContains('your feed link', $aside, 'Feed link is here');
 
         $table = $crawler->filter('table')->text();
         $this->assertContains('test/test', $table, 'Repo test/test exist in a table');
