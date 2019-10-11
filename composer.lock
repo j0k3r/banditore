@@ -2764,16 +2764,16 @@
         },
         {
             "name": "php-amqplib/php-amqplib",
-            "version": "v2.10.0",
+            "version": "v2.10.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-amqplib/php-amqplib.git",
-                "reference": "04e5366f032906d5f716890427e425e71307d3a8"
+                "reference": "6e2b2501e021e994fb64429e5a78118f83b5c200"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/04e5366f032906d5f716890427e425e71307d3a8",
-                "reference": "04e5366f032906d5f716890427e425e71307d3a8",
+                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/6e2b2501e021e994fb64429e5a78118f83b5c200",
+                "reference": "6e2b2501e021e994fb64429e5a78118f83b5c200",
                 "shasum": ""
             },
             "require": {
@@ -2787,7 +2787,6 @@
             "require-dev": {
                 "ext-curl": "*",
                 "nategood/httpful": "^0.2.20",
-                "phpdocumentor/phpdocumentor": "dev-master",
                 "phpunit/phpunit": "^5.7|^6.5|^7.0",
                 "squizlabs/php_codesniffer": "^2.5"
             },
@@ -2834,7 +2833,7 @@
                 "queue",
                 "rabbitmq"
             ],
-            "time": "2019-08-08T18:28:18+00:00"
+            "time": "2019-10-10T13:23:40+00:00"
         },
         {
             "name": "php-http/cache-plugin",
