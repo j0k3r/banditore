@@ -10,9 +10,6 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class Version20170329095349 extends AbstractMigration
 {
-    /**
-     * @param Schema $schema
-     */
     public function up(Schema $schema)
     {
         // this up() migration is auto-generated, please modify it to your needs
@@ -21,9 +18,6 @@ class Version20170329095349 extends AbstractMigration
         $this->addSql('ALTER TABLE user CHANGE name name VARCHAR(191) DEFAULT NULL');
     }
 
-    /**
-     * @param Schema $schema
-     */
     public function down(Schema $schema)
     {
         // this down() migration is auto-generated, please modify it to your needs

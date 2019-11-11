@@ -40,8 +40,7 @@ class StarRepository extends ServiceEntityRepository
     /**
      * Remove stars for a user.
      *
-     * @param array $repoIds
-     * @param int   $userId
+     * @param int $userId
      *
      * @return mixed
      */

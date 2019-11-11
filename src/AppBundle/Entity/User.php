@@ -257,8 +257,6 @@ class User implements UserInterface
 
     /**
      * Hydrate a user with data from Github.
-     *
-     * @param GithubResourceOwner $data
      */
     public function hydrateFromGithub(GithubResourceOwner $data)
     {

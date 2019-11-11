@@ -115,8 +115,6 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
     /**
      * @see \Symfony\Bundle\FrameworkBundle\Tests\Routing\RouterTest
      *
-     * @param RouteCollection $routes
-     *
      * @return \Symfony\Component\DependencyInjection\Container
      */
     private function getServiceContainer(RouteCollection $routes)
