@@ -20,12 +20,11 @@ class Publisher
     /**
      * Create a new publisher.
      *
-     * @param string          $hub            A hub (url) to ping
-     * @param RouterInterface $router         Symfony Router to generate the feed xml
-     * @param Client          $client         Guzzle client to send the request
-     * @param UserRepository  $userRepository
-     * @param string          $host           Host of the project (used to generate route from a command)
-     * @param string          $scheme         Scheme of the project (used to generate route from a command)
+     * @param string          $hub    A hub (url) to ping
+     * @param RouterInterface $router Symfony Router to generate the feed xml
+     * @param Client          $client Guzzle client to send the request
+     * @param string          $host   Host of the project (used to generate route from a command)
+     * @param string          $scheme Scheme of the project (used to generate route from a command)
      */
     public function __construct($hub, RouterInterface $router, Client $client, UserRepository $userRepository, $host, $scheme)
     {
@@ -83,8 +82,6 @@ class Publisher
 
     /**
      * Retrieve user feed urls from a list of repository ids.
-     *
-     * @param array $repoIds
      *
      * @return array
      */

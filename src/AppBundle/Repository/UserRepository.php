@@ -16,8 +16,6 @@ class UserRepository extends ServiceEntityRepository
     /**
      * Retrieve user.
      *
-     * @param array $repoIds
-     *
      * @return array
      */
     public function findByRepoIds(array $repoIds)

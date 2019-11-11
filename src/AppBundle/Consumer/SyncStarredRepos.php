@@ -150,7 +150,6 @@ class SyncStarredRepos implements ProcessorInterface
      * Clean old star.
      * When user unstar a repo we also need to remove that association.
      *
-     * @param User  $user
      * @param array $newStars Current starred repos Id of the user
      *
      * @return mixed

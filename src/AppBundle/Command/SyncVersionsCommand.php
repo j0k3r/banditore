@@ -119,8 +119,6 @@ class SyncVersionsCommand extends Command
     /**
      * Retrieve repos to work on.
      *
-     * @param InputInterface $input
-     *
      * @return array
      */
     private function retrieveRepos(InputInterface $input)

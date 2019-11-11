@@ -42,8 +42,6 @@ class ClientDiscovery
     /**
      * Allow to override Github client.
      * Only used in test.
-     *
-     * @param GithubClient $client
      */
     public function setGithubClient(GithubClient $client)
     {

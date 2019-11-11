@@ -118,8 +118,6 @@ class SyncStarredReposCommand extends Command
     /**
      * Retrieve users to work on.
      *
-     * @param InputInterface $input
-     *
      * @return array
      */
     private function retrieveUsers(InputInterface $input)
