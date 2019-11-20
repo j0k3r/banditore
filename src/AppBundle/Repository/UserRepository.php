@@ -60,7 +60,7 @@ class UserRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('u')
             ->select('u.id', 'u.username', 'u.accessToken')
             ->getQuery()
-            ->useResultCache(true)
+            ->enableResultCache()
             ->setResultCacheLifetime(10 * 60)
             ->getArrayResult();
     }
