@@ -33,7 +33,7 @@ class VersionRepository extends ServiceEntityRepository
             ->andWhere('v.tagName = :tagName')->setParameter('tagName', $tagName)
             ->setMaxResults(1)
             ->getQuery()
-            ->useResultCache(true, 3600 * 24 * 31, 'version-' . $repoId . '-' . $tagName)
+            ->enableResultCache(3600 * 24 * 31, 'version-' . $repoId . '-' . $tagName)
         ;
 
         return $query->getOneOrNullResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
