@@ -4619,7 +4619,7 @@
         },
         {
             "name": "symfony/polyfill-apcu",
-            "version": "v1.13.0",
+            "version": "v1.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-apcu.git",
