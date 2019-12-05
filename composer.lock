@@ -2193,25 +2193,25 @@
         },
         {
             "name": "knplabs/knp-time-bundle",
-            "version": "v1.9.1",
+            "version": "v1.10.0",
             "target-dir": "Knp/Bundle/TimeBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/KnpTimeBundle.git",
-                "reference": "d8464f1f0e0bdeb6fab3dd0d34bc085705e769f0"
+                "reference": "19ea7e2dee337ae98306bbdf7a4ce060f5e5d984"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/KnpTimeBundle/zipball/d8464f1f0e0bdeb6fab3dd0d34bc085705e769f0",
-                "reference": "d8464f1f0e0bdeb6fab3dd0d34bc085705e769f0",
+                "url": "https://api.github.com/repos/KnpLabs/KnpTimeBundle/zipball/19ea7e2dee337ae98306bbdf7a4ce060f5e5d984",
+                "reference": "19ea7e2dee337ae98306bbdf7a4ce060f5e5d984",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5",
-                "symfony/config": "~2.3|~3.0|~4.0",
-                "symfony/dependency-injection": "~2.3|~3.0|~4.0",
-                "symfony/templating": "~2.3|~3.0|~4.0",
-                "symfony/translation": "~2.3|~3.0|~4.0"
+                "php": ">=5.6",
+                "symfony/config": "~3.4|~4.0|^5.0",
+                "symfony/dependency-injection": "~3.4|~4.0|^5.0",
+                "symfony/templating": "~3.4|~4.0|^5.0",
+                "symfony/translation": "~3.4|~4.0|^5.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^4.8|^5.0"
@@ -2254,7 +2254,7 @@
                 "knplabs",
                 "time"
             ],
-            "time": "2019-04-19T10:01:52+00:00"
+            "time": "2019-12-05T03:43:17+00:00"
         },
         {
             "name": "knpuniversity/oauth2-client-bundle",
