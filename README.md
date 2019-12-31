@@ -13,7 +13,7 @@ Banditore retrieves new releases from your GitHub starred repositories and put t
 
 ## Requirements
 
- - PHP >= 7.1 (with `pdo_mysql`)
+ - PHP >= 7.2 (with `pdo_mysql`)
  - MySQL >= 5.7
  - Redis (to cache requests to the GitHub API)
  - [RabbitMQ](https://www.rabbitmq.com/), which is optional (see below)
