@@ -4348,16 +4348,16 @@
         },
         {
             "name": "swarrot/swarrot",
-            "version": "v3.5.0",
+            "version": "v3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swarrot/swarrot.git",
-                "reference": "f41575d7cd59b1729d46d00157fba560f1bb2505"
+                "reference": "2ad1d3ecd520338016201112b2445906ec142164"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swarrot/swarrot/zipball/f41575d7cd59b1729d46d00157fba560f1bb2505",
-                "reference": "f41575d7cd59b1729d46d00157fba560f1bb2505",
+                "url": "https://api.github.com/repos/swarrot/swarrot/zipball/2ad1d3ecd520338016201112b2445906ec142164",
+                "reference": "2ad1d3ecd520338016201112b2445906ec142164",
                 "shasum": ""
             },
             "require": {
@@ -4415,20 +4415,20 @@
                 "swarrot",
                 "worker"
             ],
-            "time": "2019-12-11T14:59:38+00:00"
+            "time": "2020-01-22T21:51:20+00:00"
         },
         {
             "name": "swarrot/swarrot-bundle",
-            "version": "v1.7.0",
+            "version": "v1.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swarrot/SwarrotBundle.git",
-                "reference": "a2dc397f88c48befdd08417b475fd800b9b9c5de"
+                "reference": "676915d78b2e562cbf28a6eadf4e146b16ec909e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/a2dc397f88c48befdd08417b475fd800b9b9c5de",
-                "reference": "a2dc397f88c48befdd08417b475fd800b9b9c5de",
+                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/676915d78b2e562cbf28a6eadf4e146b16ec909e",
+                "reference": "676915d78b2e562cbf28a6eadf4e146b16ec909e",
                 "shasum": ""
             },
             "require": {
@@ -4481,7 +4481,7 @@
                 "bundle",
                 "swarrot"
             ],
-            "time": "2019-11-25T23:53:12+00:00"
+            "time": "2020-01-22T17:51:20+00:00"
         },
         {
             "name": "symfony/http-client",
