@@ -4348,16 +4348,16 @@
         },
         {
             "name": "swarrot/swarrot",
-            "version": "v3.6.0",
+            "version": "v3.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swarrot/swarrot.git",
-                "reference": "2ad1d3ecd520338016201112b2445906ec142164"
+                "reference": "a953ec7ce177bf4d3eaa81e4f55b6b45bba2130b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swarrot/swarrot/zipball/2ad1d3ecd520338016201112b2445906ec142164",
-                "reference": "2ad1d3ecd520338016201112b2445906ec142164",
+                "url": "https://api.github.com/repos/swarrot/swarrot/zipball/a953ec7ce177bf4d3eaa81e4f55b6b45bba2130b",
+                "reference": "a953ec7ce177bf4d3eaa81e4f55b6b45bba2130b",
                 "shasum": ""
             },
             "require": {
@@ -4368,14 +4368,17 @@
             "require-dev": {
                 "aws/aws-sdk-php": "^2.8",
                 "doctrine/common": "^2.3",
-                "doctrine/dbal": "^2.2",
+                "doctrine/dbal": "^2.4",
                 "php-amqplib/php-amqplib": "^2.1",
                 "php-http/curl-client": "^2.0",
                 "phpunit/phpunit": "^8.4",
                 "queue-interop/amqp-interop": "^0.5",
                 "queue-interop/queue-interop": "^0.5",
                 "sentry/sentry": "^1.5",
-                "stomp-php/stomp-php": "^4.3.1"
+                "stomp-php/stomp-php": "^4.3.1",
+                "symfony/contracts": "^1.0 || ^2.0",
+                "symfony/error-handler": "^5.0",
+                "symfony/phpunit-bridge": "^5.0"
             },
             "suggest": {
                 "aws/aws-sdk-php": "^2.8",
@@ -4385,12 +4388,13 @@
                 "queue-interop/queue-interop": "^0.5",
                 "sentry/sentry": "^1.5",
                 "stomp-php/stomp-php": "^4.3.1",
-                "symfony/console": "^3.4 || ^4.1"
+                "symfony/console": "^3.4 || ^4.1",
+                "symfony/contracts": "^1.0 || ^2.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.6.x-dev"
+                    "dev-master": "3.7.x-dev"
                 }
             },
             "autoload": {
@@ -4415,20 +4419,20 @@
                 "swarrot",
                 "worker"
             ],
-            "time": "2020-01-22T21:51:20+00:00"
+            "time": "2020-01-29T11:41:18+00:00"
         },
         {
             "name": "swarrot/swarrot-bundle",
-            "version": "v1.7.2",
+            "version": "v1.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swarrot/SwarrotBundle.git",
-                "reference": "676915d78b2e562cbf28a6eadf4e146b16ec909e"
+                "reference": "298626ee57f725d011dbe18176247f4057595ae1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/676915d78b2e562cbf28a6eadf4e146b16ec909e",
-                "reference": "676915d78b2e562cbf28a6eadf4e146b16ec909e",
+                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/298626ee57f725d011dbe18176247f4057595ae1",
+                "reference": "298626ee57f725d011dbe18176247f4057595ae1",
                 "shasum": ""
             },
             "require": {
@@ -4481,7 +4485,7 @@
                 "bundle",
                 "swarrot"
             ],
-            "time": "2020-01-22T17:51:20+00:00"
+            "time": "2020-02-05T12:47:10+00:00"
         },
         {
             "name": "symfony/http-client",
