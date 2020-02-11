@@ -5585,16 +5585,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.12.3",
+            "version": "v2.12.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "97b6311585cae66a26833b14b33785f5797f7d39"
+                "reference": "822d57eac92f966cd1e3232539b3dbbfed21f754"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/97b6311585cae66a26833b14b33785f5797f7d39",
-                "reference": "97b6311585cae66a26833b14b33785f5797f7d39",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/822d57eac92f966cd1e3232539b3dbbfed21f754",
+                "reference": "822d57eac92f966cd1e3232539b3dbbfed21f754",
                 "shasum": ""
             },
             "require": {
@@ -5646,7 +5646,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-12-28T07:12:03+00:00"
+            "time": "2020-02-11T06:01:32+00:00"
         },
         {
             "name": "zendframework/zend-code",
