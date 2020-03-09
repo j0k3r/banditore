@@ -4423,16 +4423,16 @@
         },
         {
             "name": "swarrot/swarrot-bundle",
-            "version": "v1.8.0",
+            "version": "v1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swarrot/SwarrotBundle.git",
-                "reference": "298626ee57f725d011dbe18176247f4057595ae1"
+                "reference": "4f8390fc1152a96b434d1667d9180388d9b546be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/298626ee57f725d011dbe18176247f4057595ae1",
-                "reference": "298626ee57f725d011dbe18176247f4057595ae1",
+                "url": "https://api.github.com/repos/swarrot/SwarrotBundle/zipball/4f8390fc1152a96b434d1667d9180388d9b546be",
+                "reference": "4f8390fc1152a96b434d1667d9180388d9b546be",
                 "shasum": ""
             },
             "require": {
@@ -4485,7 +4485,7 @@
                 "bundle",
                 "swarrot"
             ],
-            "time": "2020-02-05T12:47:10+00:00"
+            "time": "2020-03-06T10:30:54+00:00"
         },
         {
             "name": "symfony/http-client",
@@ -7216,7 +7216,7 @@
                 }
             ],
             "description": "This bundle generates code for you",
-            "abandoned": true,
+            "abandoned": "symfony/maker-bundle",
             "time": "2017-12-07T15:36:41+00:00"
         },
         {
