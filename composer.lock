@@ -2229,16 +2229,16 @@
         },
         {
             "name": "knpuniversity/oauth2-client-bundle",
-            "version": "v1.32.0",
+            "version": "v1.34.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/knpuniversity/oauth2-client-bundle.git",
-                "reference": "825b0c4512e51615318c8fbd4a57c7e65a57216d"
+                "reference": "fd892fe2d4752116f09c85d1a3a34af91e1ddade"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/knpuniversity/oauth2-client-bundle/zipball/825b0c4512e51615318c8fbd4a57c7e65a57216d",
-                "reference": "825b0c4512e51615318c8fbd4a57c7e65a57216d",
+                "url": "https://api.github.com/repos/knpuniversity/oauth2-client-bundle/zipball/fd892fe2d4752116f09c85d1a3a34af91e1ddade",
+                "reference": "fd892fe2d4752116f09c85d1a3a34af91e1ddade",
                 "shasum": ""
             },
             "require": {
@@ -2282,7 +2282,7 @@
                 "oauth",
                 "oauth2"
             ],
-            "time": "2020-01-10T15:50:30+00:00"
+            "time": "2020-03-19T10:26:26+00:00"
         },
         {
             "name": "league/oauth2-client",
@@ -7216,7 +7216,7 @@
                 }
             ],
             "description": "This bundle generates code for you",
-            "abandoned": true,
+            "abandoned": "symfony/maker-bundle",
             "time": "2017-12-07T15:36:41+00:00"
         },
         {
