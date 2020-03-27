@@ -4739,16 +4739,16 @@
         },
         {
             "name": "symfony/polyfill-apcu",
-            "version": "v1.13.1",
+            "version": "v1.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-apcu.git",
-                "reference": "a8e961c841b9ec52927a87914f8820a1ad8f8116"
+                "reference": "d6b5c4ac62cd4ed622e583d027ae684de2d3c4bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-apcu/zipball/a8e961c841b9ec52927a87914f8820a1ad8f8116",
-                "reference": "a8e961c841b9ec52927a87914f8820a1ad8f8116",
+                "url": "https://api.github.com/repos/symfony/polyfill-apcu/zipball/d6b5c4ac62cd4ed622e583d027ae684de2d3c4bd",
+                "reference": "d6b5c4ac62cd4ed622e583d027ae684de2d3c4bd",
                 "shasum": ""
             },
             "require": {
@@ -4757,7 +4757,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.13-dev"
+                    "dev-master": "1.15-dev"
                 }
             },
             "autoload": {
@@ -4791,7 +4791,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2019-11-27T13:56:44+00:00"
+            "time": "2020-02-27T09:26:54+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -7216,7 +7216,7 @@
                 }
             ],
             "description": "This bundle generates code for you",
-            "abandoned": true,
+            "abandoned": "symfony/maker-bundle",
             "time": "2017-12-07T15:36:41+00:00"
         },
         {
