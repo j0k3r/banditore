@@ -36,9 +36,9 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('http://myfeed.api/.rss', $channel->getLink());
         $this->assertSame('Here are all the new releases from all repos starred by bob', $channel->getDescription());
         $this->assertSame('en', $channel->getLanguage());
-        $this->assertContains('(c)', $channel->getCopyright());
-        $this->assertContains('banditore', $channel->getCopyright());
-        $this->assertContains('15 Feb 2007', $channel->getLastBuildDate()->format('r'));
+        $this->assertStringContainsString('(c)', $channel->getCopyright());
+        $this->assertStringContainsString('banditore', $channel->getCopyright());
+        $this->assertStringContainsString('15 Feb 2007', $channel->getLastBuildDate()->format('r'));
         $this->assertSame('banditore', $channel->getGenerator());
 
         $items = $channel->getItems();
@@ -46,14 +46,14 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame('test/test 1.0.0', $items[0]->getTitle());
         $this->assertSame('https://github.com/test/test/releases/1.0.0', $items[0]->getLink());
-        $this->assertContains('<img src="http://avat.ar/mine.png&amp;s=140" alt="test/test" title="test/test" />', $items[0]->getDescription());
-        $this->assertContains('#Thus', $items[0]->getDescription());
-        $this->assertContains('<p>yay</p>', $items[0]->getDescription());
-        $this->assertContains('<b><a href="https://github.com/test/test">test/test</a></b>', $items[0]->getDescription());
-        $this->assertContains('(<a href="http://homepa.ge">http://homepa.ge</a>)', $items[0]->getDescription());
-        $this->assertContains('This is an awesome description', $items[0]->getDescription());
+        $this->assertStringContainsString('<img src="http://avat.ar/mine.png&amp;s=140" alt="test/test" title="test/test" />', $items[0]->getDescription());
+        $this->assertStringContainsString('#Thus', $items[0]->getDescription());
+        $this->assertStringContainsString('<p>yay</p>', $items[0]->getDescription());
+        $this->assertStringContainsString('<b><a href="https://github.com/test/test">test/test</a></b>', $items[0]->getDescription());
+        $this->assertStringContainsString('(<a href="http://homepa.ge">http://homepa.ge</a>)', $items[0]->getDescription());
+        $this->assertStringContainsString('This is an awesome description', $items[0]->getDescription());
         $this->assertSame('https://github.com/test/test/releases/1.0.0', $items[0]->getGuid()->getGuid());
         $this->assertTrue($items[0]->getGuid()->getIsPermaLink());
-        $this->assertContains('15 Feb 2007', $items[0]->getPubDate()->format('r'));
+        $this->assertStringContainsString('15 Feb 2007', $items[0]->getPubDate()->format('r'));
     }
 }

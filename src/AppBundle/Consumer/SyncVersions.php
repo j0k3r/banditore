@@ -52,12 +52,13 @@ class SyncVersions implements ProcessorInterface
 
         $data = json_decode($message->getBody(), true);
 
+        /** @var Repo|null */
         $repo = $this->repoRepository->find($data['repo_id']);
 
         if (null === $repo) {
             $this->logger->error('Can not find repo', ['repo' => $data['repo_id']]);
 
-            return;
+            return false;
         }
 
         $this->logger->info('Consume banditore.sync_versions message', ['repo' => $repo->getFullName()]);
@@ -81,6 +82,8 @@ class SyncVersions implements ProcessorInterface
         }
 
         $this->logger->notice('[' . $this->getRateLimits($this->client, $this->logger) . '] <comment>' . $nbVersions . '</comment> new versions for <info>' . $repo->getFullName() . '</info>');
+
+        return true;
     }
 
     /**
@@ -91,10 +94,16 @@ class SyncVersions implements ProcessorInterface
     private function doSyncVersions(Repo $repo)
     {
         $newVersion = 0;
+
+        /** @var \Doctrine\ORM\EntityManager */
         $em = $this->doctrine->getManager();
+
+        /** @var \Github\Api\Repo */
+        $githubRepoApi = $this->client->api('repo');
 
         // in case of the manager is closed following a previous exception
         if (!$em->isOpen()) {
+            /** @var \Doctrine\ORM\EntityManager */
             $em = $this->doctrine->resetManager();
         }
 
@@ -104,7 +113,7 @@ class SyncVersions implements ProcessorInterface
         // using git/refs/tags when repo has no tag throws a 404 which can't be cached
         // this query return an empty array when repo has no tag and it can be cached
         try {
-            $tags = $this->client->api('repo')->tags($username, $repoName, ['per_page' => 1, 'page' => 1]);
+            $tags = $githubRepoApi->tags($username, $repoName, ['per_page' => 1, 'page' => 1]);
         } catch (\Exception $e) {
             $this->logger->warning('(repo/tags) <error>' . $e->getMessage() . '</error>');
 
@@ -123,7 +132,10 @@ class SyncVersions implements ProcessorInterface
 
         // use git/refs/tags because tags aren't order by date creation (so we retrieve ALL tags every time …)
         try {
-            $tags = $this->client->api('git')->tags()->all($username, $repoName);
+            /** @var \Github\Api\GitData */
+            $githubGitApi = $this->client->api('git');
+
+            $tags = $githubGitApi->tags()->all($username, $repoName);
         } catch (\Exception $e) {
             $this->logger->warning('(git/refs/tags) <error>' . $e->getMessage() . '</error>');
 
@@ -155,7 +167,7 @@ class SyncVersions implements ProcessorInterface
             ];
 
             try {
-                $newRelease = $this->client->api('repo')->releases()->tag($username, $repoName, $tag['name']);
+                $newRelease = $githubRepoApi->releases()->tag($username, $repoName, $tag['name']);
 
                 // use same key as tag to store the content of the release
                 $newRelease['message'] = $newRelease['body'];
@@ -164,7 +176,7 @@ class SyncVersions implements ProcessorInterface
                 switch ($tag['object']['type']) {
                     // https://api.github.com/repos/ampproject/amphtml/git/tags/694b8cc3983f52209029605300910507bec700b4
                     case 'tag':
-                        $tagInfo = $this->client->api('git')->tags()->show($username, $repoName, $tag['object']['sha']);
+                        $tagInfo = $githubGitApi->tags()->show($username, $repoName, $tag['object']['sha']);
 
                         $newRelease += [
                             'name' => $tag['name'],
@@ -175,7 +187,7 @@ class SyncVersions implements ProcessorInterface
                         break;
                     // https://api.github.com/repos/ampproject/amphtml/git/commits/c0a5834b32ae4b45b4bacf677c391e0f9cca82fb
                     case 'commit':
-                        $commitInfo = $this->client->api('git')->commits()->show($username, $repoName, $tag['object']['sha']);
+                        $commitInfo = $githubGitApi->commits()->show($username, $repoName, $tag['object']['sha']);
 
                         $newRelease += [
                             'name' => $tag['name'],
@@ -191,7 +203,10 @@ class SyncVersions implements ProcessorInterface
             // render markdown in plain html and use default markdown file if it fails
             if (isset($newRelease['message']) && \strlen(trim($newRelease['message'])) > 0) {
                 try {
-                    $newRelease['message'] = $this->client->api('markdown')->render($newRelease['message'], 'gfm', $repo->getFullName());
+                    /** @var \Github\Api\Markdown */
+                    $githubMarkdownApi = $this->client->api('markdown');
+
+                    $newRelease['message'] = $githubMarkdownApi->render($newRelease['message'], 'gfm', $repo->getFullName());
                 } catch (\Exception $e) {
                     $this->logger->warning('<error>Failed to parse markdown: ' . $e->getMessage() . '</error>');
 

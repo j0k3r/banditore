@@ -65,7 +65,7 @@ class Star
      *
      * @param \DateTime $createdAt
      *
-     * @return User
+     * @return Star
      */
     public function setCreatedAt($createdAt)
     {

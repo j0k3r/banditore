@@ -11,8 +11,15 @@ class LoadStarData extends AbstractFixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $star1 = new Star($this->getReference('user1'), $this->getReference('repo1'));
-        $star2 = new Star($this->getReference('user1'), $this->getReference('repo2'));
+        /** @var \AppBundle\Entity\User */
+        $user1 = $this->getReference('user1');
+        /** @var \AppBundle\Entity\Repo */
+        $repo1 = $this->getReference('repo1');
+        /** @var \AppBundle\Entity\Repo */
+        $repo2 = $this->getReference('repo2');
+
+        $star1 = new Star($user1, $repo1);
+        $star2 = new Star($user1, $repo2);
 
         $manager->persist($star1);
         $manager->persist($star2);

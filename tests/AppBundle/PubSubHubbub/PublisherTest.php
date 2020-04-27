@@ -15,7 +15,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
 {
     private $router;
 
-    public function setUp()
+    public function setUp(): void
     {
         $routes = new RouteCollection();
         $routes->add('rss_user', new Route('/{uuid}.atom'));

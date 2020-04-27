@@ -12,7 +12,7 @@ class DefaultControllerTest extends WebTestCase
 {
     private $client = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->client = static::createClient();
     }
@@ -22,7 +22,7 @@ class DefaultControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/');
 
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('Bandito.re', $crawler->filter('a.pure-menu-heading')->text());
+        $this->assertStringContainsString('Bandito.re', $crawler->filter('a.pure-menu-heading')->text());
     }
 
     public function testIndexLoggedIn()
@@ -33,7 +33,7 @@ class DefaultControllerTest extends WebTestCase
         $this->client->request('GET', '/');
 
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('dashboard', $this->client->getResponse()->getTargetUrl());
+        $this->assertStringContainsString('dashboard', $this->client->getResponse()->getTargetUrl());
     }
 
     public function testConnect()
@@ -41,7 +41,7 @@ class DefaultControllerTest extends WebTestCase
         $this->client->request('GET', '/connect');
 
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('https://github.com/login/oauth/authorize?', $this->client->getResponse()->getTargetUrl());
+        $this->assertStringContainsString('https://github.com/login/oauth/authorize?', $this->client->getResponse()->getTargetUrl());
     }
 
     public function testConnectWithLoggedInUser()
@@ -52,7 +52,7 @@ class DefaultControllerTest extends WebTestCase
         $this->client->request('GET', '/connect');
 
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('dashboard', $this->client->getResponse()->getTargetUrl());
+        $this->assertStringContainsString('dashboard', $this->client->getResponse()->getTargetUrl());
     }
 
     public function testDashboardNotLoggedIn()
@@ -72,15 +72,15 @@ class DefaultControllerTest extends WebTestCase
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
 
         $menu = $crawler->filter('.menu-wrapper')->text();
-        $this->assertContains('View it on GitHub', $menu, 'Link to GitHub is here');
-        $this->assertContains('Logout (admin)', $menu, 'Info about logged in user is here');
+        $this->assertStringContainsString('View it on GitHub', $menu, 'Link to GitHub is here');
+        $this->assertStringContainsString('Logout (admin)', $menu, 'Info about logged in user is here');
 
         $aside = $crawler->filter('aside.feed')->text();
-        $this->assertContains('your feed link', $aside, 'Feed link is here');
+        $this->assertStringContainsString('your feed link', $aside, 'Feed link is here');
 
         $table = $crawler->filter('table')->text();
-        $this->assertContains('test/test', $table, 'Repo test/test exist in a table');
-        $this->assertContains('ago', $table, 'Date is translated and ok');
+        $this->assertStringContainsString('test/test', $table, 'Repo test/test exist in a table');
+        $this->assertStringContainsString('ago', $table, 'Date is translated and ok');
     }
 
     public function testDashboardPageTooHigh()
@@ -91,7 +91,7 @@ class DefaultControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/dashboard?page=20000');
 
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('dashboard', $this->client->getResponse()->getTargetUrl());
+        $this->assertStringContainsString('dashboard', $this->client->getResponse()->getTargetUrl());
     }
 
     public function testDashboardBadPage()

@@ -59,12 +59,13 @@ class SyncStarredRepos implements ProcessorInterface
 
         $data = json_decode($message->getBody(), true);
 
+        /** @var User|null */
         $user = $this->userRepository->find($data['user_id']);
 
         if (null === $user) {
             $this->logger->error('Can not find user', ['user' => $data['user_id']]);
 
-            return;
+            return false;
         }
 
         $this->logger->info('Consume banditore.sync_starred_repos message', ['user' => $user->getUsername()]);
@@ -83,6 +84,8 @@ class SyncStarredRepos implements ProcessorInterface
         $nbRepos = $this->doSyncRepo($user);
 
         $this->logger->notice('[' . $this->getRateLimits($this->client, $this->logger) . '] Synced repos: ' . $nbRepos, ['user' => $user->getUsername()]);
+
+        return true;
     }
 
     /**
@@ -95,12 +98,19 @@ class SyncStarredRepos implements ProcessorInterface
         $newStars = [];
         $page = 1;
         $perPage = 100;
-        $starredRepos = $this->client->api('user')->starred($user->getUsername(), $page, $perPage);
+
+        /** @var \Doctrine\ORM\EntityManager */
         $em = $this->doctrine->getManager();
+
+        /** @var \Github\Api\User */
+        $githubUserApi = $this->client->api('user');
+
+        $starredRepos = $githubUserApi->starred($user->getUsername(), $page, $perPage);
         $currentStars = $this->starRepository->findAllByUser($user->getId());
 
         // in case of the manager is closed following a previous exception
         if (!$em->isOpen()) {
+            /** @var \Doctrine\ORM\EntityManager */
             $em = $this->doctrine->resetManager();
         }
 
@@ -111,6 +121,7 @@ class SyncStarredRepos implements ProcessorInterface
             ]);
 
             foreach ($starredRepos as $starredRepo) {
+                /** @var Repo|null */
                 $repo = $this->repoRepository->find($starredRepo['id']);
 
                 // if repo doesn't exist
@@ -137,7 +148,7 @@ class SyncStarredRepos implements ProcessorInterface
 
             $em->flush();
 
-            $starredRepos = $this->client->api('user')->starred($user->getUsername(), ++$page, $perPage);
+            $starredRepos = $githubUserApi->starred($user->getUsername(), ++$page, $perPage);
         } while (!empty($starredRepos));
 
         // now remove unstarred repos
