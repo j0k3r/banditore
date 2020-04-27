@@ -367,7 +367,7 @@ class SyncVersionsTest extends WebTestCase
 
         $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
         $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
-        $this->assertContains('(repo/tags) <error>', $records[2]['message']);
+        $this->assertStringContainsString('(repo/tags) <error>', $records[2]['message']);
     }
 
     /**
@@ -451,7 +451,7 @@ class SyncVersionsTest extends WebTestCase
 
         $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
         $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
-        $this->assertContains('(repo/tags) <error>', $records[2]['message']);
+        $this->assertStringContainsString('(repo/tags) <error>', $records[2]['message']);
 
         $this->assertNotNull($repo->getRemovedAt());
     }
@@ -531,7 +531,7 @@ class SyncVersionsTest extends WebTestCase
 
         $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
         $this->assertSame('[0] Check <info>bob/wow</info> … ', $records[1]['message']);
-        $this->assertContains('RateLimit reached, stopping.', $records[2]['message']);
+        $this->assertStringContainsString('RateLimit reached, stopping.', $records[2]['message']);
     }
 
     /**
@@ -659,7 +659,7 @@ class SyncVersionsTest extends WebTestCase
 
         $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
         $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
-        $this->assertContains('<error>Failed to parse markdown', $records[2]['message']);
+        $this->assertStringContainsString('<error>Failed to parse markdown', $records[2]['message']);
     }
 
     /**
@@ -748,12 +748,12 @@ class SyncVersionsTest extends WebTestCase
 
     /**
      * Generate an unexpected error (like from MySQL).
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage booboo
      */
     public function testProcessUnexpectedError()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('booboo');
+
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
@@ -938,7 +938,7 @@ class SyncVersionsTest extends WebTestCase
 
         $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
         $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
-        $this->assertContains('(git/refs/tags) <error>', $records[2]['message']);
+        $this->assertStringContainsString('(git/refs/tags) <error>', $records[2]['message']);
     }
 
     public function testProcessWithBadClient()

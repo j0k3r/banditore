@@ -11,7 +11,14 @@ class LoadVersionData extends AbstractFixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $version1 = new Version($this->getReference('repo1'));
+        /** @var \AppBundle\Entity\Repo */
+        $repo1 = $this->getReference('repo1');
+        /** @var \AppBundle\Entity\Repo */
+        $repo2 = $this->getReference('repo2');
+        /** @var \AppBundle\Entity\Repo */
+        $repo3 = $this->getReference('repo3');
+
+        $version1 = new Version($repo1);
         $version1->hydrateFromGithub([
             'tag_name' => '1.0.0',
             'name' => 'First release',
@@ -21,7 +28,7 @@ class LoadVersionData extends AbstractFixture implements OrderedFixtureInterface
         ]);
         $manager->persist($version1);
 
-        $version2 = new Version($this->getReference('repo2'));
+        $version2 = new Version($repo2);
         $version2->hydrateFromGithub([
             'tag_name' => '1.0.21',
             'name' => 'First release',
@@ -33,7 +40,7 @@ class LoadVersionData extends AbstractFixture implements OrderedFixtureInterface
         $manager->persist($version2);
         $manager->flush();
 
-        $version3 = new Version($this->getReference('repo3'));
+        $version3 = new Version($repo3);
         $version3->hydrateFromGithub([
             'tag_name' => '0.0.21',
             'name' => 'Outdated release',

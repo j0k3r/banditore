@@ -11,7 +11,7 @@ services:
 cache:
     apt: true
     directories:
-        - $HOME/.composer/cache
+        - $HOME/.composer/cache/files
 
 matrix:
     fast_finish: true
@@ -30,19 +30,20 @@ before_install:
     - echo "extension=redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
-    - composer --prefer-dist install --no-interaction -o --no-progress
+    - composer install --no-interaction --optimize-autoloader --no-progress --prefer-dist --no-suggest
+    - php bin/simple-phpunit install
 
 before_script:
     - php bin/console doctrine:database:create --env=test
     - php bin/console doctrine:schema:create --env=test
     - php bin/console doctrine:fixtures:load --env=test -n
-    - ./bin/rabbit vhost:mapping:create -p guest app/config/rabbit_vhost.yml
+    - php bin/rabbit vhost:mapping:create -p guest app/config/rabbit_vhost.yml
     - if [ "$COVERAGE" = "run" ]; then PHPUNIT_FLAGS="--coverage-clover build/logs/clover.xml"; fi;
 
 script:
-    - ./bin/simple-phpunit -v $PHPUNIT_FLAGS
+    - php bin/simple-phpunit -v $PHPUNIT_FLAGS
     - if [ "$CS_FIXER" = "run" ]; then php bin/php-cs-fixer fix --verbose --dry-run ; fi;
-    - if [ "$CS_FIXER" = "run" ]; then php bin/phpstan analyse src tests --no-progress --level 1 ; fi;
+    - if [ "$CS_FIXER" = "run" ]; then php bin/phpstan analyse src tests --no-progress --level 5 ; fi;
 
 after_success:
     - |

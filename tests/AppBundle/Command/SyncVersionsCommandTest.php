@@ -44,7 +44,7 @@ class SyncVersionsCommandTest extends WebTestCase
             'command' => $command->getName(),
         ]);
 
-        $this->assertContains('Check 555 …', $tester->getDisplay());
+        $this->assertStringContainsString('Check 555 …', $tester->getDisplay());
     }
 
     public function testCommandSyncAllUsersWithQueue()
@@ -82,7 +82,7 @@ class SyncVersionsCommandTest extends WebTestCase
             '--use_queue' => true,
         ]);
 
-        $this->assertContains('Check 555 …', $tester->getDisplay());
+        $this->assertStringContainsString('Check 555 …', $tester->getDisplay());
     }
 
     public function testCommandSyncAllUsersWithQueueFull()
@@ -119,7 +119,7 @@ class SyncVersionsCommandTest extends WebTestCase
             '--use_queue' => true,
         ]);
 
-        $this->assertContains('Current queue as too much messages (10), skipping.', $tester->getDisplay());
+        $this->assertStringContainsString('Current queue as too much messages (10), skipping.', $tester->getDisplay());
     }
 
     public function testCommandSyncOneUserById()
@@ -161,8 +161,8 @@ class SyncVersionsCommandTest extends WebTestCase
             '--repo_id' => 555,
         ]);
 
-        $this->assertContains('Check 555 …', $tester->getDisplay());
-        $this->assertContains('Repo checked: 1', $tester->getDisplay());
+        $this->assertStringContainsString('Check 555 …', $tester->getDisplay());
+        $this->assertStringContainsString('Repo checked: 1', $tester->getDisplay());
     }
 
     public function testCommandSyncOneUserByUsername()
@@ -203,8 +203,8 @@ class SyncVersionsCommandTest extends WebTestCase
             '--repo_name' => 'test/test',
         ]);
 
-        $this->assertContains('Check 666 …', $tester->getDisplay());
-        $this->assertContains('Repo checked: 1', $tester->getDisplay());
+        $this->assertStringContainsString('Check 666 …', $tester->getDisplay());
+        $this->assertStringContainsString('Repo checked: 1', $tester->getDisplay());
     }
 
     public function testCommandSyncOneUserNotFound()
@@ -241,7 +241,7 @@ class SyncVersionsCommandTest extends WebTestCase
             '--repo_name' => 'toto',
         ]);
 
-        $this->assertContains('No repos found', $tester->getDisplay());
+        $this->assertStringContainsString('No repos found', $tester->getDisplay());
     }
 
     private function getAmqpMessage($totalMessage = 0)

@@ -78,7 +78,9 @@ class DefaultController extends Controller
             return $this->redirect($this->generateUrl('homepage'));
         }
 
-        $userId = $this->getUser()->getId();
+        /** @var User */
+        $user = $this->getUser();
+        $userId = $user->getId();
         $paginator = $this->get('ashley_dawson_simple_pagination.paginator_public');
 
         // Pass the item total
@@ -132,7 +134,7 @@ class DefaultController extends Controller
 
         return $this->get('oauth2.registry')
             ->getClient('github')
-            ->redirect();
+            ->redirect([], []);
     }
 
     /**

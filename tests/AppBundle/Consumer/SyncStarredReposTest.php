@@ -169,12 +169,11 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame('[10] Synced repos: 1', $records[4]['message']);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage booboo
-     */
     public function testProcessUnexpectedError()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('booboo');
+
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();

@@ -48,7 +48,7 @@ class SyncStarredReposCommandTest extends WebTestCase
             'command' => $command->getName(),
         ]);
 
-        $this->assertContains('Sync user 123 …', $tester->getDisplay());
+        $this->assertStringContainsString('Sync user 123 …', $tester->getDisplay());
     }
 
     public function testCommandSyncAllUsersWithQueue()
@@ -89,7 +89,7 @@ class SyncStarredReposCommandTest extends WebTestCase
             '--use_queue' => true,
         ]);
 
-        $this->assertContains('Sync user 123 …', $tester->getDisplay());
+        $this->assertStringContainsString('Sync user 123 …', $tester->getDisplay());
     }
 
     public function testCommandSyncAllUsersWithQueueFull()
@@ -126,7 +126,7 @@ class SyncStarredReposCommandTest extends WebTestCase
             '--use_queue' => true,
         ]);
 
-        $this->assertContains('Current queue as too much messages (10), skipping.', $tester->getDisplay());
+        $this->assertStringContainsString('Current queue as too much messages (10), skipping.', $tester->getDisplay());
     }
 
     public function testCommandSyncOneUserById()
@@ -168,8 +168,8 @@ class SyncStarredReposCommandTest extends WebTestCase
             '--id' => 123,
         ]);
 
-        $this->assertContains('Sync user 123 …', $tester->getDisplay());
-        $this->assertContains('User synced: 1', $tester->getDisplay());
+        $this->assertStringContainsString('Sync user 123 …', $tester->getDisplay());
+        $this->assertStringContainsString('User synced: 1', $tester->getDisplay());
     }
 
     public function testCommandSyncOneUserByUsername()
@@ -210,8 +210,8 @@ class SyncStarredReposCommandTest extends WebTestCase
             '--username' => 'admin',
         ]);
 
-        $this->assertContains('Sync user 123 …', $tester->getDisplay());
-        $this->assertContains('User synced: 1', $tester->getDisplay());
+        $this->assertStringContainsString('Sync user 123 …', $tester->getDisplay());
+        $this->assertStringContainsString('User synced: 1', $tester->getDisplay());
     }
 
     public function testCommandSyncOneUserNotFound()
@@ -248,7 +248,7 @@ class SyncStarredReposCommandTest extends WebTestCase
             '--username' => 'toto',
         ]);
 
-        $this->assertContains('No users found', $tester->getDisplay());
+        $this->assertStringContainsString('No users found', $tester->getDisplay());
     }
 
     private function getAmqpMessage($totalMessage = 0)

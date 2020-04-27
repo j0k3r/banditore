@@ -17,7 +17,10 @@ trait RateLimitTrait
     private function getRateLimits(Client $client, LoggerInterface $logger)
     {
         try {
-            return $client->api('rate_limit')->getResource('core')->getRemaining();
+            /** @var \Github\Api\RateLimit */
+            $rateLimit = $client->api('rate_limit');
+
+            return $rateLimit->getResource('core')->getRemaining();
         } catch (HttpException $e) {
             $logger->error('RateLimit call goes bad.', ['exception' => $e]);
 

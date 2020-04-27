@@ -71,7 +71,9 @@ class GithubAuthenticatorTest extends WebTestCase
         $this->assertSame('http://avat.ar/my.png', $user->getAvatar());
 
         $this->assertSame(302, $client->getResponse()->getStatusCode());
-        $this->assertSame('/dashboard', $client->getResponse()->getTargetUrl());
+        /** @var \Symfony\Component\HttpFoundation\RedirectResponse */
+        $response = $client->getResponse();
+        $this->assertSame('/dashboard', $response->getTargetUrl());
 
         $message = $container->get('session')->getFlashBag()->get('info');
         $this->assertSame('Successfully logged in!', $message[0]);
@@ -133,7 +135,9 @@ class GithubAuthenticatorTest extends WebTestCase
         $this->assertSame('Any', $user->getName());
 
         $this->assertSame(302, $client->getResponse()->getStatusCode());
-        $this->assertSame('/dashboard', $client->getResponse()->getTargetUrl());
+        /** @var \Symfony\Component\HttpFoundation\RedirectResponse */
+        $response = $client->getResponse();
+        $this->assertSame('/dashboard', $response->getTargetUrl());
 
         $message = $container->get('session')->getFlashBag()->get('info');
         $this->assertSame('Successfully logged in. Your starred repos will soon be synced!', $message[0]);

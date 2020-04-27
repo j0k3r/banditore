@@ -6,7 +6,6 @@ use AppBundle\Entity\User;
 use AppBundle\Entity\Version;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
-use KnpU\OAuth2ClientBundle\Client\Provider\GithubClient;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
 use Swarrot\Broker\Message;
 use Swarrot\SwarrotBundle\Broker\Publisher;
@@ -44,8 +43,10 @@ class GithubAuthenticator extends SocialAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
+        /** @var \League\OAuth2\Client\Provider\GithubResourceOwner */
         $githubUser = $this->getGithubClient()->fetchUserFromToken($credentials);
 
+        /** @var User|null */
         $user = $this->em->getRepository(User::class)->find($githubUser->getId());
 
         // always update user information at login
@@ -69,7 +70,12 @@ class GithubAuthenticator extends SocialAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $versions = $this->em->getRepository(Version::class)->findForUser($token->getUser()->getId());
+        /** @var User */
+        $user = $token->getUser();
+
+        /** @var \AppBundle\Repository\VersionRepository */
+        $versionRepo = $this->em->getRepository(Version::class);
+        $versions = $versionRepo->findForUser($user->getId());
 
         // if no versions were found, it means the user logged in for the first time
         // and we need to display an explanation message
@@ -78,10 +84,12 @@ class GithubAuthenticator extends SocialAuthenticator
             $message = 'Successfully logged in. Your starred repos will soon be synced!';
         }
 
-        $request->getSession()->getBag('flashes')->add('info', $message);
+        /** @var \Symfony\Component\HttpFoundation\Session\Flash\FlashBag */
+        $flash = $request->getSession()->getBag('flashes');
+        $flash->add('info', $message);
 
         $message = [
-            'user_id' => $token->getUser()->getId(),
+            'user_id' => $user->getId(),
         ];
 
         $this->publisher->publish(
@@ -98,7 +106,7 @@ class GithubAuthenticator extends SocialAuthenticator
     }
 
     /**
-     * @return GithubClient
+     * @return \KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface
      */
     private function getGithubClient()
     {
