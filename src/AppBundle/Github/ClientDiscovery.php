@@ -70,7 +70,7 @@ class ClientDiscovery
         );
 
         // try with the application default client
-        $this->client->authenticate($this->clientId, $this->clientSecret, GithubClient::AUTH_URL_CLIENT_ID);
+        $this->client->authenticate($this->clientId, $this->clientSecret, GithubClient::AUTH_HTTP_PASSWORD);
 
         $remaining = $this->getRateLimits($this->client, $this->logger);
         if ($remaining >= self::THRESHOLD_RATE_REMAIN_APP) {
