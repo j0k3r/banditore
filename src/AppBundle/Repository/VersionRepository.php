@@ -64,15 +64,15 @@ class VersionRepository extends ServiceEntityRepository
 
     /**
      * Count all versions available for the given user.
-     * Used in the dashboard pagination.
+     * Used in the dashboard pagination and auth process.
      *
      * @param int $userId
      *
-     * @return array
+     * @return int
      */
     public function countForUser($userId)
     {
-        return $this->createQueryBuilder('v')
+        return (int) $this->createQueryBuilder('v')
             ->select('COUNT(v.id)')
             ->leftJoin('v.repo', 'r')
             ->leftJoin('r.stars', 's')
