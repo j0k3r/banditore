@@ -75,12 +75,12 @@ class GithubAuthenticator extends SocialAuthenticator
 
         /** @var \AppBundle\Repository\VersionRepository */
         $versionRepo = $this->em->getRepository(Version::class);
-        $versions = $versionRepo->findForUser($user->getId());
+        $versions = $versionRepo->countForUser($user->getId());
 
         // if no versions were found, it means the user logged in for the first time
         // and we need to display an explanation message
         $message = 'Successfully logged in!';
-        if (empty($versions)) {
+        if (0 === $versions) {
             $message = 'Successfully logged in. Your starred repos will soon be synced!';
         }
 
@@ -88,13 +88,11 @@ class GithubAuthenticator extends SocialAuthenticator
         $flash = $request->getSession()->getBag('flashes');
         $flash->add('info', $message);
 
-        $message = [
-            'user_id' => $user->getId(),
-        ];
-
         $this->publisher->publish(
             'banditore.sync_starred_repos.publisher',
-            new Message(json_encode($message))
+            new Message(json_encode([
+                'user_id' => $user->getId(),
+            ]))
         );
 
         return new RedirectResponse($this->router->generate('dashboard'));
