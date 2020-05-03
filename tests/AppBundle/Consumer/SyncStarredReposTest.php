@@ -50,13 +50,22 @@ class SyncStarredReposTest extends WebTestCase
         $githubClient->expects($this->never())
             ->method('authenticate');
 
+        $redisClient = $this->getMockBuilder('Predis\Client')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        // will use `setex` & `del` but will be called dynamically by `_call`
+        $redisClient->expects($this->never())
+            ->method('__call');
+
         $processor = new SyncStarredRepos(
             $doctrine,
             $userRepository,
             $starRepository,
             $repoRepository,
             $githubClient,
-            new NullLogger()
+            new NullLogger(),
+            $redisClient
         );
 
         $processor->process(new Message(json_encode(['user_id' => 123])), []);
@@ -149,13 +158,22 @@ class SyncStarredReposTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
+        $redisClient = $this->getMockBuilder('Predis\Client')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        // will use `setex` & `del` but will be called dynamically by `_call`
+        $redisClient->expects($this->exactly(2))
+            ->method('__call');
+
         $processor = new SyncStarredRepos(
             $doctrine,
             $userRepository,
             $starRepository,
             $repoRepository,
             $githubClient,
-            $logger
+            $logger,
+            $redisClient
         );
 
         $processor->process(new Message(json_encode(['user_id' => 123])), []);
@@ -245,13 +263,22 @@ class SyncStarredReposTest extends WebTestCase
 
         $githubClient = $this->getMockClient($responses);
 
+        $redisClient = $this->getMockBuilder('Predis\Client')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        // will use `setex` & `del` but will be called dynamically by `_call`
+        $redisClient->expects($this->once())
+            ->method('__call');
+
         $processor = new SyncStarredRepos(
             $doctrine,
             $userRepository,
             $starRepository,
             $repoRepository,
             $githubClient,
-            new NullLogger()
+            new NullLogger(),
+            $redisClient
         );
 
         $processor->process(new Message(json_encode(['user_id' => 123])), []);
@@ -345,13 +372,22 @@ class SyncStarredReposTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
+        $redisClient = $this->getMockBuilder('Predis\Client')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        // will use `setex` & `del` but will be called dynamically by `_call`
+        $redisClient->expects($this->exactly(2))
+            ->method('__call');
+
         $processor = new SyncStarredRepos(
             $doctrine,
             $userRepository,
             $starRepository,
             $repoRepository,
             $githubClient,
-            $logger
+            $logger,
+            $redisClient
         );
 
         $processor->process(new Message(json_encode(['user_id' => 123])), []);
@@ -395,13 +431,22 @@ class SyncStarredReposTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
+        $redisClient = $this->getMockBuilder('Predis\Client')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        // will use `setex` & `del` but will be called dynamically by `_call`
+        $redisClient->expects($this->never())
+            ->method('__call');
+
         $processor = new SyncStarredRepos(
             $doctrine,
             $userRepository,
             $starRepository,
             $repoRepository,
             null, // simulate a bad client
-            $logger
+            $logger,
+            $redisClient
         );
 
         $processor->process(new Message(json_encode(['user_id' => 123])), []);
@@ -467,13 +512,22 @@ class SyncStarredReposTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
+        $redisClient = $this->getMockBuilder('Predis\Client')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        // will use `setex` & `del` but will be called dynamically by `_call`
+        $redisClient->expects($this->once())
+            ->method('__call');
+
         $processor = new SyncStarredRepos(
             $doctrine,
             $userRepository,
             $starRepository,
             $repoRepository,
             $githubClient,
-            $logger
+            $logger,
+            $redisClient
         );
 
         $processor->process(new Message(json_encode(['user_id' => 123])), []);

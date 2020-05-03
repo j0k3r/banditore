@@ -12,6 +12,7 @@ parameters:
 
     redis_dsn_guzzle_cache: redis://127.0.0.1:6379/2
     redis_dsn_doctrine_cache: redis://127.0.0.1:6379/3
+    redis_dsn_app_cache: redis://127.0.0.1:6379/4
 
     # used to generate url from the backend
     project_host: banditore.com

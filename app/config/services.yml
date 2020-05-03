@@ -23,6 +23,7 @@ services:
     AppBundle\Controller\DefaultController:
         arguments:
             $diffInterval: "%status_minute_interval_before_alert%"
+            $redis: "@snc_redis.app_cache"
 
     AppBundle\PubSubHubbub\Publisher:
         arguments:
@@ -39,6 +40,8 @@ services:
     # which will make a doctrine query on Travis because the default limit to Github will be reached
     AppBundle\Consumer\SyncStarredRepos:
         lazy: true
+        arguments:
+            $redis: "@snc_redis.app_cache"
 
     AppBundle\Consumer\SyncVersions:
         lazy: true

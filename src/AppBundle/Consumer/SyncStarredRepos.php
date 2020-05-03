@@ -10,6 +10,7 @@ use AppBundle\Repository\RepoRepository;
 use AppBundle\Repository\StarRepository;
 use AppBundle\Repository\UserRepository;
 use Github\Client;
+use Predis\ClientInterface as RedisClientInterface;
 use Psr\Log\LoggerInterface;
 use Swarrot\Broker\Message;
 use Swarrot\Processor\ProcessorInterface;
@@ -28,17 +29,18 @@ class SyncStarredRepos implements ProcessorInterface
 
     const DAYS_SINCE_LAST_UPDATE = 1;
 
-    private $logger;
     private $doctrine;
     private $userRepository;
     private $starRepository;
     private $repoRepository;
     private $client;
+    private $logger;
+    private $redis;
 
     /**
      * Client parameter can be null when no available client were found by the Github Client Discovery.
      */
-    public function __construct(RegistryInterface $doctrine, UserRepository $userRepository, StarRepository $starRepository, RepoRepository $repoRepository, Client $client = null, LoggerInterface $logger)
+    public function __construct(RegistryInterface $doctrine, UserRepository $userRepository, StarRepository $starRepository, RepoRepository $repoRepository, Client $client = null, LoggerInterface $logger, RedisClientInterface $redis)
     {
         $this->doctrine = $doctrine;
         $this->userRepository = $userRepository;
@@ -46,6 +48,7 @@ class SyncStarredRepos implements ProcessorInterface
         $this->repoRepository = $repoRepository;
         $this->client = $client;
         $this->logger = $logger;
+        $this->redis = $redis;
     }
 
     public function process(Message $message, array $options)
@@ -68,6 +71,9 @@ class SyncStarredRepos implements ProcessorInterface
             return false;
         }
 
+        // to be able to notify user about repos sync (will be remove after 1h to avoid infinite sync notification)
+        $this->redis->setex('banditore:user-sync:' . $user->getId(), 3600, time());
+
         $this->logger->info('Consume banditore.sync_starred_repos message', ['user' => $user->getUsername()]);
 
         $rateLimit = $this->getRateLimits($this->client, $this->logger);
@@ -84,6 +90,9 @@ class SyncStarredRepos implements ProcessorInterface
         $nbRepos = $this->doSyncRepo($user);
 
         $this->logger->notice('[' . $this->getRateLimits($this->client, $this->logger) . '] Synced repos: ' . $nbRepos, ['user' => $user->getUsername()]);
+
+        // sync is done, remove notification
+        $this->redis->del(['banditore:user-sync:' . $user->getId()]);
 
         return true;
     }
