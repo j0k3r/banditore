@@ -11,6 +11,7 @@ use AppBundle\Rss\Generator;
 use AshleyDawson\SimplePagination\Exception\InvalidPageNumberException;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
 use MarcW\RssWriter\RssWriter;
+use Predis\Client as RedisClient;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,8 +26,9 @@ class DefaultController extends Controller
     private $rssGenerator;
     private $rssWriter;
     private $diffInterval;
+    private $redis;
 
-    public function __construct(VersionRepository $repoVersion, RepoRepository $repoRepo, StarRepository $repoStar, UserRepository $repoUser, Generator $rssGenerator, RssWriter $rssWriter, $diffInterval)
+    public function __construct(VersionRepository $repoVersion, RepoRepository $repoRepo, StarRepository $repoStar, UserRepository $repoUser, Generator $rssGenerator, RssWriter $rssWriter, $diffInterval, RedisClient $redis)
     {
         $this->repoVersion = $repoVersion;
         $this->repoRepo = $repoRepo;
@@ -35,6 +37,7 @@ class DefaultController extends Controller
         $this->rssGenerator = $rssGenerator;
         $this->rssWriter = $rssWriter;
         $this->diffInterval = $diffInterval;
+        $this->redis = $redis;
     }
 
     /**
@@ -107,6 +110,7 @@ class DefaultController extends Controller
 
         return $this->render('default/dashboard.html.twig', [
             'pagination' => $pagination,
+            'sync_status' => $this->redis->get('banditore:user-sync:' . $userId),
         ]);
     }
 

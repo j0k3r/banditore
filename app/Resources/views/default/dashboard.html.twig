@@ -10,6 +10,12 @@
             </div>
         {% endif %}
 
+        {% if sync_status %}
+            <div class="alert info">
+                Your starred repos are being sync (this can happen <a href="#faq-check-starred-repo">many times per day</a>). It started <b>{{ sync_status|date|ago }}</b> and should be pretty fast depending on how many stars you have.
+            </div>
+        {% endif %}
+
         <aside class="feed pure-u-lg-3-5 pure-u-md-4-5 pure-u-sm-5-5">
             <p>You can grab your <b><a href="{{ url('rss_user', { uuid: app.user.uuid }) }}">feed link</a></b> and add it to your favorite feed reader. Every new release will show up in it.</p>
         </aside>
@@ -100,7 +106,7 @@
         <h2 class="content-head is-center">Got some questions? Here is a FAQ</h2>
 
         <div>
-            <h4>
+            <h4 id="faq-check-new-release">
                 <i class="fa fa-clock-o"></i>
                 How often does the app check for new release?
             </h4>
@@ -108,7 +114,7 @@
                 Banditore will check for new release <b>every 10 minutes</b>.
             </p>
 
-            <h4>
+            <h4 id="faq-check-starred-repo">
                 <i class="fa fa-clock-o"></i>
                 How often does the app check for my starred repos?
             </h4>
@@ -116,7 +122,7 @@
                 Banditore will sync your starred repos <b>every 5 minutes</b>. You can also force it by logged out / logged in.
             </p>
 
-            <h4>
+            <h4 id="faq-dashboard">
                 <i class="fa fa-eye-slash"></i>
                 Why do I not see all my starred repos on the dashboard?
             </h4>
@@ -125,7 +131,7 @@
                 Second, not all repos got tag or release (which is sad). In that case, they'll never show up on your dashboard.
             </p>
 
-            <h4>
+            <h4 id="faq-other-question">
                 <i class="fa fa-question-circle-o"></i>
                 Another question?
             </h4>

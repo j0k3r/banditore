@@ -134,6 +134,10 @@ snc_redis:
             type: predis
             alias: doctrine_cache
             dsn: "%redis_dsn_doctrine_cache%"
+        app_cache:
+            type: predis
+            alias: app_cache
+            dsn: "%redis_dsn_app_cache%"
 
 # see https://github.com/symfony/symfony-standard/pull/1133
 sensio_framework_extra:
