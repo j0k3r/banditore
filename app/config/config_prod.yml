@@ -7,6 +7,8 @@ monolog:
             type: fingers_crossed
             action_level: error
             handler: streamed_main
+            excluded_404s:
+                - .*
         streamed_main:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.log"
@@ -17,6 +19,9 @@ monolog:
 
 sentry:
     dsn: "%sentry_dsn%"
+    options:
+        excluded_exceptions:
+            - Symfony\Component\HttpKernel\Exception\NotFoundHttpException
 
 snc_redis:
     doctrine:
