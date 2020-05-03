@@ -90,9 +90,6 @@ swarrot:
             extras:
                 poll_interval: 500000
             middleware_stack:
-                - configurator: swarrot.processor.new_relic
-                  extras:
-                      new_relic_app_name: banditore
                 - configurator: swarrot.processor.max_messages
                   extras:
                       max_messages: 5
@@ -105,9 +102,6 @@ swarrot:
             extras:
                 poll_interval: 500000
             middleware_stack:
-                - configurator: swarrot.processor.new_relic
-                  extras:
-                      new_relic_app_name: banditore
                 # stop workers after 50 messages to avoid eating too much memory
                 - configurator: swarrot.processor.max_messages
                   extras:
