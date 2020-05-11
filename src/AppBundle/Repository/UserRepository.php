@@ -38,6 +38,7 @@ class UserRepository extends ServiceEntityRepository
     {
         $data = $this->createQueryBuilder('u')
             ->select('u.id')
+            ->where('u.removedAt IS NULL')
             ->getQuery()
             ->getArrayResult();
 
@@ -59,6 +60,7 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('u')
             ->select('u.id', 'u.username', 'u.accessToken')
+            ->where('u.removedAt IS NULL')
             ->getQuery()
             ->enableResultCache()
             ->setResultCacheLifetime(10 * 60)

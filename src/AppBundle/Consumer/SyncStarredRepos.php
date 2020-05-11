@@ -114,14 +114,27 @@ class SyncStarredRepos implements ProcessorInterface
         /** @var \Github\Api\User */
         $githubUserApi = $this->client->api('user');
 
-        $starredRepos = $githubUserApi->starred($user->getUsername(), $page, $perPage);
-        $currentStars = $this->starRepository->findAllByUser($user->getId());
-
         // in case of the manager is closed following a previous exception
         if (!$em->isOpen()) {
             /** @var \Doctrine\ORM\EntityManager */
             $em = $this->doctrine->resetManager();
         }
+
+        try {
+            $starredRepos = $githubUserApi->starred($user->getUsername(), $page, $perPage);
+        } catch (\Exception $e) {
+            $this->logger->warning('(starred) <error>' . $e->getMessage() . '</error>');
+
+            // user got removed from GitHub
+            if (404 === $e->getCode()) {
+                $user->setRemovedAt(new \DateTime());
+                $em->persist($user);
+            }
+
+            return;
+        }
+
+        $currentStars = $this->starRepository->findAllByUser($user->getId());
 
         do {
             $this->logger->info('    sync ' . \count($starredRepos) . ' starred repos', [
