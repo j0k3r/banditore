@@ -4537,16 +4537,16 @@
         },
         {
             "name": "sentry/sentry-symfony",
-            "version": "3.5.0",
+            "version": "3.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-symfony.git",
-                "reference": "6a4664c83f6a71717d45fcf8f30e067fa8da5cc0"
+                "reference": "b5d6407d4127b0be5b315768ee197e086b71f234"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-symfony/zipball/6a4664c83f6a71717d45fcf8f30e067fa8da5cc0",
-                "reference": "6a4664c83f6a71717d45fcf8f30e067fa8da5cc0",
+                "url": "https://api.github.com/repos/getsentry/sentry-symfony/zipball/b5d6407d4127b0be5b315768ee197e086b71f234",
+                "reference": "b5d6407d4127b0be5b315768ee197e086b71f234",
                 "shasum": ""
             },
             "require": {
@@ -4619,7 +4619,7 @@
                 "sentry",
                 "symfony"
             ],
-            "time": "2020-05-04T08:36:42+00:00"
+            "time": "2020-05-07T13:11:22+00:00"
         },
         {
             "name": "snc/redis-bundle",
