@@ -8,29 +8,26 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
 /**
- * Add homepage & language to the repo entity.
+ * Mark a user as removed to avoid checking for new starred repos in the future.
  */
-final class Version20170222055642 extends AbstractMigration
+final class Version20200511062812 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Add homepage & language to the repo entity.';
+        return 'Mark a user as removed to avoid checking for new starred repos in the future.';
     }
 
     public function up(Schema $schema): void
     {
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
-        $repoTable = $schema->getTable('repo');
-        $this->skipIf($repoTable->hasColumn('homepage') || $repoTable->hasColumn('language'), 'It seems that you already played this migration.');
-
-        $this->addSql('ALTER TABLE repo ADD homepage VARCHAR(255) DEFAULT NULL, ADD language VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE user ADD removed_at DATETIME DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
     {
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE repo DROP homepage, DROP language');
+        $this->addSql('ALTER TABLE user DROP removed_at');
     }
 }

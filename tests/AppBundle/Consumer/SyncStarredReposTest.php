@@ -187,6 +187,92 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame('[10] Synced repos: 1', $records[4]['message']);
     }
 
+    public function testUserRemovedFromGitHub()
+    {
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(true);
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->willReturn($em);
+
+        $user = new User();
+        $user->setId(123);
+        $user->setUsername('bob');
+        $user->setName('Bobby');
+
+        $userRepository = $this->getMockBuilder('AppBundle\Repository\UserRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $userRepository->expects($this->once())
+            ->method('find')
+            ->with(123)
+            ->willReturn($user);
+
+        $starRepository = $this->getMockBuilder('AppBundle\Repository\StarRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $starRepository->expects($this->never())
+            ->method('findAllByUser');
+
+        $repoRepository = $this->getMockBuilder('AppBundle\Repository\RepoRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repoRepository->expects($this->never())
+            ->method('find');
+
+        $responses = new MockHandler([
+            // /rate_limit
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            // first /user/starred
+            new Response(404, ['Content-Type' => 'application/json']),
+        ]);
+
+        $githubClient = $this->getMockClient($responses);
+
+        $logger = new Logger('foo');
+        $logHandler = new TestHandler();
+        $logger->pushHandler($logHandler);
+
+        $redisClient = $this->getMockBuilder('Predis\Client')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        // will use `setex` & `del` but will be called dynamically by `_call`
+        $redisClient->expects($this->exactly(2))
+            ->method('__call');
+
+        $processor = new SyncStarredRepos(
+            $doctrine,
+            $userRepository,
+            $starRepository,
+            $repoRepository,
+            $githubClient,
+            $logger,
+            $redisClient
+        );
+
+        $processor->process(new Message(json_encode(['user_id' => 123])), []);
+
+        $records = $logHandler->getRecords();
+
+        $this->assertSame('Consume banditore.sync_starred_repos message', $records[0]['message']);
+        $this->assertSame('[10] Check <info>bob</info> … ', $records[1]['message']);
+        $this->assertStringContainsString('(starred) <error>', $records[2]['message']);
+
+        $this->assertNotNull($user->getRemovedAt());
+    }
+
     public function testProcessUnexpectedError()
     {
         $this->expectException(\Exception::class);

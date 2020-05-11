@@ -79,6 +79,13 @@ class User implements UserInterface
     private $updatedAt;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="removed_at", type="datetime", nullable=true)
+     */
+    private $removedAt;
+
+    /**
      * @ORM\OneToMany(targetEntity="Star", mappedBy="user")
      */
     private $stars;
@@ -308,5 +315,29 @@ class User implements UserInterface
     public function getAccessToken()
     {
         return $this->accessToken;
+    }
+
+    /**
+     * Set removedAt.
+     *
+     * @param \DateTime $removedAt
+     *
+     * @return User
+     */
+    public function setRemovedAt($removedAt)
+    {
+        $this->removedAt = $removedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get removedAt.
+     *
+     * @return \DateTime
+     */
+    public function getRemovedAt()
+    {
+        return $this->removedAt;
     }
 }
