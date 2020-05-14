@@ -14,12 +14,11 @@
     <title>{% block title %}Bandito.re{% endblock %}</title>
 
     <link rel="preconnect" href="https://unpkg.com">
-    <link rel="preconnect" href="https://netdna.bootstrapcdn.com">
 
     {% block stylesheets -%}
-    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/grids-responsive-min.css">
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.1/build/pure-min.css" integrity="sha384-QkSsJi6SGgWv5LAx1TdvIDRf8TW5Ui4NVKqDDlK1wY2eKioo7wvYIJvGWFQSFE4U" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.1/build/grids-responsive-min.css">
+    <link rel="stylesheet" href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ asset('css/banditore.css') }}">
     {% endblock %}
 
@@ -43,6 +42,8 @@
                         <li class="pure-menu-item"><a href="{{ url('stats') }}" class="pure-menu-link">Stats</a></li>
                         {% if app.user -%}
                             <li class="pure-menu-item"><a href="{{ url('logout') }}" class="pure-menu-link">Logout ({{ app.user.username }})</a></li>
+                        {% else -%}
+                            <li class="pure-menu-item"><a href="{{ url('github_connect') }}" class="pure-menu-link">Login</a></li>
                         {% endif -%}
                     </ul>
                 </div>
