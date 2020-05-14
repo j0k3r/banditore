@@ -2,8 +2,8 @@
 
 namespace AppBundle\Github;
 
+use AppBundle\Cache\CustomRedisCachePool;
 use AppBundle\Repository\UserRepository;
-use Cache\Adapter\Predis\PredisCachePool;
 use Github\Client as GithubClient;
 use Predis\Client as RedisClient;
 use Psr\Log\LoggerInterface;
@@ -60,7 +60,7 @@ class ClientDiscovery
     {
         // attache the cache in anycase
         $this->client->addCache(
-            new PredisCachePool($this->redis),
+            new CustomRedisCachePool($this->redis),
             [
                 // the default config include "private" to avoid caching request with this header
                 // since we can use a user token, Github will return a "private" but we want to cache that request
