@@ -1,0 +1,106 @@
+parameters:
+    my_consumer.processor.service: 'App\Consumer\MyConsumer'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    # autowire
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{Entity,DataFixtures}'
+
+    App\Controller\:
+        resource: '../src/Controller'
+        public: true
+        tags: ['controller.service_arguments']
+
+    # autorwire parameters
+    App\Github\ClientDiscovery:
+        arguments:
+            $clientId: "%env(GITHUB_CLIENT_ID)%"
+            $clientSecret: "%env(GITHUB_CLIENT_SECRET)%"
+
+    App\Controller\DefaultController:
+        arguments:
+            $diffInterval: "%env(STATUS_MINUTE_INTERVAL_BEFORE_ALERT)%"
+            $redis: "@snc_redis.app_cache"
+
+    App\PubSubHubbub\Publisher:
+        arguments:
+            $hub: "http://pubsubhubbub.appspot.com"
+            $host: "%env(PROJECT_HOST)%"
+            $scheme: "%env(PROJECT_SCHEME)%"
+
+    App\Webfeeds\WebfeedsWriter:
+        tags:
+            - { name: marcw_rss_writer.extension.writer }
+
+    # lazy consumer
+    # to avoid triggering Github Client Discovery
+    # which will make a doctrine query on Travis because the default limit to Github will be reached
+    App\Consumer\SyncStarredRepos:
+        lazy: true
+        arguments:
+            $redis: "@snc_redis.app_cache"
+
+    App\Consumer\SyncVersions:
+        lazy: true
+
+    # github stuff
+    banditore.client.guzzle:
+        class: GuzzleHttp\Client
+
+    banditore.client.github:
+        class: Github\Client
+        factory: [ "@App\\Github\\ClientDiscovery", find ]
+
+    # feed stuff
+    banditore.writer.rss:
+        class: MarcW\RssWriter\RssWriter
+        arguments:
+            - ~
+            -
+                core: "@marcw_rss_writer.writer.core"
+                webfeeds: "@App\\Webfeeds\\WebfeedsWriter"
+                atom: "@marcw_rss_writer.writer.atom"
+            - true
+            - "    "
+
+    # force this service to be injected at first instead of the default one (from marcw)
+    MarcW\RssWriter\RssWriter: '@banditore.writer.rss'
+
+    # alias to service from their class name
+    Swarrot\SwarrotBundle\Broker\AmqpLibFactory:
+        alias: swarrot.factory.amqp_lib
+
+    AshleyDawson\SimplePagination\Paginator:
+        alias: ashley_dawson_simple_pagination.paginator
+
+    Swarrot\SwarrotBundle\Broker\Publisher:
+        alias: swarrot.publisher
+
+    Predis\Client:
+        alias: snc_redis.guzzle_cache
+
+    GuzzleHttp\Client:
+        alias: banditore.client.guzzle
+
+    Github\Client:
+        alias: banditore.client.github
+
+    # bundle not using recipe OR not compatible with Symfony > 3
+    marcw_rss_writer.rss_writer:
+        class: MarcW\RssWriter\RssWriter
+
+    marcw_rss_writer.writer.core:
+        class: MarcW\RssWriter\Extension\Core\CoreWriter
+        tags:
+            - { name: marcw_rss_writer.extension.writer }
+
+    marcw_rss_writer.writer.atom:
+        class: MarcW\RssWriter\Extension\Atom\AtomWriter
+        tags:
+            - { name: marcw_rss_writer.extension.writer }

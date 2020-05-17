@@ -1,0 +1,14 @@
+snc_redis:
+    clients:
+        guzzle_cache:
+            type: predis
+            alias: guzzle_cache
+            dsn: "%env(REDIS_URL_GUZZLE_CACHE)%"
+        doctrine_cache:
+            type: predis
+            alias: doctrine_cache
+            dsn: "%env(REDIS_URL_DOCTRINE_CACHE)%"
+        app_cache:
+            type: predis
+            alias: app_cache
+            dsn: "%env(REDIS_URL_APP_CACHE)%"

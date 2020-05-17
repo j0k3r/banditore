@@ -1,0 +1,16 @@
+framework:
+    secret: '%env(APP_SECRET)%'
+    # csrf_protection: true
+    http_method_override: true
+
+    session:
+        name: banditore
+        cookie_samesite: lax
+        # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
+        handler_id: session.handler.native_file
+        save_path: "%kernel.project_dir%/../var/sessions/%kernel.environment%"
+
+    #esi: true
+    #fragments: true
+    php_errors:
+        log: true

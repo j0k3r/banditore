@@ -1,0 +1,11 @@
+knpu_oauth2_client:
+    clients:
+        # will create service: "knpu.oauth2.client.github"
+        # an instance of: KnpU\OAuth2ClientBundle\Client\Provider\GithubClient
+        github:
+            type: github
+            client_id: "%env(GITHUB_CLIENT_ID)%"
+            client_secret: "%env(GITHUB_CLIENT_SECRET)%"
+            # a route name you'll create
+            redirect_route: github_callback
+            redirect_params: {}

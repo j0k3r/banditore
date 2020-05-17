@@ -1,0 +1,40 @@
+swarrot:
+    provider: amqp_lib
+    connections:
+        rabbitmq:
+            url: "amqp://%env(RABBITMQ_LOGIN)%:%env(RABBITMQ_PASSWORD)%@%env(RABBITMQ_HOST)%:%env(int:RABBITMQ_PORT)%/"
+    consumers:
+        banditore.sync_starred_repos:
+            processor: App\Consumer\SyncStarredRepos
+            extras:
+                poll_interval: 500000
+            middleware_stack:
+                - configurator: swarrot.processor.max_messages
+                  extras:
+                      max_messages: 5
+                - configurator: swarrot.processor.doctrine_connection
+                - configurator: swarrot.processor.retry
+                - configurator: swarrot.processor.exception_catcher
+                - configurator: swarrot.processor.ack
+        banditore.sync_versions:
+            processor: App\Consumer\SyncVersions
+            extras:
+                poll_interval: 500000
+            middleware_stack:
+                # stop workers after 50 messages to avoid eating too much memory
+                - configurator: swarrot.processor.max_messages
+                  extras:
+                      max_messages: 50
+                - configurator: swarrot.processor.doctrine_connection
+                - configurator: swarrot.processor.retry
+                - configurator: swarrot.processor.exception_catcher
+                - configurator: swarrot.processor.ack
+    messages_types:
+        banditore.sync_starred_repos.publisher:
+            connection: rabbitmq
+            exchange: banditore.sync_starred_repos
+            routing_key: ''
+        banditore.sync_versions.publisher:
+            connection: rabbitmq
+            exchange: banditore.sync_versions
+            routing_key: ''

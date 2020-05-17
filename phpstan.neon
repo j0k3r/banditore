@@ -6,7 +6,7 @@ includes:
 
 parameters:
     symfony:
-        container_xml_path: %rootDir%/../../../var/cache/test/appTestDebugProjectContainer.xml
+        container_xml_path: %rootDir%/../../../var/cache/test/srcApp_KernelTestDebugContainer.xml
 
     # https://github.com/phpstan/phpstan/issues/694#issuecomment-350724288
     autoload_files:
