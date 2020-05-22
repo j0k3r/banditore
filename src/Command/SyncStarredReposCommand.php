@@ -93,7 +93,7 @@ class SyncStarredReposCommand extends Command
 
             $output->writeln('[' . $userSynced . '/' . $totalUsers . '] Sync user <info>' . $userId . '</info> … ');
 
-            $message = new Message(json_encode([
+            $message = new Message((string) json_encode([
                 'user_id' => $userId,
             ]));
 

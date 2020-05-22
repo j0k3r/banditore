@@ -134,7 +134,7 @@ class SyncVersionsCommandTest extends WebTestCase
             ->method('publish')
             ->with(
                 'banditore.sync_versions.publisher',
-                new Message(json_encode(['repo_id' => 555]))
+                new Message((string) json_encode(['repo_id' => 555]))
             );
 
         $syncVersions = $this->getMockBuilder('App\Consumer\SyncVersions')
@@ -183,7 +183,7 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersions->expects($this->once())
             ->method('process')
             ->with(
-                new Message(json_encode(['repo_id' => 666])),
+                new Message((string) json_encode(['repo_id' => 666])),
                 []
             );
 

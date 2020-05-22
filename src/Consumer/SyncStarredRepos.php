@@ -60,7 +60,7 @@ class SyncStarredRepos implements ProcessorInterface
             return false;
         }
 
-        $data = json_decode($message->getBody(), true);
+        $data = json_decode((string) $message->getBody(), true);
 
         /** @var User|null */
         $user = $this->userRepository->find($data['user_id']);

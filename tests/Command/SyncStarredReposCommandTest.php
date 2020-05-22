@@ -29,7 +29,7 @@ class SyncStarredReposCommandTest extends WebTestCase
         $syncUser->expects($this->once())
             ->method('process')
             ->with(
-                new Message(json_encode(['user_id' => 123])),
+                new Message((string) json_encode(['user_id' => 123])),
                 []
             );
 
@@ -63,7 +63,7 @@ class SyncStarredReposCommandTest extends WebTestCase
             ->method('publish')
             ->with(
                 'banditore.sync_starred_repos.publisher',
-                new Message(json_encode(['user_id' => 123]))
+                new Message((string) json_encode(['user_id' => 123]))
             );
 
         $syncUser = $this->getMockBuilder('App\Consumer\SyncStarredRepos')
@@ -141,7 +141,7 @@ class SyncStarredReposCommandTest extends WebTestCase
             ->method('publish')
             ->with(
                 'banditore.sync_starred_repos.publisher',
-                new Message(json_encode(['user_id' => 123]))
+                new Message((string) json_encode(['user_id' => 123]))
             );
 
         $syncUser = $this->getMockBuilder('App\Consumer\SyncStarredRepos')
@@ -190,7 +190,7 @@ class SyncStarredReposCommandTest extends WebTestCase
         $syncUser->expects($this->once())
             ->method('process')
             ->with(
-                new Message(json_encode(['user_id' => 123])),
+                new Message((string) json_encode(['user_id' => 123])),
                 []
             );
 

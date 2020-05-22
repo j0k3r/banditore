@@ -59,16 +59,16 @@ class SyncVersionsTest extends WebTestCase
             new NullLogger()
         );
 
-        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
     }
 
     public function getWorkingResponses()
     {
         return new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // repo/tags
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+            $this->getOKResponse([[
                 'name' => '2.0.1',
                 'zipball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/zipball/2.0.1',
                 'tarball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/tarball/2.0.1',
@@ -76,9 +76,9 @@ class SyncVersionsTest extends WebTestCase
                     'sha' => '02c808d157c79ac32777e19f3ec31af24a32d2df',
                     'url' => 'https://api.github.com/repos/snc/SncRedisBundle/commits/02c808d157c79ac32777e19f3ec31af24a32d2df',
                 ],
-            ]])),
+            ]]),
             // git/refs/tags
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            $this->getOKResponse([
                 [
                     'ref' => 'refs/tags/1.0.0',
                     'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/refs/tags/1.0.0',
@@ -115,15 +115,15 @@ class SyncVersionsTest extends WebTestCase
                         'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/commits/02c808d157c79ac32777e19f3ec31af24a32d2df',
                     ],
                 ],
-            ])),
+            ]),
             // TAG 1.0.1
             // repos/release with tag 1.0.1 (which is not a release)
-            new Response(404, ['Content-Type' => 'application/json'], json_encode([
+            new Response(404, ['Content-Type' => 'application/json'], (string) json_encode([
                 'message' => 'Not Found',
                 'documentation_url' => 'https://developer.github.com/v3',
             ])),
             // retrieve tag information from the commit (since the release does not exist)
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            $this->getOKResponse([
                 'sha' => '4845571072d49c2794b165482420b66c206a942a',
                 'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/commits/4845571072d49c2794b165482420b66c206a942a',
                 'html_url' => 'https://github.com/snc/SncRedisBundle/commit/4845571072d49c2794b165482420b66c206a942a',
@@ -147,17 +147,17 @@ class SyncVersionsTest extends WebTestCase
                     'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/commits/40f7ee543e217aa3a1eadbc952df56b548071d20',
                     'html_url' => 'https://github.com/snc/SncRedisBundle/commit/40f7ee543e217aa3a1eadbc952df56b548071d20',
                 ]],
-            ])),
+            ]),
             // markdown
             new Response(200, ['Content-Type' => 'text/html'], '<p>Use the correct package type for composer.</p>'),
             // TAG 1.0.2
             // repos/release with tag 1.0.2 (which is not a release)
-            new Response(404, ['Content-Type' => 'application/json'], json_encode([
+            new Response(404, ['Content-Type' => 'application/json'], (string) json_encode([
                 'message' => 'Not Found',
                 'documentation_url' => 'https://developer.github.com/v3',
             ])),
             // retrieve tag information from the tag (since the release does not exist)
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            $this->getOKResponse([
                 'sha' => '694b8cc3983f52209029605300910507bec700b4',
                 'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/tags/694b8cc3983f52209029605300910507bec700b4',
                 'tagger' => [
@@ -172,22 +172,22 @@ class SyncVersionsTest extends WebTestCase
                 ],
                 'tag' => '1.0.2',
                 'message' => "weekly release\n-----BEGIN PGP SIGNATURE-----\nVersion: GnuPG v2\n\niF4EABEIAAYFAliw58IACgkQ64qmmlZsB5VNFwD+L1M86cO76oohqSy4TCbubPAL\n6341glOKJpfkwyjQnUkBAPCTZSBbe8CFHLxLUvypIiQSMn+AIkPfvzvSEahA40Vz\n=SaF+\n-----END PGP SIGNATURE-----\n",
-            ])),
+            ]),
             // markdown
             new Response(200, ['Content-Type' => 'text/html'], '<p>weekly release</p>'),
             // TAG 2.0.1
             // now tag 2.0.1 which is a release
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            $this->getOKResponse([
                 'tag_name' => '2.0.1',
                 'name' => 'Trade-off memory for compute, Windows support, 24 distributions with cdf, variance etc., dtypes, zero-dimensional Tensors, Tensor-Variable merge, , faster distributed, perf and bug fixes, CuDNN 7.1',
                 'prerelease' => false,
                 'published_at' => '2017-02-19T13:27:32Z',
                 'body' => 'yay',
-            ])),
+            ]),
             // markdown
             new Response(200, ['Content-Type' => 'text/html'], '<p>yay</p>'),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
     }
 
@@ -277,7 +277,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
 
         $records = $logHandler->getRecords();
 
@@ -332,11 +332,11 @@ class SyncVersionsTest extends WebTestCase
 
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // repo/tags generate a bad request
             new Response(400, ['Content-Type' => 'application/json']),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -361,7 +361,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
 
         $records = $logHandler->getRecords();
 
@@ -416,11 +416,11 @@ class SyncVersionsTest extends WebTestCase
 
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // repo/tags generate a bad request
             new Response(404, ['Content-Type' => 'application/json']),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -445,7 +445,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
 
         $records = $logHandler->getRecords();
 
@@ -500,7 +500,7 @@ class SyncVersionsTest extends WebTestCase
 
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 0]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 0]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -525,7 +525,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
 
         $records = $logHandler->getRecords();
 
@@ -594,9 +594,9 @@ class SyncVersionsTest extends WebTestCase
 
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // repo/tags
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+            $this->getOKResponse([[
                 'name' => '2.0.1',
                 'zipball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/zipball/2.0.1',
                 'tarball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/tarball/2.0.1',
@@ -604,9 +604,9 @@ class SyncVersionsTest extends WebTestCase
                     'sha' => '02c808d157c79ac32777e19f3ec31af24a32d2df',
                     'url' => 'https://api.github.com/repos/snc/SncRedisBundle/commits/02c808d157c79ac32777e19f3ec31af24a32d2df',
                 ],
-            ]])),
+            ]]),
             // git/refs/tags generate a bad request
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            $this->getOKResponse([
                 [
                     'ref' => 'refs/tags/1.0.0',
                     'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/refs/tags/1.0.0',
@@ -616,19 +616,19 @@ class SyncVersionsTest extends WebTestCase
                         'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/commits/04b99722e0c25bfc45926cd3a1081c04a8e950ed',
                     ],
                 ],
-            ])),
+            ]),
             // now tag 1.0.0 which is a release
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            $this->getOKResponse([
                 'tag_name' => '1.0.0',
                 'name' => '1.0.0',
                 'prerelease' => false,
                 'published_at' => '2017-02-19T13:27:32Z',
                 'body' => 'yay',
-            ])),
+            ]),
             // markdown failed
             new Response(400, ['Content-Type' => 'text/html'], 'booboo'),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -653,7 +653,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
 
         $records = $logHandler->getRecords();
 
@@ -708,11 +708,11 @@ class SyncVersionsTest extends WebTestCase
 
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // repo/tags
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
+            $this->getOKResponse([]),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -737,7 +737,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
 
         $records = $logHandler->getRecords();
 
@@ -799,9 +799,9 @@ class SyncVersionsTest extends WebTestCase
 
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // repo/tags
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+            $this->getOKResponse([[
                 'name' => '2.0.1',
                 'zipball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/zipball/2.0.1',
                 'tarball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/tarball/2.0.1',
@@ -809,9 +809,9 @@ class SyncVersionsTest extends WebTestCase
                     'sha' => '02c808d157c79ac32777e19f3ec31af24a32d2df',
                     'url' => 'https://api.github.com/repos/snc/SncRedisBundle/commits/02c808d157c79ac32777e19f3ec31af24a32d2df',
                 ],
-            ]])),
+            ]]),
             // git/refs/tags
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            $this->getOKResponse([
                 [
                     'ref' => 'refs/tags/1.0.0',
                     'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/refs/tags/1.0.0',
@@ -821,9 +821,9 @@ class SyncVersionsTest extends WebTestCase
                         'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/commits/04b99722e0c25bfc45926cd3a1081c04a8e950ed',
                     ],
                 ],
-            ])),
+            ]),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -844,7 +844,7 @@ class SyncVersionsTest extends WebTestCase
             new NullLogger()
         );
 
-        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
     }
 
     /**
@@ -893,9 +893,9 @@ class SyncVersionsTest extends WebTestCase
 
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // repo/tags
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+            $this->getOKResponse([[
                 'name' => '2.0.1',
                 'zipball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/zipball/2.0.1',
                 'tarball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/tarball/2.0.1',
@@ -903,11 +903,11 @@ class SyncVersionsTest extends WebTestCase
                     'sha' => '02c808d157c79ac32777e19f3ec31af24a32d2df',
                     'url' => 'https://api.github.com/repos/snc/SncRedisBundle/commits/02c808d157c79ac32777e19f3ec31af24a32d2df',
                 ],
-            ]])),
+            ]]),
             // git/refs/tags generate a bad request
             new Response(400, ['Content-Type' => 'application/json']),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -932,7 +932,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
 
         $records = $logHandler->getRecords();
 
@@ -978,7 +978,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message(json_encode(['repo_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
 
         $records = $logHandler->getRecords();
 
@@ -1002,10 +1002,9 @@ class SyncVersionsTest extends WebTestCase
         $githubClient = new GithubClient($httpBuilder);
 
         $client = static::createClient();
-        $container = $client->getContainer();
 
         // override factory to avoid real call to Github
-        $container->set('banditore.client.github.test', $githubClient);
+        self::$container->set('banditore.client.github.test', $githubClient);
 
         // mock pubsubhubbub request
         $guzzleClientPub = $this->getMockBuilder('GuzzleHttp\Client')
@@ -1015,17 +1014,17 @@ class SyncVersionsTest extends WebTestCase
             ->method('__call') // post
             ->willReturn(new Response(204));
 
-        $container->set('banditore.client.guzzle.test', $guzzleClientPub);
+        self::$container->set('banditore.client.guzzle.test', $guzzleClientPub);
 
-        $processor = $container->get('banditore.consumer.sync_versions.test');
+        $processor = self::$container->get('banditore.consumer.sync_versions.test');
 
-        $versions = $container->get('banditore.repository.version.test')->findBy(['repo' => 666]);
+        $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 666]);
         $this->assertCount(1, $versions, 'Repo 666 has 1 version');
         $this->assertSame('1.0.0', $versions[0]->getTagName(), 'Repo 666 has 1 version, which is 1.0.0');
 
-        $processor->process(new Message(json_encode(['repo_id' => 666])), []);
+        $processor->process(new Message((string) json_encode(['repo_id' => 666])), []);
 
-        $versions = $container->get('banditore.repository.version.test')->findBy(['repo' => 666]);
+        $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 666]);
         $this->assertCount(4, $versions, 'Repo 666 has now 4 versions');
         $this->assertSame('1.0.0', $versions[0]->getTagName(), 'Repo 666 has 4 version. First one is 1.0.0');
         $this->assertSame('1.0.1', $versions[1]->getTagName(), 'Repo 666 has 4 version. Second one is 1.0.1');
@@ -1038,15 +1037,15 @@ class SyncVersionsTest extends WebTestCase
     {
         $responses = new MockHandler([
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // repo/tags
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+            $this->getOKResponse([[
                 'name' => 'v2.11.0',
                 'zipball_url' => 'https://api.github.com/repos/mozilla/metrics-graphics/zipball/v2.11.0',
                 'tarball_url' => 'https://api.github.com/repos/mozilla/metrics-graphics/tarball/v2.11.0',
-            ]])),
+            ]]),
             // git/refs/tags
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            $this->getOKResponse([
                 [
                     'ref' => 'refs/tags/V1.1.0',
                     'url' => 'https://api.github.com/repos/mozilla/metrics-graphics/git/refs/tags/V1.1.0',
@@ -1065,20 +1064,20 @@ class SyncVersionsTest extends WebTestCase
                         'url' => 'https://api.github.com/repos/mozilla/metrics-graphics/git/commits/15a4703db568342043f156b5635d10b17ebe98cb',
                     ],
                 ],
-            ])),
+            ]),
             // TAG V1.1.0
             // now tag V1.1.0 which is a release
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            $this->getOKResponse([
                 'tag_name' => 'V1.1.0',
                 'name' => 'V1.1.0',
                 'prerelease' => false,
                 'published_at' => '2014-12-01T18:28:39Z',
                 'body' => 'This is the first release after our major push.',
-            ])),
+            ]),
             // markdown
             new Response(200, ['Content-Type' => 'text/html'], '<p>This is the first release after our major push.</p>'),
             // rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -1091,10 +1090,9 @@ class SyncVersionsTest extends WebTestCase
         $githubClient = new GithubClient($httpBuilder);
 
         $client = static::createClient();
-        $container = $client->getContainer();
 
         // override factory to avoid real call to Github
-        $container->set('banditore.client.github.test', $githubClient);
+        self::$container->set('banditore.client.github.test', $githubClient);
 
         // mock pubsubhubbub request
         $guzzleClientPub = $this->getMockBuilder('GuzzleHttp\Client')
@@ -1104,20 +1102,29 @@ class SyncVersionsTest extends WebTestCase
             ->method('__call') // post
             ->willReturn(new Response(204));
 
-        $container->set('banditore.client.guzzle.test', $guzzleClientPub);
+        self::$container->set('banditore.client.guzzle.test', $guzzleClientPub);
 
-        $processor = $container->get('banditore.consumer.sync_versions.test');
+        $processor = self::$container->get('banditore.consumer.sync_versions.test');
 
-        $versions = $container->get('banditore.repository.version.test')->findBy(['repo' => 555]);
+        $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 555]);
         $this->assertCount(1, $versions, 'Repo 555 has 1 version');
         $this->assertSame('1.0.21', $versions[0]->getTagName(), 'Repo 555 has 1 version, which is 1.0.21');
 
-        $processor->process(new Message(json_encode(['repo_id' => 555])), []);
+        $processor->process(new Message((string) json_encode(['repo_id' => 555])), []);
 
-        $versions = $container->get('banditore.repository.version.test')->findBy(['repo' => 555]);
+        $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 555]);
         $this->assertCount(2, $versions, 'Repo 555 has now 2 versions');
         $this->assertSame('1.0.21', $versions[0]->getTagName(), 'Repo 555 has 2 version. First one is 1.0.21');
         $this->assertSame('V1.1.0', $versions[1]->getTagName(), 'Repo 555 has 2 version. Second one is V1.1.0');
         $this->assertSame('<p>This is the first release after our major push.</p>', $versions[1]->getBody(), 'Version V1.1.0 body is ok');
+    }
+
+    private function getOKResponse($body)
+    {
+        return new Response(
+            200,
+            ['Content-Type' => 'application/json'],
+            (string) json_encode($body)
+        );
     }
 }

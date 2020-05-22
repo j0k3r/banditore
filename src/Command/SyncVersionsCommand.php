@@ -94,7 +94,7 @@ class SyncVersionsCommand extends Command
 
             $output->writeln('[' . $repoChecked . '/' . $totalRepos . '] Check <info>' . $repoId . '</info> … ');
 
-            $message = new Message(json_encode([
+            $message = new Message((string) json_encode([
                 'repo_id' => $repoId,
             ]));
 

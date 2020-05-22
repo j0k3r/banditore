@@ -50,7 +50,7 @@ class SyncVersions implements ProcessorInterface
             return false;
         }
 
-        $data = json_decode($message->getBody(), true);
+        $data = json_decode((string) $message->getBody(), true);
 
         /** @var Repo|null */
         $repo = $this->repoRepository->find($data['repo_id']);

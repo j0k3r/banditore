@@ -13,7 +13,9 @@ parameters:
         - vendor/bin/.phpunit/phpunit-8.3-0/vendor/autoload.php
 
     ignoreErrors:
-        - '#Call to an undefined method Github\\Api\\ApiInterface\:\:getResource\(\)#'
+        # these are already checked in the class
+        - '#Cannot call method api\(\) on Github\\Client\|null#'
+        - '#expects Github\\Client, Github\\Client\|null given#'
 
     inferPrivatePropertyTypeFromConstructor: true
     reportUnmatchedIgnoredErrors: false
