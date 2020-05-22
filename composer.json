@@ -46,7 +46,7 @@
         "symfony/security-bundle": "^4.4",
         "symfony/translation": "^4.4",
         "symfony/twig-pack": "^1.0",
-        "symfony/validator": "^4.4",
+        "symfony/validator": "^5.0",
         "twig/twig": "^2.0||^3.0"
     },
     "require-dev": {
