@@ -17,7 +17,7 @@
         "php": "^7.2.5",
         "ashleydawson/simple-pagination-bundle": "dev-feature/symfony-4",
         "cache/predis-adapter": "^1.0",
-        "doctrine/doctrine-bundle": "^1.12",
+        "doctrine/doctrine-bundle": "^2.0",
         "doctrine/doctrine-migrations-bundle": "^2.1",
         "doctrine/orm": "^2.5",
         "knplabs/github-api": "^2.2",
