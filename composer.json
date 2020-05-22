@@ -5,46 +5,48 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "AppBundle\\": "src/AppBundle"
-        },
-        "classmap": [
-            "app/AppKernel.php",
-            "app/AppCache.php"
-        ]
+            "App\\": "src/"
+        }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
-        },
-        "files": [ "vendor/symfony/symfony/src/Symfony/Component/VarDumper/Resources/functions/dump.php" ]
+            "App\\Tests\\": "tests/"
+        }
     },
     "require": {
-        "php": "^7.2",
-        "ashleydawson/simple-pagination-bundle": "^3.0",
+        "php": "^7.2.5",
+        "ashleydawson/simple-pagination-bundle": "dev-feature/symfony-4",
         "cache/predis-adapter": "^1.0",
         "doctrine/doctrine-bundle": "^1.12",
-        "doctrine/doctrine-migrations-bundle": "^2.0",
+        "doctrine/doctrine-migrations-bundle": "^2.1",
         "doctrine/orm": "^2.5",
-        "incenteev/composer-parameter-handler": "^2.0",
         "knplabs/github-api": "^2.2",
-        "knplabs/knp-time-bundle": "^1.8",
-        "knpuniversity/oauth2-client-bundle": "^1.9",
+        "knplabs/knp-time-bundle": "^1.11",
+        "knpuniversity/oauth2-client-bundle": "^2.1",
         "laminas/laminas-code": "^3.4",
         "league/oauth2-github": "^2.0",
         "marcw/rss-writer": "^0.4",
         "ocramius/proxy-manager": "^2.1",
-        "odolbeau/rabbit-mq-admin-toolkit": "^4.0",
+        "odolbeau/rabbit-mq-admin-toolkit": "^5.0",
         "php-amqplib/php-amqplib": "^2.6",
         "php-http/guzzle6-adapter": "^2.0",
         "ramsey/uuid": "^4.0",
-        "sensio/distribution-bundle": "^5.0",
-        "sensio/framework-extra-bundle": "^5.0",
+        "sensio/framework-extra-bundle": "^5.5",
+        "sensiolabs/security-checker": "^6.0",
         "sentry/sentry-symfony": "~3.0",
         "snc/redis-bundle": "^3.2",
-        "swarrot/swarrot-bundle": "^1.4",
-        "symfony/monolog-bundle": "^3.0",
+        "swarrot/swarrot-bundle": "^2.0",
+        "symfony/asset": "^4.4",
+        "symfony/dotenv": "^4.4",
+        "symfony/flex": "^1.6",
+        "symfony/form": "^4.4",
+        "symfony/monolog-bundle": "^3.5",
+        "symfony/orm-pack": "^1.0",
         "symfony/polyfill-apcu": "^1.0",
-        "symfony/symfony": "3.4.*",
+        "symfony/security-bundle": "^4.4",
+        "symfony/translation": "^4.4",
+        "symfony/twig-pack": "^1.0",
+        "symfony/validator": "^4.4",
         "twig/twig": "^2.0||^3.0"
     },
     "require-dev": {
@@ -56,27 +58,31 @@
         "phpstan/phpstan-doctrine": "^0.11.0",
         "phpstan/phpstan-phpunit": "^0.11.0",
         "phpstan/phpstan-symfony": "^0.11.0",
+        "symfony/browser-kit": "^5.0",
+        "symfony/css-selector": "^5.0",
+        "symfony/debug-bundle": "^4.4",
         "symfony/maker-bundle": "^1.15",
-        "symfony/phpunit-bridge": "~5.0"
+        "symfony/phpunit-bridge": "~5.0",
+        "symfony/web-profiler-bundle": "^4.4"
+    },
+    "conflict": {
+        "symfony/symfony": "*"
     },
     "scripts": {
-        "symfony-scripts": [
-            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
-        ],
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "security-checker security:check": "script"
+        },
         "post-install-cmd": [
-            "@symfony-scripts"
+            "@auto-scripts"
         ],
         "post-update-cmd": [
-            "@symfony-scripts"
+            "@auto-scripts"
         ]
     },
     "config": {
         "platform": {
-            "php": "7.2"
+            "php": "7.2.5"
         },
         "bin-dir": "bin",
         "sort-packages": true
@@ -85,17 +91,15 @@
         {
             "type": "vcs",
             "url": "https://github.com/j0k3r/RedisMock"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/j0k3r/SimplePaginationBundle"
         }
     ],
     "extra": {
-        "symfony-app-dir": "app",
-        "symfony-bin-dir": "bin",
-        "symfony-var-dir": "var",
-        "symfony-web-dir": "web",
-        "symfony-tests-dir": "tests",
-        "symfony-assets-install": "relative",
-        "incenteev-parameters": {
-            "file": "app/config/parameters.yml"
+        "symfony": {
+            "allow-contrib": true
         }
     }
 }

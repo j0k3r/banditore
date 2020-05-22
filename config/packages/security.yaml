@@ -1,0 +1,19 @@
+security:
+    providers:
+        github_provider:
+            entity:
+                class: App:User
+                property: githubId
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            anonymous: ~
+            logout: ~
+
+            guard:
+                authenticators:
+                    - App\Security\GithubAuthenticator
