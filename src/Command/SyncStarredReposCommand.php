@@ -36,7 +36,7 @@ class SyncStarredReposCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('banditore:sync:starred-repos')
@@ -93,7 +93,7 @@ class SyncStarredReposCommand extends Command
 
             $output->writeln('[' . $userSynced . '/' . $totalUsers . '] Sync user <info>' . $userId . '</info> … ');
 
-            $message = new Message(json_encode([
+            $message = new Message((string) json_encode([
                 'user_id' => $userId,
             ]));
 
@@ -117,17 +117,15 @@ class SyncStarredReposCommand extends Command
 
     /**
      * Retrieve users to work on.
-     *
-     * @return array
      */
-    private function retrieveUsers(InputInterface $input)
+    private function retrieveUsers(InputInterface $input): array
     {
         if ($input->getOption('id')) {
             return [$input->getOption('id')];
         }
 
         if ($input->getOption('username')) {
-            $user = $this->userRepository->findOneByUsername($input->getOption('username'));
+            $user = $this->userRepository->findOneByUsername((string) $input->getOption('username'));
 
             if ($user) {
                 return [$user->getId()];

@@ -204,30 +204,6 @@
     "monolog/monolog": {
         "version": "1.25.3"
     },
-    "nette/bootstrap": {
-        "version": "v3.0.1"
-    },
-    "nette/di": {
-        "version": "v3.0.4"
-    },
-    "nette/finder": {
-        "version": "v2.5.2"
-    },
-    "nette/neon": {
-        "version": "v3.1.2"
-    },
-    "nette/php-generator": {
-        "version": "v3.3.4"
-    },
-    "nette/robot-loader": {
-        "version": "v3.2.3"
-    },
-    "nette/schema": {
-        "version": "v1.0.2"
-    },
-    "nette/utils": {
-        "version": "v3.1.1"
-    },
     "nikic/php-parser": {
         "version": "v4.4.0"
     },
@@ -282,11 +258,14 @@
     "phpseclib/phpseclib": {
         "version": "2.0.27"
     },
-    "phpstan/phpdoc-parser": {
-        "version": "0.3.5"
+    "phpstan/extension-installer": {
+        "version": "1.0.4"
     },
     "phpstan/phpstan": {
         "version": "0.11.19"
+    },
+    "phpstan/phpstan-deprecation-rules": {
+        "version": "0.12.3"
     },
     "phpstan/phpstan-doctrine": {
         "version": "0.11.6"

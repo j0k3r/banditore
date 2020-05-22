@@ -28,7 +28,7 @@ class ClientDiscovery
     private $logger;
     private $client;
 
-    public function __construct(UserRepository $userRepository, RedisClient $redis, $clientId, $clientSecret, LoggerInterface $logger)
+    public function __construct(UserRepository $userRepository, RedisClient $redis, string $clientId, string $clientSecret, LoggerInterface $logger)
     {
         $this->userRepository = $userRepository;
         $this->redis = $redis;
@@ -43,7 +43,7 @@ class ClientDiscovery
      * Allow to override Github client.
      * Only used in test.
      */
-    public function setGithubClient(GithubClient $client)
+    public function setGithubClient(GithubClient $client): void
     {
         $this->client = $client;
     }
@@ -94,5 +94,7 @@ class ClientDiscovery
         }
 
         $this->logger->warning('No way to authenticate a client with enough rate limit remaining :(');
+
+        return null;
     }
 }

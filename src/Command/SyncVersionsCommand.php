@@ -37,7 +37,7 @@ class SyncVersionsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('banditore:sync:versions')
@@ -94,7 +94,7 @@ class SyncVersionsCommand extends Command
 
             $output->writeln('[' . $repoChecked . '/' . $totalRepos . '] Check <info>' . $repoId . '</info> … ');
 
-            $message = new Message(json_encode([
+            $message = new Message((string) json_encode([
                 'repo_id' => $repoId,
             ]));
 
@@ -118,17 +118,15 @@ class SyncVersionsCommand extends Command
 
     /**
      * Retrieve repos to work on.
-     *
-     * @return array
      */
-    private function retrieveRepos(InputInterface $input)
+    private function retrieveRepos(InputInterface $input): array
     {
         if ($input->getOption('repo_id')) {
             return [$input->getOption('repo_id')];
         }
 
         if ($input->getOption('repo_name')) {
-            $repo = $this->repoRepository->findOneByFullName($input->getOption('repo_name'));
+            $repo = $this->repoRepository->findOneByFullName((string) $input->getOption('repo_name'));
 
             if ($repo) {
                 return [$repo->getId()];

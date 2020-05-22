@@ -13,48 +13,55 @@ class Webfeeds
 {
     /**
      * @Assert\Url
+     *
+     * @var string|null
      */
     private $logo;
 
     /**
      * @Assert\Url
+     *
+     * @var string|null
      */
     private $icon;
 
+    /**
+     * @var string|null
+     */
     private $accentColor;
 
-    public function setLogo($logo)
+    public function setLogo(?string $logo): self
     {
         $this->logo = $logo;
 
         return $this;
     }
 
-    public function getLogo()
+    public function getLogo(): ?string
     {
         return $this->logo;
     }
 
-    public function setIcon($icon)
+    public function setIcon(?string $icon): self
     {
         $this->icon = $icon;
 
         return $this;
     }
 
-    public function getIcon()
+    public function getIcon(): ?string
     {
         return $this->icon;
     }
 
-    public function setAccentColor($accentColor)
+    public function setAccentColor(?string $accentColor): self
     {
         $this->accentColor = $accentColor;
 
         return $this;
     }
 
-    public function getAccentColor()
+    public function getAccentColor(): ?string
     {
         return $this->accentColor;
     }

@@ -1,19 +1,20 @@
-includes:
-    - vendor/phpstan/phpstan-phpunit/extension.neon
-    - vendor/phpstan/phpstan-symfony/extension.neon
-    - vendor/phpstan/phpstan-doctrine/extension.neon
-    - vendor/phpstan/phpstan-phpunit/rules.neon
-
 parameters:
     symfony:
         container_xml_path: %rootDir%/../../../var/cache/test/srcApp_KernelTestDebugContainer.xml
+        console_application_loader: tests/console-application.php
 
     # https://github.com/phpstan/phpstan/issues/694#issuecomment-350724288
     autoload_files:
         - vendor/bin/.phpunit/phpunit-8.3-0/vendor/autoload.php
 
     ignoreErrors:
-        - '#Call to an undefined method Github\\Api\\ApiInterface\:\:getResource\(\)#'
+        # these are already checked in the class
+        - '#Cannot call method api\(\) on Github\\Client\|null#'
+        - '#expects Github\\Client, Github\\Client\|null given#'
+        - '#Cannot call method getAttribute\(\) on DOMNode\|null#'
+
+        # until upgrade to Symfony 5
+        - '#Return type of method App\\Entity\\User\:\:getRoles\(\) has typehint with deprecated class Symfony\\Component\\Security\\Core\\Role\\Role#'
 
     inferPrivatePropertyTypeFromConstructor: true
-    reportUnmatchedIgnoredErrors: false
+    checkMissingIterableValueType: false

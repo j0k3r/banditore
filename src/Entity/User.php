@@ -255,7 +255,7 @@ class User implements UserInterface, EquatableInterface
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function timestamps()
+    public function timestamps(): void
     {
         if (null === $this->createdAt) {
             $this->createdAt = new \DateTime();
@@ -266,7 +266,7 @@ class User implements UserInterface, EquatableInterface
     /**
      * Hydrate a user with data from Github.
      */
-    public function hydrateFromGithub(GithubResourceOwner $data)
+    public function hydrateFromGithub(GithubResourceOwner $data): void
     {
         $info = $data->toArray();
 
@@ -288,9 +288,10 @@ class User implements UserInterface, EquatableInterface
 
     public function getSalt()
     {
+        return null;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
     }
 

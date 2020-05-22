@@ -66,6 +66,7 @@ class GithubAuthenticator extends SocialAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
         // failure, what failure?
+        return null;
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
@@ -90,7 +91,7 @@ class GithubAuthenticator extends SocialAuthenticator
 
         $this->publisher->publish(
             'banditore.sync_starred_repos.publisher',
-            new Message(json_encode([
+            new Message((string) json_encode([
                 'user_id' => $user->getId(),
             ]))
         );

@@ -20,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class SyncStarredReposTest extends WebTestCase
 {
-    public function testProcessNoUser()
+    public function testProcessNoUser(): void
     {
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -68,10 +68,10 @@ class SyncStarredReposTest extends WebTestCase
             $redisClient
         );
 
-        $processor->process(new Message(json_encode(['user_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
     }
 
-    public function testProcessSuccessfulMessage()
+    public function testProcessSuccessfulMessage(): void
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -131,9 +131,9 @@ class SyncStarredReposTest extends WebTestCase
 
         $responses = new MockHandler([
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // first /user/starred
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+            $this->getOKResponse([[
                 'description' => 'banditore',
                 'homepage' => 'http://banditore.io',
                 'language' => 'PHP',
@@ -143,13 +143,13 @@ class SyncStarredReposTest extends WebTestCase
                 'owner' => [
                     'avatar_url' => 'http://avatar.api/banditore.jpg',
                 ],
-            ]])),
+            ]]),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // third /user/starred will return empty response which means, we reached the last page
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
+            $this->getOKResponse([]),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $githubClient = $this->getMockClient($responses);
@@ -176,7 +176,7 @@ class SyncStarredReposTest extends WebTestCase
             $redisClient
         );
 
-        $processor->process(new Message(json_encode(['user_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
 
         $records = $logHandler->getRecords();
 
@@ -187,7 +187,7 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame('[10] Synced repos: 1', $records[4]['message']);
     }
 
-    public function testUserRemovedFromGitHub()
+    public function testUserRemovedFromGitHub(): void
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -233,7 +233,7 @@ class SyncStarredReposTest extends WebTestCase
 
         $responses = new MockHandler([
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // first /user/starred
             new Response(404, ['Content-Type' => 'application/json']),
         ]);
@@ -262,7 +262,7 @@ class SyncStarredReposTest extends WebTestCase
             $redisClient
         );
 
-        $processor->process(new Message(json_encode(['user_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
 
         $records = $logHandler->getRecords();
 
@@ -273,7 +273,7 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertNotNull($user->getRemovedAt());
     }
 
-    public function testProcessUnexpectedError()
+    public function testProcessUnexpectedError(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('booboo');
@@ -326,9 +326,9 @@ class SyncStarredReposTest extends WebTestCase
 
         $responses = new MockHandler([
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // first /user/starred
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+            $this->getOKResponse([[
                 'description' => 'banditore',
                 'homepage' => 'http://banditore.io',
                 'language' => 'PHP',
@@ -338,13 +338,13 @@ class SyncStarredReposTest extends WebTestCase
                 'owner' => [
                     'avatar_url' => 'http://avatar.api/banditore.jpg',
                 ],
-            ]])),
+            ]]),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // second /user/starred will return empty response which means, we reached the last page
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
+            $this->getOKResponse([]),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $githubClient = $this->getMockClient($responses);
@@ -367,13 +367,13 @@ class SyncStarredReposTest extends WebTestCase
             $redisClient
         );
 
-        $processor->process(new Message(json_encode(['user_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
     }
 
     /**
      * Everything will goes fine (like testProcessSuccessfulMessage) and we won't remove old stars (no change detected in starred repos).
      */
-    public function testProcessSuccessfulMessageNoStarToRemove()
+    public function testProcessSuccessfulMessageNoStarToRemove(): void
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -431,9 +431,9 @@ class SyncStarredReposTest extends WebTestCase
 
         $responses = new MockHandler([
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // first /user/starred
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+            $this->getOKResponse([[
                 'description' => 'banditore',
                 'homepage' => 'http://banditore.io',
                 'language' => 'PHP',
@@ -443,13 +443,13 @@ class SyncStarredReposTest extends WebTestCase
                 'owner' => [
                     'avatar_url' => 'http://avatar.api/banditore.jpg',
                 ],
-            ]])),
+            ]]),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // second /user/starred will return empty response which means, we reached the last page
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
+            $this->getOKResponse([]),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $githubClient = $this->getMockClient($responses);
@@ -476,7 +476,7 @@ class SyncStarredReposTest extends WebTestCase
             $redisClient
         );
 
-        $processor->process(new Message(json_encode(['user_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
 
         $records = $logHandler->getRecords();
 
@@ -486,7 +486,7 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame('[10] Synced repos: 1', $records[3]['message']);
     }
 
-    public function testProcessWithBadClient()
+    public function testProcessWithBadClient(): void
     {
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -535,14 +535,14 @@ class SyncStarredReposTest extends WebTestCase
             $redisClient
         );
 
-        $processor->process(new Message(json_encode(['user_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
 
         $records = $logHandler->getRecords();
 
         $this->assertSame('No client provided', $records[0]['message']);
     }
 
-    public function testProcessWithRateLimitReached()
+    public function testProcessWithRateLimitReached(): void
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -589,7 +589,7 @@ class SyncStarredReposTest extends WebTestCase
 
         $responses = new MockHandler([
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 0]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 0]]]),
         ]);
 
         $githubClient = $this->getMockClient($responses);
@@ -616,7 +616,7 @@ class SyncStarredReposTest extends WebTestCase
             $redisClient
         );
 
-        $processor->process(new Message(json_encode(['user_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
 
         $records = $logHandler->getRecords();
 
@@ -625,13 +625,13 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame('RateLimit reached, stopping.', $records[2]['message']);
     }
 
-    public function testFunctionalConsumer()
+    public function testFunctionalConsumer(): void
     {
         $responses = new MockHandler([
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // first /user/starred
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+            $this->getOKResponse([[
                 'description' => 'banditore',
                 'homepage' => 'http://banditore.io',
                 'language' => 'PHP',
@@ -641,11 +641,11 @@ class SyncStarredReposTest extends WebTestCase
                 'owner' => [
                     'avatar_url' => 'http://avatar.api/banditore.jpg',
                 ],
-            ]])),
+            ]]),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // second /user/starred
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([[
+            $this->getOKResponse([[
                 'description' => 'This is a test repo',
                 'homepage' => 'http://test.io',
                 'language' => 'Ruby',
@@ -655,45 +655,54 @@ class SyncStarredReposTest extends WebTestCase
                 'owner' => [
                     'avatar_url' => 'http://0.0.0.0/test.jpg',
                 ],
-            ]])),
+            ]]),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 8]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 8]]]),
             // third /user/starred will return empty response which means, we reached the last page
-            new Response(200, ['Content-Type' => 'application/json'], json_encode([])),
+            $this->getOKResponse([]),
             // /rate_limit
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 6]]])),
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 6]]]),
         ]);
 
         $githubClient = $this->getMockClient($responses);
 
         $client = static::createClient();
-        $container = $client->getContainer();
 
         // override factory to avoid real call to Github
-        $container->set('banditore.client.github.test', $githubClient);
+        self::$container->set('banditore.client.github.test', $githubClient);
 
-        $processor = $container->get('banditore.consumer.sync_starred_repos.test');
+        $processor = self::$container->get('banditore.consumer.sync_starred_repos.test');
 
         // before import
-        $stars = $container->get('banditore.repository.star.test')->findAllByUser(123);
+        $stars = self::$container->get('banditore.repository.star.test')->findAllByUser(123);
         $this->assertCount(2, $stars, 'User 123 has 2 starred repos');
         $this->assertSame(555, $stars[0], 'User 123 has "symfony/symfony" starred repo');
         $this->assertSame(666, $stars[1], 'User 123 has "test/test" starred repo');
 
-        $processor->process(new Message(json_encode(['user_id' => 123])), []);
+        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
 
-        $repo = $container->get('banditore.repository.repo.test')->find(777);
+        /** @var Repo */
+        $repo = self::$container->get('banditore.repository.repo.test')->find(777);
         $this->assertNotNull($repo, 'Imported repo with id 777 exists');
         $this->assertSame('j0k3r/banditore', $repo->getFullName(), 'Imported repo with id 777 exists');
 
         // validate that `test/test` association got removed
-        $stars = $container->get('banditore.repository.star.test')->findAllByUser(123);
+        $stars = self::$container->get('banditore.repository.star.test')->findAllByUser(123);
         $this->assertCount(2, $stars, 'User 123 has 2 starred repos');
         $this->assertSame(666, $stars[0], 'User 123 has "test/test" starred repo');
         $this->assertSame(777, $stars[1], 'User 123 has "j0k3r/banditore" starred repo');
     }
 
-    private function getMockClient($responses)
+    private function getOKResponse(array $body): Response
+    {
+        return new Response(
+            200,
+            ['Content-Type' => 'application/json'],
+            (string) json_encode($body)
+        );
+    }
+
+    private function getMockClient(MockHandler $responses): GithubClient
     {
         $clientHandler = HandlerStack::create($responses);
 

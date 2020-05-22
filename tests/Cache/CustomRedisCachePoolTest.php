@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class CustomRedisCachePoolTest extends WebTestCase
 {
-    public function testResponseWithEmptyBody()
+    public function testResponseWithEmptyBody(): void
     {
         $redisStatus = new Status('OK');
         $cache = $this->getMockBuilder('Predis\ClientInterface')
@@ -21,7 +21,7 @@ class CustomRedisCachePoolTest extends WebTestCase
             ->method('__call')
             ->willReturn($redisStatus);
 
-        $body = json_encode([]);
+        $body = (string) json_encode([]);
 
         $response = new Response(
             200,
@@ -37,7 +37,7 @@ class CustomRedisCachePoolTest extends WebTestCase
         $cachePool->save($item);
     }
 
-    public function testResponseWith404()
+    public function testResponseWith404(): void
     {
         $redisStatus = new Status('OK');
         $cache = $this->getMockBuilder('Predis\ClientInterface')
@@ -58,7 +58,7 @@ class CustomRedisCachePoolTest extends WebTestCase
         $cachePool->save($item);
     }
 
-    public function testResponseWithRelease()
+    public function testResponseWithRelease(): void
     {
         $cache = $this->getMockBuilder('Predis\ClientInterface')
             ->disableOriginalConstructor()
@@ -67,7 +67,7 @@ class CustomRedisCachePoolTest extends WebTestCase
         $cache->expects($this->never())
             ->method('__call');
 
-        $body = json_encode([
+        $body = (string) json_encode([
             'tag_name' => 'V1.1.0',
             'name' => 'V1.1.0',
             'prerelease' => false,
@@ -89,7 +89,7 @@ class CustomRedisCachePoolTest extends WebTestCase
         $cachePool->save($item);
     }
 
-    public function testResponseWithRefTags()
+    public function testResponseWithRefTags(): void
     {
         $redisStatus = new Status('OK');
         $cache = $this->getMockBuilder('Predis\ClientInterface')
@@ -100,7 +100,7 @@ class CustomRedisCachePoolTest extends WebTestCase
             ->method('__call')
             ->willReturn($redisStatus);
 
-        $body = json_encode([[
+        $body = (string) json_encode([[
                 'ref' => 'refs/tags/1.0.0',
                 'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/refs/tags/1.0.0',
                 'object' => [
@@ -134,7 +134,7 @@ class CustomRedisCachePoolTest extends WebTestCase
         $cachePool->save($item);
     }
 
-    public function testResponseWithTag()
+    public function testResponseWithTag(): void
     {
         $redisStatus = new Status('OK');
         $cache = $this->getMockBuilder('Predis\ClientInterface')
@@ -145,7 +145,7 @@ class CustomRedisCachePoolTest extends WebTestCase
             ->method('__call')
             ->willReturn($redisStatus);
 
-        $body = json_encode([[
+        $body = (string) json_encode([[
             'name' => '2.0.1',
             'zipball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/zipball/2.0.1',
             'tarball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/tarball/2.0.1',
@@ -169,7 +169,7 @@ class CustomRedisCachePoolTest extends WebTestCase
         $cachePool->save($item);
     }
 
-    public function testResponseWithStarredRepos()
+    public function testResponseWithStarredRepos(): void
     {
         $redisStatus = new Status('OK');
         $cache = $this->getMockBuilder('Predis\ClientInterface')
@@ -180,7 +180,7 @@ class CustomRedisCachePoolTest extends WebTestCase
             ->method('__call')
             ->willReturn($redisStatus);
 
-        $body = json_encode([[
+        $body = (string) json_encode([[
             'description' => 'banditore',
             'homepage' => 'http://banditore.io',
             'language' => 'PHP',

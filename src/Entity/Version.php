@@ -210,7 +210,7 @@ class Version
         return $this->body;
     }
 
-    public function hydrateFromGithub(array $data)
+    public function hydrateFromGithub(array $data): void
     {
         $this->setTagName($data['tag_name']);
         $this->setName($data['name']);

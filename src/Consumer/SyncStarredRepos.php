@@ -60,7 +60,7 @@ class SyncStarredRepos implements ProcessorInterface
             return false;
         }
 
-        $data = json_decode($message->getBody(), true);
+        $data = json_decode((string) $message->getBody(), true);
 
         /** @var User|null */
         $user = $this->userRepository->find($data['user_id']);
@@ -102,7 +102,7 @@ class SyncStarredRepos implements ProcessorInterface
      *
      * @param User $user User to work on
      */
-    private function doSyncRepo(User $user)
+    private function doSyncRepo(User $user): ?int
     {
         $newStars = [];
         $page = 1;
@@ -131,7 +131,7 @@ class SyncStarredRepos implements ProcessorInterface
                 $em->persist($user);
             }
 
-            return;
+            return null;
         }
 
         $currentStars = $this->starRepository->findAllByUser($user->getId());
@@ -194,7 +194,7 @@ class SyncStarredRepos implements ProcessorInterface
         $repoIdsToRemove = array_diff($currentStars, $newStars);
 
         if (empty($repoIdsToRemove)) {
-            return;
+            return null;
         }
 
         $this->logger->info('Removed stars: ' . \count($repoIdsToRemove), ['user' => $user->getUsername()]);

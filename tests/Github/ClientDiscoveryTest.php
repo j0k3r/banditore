@@ -17,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ClientDiscoveryTest extends WebTestCase
 {
-    public function testUseApplicationDefaultClient()
+    public function testUseApplicationDefaultClient(): void
     {
         $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
             ->disableOriginalConstructor()
@@ -25,7 +25,7 @@ class ClientDiscoveryTest extends WebTestCase
 
         $responses = new MockHandler([
             // first rate_limit, it'll be ok because remaining > 50
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_APP + 1]]])),
+            new Response(200, ['Content-Type' => 'application/json'], (string) json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_APP + 1]]])),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -60,7 +60,7 @@ class ClientDiscoveryTest extends WebTestCase
         $this->assertSame('RateLimit ok (' . (ClientDiscovery::THRESHOLD_RATE_REMAIN_APP + 1) . ') with default application', $records[0]['message']);
     }
 
-    public function testUseUserToken()
+    public function testUseUserToken(): void
     {
         $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
             ->disableOriginalConstructor()
@@ -83,11 +83,11 @@ class ClientDiscoveryTest extends WebTestCase
 
         $responses = new MockHandler([
             // first rate_limit, it won't be ok because remaining < 50
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_APP - 40]]])),
+            new Response(200, ['Content-Type' => 'application/json'], (string) json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_APP - 40]]])),
             // second rate_limit, it won't be ok because remaining < 50
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_USER - 20]]])),
+            new Response(200, ['Content-Type' => 'application/json'], (string) json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_USER - 20]]])),
             // third rate_limit, it'll' be ok because remaining > 50
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_USER + 150]]])),
+            new Response(200, ['Content-Type' => 'application/json'], (string) json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_USER + 150]]])),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -122,7 +122,7 @@ class ClientDiscoveryTest extends WebTestCase
         $this->assertSame('RateLimit ok (' . (ClientDiscovery::THRESHOLD_RATE_REMAIN_USER + 150) . ') with user: lion', $records[0]['message']);
     }
 
-    public function testNoTokenAvailable()
+    public function testNoTokenAvailable(): void
     {
         $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
             ->disableOriginalConstructor()
@@ -140,9 +140,9 @@ class ClientDiscoveryTest extends WebTestCase
 
         $responses = new MockHandler([
             // first rate_limit, it won't be ok because remaining < 50
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_APP - 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], (string) json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_APP - 10]]])),
             // second rate_limit, it won't be ok because remaining < 50
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_APP - 20]]])),
+            new Response(200, ['Content-Type' => 'application/json'], (string) json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_APP - 20]]])),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -178,7 +178,7 @@ class ClientDiscoveryTest extends WebTestCase
         $this->assertSame('No way to authenticate a client with enough rate limit remaining :(', $records[0]['message']);
     }
 
-    public function testOneCallFail()
+    public function testOneCallFail(): void
     {
         $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
             ->disableOriginalConstructor()
@@ -196,9 +196,9 @@ class ClientDiscoveryTest extends WebTestCase
 
         $responses = new MockHandler([
             // first rate_limit request fail (Github booboo)
-            new Response(400, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_USER + 100]]])),
+            new Response(400, ['Content-Type' => 'application/json'], (string) json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_USER + 100]]])),
             // second rate_limit, it'll be ok because remaining > 50
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_USER + 100]]])),
+            new Response(200, ['Content-Type' => 'application/json'], (string) json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_USER + 100]]])),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -237,22 +237,21 @@ class ClientDiscoveryTest extends WebTestCase
     /**
      * Using only mocks for request.
      */
-    public function testFunctionnal()
+    public function testFunctionnal(): void
     {
         $client = static::createClient();
-        $container = $client->getContainer();
 
         try {
-            $container->get('snc_redis.guzzle_cache.test')->connect();
+            self::$container->get('snc_redis.guzzle_cache.test')->connect();
         } catch (\Exception $e) {
             $this->markTestSkipped('Redis is not installed/activated');
         }
 
         $responses = new MockHandler([
             // first rate_limit request fail (Github booboo)
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_APP - 10]]])),
+            new Response(200, ['Content-Type' => 'application/json'], (string) json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_APP - 10]]])),
             // second rate_limit, it'll be ok because remaining > 50
-            new Response(200, ['Content-Type' => 'application/json'], json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_USER + 100]]])),
+            new Response(200, ['Content-Type' => 'application/json'], (string) json_encode(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => ClientDiscovery::THRESHOLD_RATE_REMAIN_USER + 100]]])),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -264,7 +263,7 @@ class ClientDiscoveryTest extends WebTestCase
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
-        $disco = $container->get('banditore.github.client_discovery.test');
+        $disco = self::$container->get('banditore.github.client_discovery.test');
         $disco->setGithubClient($githubClient);
 
         $resClient = $disco->find();

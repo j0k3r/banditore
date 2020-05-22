@@ -7,7 +7,7 @@ use App\Rss\Generator;
 
 class GeneratorTest extends \PHPUnit\Framework\TestCase
 {
-    public function test()
+    public function test(): void
     {
         $user = new User();
         $user->setId(123);

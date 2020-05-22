@@ -6,7 +6,7 @@ use App\Webfeeds\Webfeeds;
 
 class WebfeedsTest extends \PHPUnit\Framework\TestCase
 {
-    public function test()
+    public function test(): void
     {
         $webfeeds = new Webfeeds();
         $webfeeds->setLogo('https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png')

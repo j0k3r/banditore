@@ -11,7 +11,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class SyncStarredReposCommandTest extends WebTestCase
 {
-    public function testCommandSyncAllUsersWithoutQueue()
+    public function testCommandSyncAllUsersWithoutQueue(): void
     {
         $client = static::createClient();
 
@@ -29,7 +29,7 @@ class SyncStarredReposCommandTest extends WebTestCase
         $syncUser->expects($this->once())
             ->method('process')
             ->with(
-                new Message(json_encode(['user_id' => 123])),
+                new Message((string) json_encode(['user_id' => 123])),
                 []
             );
 
@@ -51,7 +51,7 @@ class SyncStarredReposCommandTest extends WebTestCase
         $this->assertStringContainsString('Sync user 123 …', $tester->getDisplay());
     }
 
-    public function testCommandSyncAllUsersWithQueue()
+    public function testCommandSyncAllUsersWithQueue(): void
     {
         $client = static::createClient();
 
@@ -63,7 +63,7 @@ class SyncStarredReposCommandTest extends WebTestCase
             ->method('publish')
             ->with(
                 'banditore.sync_starred_repos.publisher',
-                new Message(json_encode(['user_id' => 123]))
+                new Message((string) json_encode(['user_id' => 123]))
             );
 
         $syncUser = $this->getMockBuilder('App\Consumer\SyncStarredRepos')
@@ -92,7 +92,7 @@ class SyncStarredReposCommandTest extends WebTestCase
         $this->assertStringContainsString('Sync user 123 …', $tester->getDisplay());
     }
 
-    public function testCommandSyncAllUsersWithQueueFull()
+    public function testCommandSyncAllUsersWithQueueFull(): void
     {
         $client = static::createClient();
 
@@ -129,7 +129,7 @@ class SyncStarredReposCommandTest extends WebTestCase
         $this->assertStringContainsString('Current queue as too much messages (10), skipping.', $tester->getDisplay());
     }
 
-    public function testCommandSyncOneUserById()
+    public function testCommandSyncOneUserById(): void
     {
         $client = static::createClient();
 
@@ -141,7 +141,7 @@ class SyncStarredReposCommandTest extends WebTestCase
             ->method('publish')
             ->with(
                 'banditore.sync_starred_repos.publisher',
-                new Message(json_encode(['user_id' => 123]))
+                new Message((string) json_encode(['user_id' => 123]))
             );
 
         $syncUser = $this->getMockBuilder('App\Consumer\SyncStarredRepos')
@@ -172,7 +172,7 @@ class SyncStarredReposCommandTest extends WebTestCase
         $this->assertStringContainsString('User synced: 1', $tester->getDisplay());
     }
 
-    public function testCommandSyncOneUserByUsername()
+    public function testCommandSyncOneUserByUsername(): void
     {
         $client = static::createClient();
 
@@ -190,7 +190,7 @@ class SyncStarredReposCommandTest extends WebTestCase
         $syncUser->expects($this->once())
             ->method('process')
             ->with(
-                new Message(json_encode(['user_id' => 123])),
+                new Message((string) json_encode(['user_id' => 123])),
                 []
             );
 
@@ -214,7 +214,7 @@ class SyncStarredReposCommandTest extends WebTestCase
         $this->assertStringContainsString('User synced: 1', $tester->getDisplay());
     }
 
-    public function testCommandSyncOneUserNotFound()
+    public function testCommandSyncOneUserNotFound(): void
     {
         $client = static::createClient();
 
@@ -251,7 +251,7 @@ class SyncStarredReposCommandTest extends WebTestCase
         $this->assertStringContainsString('No users found', $tester->getDisplay());
     }
 
-    private function getAmqpMessage($totalMessage = 0)
+    private function getAmqpMessage(int $totalMessage = 0): \Swarrot\SwarrotBundle\Broker\AmqpLibFactory
     {
         $message = new AMQPMessage();
         $message->delivery_info = [

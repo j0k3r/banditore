@@ -8,7 +8,7 @@ use MarcW\RssWriter\RssWriter;
 
 class WebfeedsWriterTest extends \PHPUnit\Framework\TestCase
 {
-    public function test()
+    public function test(): void
     {
         $writer = new WebfeedsWriter();
         $rssWriter = new RssWriter();

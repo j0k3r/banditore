@@ -20,7 +20,13 @@ trait RateLimitTrait
             /** @var \Github\Api\RateLimit */
             $rateLimit = $client->api('rate_limit');
 
-            return $rateLimit->getResource('core')->getRemaining();
+            $rateLimitResource = $rateLimit->getResource('core');
+
+            if (false === $rateLimitResource) {
+                throw new \Exception('Unable to retrieve "core" resource from RateLimitTrait');
+            }
+
+            return $rateLimitResource->getRemaining();
         } catch (HttpException $e) {
             $logger->error('RateLimit call goes bad.', ['exception' => $e]);
 
