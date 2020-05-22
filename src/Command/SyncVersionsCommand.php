@@ -126,7 +126,7 @@ class SyncVersionsCommand extends Command
         }
 
         if ($input->getOption('repo_name')) {
-            $repo = $this->repoRepository->findOneByFullName($input->getOption('repo_name'));
+            $repo = $this->repoRepository->findOneByFullName((string) $input->getOption('repo_name'));
 
             if ($repo) {
                 return [$repo->getId()];

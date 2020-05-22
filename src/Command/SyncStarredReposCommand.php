@@ -125,7 +125,7 @@ class SyncStarredReposCommand extends Command
         }
 
         if ($input->getOption('username')) {
-            $user = $this->userRepository->findOneByUsername($input->getOption('username'));
+            $user = $this->userRepository->findOneByUsername((string) $input->getOption('username'));
 
             if ($user) {
                 return [$user->getId()];

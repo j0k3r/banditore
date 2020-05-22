@@ -126,7 +126,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
             ->willReturn($routes)
         ;
 
-        $sc = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\Container')->setMethods(['get'])->getMock();
+        $sc = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\Container')->onlyMethods(['get'])->getMock();
 
         $sc
             ->expects($this->any())
