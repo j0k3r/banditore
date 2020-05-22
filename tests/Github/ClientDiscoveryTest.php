@@ -17,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ClientDiscoveryTest extends WebTestCase
 {
-    public function testUseApplicationDefaultClient()
+    public function testUseApplicationDefaultClient(): void
     {
         $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
             ->disableOriginalConstructor()
@@ -60,7 +60,7 @@ class ClientDiscoveryTest extends WebTestCase
         $this->assertSame('RateLimit ok (' . (ClientDiscovery::THRESHOLD_RATE_REMAIN_APP + 1) . ') with default application', $records[0]['message']);
     }
 
-    public function testUseUserToken()
+    public function testUseUserToken(): void
     {
         $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
             ->disableOriginalConstructor()
@@ -122,7 +122,7 @@ class ClientDiscoveryTest extends WebTestCase
         $this->assertSame('RateLimit ok (' . (ClientDiscovery::THRESHOLD_RATE_REMAIN_USER + 150) . ') with user: lion', $records[0]['message']);
     }
 
-    public function testNoTokenAvailable()
+    public function testNoTokenAvailable(): void
     {
         $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
             ->disableOriginalConstructor()
@@ -178,7 +178,7 @@ class ClientDiscoveryTest extends WebTestCase
         $this->assertSame('No way to authenticate a client with enough rate limit remaining :(', $records[0]['message']);
     }
 
-    public function testOneCallFail()
+    public function testOneCallFail(): void
     {
         $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
             ->disableOriginalConstructor()
@@ -237,7 +237,7 @@ class ClientDiscoveryTest extends WebTestCase
     /**
      * Using only mocks for request.
      */
-    public function testFunctionnal()
+    public function testFunctionnal(): void
     {
         $client = static::createClient();
 

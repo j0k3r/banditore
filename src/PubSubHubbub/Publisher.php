@@ -12,9 +12,13 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class Publisher
 {
+    /** @var string */
     protected $hub;
+    /** @var RouterInterface */
     protected $router;
+    /** @var Client */
     protected $client;
+    /** @var UserRepository */
     protected $userRepository;
 
     /**

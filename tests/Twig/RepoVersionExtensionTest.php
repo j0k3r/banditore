@@ -6,7 +6,7 @@ use App\Twig\RepoVersionExtension;
 
 class RepoVersionExtensionTest extends \PHPUnit\Framework\TestCase
 {
-    public function test()
+    public function test(): void
     {
         $ext = new RepoVersionExtension();
 
@@ -20,7 +20,7 @@ class RepoVersionExtensionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://github.com/test/test/releases/v1.0.0', $ext->linkToVersion(['fullName' => 'test/test', 'tagName' => 'v1.0.0']));
     }
 
-    public function testEncodedTagName()
+    public function testEncodedTagName(): void
     {
         $ext = new RepoVersionExtension();
 

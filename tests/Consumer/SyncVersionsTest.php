@@ -20,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class SyncVersionsTest extends WebTestCase
 {
-    public function testProcessNoRepo()
+    public function testProcessNoRepo(): void
     {
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -62,7 +62,7 @@ class SyncVersionsTest extends WebTestCase
         $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
     }
 
-    public function getWorkingResponses()
+    public function getWorkingResponses(): MockHandler
     {
         return new MockHandler([
             // rate_limit
@@ -191,7 +191,7 @@ class SyncVersionsTest extends WebTestCase
         ]);
     }
 
-    public function testProcessSuccessfulMessage()
+    public function testProcessSuccessfulMessage(): void
     {
         $uow = $this->getMockBuilder('Doctrine\ORM\UnitOfWork')
             ->disableOriginalConstructor()
@@ -289,7 +289,7 @@ class SyncVersionsTest extends WebTestCase
     /**
      * The call to repo/tags will return a bad response.
      */
-    public function testProcessRepoTagFailed()
+    public function testProcessRepoTagFailed(): void
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -373,7 +373,7 @@ class SyncVersionsTest extends WebTestCase
     /**
      * The call to repo/tags will return a "404" then the repo will be flag as removed.
      */
-    public function testProcessRepoNotFound()
+    public function testProcessRepoNotFound(): void
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -459,7 +459,7 @@ class SyncVersionsTest extends WebTestCase
     /**
      * Not enough calls remaining.
      */
-    public function testProcessCallsRemaingLow()
+    public function testProcessCallsRemaingLow(): void
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -537,7 +537,7 @@ class SyncVersionsTest extends WebTestCase
     /**
      * The call to markdown will return a bad response.
      */
-    public function testProcessMarkdownFailed()
+    public function testProcessMarkdownFailed(): void
     {
         $uow = $this->getMockBuilder('Doctrine\ORM\UnitOfWork')
             ->disableOriginalConstructor()
@@ -665,7 +665,7 @@ class SyncVersionsTest extends WebTestCase
     /**
      * No tag found for that repo.
      */
-    public function testProcessNoTagFound()
+    public function testProcessNoTagFound(): void
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -749,7 +749,7 @@ class SyncVersionsTest extends WebTestCase
     /**
      * Generate an unexpected error (like from MySQL).
      */
-    public function testProcessUnexpectedError()
+    public function testProcessUnexpectedError(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('booboo');
@@ -850,7 +850,7 @@ class SyncVersionsTest extends WebTestCase
     /**
      * The call to git/refs/tags will return a bad response.
      */
-    public function testProcessGitRefTagFailed()
+    public function testProcessGitRefTagFailed(): void
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -941,7 +941,7 @@ class SyncVersionsTest extends WebTestCase
         $this->assertStringContainsString('(git/refs/tags) <error>', $records[2]['message']);
     }
 
-    public function testProcessWithBadClient()
+    public function testProcessWithBadClient(): void
     {
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -990,7 +990,7 @@ class SyncVersionsTest extends WebTestCase
      *
      * @group only
      */
-    public function testFunctionalConsumer()
+    public function testFunctionalConsumer(): void
     {
         $clientHandler = HandlerStack::create($this->getWorkingResponses());
         $guzzleClient = new Client([
@@ -1033,7 +1033,7 @@ class SyncVersionsTest extends WebTestCase
         $this->assertSame('2.0.1', $versions[3]->getTagName(), 'Repo 666 has 4 version. Fourth one is 2.0.1');
     }
 
-    public function testFunctionalConsumerWithTagCaseInsensitive()
+    public function testFunctionalConsumerWithTagCaseInsensitive(): void
     {
         $responses = new MockHandler([
             // rate_limit
@@ -1119,7 +1119,7 @@ class SyncVersionsTest extends WebTestCase
         $this->assertSame('<p>This is the first release after our major push.</p>', $versions[1]->getBody(), 'Version V1.1.0 body is ok');
     }
 
-    private function getOKResponse($body)
+    private function getOKResponse(array $body): Response
     {
         return new Response(
             200,

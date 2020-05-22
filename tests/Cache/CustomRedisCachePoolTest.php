@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class CustomRedisCachePoolTest extends WebTestCase
 {
-    public function testResponseWithEmptyBody()
+    public function testResponseWithEmptyBody(): void
     {
         $redisStatus = new Status('OK');
         $cache = $this->getMockBuilder('Predis\ClientInterface')
@@ -37,7 +37,7 @@ class CustomRedisCachePoolTest extends WebTestCase
         $cachePool->save($item);
     }
 
-    public function testResponseWith404()
+    public function testResponseWith404(): void
     {
         $redisStatus = new Status('OK');
         $cache = $this->getMockBuilder('Predis\ClientInterface')
@@ -58,7 +58,7 @@ class CustomRedisCachePoolTest extends WebTestCase
         $cachePool->save($item);
     }
 
-    public function testResponseWithRelease()
+    public function testResponseWithRelease(): void
     {
         $cache = $this->getMockBuilder('Predis\ClientInterface')
             ->disableOriginalConstructor()
@@ -89,7 +89,7 @@ class CustomRedisCachePoolTest extends WebTestCase
         $cachePool->save($item);
     }
 
-    public function testResponseWithRefTags()
+    public function testResponseWithRefTags(): void
     {
         $redisStatus = new Status('OK');
         $cache = $this->getMockBuilder('Predis\ClientInterface')
@@ -134,7 +134,7 @@ class CustomRedisCachePoolTest extends WebTestCase
         $cachePool->save($item);
     }
 
-    public function testResponseWithTag()
+    public function testResponseWithTag(): void
     {
         $redisStatus = new Status('OK');
         $cache = $this->getMockBuilder('Predis\ClientInterface')
@@ -169,7 +169,7 @@ class CustomRedisCachePoolTest extends WebTestCase
         $cachePool->save($item);
     }
 
-    public function testResponseWithStarredRepos()
+    public function testResponseWithStarredRepos(): void
     {
         $redisStatus = new Status('OK');
         $cache = $this->getMockBuilder('Predis\ClientInterface')

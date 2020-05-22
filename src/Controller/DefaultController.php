@@ -15,7 +15,9 @@ use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
 use MarcW\RssWriter\RssWriter;
 use Predis\Client as RedisClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -25,7 +27,7 @@ class DefaultController extends AbstractController
     private $diffInterval;
     private $redis;
 
-    public function __construct(VersionRepository $repoVersion, $diffInterval, RedisClient $redis)
+    public function __construct(VersionRepository $repoVersion, int $diffInterval, RedisClient $redis)
     {
         $this->repoVersion = $repoVersion;
         $this->diffInterval = $diffInterval;
@@ -35,7 +37,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/", name="homepage")
      */
-    public function indexAction()
+    public function indexAction(): Response
     {
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('dashboard'));
@@ -47,7 +49,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/status", name="status")
      */
-    public function statusAction()
+    public function statusAction(): Response
     {
         $latest = $this->repoVersion->findLatest();
 
@@ -67,7 +69,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/dashboard", name="dashboard")
      */
-    public function dashboardAction(Request $request, Paginator $paginator)
+    public function dashboardAction(Request $request, Paginator $paginator): Response
     {
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('homepage'));
@@ -111,7 +113,7 @@ class DefaultController extends AbstractController
      *
      * @Route("/callback", name="github_callback")
      */
-    public function githubCallbackAction()
+    public function githubCallbackAction(): RedirectResponse
     {
         return $this->redirect($this->generateUrl('github_connect'));
     }
@@ -121,7 +123,7 @@ class DefaultController extends AbstractController
      *
      * @Route("/connect", name="github_connect")
      */
-    public function connectAction(ClientRegistry $oauth)
+    public function connectAction(ClientRegistry $oauth): RedirectResponse
     {
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('dashboard'));
@@ -135,7 +137,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/{uuid}.atom", name="rss_user")
      */
-    public function rssAction(User $user, Generator $rssGenerator, RssWriter $rssWriter)
+    public function rssAction(User $user, Generator $rssGenerator, RssWriter $rssWriter): RssStreamedResponse
     {
         $channel = $rssGenerator->generate(
             $user,
@@ -151,7 +153,7 @@ class DefaultController extends AbstractController
      *
      * @Route("/stats", name="stats")
      */
-    public function statsAction(RepoRepository $repoRepo, StarRepository $repoStar, UserRepository $repoUser)
+    public function statsAction(RepoRepository $repoRepo, StarRepository $repoStar, UserRepository $repoUser): Response
     {
         $nbRepos = $repoRepo->countTotal();
         $nbReleases = $this->repoVersion->countTotal();

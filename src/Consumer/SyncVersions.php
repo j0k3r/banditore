@@ -91,7 +91,7 @@ class SyncVersions implements ProcessorInterface
      *
      * @param Repo $repo Repo to work on
      */
-    private function doSyncVersions(Repo $repo)
+    private function doSyncVersions(Repo $repo): ?int
     {
         $newVersion = 0;
 
@@ -123,7 +123,7 @@ class SyncVersions implements ProcessorInterface
                 $em->persist($repo);
             }
 
-            return;
+            return null;
         }
 
         if (empty($tags)) {
@@ -139,7 +139,7 @@ class SyncVersions implements ProcessorInterface
         } catch (\Exception $e) {
             $this->logger->warning('(git/refs/tags) <error>' . $e->getMessage() . '</error>');
 
-            return;
+            return null;
         }
 
         foreach ($tags as $tag) {
@@ -235,12 +235,8 @@ class SyncVersions implements ProcessorInterface
 
     /**
      * Remove PGP signature from commit / tag.
-     *
-     * @param string $message
-     *
-     * @return string
      */
-    private function removePgpSignature($message)
+    private function removePgpSignature(string $message): string
     {
         if ($pos = stripos($message, '-----BEGIN PGP SIGNATURE-----')) {
             return trim(substr($message, 0, $pos));

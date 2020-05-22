@@ -28,7 +28,7 @@ class WebfeedsWriter implements WriterRegistererInterface
         ];
     }
 
-    public function write(RssWriter $rssWriter, Webfeeds $extension)
+    public function write(RssWriter $rssWriter, Webfeeds $extension): void
     {
         $writer = $rssWriter->getXmlWriter();
 

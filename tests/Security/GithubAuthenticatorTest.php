@@ -16,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class GithubAuthenticatorTest extends WebTestCase
 {
-    public function testCallbackWithExistingUser()
+    public function testCallbackWithExistingUser(): void
     {
         $client = static::createClient();
 
@@ -80,7 +80,7 @@ class GithubAuthenticatorTest extends WebTestCase
         $this->assertSame('Successfully logged in!', $message[0]);
     }
 
-    public function testCallbackWithNewUser()
+    public function testCallbackWithNewUser(): void
     {
         $client = static::createClient();
 

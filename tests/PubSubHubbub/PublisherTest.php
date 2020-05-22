@@ -13,6 +13,7 @@ use Symfony\Component\Routing\RouteCollection;
 
 class PublisherTest extends \PHPUnit\Framework\TestCase
 {
+    /** @var Router */
     private $router;
 
     public function setUp(): void
@@ -25,7 +26,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
         $this->router = new Router($sc, 'rss_user');
     }
 
-    public function testNoHubDefined()
+    public function testNoHubDefined(): void
     {
         $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
             ->disableOriginalConstructor()
@@ -41,7 +42,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($res);
     }
 
-    public function testBadResponse()
+    public function testBadResponse(): void
     {
         $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
             ->disableOriginalConstructor()
@@ -65,7 +66,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($res);
     }
 
-    public function testGoodResponse()
+    public function testGoodResponse(): void
     {
         $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
             ->disableOriginalConstructor()
@@ -88,7 +89,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($res);
     }
 
-    public function testUrlGeneration()
+    public function testUrlGeneration(): void
     {
         $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
             ->disableOriginalConstructor()
@@ -114,10 +115,8 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @see \Symfony\Bundle\FrameworkBundle\Tests\Routing\RouterTest
-     *
-     * @return \Symfony\Component\DependencyInjection\Container
      */
-    private function getServiceContainer(RouteCollection $routes)
+    private function getServiceContainer(RouteCollection $routes): \Symfony\Component\DependencyInjection\Container
     {
         $loader = $this->getMockBuilder('Symfony\Component\Config\Loader\LoaderInterface')->getMock();
 

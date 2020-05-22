@@ -66,6 +66,7 @@ class GithubAuthenticator extends SocialAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
         // failure, what failure?
+        return null;
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)

@@ -20,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class SyncStarredReposTest extends WebTestCase
 {
-    public function testProcessNoUser()
+    public function testProcessNoUser(): void
     {
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -71,7 +71,7 @@ class SyncStarredReposTest extends WebTestCase
         $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
     }
 
-    public function testProcessSuccessfulMessage()
+    public function testProcessSuccessfulMessage(): void
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -187,7 +187,7 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame('[10] Synced repos: 1', $records[4]['message']);
     }
 
-    public function testUserRemovedFromGitHub()
+    public function testUserRemovedFromGitHub(): void
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -273,7 +273,7 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertNotNull($user->getRemovedAt());
     }
 
-    public function testProcessUnexpectedError()
+    public function testProcessUnexpectedError(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('booboo');
@@ -373,7 +373,7 @@ class SyncStarredReposTest extends WebTestCase
     /**
      * Everything will goes fine (like testProcessSuccessfulMessage) and we won't remove old stars (no change detected in starred repos).
      */
-    public function testProcessSuccessfulMessageNoStarToRemove()
+    public function testProcessSuccessfulMessageNoStarToRemove(): void
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -486,7 +486,7 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame('[10] Synced repos: 1', $records[3]['message']);
     }
 
-    public function testProcessWithBadClient()
+    public function testProcessWithBadClient(): void
     {
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -542,7 +542,7 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame('No client provided', $records[0]['message']);
     }
 
-    public function testProcessWithRateLimitReached()
+    public function testProcessWithRateLimitReached(): void
     {
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -625,7 +625,7 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame('RateLimit reached, stopping.', $records[2]['message']);
     }
 
-    public function testFunctionalConsumer()
+    public function testFunctionalConsumer(): void
     {
         $responses = new MockHandler([
             // /rate_limit
@@ -693,7 +693,7 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame(777, $stars[1], 'User 123 has "j0k3r/banditore" starred repo');
     }
 
-    private function getOKResponse($body)
+    private function getOKResponse(array $body): Response
     {
         return new Response(
             200,
@@ -702,7 +702,7 @@ class SyncStarredReposTest extends WebTestCase
         );
     }
 
-    private function getMockClient($responses)
+    private function getMockClient(MockHandler $responses): GithubClient
     {
         $clientHandler = HandlerStack::create($responses);
 

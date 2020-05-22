@@ -36,7 +36,7 @@ class SyncStarredReposCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('banditore:sync:starred-repos')
@@ -117,10 +117,8 @@ class SyncStarredReposCommand extends Command
 
     /**
      * Retrieve users to work on.
-     *
-     * @return array
      */
-    private function retrieveUsers(InputInterface $input)
+    private function retrieveUsers(InputInterface $input): array
     {
         if ($input->getOption('id')) {
             return [$input->getOption('id')];

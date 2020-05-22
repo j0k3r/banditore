@@ -17,16 +17,16 @@ class RepoVersionExtension extends AbstractExtension
         ];
     }
 
-    public function linkToVersion(array $repo)
+    public function linkToVersion(array $repo): ?string
     {
         if (!isset($repo['fullName']) || !isset($repo['tagName'])) {
-            return;
+            return null;
         }
 
         return 'https://github.com/' . $repo['fullName'] . '/releases/' . urlencode($repo['tagName']);
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'repo_version_extension';
     }

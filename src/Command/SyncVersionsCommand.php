@@ -37,7 +37,7 @@ class SyncVersionsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('banditore:sync:versions')
@@ -118,10 +118,8 @@ class SyncVersionsCommand extends Command
 
     /**
      * Retrieve repos to work on.
-     *
-     * @return array
      */
-    private function retrieveRepos(InputInterface $input)
+    private function retrieveRepos(InputInterface $input): array
     {
         if ($input->getOption('repo_id')) {
             return [$input->getOption('repo_id')];

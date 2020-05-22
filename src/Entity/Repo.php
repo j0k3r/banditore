@@ -322,7 +322,7 @@ class Repo
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function timestamps()
+    public function timestamps(): void
     {
         if (null === $this->createdAt) {
             $this->createdAt = new \DateTime();
@@ -330,7 +330,7 @@ class Repo
         $this->updatedAt = new \DateTime();
     }
 
-    public function hydrateFromGithub(array $data)
+    public function hydrateFromGithub(array $data): void
     {
         $this->setId($data['id']);
         $this->setName($data['name']);

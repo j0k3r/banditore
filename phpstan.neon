@@ -16,6 +16,10 @@ parameters:
         # these are already checked in the class
         - '#Cannot call method api\(\) on Github\\Client\|null#'
         - '#expects Github\\Client, Github\\Client\|null given#'
+        # because we are using $input->getOption()
+        - '#Parameter \#1(.*)expects string, array\<string\>\|bool\|string\|null given#'
+        - '#Cannot call method getAttribute\(\) on DOMNode\|null#'
 
     inferPrivatePropertyTypeFromConstructor: true
     reportUnmatchedIgnoredErrors: false
+    checkMissingIterableValueType: false
