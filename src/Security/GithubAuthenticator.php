@@ -69,7 +69,7 @@ class GithubAuthenticator extends SocialAuthenticator
         return null;
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
         /** @var User */
         $user = $token->getUser();

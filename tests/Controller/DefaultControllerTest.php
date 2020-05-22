@@ -22,8 +22,8 @@ class DefaultControllerTest extends WebTestCase
     {
         $crawler = $this->client->request('GET', '/');
 
-        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
-        $this->assertStringContainsString('Bandito.re', $crawler->filter('a.pure-menu-heading')->text());
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('a.pure-menu-heading', 'Bandito.re');
     }
 
     public function testIndexLoggedIn(): void
@@ -34,10 +34,7 @@ class DefaultControllerTest extends WebTestCase
         $this->logIn($user);
         $this->client->request('GET', '/');
 
-        /** @var \Symfony\Component\HttpFoundation\RedirectResponse */
-        $response = $this->client->getResponse();
-        $this->assertSame(302, $response->getStatusCode());
-        $this->assertStringContainsString('dashboard', $response->getTargetUrl());
+        $this->assertResponseRedirects('/dashboard', 302);
     }
 
     public function testConnect(): void
@@ -58,19 +55,14 @@ class DefaultControllerTest extends WebTestCase
         $this->logIn($user);
         $this->client->request('GET', '/connect');
 
-        /** @var \Symfony\Component\HttpFoundation\RedirectResponse */
-        $response = $this->client->getResponse();
-        $this->assertSame(302, $response->getStatusCode());
-        $this->assertStringContainsString('dashboard', $response->getTargetUrl());
+        $this->assertResponseRedirects('/dashboard', 302);
     }
 
     public function testDashboardNotLoggedIn(): void
     {
         $this->client->request('GET', '/dashboard');
 
-        /** @var \Symfony\Component\HttpFoundation\RedirectResponse */
-        $response = $this->client->getResponse();
-        $this->assertSame(302, $response->getStatusCode());
+        $this->assertResponseRedirects('/', 302);
     }
 
     public function testDashboard(): void
@@ -81,7 +73,7 @@ class DefaultControllerTest extends WebTestCase
         $this->logIn($user);
         $crawler = $this->client->request('GET', '/dashboard');
 
-        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseIsSuccessful();
 
         $menu = $crawler->filter('.menu-wrapper')->text();
         $this->assertStringContainsString('View it on GitHub', $menu, 'Link to GitHub is here');
@@ -103,10 +95,7 @@ class DefaultControllerTest extends WebTestCase
         $this->logIn($user);
         $crawler = $this->client->request('GET', '/dashboard?page=20000');
 
-        /** @var \Symfony\Component\HttpFoundation\RedirectResponse */
-        $response = $this->client->getResponse();
-        $this->assertSame(302, $response->getStatusCode());
-        $this->assertStringContainsString('dashboard', $response->getTargetUrl());
+        $this->assertResponseRedirects('/dashboard', 302);
     }
 
     public function testDashboardBadPage(): void
@@ -115,9 +104,9 @@ class DefaultControllerTest extends WebTestCase
         $user = self::$container->get('banditore.repository.user.test')->find(123);
 
         $this->logIn($user);
-        $crawler = $this->client->request('GET', '/dashboard?page=dsdsds');
+        $this->client->request('GET', '/dashboard?page=dsdsds');
 
-        $this->assertSame(404, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseStatusCodeSame(404);
     }
 
     public function testRss(): void
@@ -126,11 +115,12 @@ class DefaultControllerTest extends WebTestCase
         $user = self::$container->get('banditore.repository.user.test')->find(123);
         $crawler = $this->client->request('GET', '/' . $user->getUuid() . '.atom');
 
-        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $this->assertInstanceOf(RssStreamedResponse::class, $this->client->getResponse());
 
-        $this->assertSame('New releases from starred repo of admin', $crawler->filter('channel>title')->text());
-        $this->assertSame('Here are all the new releases from all repos starred by admin', $crawler->filter('channel>description')->text());
+        $this->assertSelectorTextContains('channel>title', 'New releases from starred repo of admin');
+        $this->assertSelectorTextContains('channel>description', 'Here are all the new releases from all repos starred by admin');
+
         $this->assertSame('http://0.0.0.0/avatar.jpg', $crawler->filterXPath('//webfeeds:icon')->text());
         $this->assertSame('10556B', $crawler->filterXPath('//webfeeds:accentColor')->text());
 
@@ -146,7 +136,7 @@ class DefaultControllerTest extends WebTestCase
     {
         $crawler = $this->client->request('GET', '/stats');
 
-        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseIsSuccessful();
     }
 
     public function testStatus(): void
