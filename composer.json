@@ -65,7 +65,7 @@
         "symfony/debug-bundle": "^4.4",
         "symfony/maker-bundle": "^1.15",
         "symfony/phpunit-bridge": "~5.0",
-        "symfony/web-profiler-bundle": "^4.4"
+        "symfony/web-profiler-bundle": "^5.0"
     },
     "conflict": {
         "symfony/symfony": "*"
