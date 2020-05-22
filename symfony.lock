@@ -71,9 +71,6 @@
             "src/Repository/.gitignore"
         ]
     },
-    "doctrine/doctrine-cache-bundle": {
-        "version": "1.4.0"
-    },
     "doctrine/doctrine-fixtures-bundle": {
         "version": "3.0",
         "recipe": {
@@ -220,7 +217,7 @@
         "version": "v9.99.99"
     },
     "php": {
-        "version": "7.2.5"
+        "version": "7.2.9"
     },
     "php-amqplib/php-amqplib": {
         "version": "v2.11.3"
@@ -285,6 +282,9 @@
     "psr/container": {
         "version": "1.0.0"
     },
+    "psr/event-dispatcher": {
+        "version": "1.0.0"
+    },
     "psr/http-client": {
         "version": "1.0.0"
     },
@@ -319,18 +319,6 @@
         },
         "files": [
             "config/packages/sensio_framework_extra.yaml"
-        ]
-    },
-    "sensiolabs/security-checker": {
-        "version": "4.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "4.0",
-            "ref": "160c9b600564faa1224e8f387d49ef13ceb8b793"
-        },
-        "files": [
-            "config/packages/security_checker.yaml"
         ]
     },
     "sentry/sdk": {
@@ -409,9 +397,6 @@
     "symfony/css-selector": {
         "version": "v5.0.8"
     },
-    "symfony/debug": {
-        "version": "v4.4.8"
-    },
     "symfony/debug-bundle": {
         "version": "4.1",
         "recipe": {
@@ -484,12 +469,6 @@
             "src/Controller/.gitignore",
             "src/Kernel.php"
         ]
-    },
-    "symfony/http-client": {
-        "version": "v4.4.8"
-    },
-    "symfony/http-client-contracts": {
-        "version": "v1.1.8"
     },
     "symfony/http-foundation": {
         "version": "v4.4.8"
