@@ -36,7 +36,7 @@
         "sentry/sentry-symfony": "~3.0",
         "snc/redis-bundle": "^3.2",
         "swarrot/swarrot-bundle": "^2.0",
-        "symfony/asset": "^4.4",
+        "symfony/asset": "^5.0",
         "symfony/dotenv": "^4.4",
         "symfony/flex": "^1.6",
         "symfony/form": "^4.4",
