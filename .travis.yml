@@ -8,6 +8,10 @@ services:
     - rabbitmq
     - redis
 
+env:
+    global:
+        - APP_ENV=test
+
 cache:
     apt: true
     directories:
