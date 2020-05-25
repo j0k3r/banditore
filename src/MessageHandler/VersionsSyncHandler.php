@@ -12,7 +12,6 @@ use App\Repository\VersionRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Github\Client;
 use Psr\Log\LoggerInterface;
-use Swarrot\Broker\Message;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 /**

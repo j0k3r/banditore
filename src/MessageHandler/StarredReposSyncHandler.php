@@ -14,7 +14,6 @@ use Doctrine\Persistence\ManagerRegistry;
 use Github\Client;
 use Predis\ClientInterface as RedisClientInterface;
 use Psr\Log\LoggerInterface;
-use Swarrot\Broker\Message;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 /**
