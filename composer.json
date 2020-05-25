@@ -26,7 +26,6 @@
         "laminas/laminas-code": "^3.4",
         "league/oauth2-github": "^2.0",
         "marcw/rss-writer": "^0.4",
-        "ocramius/proxy-manager": "^2.1",
         "odolbeau/rabbit-mq-admin-toolkit": "^5.0",
         "php-amqplib/php-amqplib": "^2.6",
         "php-http/guzzle6-adapter": "^2.0",
@@ -42,6 +41,7 @@
         "symfony/monolog-bundle": "^3.5",
         "symfony/orm-pack": "^1.0",
         "symfony/polyfill-apcu": "^1.0",
+        "symfony/proxy-manager-bridge": "^5.0",
         "symfony/security-bundle": "^5.0",
         "symfony/translation": "^5.0",
         "symfony/twig-pack": "^1.0",
@@ -100,7 +100,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": true,
-            "require": "5.0.*"
+            "require": "^5.0"
         }
     }
 }
