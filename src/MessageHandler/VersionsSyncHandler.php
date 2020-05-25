@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Consumer;
+namespace App\MessageHandler;
 
 use App\Entity\Repo;
 use App\Entity\Version;
 use App\Github\RateLimitTrait;
+use App\Message\VersionsSync;
 use App\PubSubHubbub\Publisher;
 use App\Repository\RepoRepository;
 use App\Repository\VersionRepository;
@@ -12,12 +13,12 @@ use Doctrine\Persistence\ManagerRegistry;
 use Github\Client;
 use Psr\Log\LoggerInterface;
 use Swarrot\Broker\Message;
-use Swarrot\Processor\ProcessorInterface;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 /**
  * Consumer message to sync user repo (usually happen after a successful login).
  */
-class SyncVersions implements ProcessorInterface
+class VersionsSyncHandler implements MessageHandlerInterface
 {
     use RateLimitTrait;
 
@@ -41,7 +42,7 @@ class SyncVersions implements ProcessorInterface
         $this->logger = $logger;
     }
 
-    public function process(Message $message, array $options): bool
+    public function __invoke(VersionsSync $message): bool
     {
         // in case no client with safe RateLimit were found
         if (null === $this->client) {
@@ -50,13 +51,13 @@ class SyncVersions implements ProcessorInterface
             return false;
         }
 
-        $data = json_decode((string) $message->getBody(), true);
+        $repoId = $message->getRepoId();
 
         /** @var Repo|null */
-        $repo = $this->repoRepository->find($data['repo_id']);
+        $repo = $this->repoRepository->find($repoId);
 
         if (null === $repo) {
-            $this->logger->error('Can not find repo', ['repo' => $data['repo_id']]);
+            $this->logger->error('Can not find repo', ['repo' => $repoId]);
 
             return false;
         }
@@ -78,7 +79,7 @@ class SyncVersions implements ProcessorInterface
 
         // notify pubsubhubbub for that repo
         if ($nbVersions > 0) {
-            $this->pubsubhubbub->pingHub([$data['repo_id']]);
+            $this->pubsubhubbub->pingHub([$repoId]);
         }
 
         $this->logger->notice('[' . $this->getRateLimits($this->client, $this->logger) . '] <comment>' . $nbVersions . '</comment> new versions for <info>' . $repo->getFullName() . '</info>');

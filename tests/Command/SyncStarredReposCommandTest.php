@@ -3,42 +3,40 @@
 namespace App\Tests\Command;
 
 use App\Command\SyncStarredReposCommand;
-use PhpAmqpLib\Message\AMQPMessage;
-use Swarrot\Broker\Message;
+use App\Message\StarredReposSync;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Messenger\Transport\AmqpExt\AmqpTransport;
 
 class SyncStarredReposCommandTest extends WebTestCase
 {
     public function testCommandSyncAllUsersWithoutQueue(): void
     {
         $client = static::createClient();
+        $message = new StarredReposSync(123);
 
-        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
+        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $publisher->expects($this->never())
-            ->method('publish');
+        $bus->expects($this->never())
+            ->method('dispatch');
 
-        $syncUser = $this->getMockBuilder('App\Consumer\SyncStarredRepos')
+        $syncRepo = $this->getMockBuilder('App\MessageHandler\StarredReposSyncHandler')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $syncUser->expects($this->once())
-            ->method('process')
-            ->with(
-                new Message((string) json_encode(['user_id' => 123])),
-                []
-            );
+        $syncRepo->expects($this->once())
+            ->method('__invoke')
+            ->with($message);
 
         $application = new Application($client->getKernel());
         $application->add(new SyncStarredReposCommand(
             self::$kernel->getContainer()->get('banditore.repository.user.test'),
-            $publisher,
-            $syncUser,
-            self::$kernel->getContainer()->get('swarrot.factory.default')
+            $syncRepo,
+            self::$kernel->getContainer()->get('messenger.transport.sync_starred_repos.test'),
+            $bus
         ));
 
         $command = $application->find('banditore:sync:starred-repos');
@@ -54,31 +52,30 @@ class SyncStarredReposCommandTest extends WebTestCase
     public function testCommandSyncAllUsersWithQueue(): void
     {
         $client = static::createClient();
+        $message = new StarredReposSync(123);
 
-        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
+        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $publisher->expects($this->once())
-            ->method('publish')
-            ->with(
-                'banditore.sync_starred_repos.publisher',
-                new Message((string) json_encode(['user_id' => 123]))
-            );
+        $bus->expects($this->once())
+            ->method('dispatch')
+            ->with($message)
+            ->willReturn(new \Symfony\Component\Messenger\Envelope($message));
 
-        $syncUser = $this->getMockBuilder('App\Consumer\SyncStarredRepos')
+        $syncRepo = $this->getMockBuilder('App\MessageHandler\StarredReposSyncHandler')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $syncUser->expects($this->never())
-            ->method('process');
+        $syncRepo->expects($this->never())
+            ->method('__invoke');
 
         $application = new Application($client->getKernel());
         $application->add(new SyncStarredReposCommand(
             self::$kernel->getContainer()->get('banditore.repository.user.test'),
-            $publisher,
-            $syncUser,
-            $this->getAmqpMessage(0)
+            $syncRepo,
+            $this->getTransportMessageCount(0),
+            $bus
         ));
 
         $command = $application->find('banditore:sync:starred-repos');
@@ -96,26 +93,26 @@ class SyncStarredReposCommandTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
+        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $publisher->expects($this->never())
-            ->method('publish');
+        $bus->expects($this->never())
+            ->method('dispatch');
 
-        $syncUser = $this->getMockBuilder('App\Consumer\SyncStarredRepos')
+        $syncRepo = $this->getMockBuilder('App\MessageHandler\StarredReposSyncHandler')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $syncUser->expects($this->never())
-            ->method('process');
+        $syncRepo->expects($this->never())
+            ->method('__invoke');
 
         $application = new Application($client->getKernel());
         $application->add(new SyncStarredReposCommand(
             self::$kernel->getContainer()->get('banditore.repository.user.test'),
-            $publisher,
-            $syncUser,
-            $this->getAmqpMessage(10)
+            $syncRepo,
+            $this->getTransportMessageCount(10),
+            $bus
         ));
 
         $command = $application->find('banditore:sync:starred-repos');
@@ -132,31 +129,30 @@ class SyncStarredReposCommandTest extends WebTestCase
     public function testCommandSyncOneUserById(): void
     {
         $client = static::createClient();
+        $message = new StarredReposSync(123);
 
-        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
+        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $publisher->expects($this->once())
-            ->method('publish')
-            ->with(
-                'banditore.sync_starred_repos.publisher',
-                new Message((string) json_encode(['user_id' => 123]))
-            );
+        $bus->expects($this->once())
+            ->method('dispatch')
+            ->with($message)
+            ->willReturn(new \Symfony\Component\Messenger\Envelope($message));
 
-        $syncUser = $this->getMockBuilder('App\Consumer\SyncStarredRepos')
+        $syncRepo = $this->getMockBuilder('App\MessageHandler\StarredReposSyncHandler')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $syncUser->expects($this->never())
-            ->method('process');
+        $syncRepo->expects($this->never())
+            ->method('__invoke');
 
         $application = new Application($client->getKernel());
         $application->add(new SyncStarredReposCommand(
             self::$kernel->getContainer()->get('banditore.repository.user.test'),
-            $publisher,
-            $syncUser,
-            $this->getAmqpMessage(0)
+            $syncRepo,
+            $this->getTransportMessageCount(0),
+            $bus
         ));
 
         $command = $application->find('banditore:sync:starred-repos');
@@ -176,30 +172,27 @@ class SyncStarredReposCommandTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
+        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $publisher->expects($this->never())
-            ->method('publish');
+        $bus->expects($this->never())
+            ->method('dispatch');
 
-        $syncUser = $this->getMockBuilder('App\Consumer\SyncStarredRepos')
+        $syncRepo = $this->getMockBuilder('App\MessageHandler\StarredReposSyncHandler')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $syncUser->expects($this->once())
-            ->method('process')
-            ->with(
-                new Message((string) json_encode(['user_id' => 123])),
-                []
-            );
+        $syncRepo->expects($this->once())
+            ->method('__invoke')
+            ->with(new StarredReposSync(123));
 
         $application = new Application($client->getKernel());
         $application->add(new SyncStarredReposCommand(
             self::$kernel->getContainer()->get('banditore.repository.user.test'),
-            $publisher,
-            $syncUser,
-            self::$kernel->getContainer()->get('swarrot.factory.default')
+            $syncRepo,
+            self::$kernel->getContainer()->get('messenger.transport.sync_starred_repos.test'),
+            $bus
         ));
 
         $command = $application->find('banditore:sync:starred-repos');
@@ -218,26 +211,26 @@ class SyncStarredReposCommandTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
+        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $publisher->expects($this->never())
-            ->method('publish');
+        $bus->expects($this->never())
+            ->method('dispatch');
 
-        $syncUser = $this->getMockBuilder('App\Consumer\SyncStarredRepos')
+        $syncRepo = $this->getMockBuilder('App\MessageHandler\StarredReposSyncHandler')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $syncUser->expects($this->never())
-            ->method('process');
+        $syncRepo->expects($this->never())
+            ->method('__invoke');
 
         $application = new Application($client->getKernel());
         $application->add(new SyncStarredReposCommand(
             self::$kernel->getContainer()->get('banditore.repository.user.test'),
-            $publisher,
-            $syncUser,
-            self::$kernel->getContainer()->get('swarrot.factory.default')
+            $syncRepo,
+            self::$kernel->getContainer()->get('messenger.transport.sync_starred_repos.test'),
+            $bus
         ));
 
         $command = $application->find('banditore:sync:starred-repos');
@@ -251,31 +244,16 @@ class SyncStarredReposCommandTest extends WebTestCase
         $this->assertStringContainsString('No users found', $tester->getDisplay());
     }
 
-    private function getAmqpMessage(int $totalMessage = 0): \Swarrot\SwarrotBundle\Broker\AmqpLibFactory
+    private function getTransportMessageCount(int $totalMessage = 0): AmqpTransport
     {
-        $message = new AMQPMessage();
-        $message->delivery_info = [
-            'message_count' => $totalMessage,
-        ];
-
-        $amqpChannel = $this->getMockBuilder('PhpAmqpLib\Channel\AMQPChannel')
+        $connection = $this->getMockBuilder('Symfony\Component\Messenger\Transport\AmqpExt\Connection')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $amqpChannel->expects($this->once())
-            ->method('basic_get')
-            ->with('banditore.sync_starred_repos')
-            ->willReturn($message);
+        $connection->expects($this->once())
+            ->method('countMessagesInQueues')
+            ->willReturn($totalMessage);
 
-        $amqpLibFactory = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\AmqpLibFactory')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $amqpLibFactory->expects($this->once())
-            ->method('getChannel')
-            ->with('rabbitmq')
-            ->willReturn($amqpChannel);
-
-        return $amqpLibFactory;
+        return new AmqpTransport($connection);
     }
 }

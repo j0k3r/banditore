@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Tests\Consumer;
+namespace App\Tests\MessageHandler;
 
-use App\Consumer\SyncVersions;
 use App\Entity\Repo;
 use App\Entity\Version;
+use App\Message\VersionsSync;
+use App\MessageHandler\VersionsSyncHandler;
 use Github\Client as GithubClient;
 use Github\HttpClient\Builder;
 use GuzzleHttp\Client;
@@ -15,10 +16,9 @@ use Http\Adapter\Guzzle6\Client as Guzzle6Client;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use Psr\Log\NullLogger;
-use Swarrot\Broker\Message;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class SyncVersionsTest extends WebTestCase
+class VersionsSyncHandlerTest extends WebTestCase
 {
     public function testProcessNoRepo(): void
     {
@@ -50,7 +50,7 @@ class SyncVersionsTest extends WebTestCase
         $githubClient->expects($this->never())
             ->method('authenticate');
 
-        $processor = new SyncVersions(
+        $handler = new VersionsSyncHandler(
             $doctrine,
             $repoRepository,
             $versionRepository,
@@ -59,7 +59,7 @@ class SyncVersionsTest extends WebTestCase
             new NullLogger()
         );
 
-        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
+        $handler->__invoke(new VersionsSync(123));
     }
 
     public function getWorkingResponses(): MockHandler
@@ -268,7 +268,7 @@ class SyncVersionsTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $processor = new SyncVersions(
+        $handler = new VersionsSyncHandler(
             $doctrine,
             $repoRepository,
             $versionRepository,
@@ -277,7 +277,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
+        $handler->__invoke(new VersionsSync(123));
 
         $records = $logHandler->getRecords();
 
@@ -352,7 +352,7 @@ class SyncVersionsTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $processor = new SyncVersions(
+        $handler = new VersionsSyncHandler(
             $doctrine,
             $repoRepository,
             $versionRepository,
@@ -361,7 +361,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
+        $handler->__invoke(new VersionsSync(123));
 
         $records = $logHandler->getRecords();
 
@@ -436,7 +436,7 @@ class SyncVersionsTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $processor = new SyncVersions(
+        $handler = new VersionsSyncHandler(
             $doctrine,
             $repoRepository,
             $versionRepository,
@@ -445,7 +445,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
+        $handler->__invoke(new VersionsSync(123));
 
         $records = $logHandler->getRecords();
 
@@ -516,7 +516,7 @@ class SyncVersionsTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $processor = new SyncVersions(
+        $handler = new VersionsSyncHandler(
             $doctrine,
             $repoRepository,
             $versionRepository,
@@ -525,7 +525,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
+        $handler->__invoke(new VersionsSync(123));
 
         $records = $logHandler->getRecords();
 
@@ -644,7 +644,7 @@ class SyncVersionsTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $processor = new SyncVersions(
+        $handler = new VersionsSyncHandler(
             $doctrine,
             $repoRepository,
             $versionRepository,
@@ -653,7 +653,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
+        $handler->__invoke(new VersionsSync(123));
 
         $records = $logHandler->getRecords();
 
@@ -728,7 +728,7 @@ class SyncVersionsTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $processor = new SyncVersions(
+        $handler = new VersionsSyncHandler(
             $doctrine,
             $repoRepository,
             $versionRepository,
@@ -737,7 +737,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
+        $handler->__invoke(new VersionsSync(123));
 
         $records = $logHandler->getRecords();
 
@@ -835,7 +835,7 @@ class SyncVersionsTest extends WebTestCase
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
-        $processor = new SyncVersions(
+        $handler = new VersionsSyncHandler(
             $doctrine,
             $repoRepository,
             $versionRepository,
@@ -844,7 +844,7 @@ class SyncVersionsTest extends WebTestCase
             new NullLogger()
         );
 
-        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
+        $handler->__invoke(new VersionsSync(123));
     }
 
     /**
@@ -923,7 +923,7 @@ class SyncVersionsTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $processor = new SyncVersions(
+        $handler = new VersionsSyncHandler(
             $doctrine,
             $repoRepository,
             $versionRepository,
@@ -932,7 +932,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
+        $handler->__invoke(new VersionsSync(123));
 
         $records = $logHandler->getRecords();
 
@@ -969,7 +969,7 @@ class SyncVersionsTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $processor = new SyncVersions(
+        $handler = new VersionsSyncHandler(
             $doctrine,
             $repoRepository,
             $versionRepository,
@@ -978,7 +978,7 @@ class SyncVersionsTest extends WebTestCase
             $logger
         );
 
-        $processor->process(new Message((string) json_encode(['repo_id' => 123])), []);
+        $handler->__invoke(new VersionsSync(123));
 
         $records = $logHandler->getRecords();
 
@@ -1016,13 +1016,13 @@ class SyncVersionsTest extends WebTestCase
 
         self::$container->set('banditore.client.guzzle.test', $guzzleClientPub);
 
-        $processor = self::$container->get('banditore.consumer.sync_versions.test');
+        $handler = self::$container->get('banditore.message_handler.sync_versions.test');
 
         $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 666]);
         $this->assertCount(1, $versions, 'Repo 666 has 1 version');
         $this->assertSame('1.0.0', $versions[0]->getTagName(), 'Repo 666 has 1 version, which is 1.0.0');
 
-        $processor->process(new Message((string) json_encode(['repo_id' => 666])), []);
+        $handler->__invoke(new VersionsSync(666));
 
         $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 666]);
         $this->assertCount(4, $versions, 'Repo 666 has now 4 versions');
@@ -1104,13 +1104,13 @@ class SyncVersionsTest extends WebTestCase
 
         self::$container->set('banditore.client.guzzle.test', $guzzleClientPub);
 
-        $processor = self::$container->get('banditore.consumer.sync_versions.test');
+        $handler = self::$container->get('banditore.message_handler.sync_versions.test');
 
         $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 555]);
         $this->assertCount(1, $versions, 'Repo 555 has 1 version');
         $this->assertSame('1.0.21', $versions[0]->getTagName(), 'Repo 555 has 1 version, which is 1.0.21');
 
-        $processor->process(new Message((string) json_encode(['repo_id' => 555])), []);
+        $handler->__invoke(new VersionsSync(555));
 
         $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 555]);
         $this->assertCount(2, $versions, 'Repo 555 has now 2 versions');

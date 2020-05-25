@@ -2,15 +2,16 @@
 
 namespace App\Command;
 
-use App\Consumer\SyncVersions;
+use App\Message\VersionsSync;
+use App\MessageHandler\VersionsSyncHandler;
 use App\Repository\RepoRepository;
-use Swarrot\Broker\Message;
-use Swarrot\SwarrotBundle\Broker\AmqpLibFactory;
-use Swarrot\SwarrotBundle\Broker\Publisher;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Transport\Receiver\MessageCountAwareInterface;
+use Symfony\Component\Messenger\Transport\TransportInterface;
 
 /**
  * This command send contents to opt-in Messenger users.
@@ -23,16 +24,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SyncVersionsCommand extends Command
 {
     private $repoRepository;
-    private $publisher;
     private $syncVersions;
-    private $amqplibFactory;
+    private $transport;
+    private $bus;
 
-    public function __construct(RepoRepository $repoRepository, Publisher $publisher, SyncVersions $syncVersions, AmqpLibFactory $amqplibFactory)
+    public function __construct(RepoRepository $repoRepository, VersionsSyncHandler $syncVersions, TransportInterface $transport, MessageBusInterface $bus)
     {
         $this->repoRepository = $repoRepository;
-        $this->publisher = $publisher;
         $this->syncVersions = $syncVersions;
-        $this->amqplibFactory = $amqplibFactory;
+        $this->transport = $transport;
+        $this->bus = $bus;
 
         parent::__construct();
     }
@@ -65,14 +66,11 @@ class SyncVersionsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption('use_queue')) {
+        if ($input->getOption('use_queue') && $this->transport instanceof MessageCountAwareInterface) {
             // check that queue is empty before pushing new messages
-            $message = $this->amqplibFactory
-                ->getChannel('rabbitmq')
-                ->basic_get('banditore.sync_versions');
-
-            if (null !== $message && 0 < $message->delivery_info['message_count']) {
-                $output->writeln('Current queue as too much messages (<error>' . $message->delivery_info['message_count'] . '</error>), <comment>skipping</comment>.');
+            $count = $this->transport->getMessageCount();
+            if (0 < $count) {
+                $output->writeln('Current queue as too much messages (<error>' . $count . '</error>), <comment>skipping</comment>.');
 
                 return 1;
             }
@@ -94,20 +92,12 @@ class SyncVersionsCommand extends Command
 
             $output->writeln('[' . $repoChecked . '/' . $totalRepos . '] Check <info>' . $repoId . '</info> … ');
 
-            $message = new Message((string) json_encode([
-                'repo_id' => $repoId,
-            ]));
+            $message = new VersionsSync($repoId);
 
             if ($input->getOption('use_queue')) {
-                $this->publisher->publish(
-                    'banditore.sync_versions.publisher',
-                    $message
-                );
+                $this->bus->dispatch($message);
             } else {
-                $this->syncVersions->process(
-                    $message,
-                    []
-                );
+                $this->syncVersions->__invoke($message);
             }
         }
 

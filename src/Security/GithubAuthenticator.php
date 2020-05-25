@@ -4,13 +4,14 @@ namespace App\Security;
 
 use App\Entity\User;
 use App\Entity\Version;
+use App\Message\StarredReposSync;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
 use Swarrot\Broker\Message;
-use Swarrot\SwarrotBundle\Broker\Publisher;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -21,14 +22,14 @@ class GithubAuthenticator extends SocialAuthenticator
     private $clientRegistry;
     private $em;
     private $router;
-    private $publisher;
+    private $bus;
 
-    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $em, RouterInterface $router, Publisher $publisher)
+    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $em, RouterInterface $router, MessageBusInterface $bus)
     {
         $this->clientRegistry = $clientRegistry;
         $this->em = $em;
         $this->router = $router;
-        $this->publisher = $publisher;
+        $this->bus = $bus;
     }
 
     public function supports(Request $request)
@@ -89,12 +90,7 @@ class GithubAuthenticator extends SocialAuthenticator
         $flash = $request->getSession()->getBag('flashes');
         $flash->add('info', $message);
 
-        $this->publisher->publish(
-            'banditore.sync_starred_repos.publisher',
-            new Message((string) json_encode([
-                'user_id' => $user->getId(),
-            ]))
-        );
+        $this->bus->dispatch(new StarredReposSync($user->getId()));
 
         return new RedirectResponse($this->router->generate('dashboard'));
     }

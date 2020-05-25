@@ -210,17 +210,11 @@
     "ocramius/proxy-manager": {
         "version": "2.2.3"
     },
-    "odolbeau/rabbit-mq-admin-toolkit": {
-        "version": "v4.1.0"
-    },
     "paragonie/random_compat": {
         "version": "v9.99.99"
     },
     "php": {
         "version": "7.2.9"
-    },
-    "php-amqplib/php-amqplib": {
-        "version": "v2.11.3"
     },
     "php-coveralls/php-coveralls": {
         "version": "v2.2.0"
@@ -251,9 +245,6 @@
     },
     "php-http/promise": {
         "version": "v1.0.0"
-    },
-    "phpseclib/phpseclib": {
-        "version": "2.0.27"
     },
     "phpstan/extension-installer": {
         "version": "1.0.4"
@@ -349,21 +340,6 @@
         },
         "files": [
             "config/packages/snc_redis.yaml"
-        ]
-    },
-    "swarrot/swarrot": {
-        "version": "v3.7.0"
-    },
-    "swarrot/swarrot-bundle": {
-        "version": "1.6",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "1.6",
-            "ref": "1c77a3e26d17c85c335d5c255d736da8848069fd"
-        },
-        "files": [
-            "config/packages/swarrot.yaml"
         ]
     },
     "symfony/asset": {
@@ -490,6 +466,18 @@
             "version": "1.0",
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
+    },
+    "symfony/messenger": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "8a2675c061737658bed85102e9241c752620e575"
+        },
+        "files": [
+            "config/packages/messenger.yaml"
+        ]
     },
     "symfony/mime": {
         "version": "v4.4.8"

@@ -1,9 +1,4 @@
 services:
-    # fixtures
-    App\DataFixtures\:
-        resource: '../src/DataFixtures/*'
-        tags: ['doctrine.fixture.orm']
-        autowire: true
 
     # see https://github.com/symfony/symfony/issues/24543
     banditore.repository.user.test:
@@ -22,12 +17,12 @@ services:
         alias: App\Repository\StarRepository
         public: true
 
-    banditore.consumer.sync_versions.test:
-        alias: App\Consumer\SyncVersions
+    banditore.message_handler.sync_versions.test:
+        alias: App\MessageHandler\VersionsSyncHandler
         public: true
 
-    banditore.consumer.sync_starred_repos.test:
-        alias: App\Consumer\SyncStarredRepos
+    banditore.message_handler.sync_starred_repos.test:
+        alias: App\MessageHandler\StarredReposSyncHandler
         public: true
 
     banditore.github.client_discovery.test:
@@ -44,4 +39,12 @@ services:
 
     snc_redis.guzzle_cache.test:
         alias: snc_redis.guzzle_cache
+        public: true
+
+    messenger.transport.sync_starred_repos.test:
+        alias: messenger.transport.sync_starred_repos
+        public: true
+
+    messenger.transport.sync_versions.test:
+        alias: messenger.transport.sync_versions
         public: true
