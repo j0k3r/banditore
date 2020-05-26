@@ -1,0 +1,30 @@
+framework:
+    messenger:
+        transports:
+            sync_starred_repos:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%/sync_starred_repos'
+                options:
+                    exchange:
+                        name: banditore.sync_starred_repos
+                        type: direct
+                    queues:
+                        banditore.sync_starred_repos: ~
+
+            sync_versions:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%/sync_versions'
+                options:
+                    exchange:
+                        name: banditore.sync_versions
+                        type: direct
+                    queues:
+                        banditore.sync_versions: ~
+
+        routing:
+            'App\Message\StarredReposSync': sync_starred_repos
+            'App\Message\VersionsSync': sync_versions
+
+        buses:
+            command_bus:
+                middleware:
+                    - doctrine_ping_connection
+                    - doctrine_close_connection

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Tests\Consumer;
+namespace App\Tests\MessageHandler;
 
-use App\Consumer\SyncStarredRepos;
 use App\Entity\Repo;
 use App\Entity\User;
+use App\Message\StarredReposSync;
+use App\MessageHandler\StarredReposSyncHandler;
 use Github\Client as GithubClient;
 use Github\HttpClient\Builder;
 use GuzzleHttp\Client;
@@ -15,10 +16,9 @@ use Http\Adapter\Guzzle6\Client as Guzzle6Client;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use Psr\Log\NullLogger;
-use Swarrot\Broker\Message;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class SyncStarredReposTest extends WebTestCase
+class StarredReposSyncHandlerTest extends WebTestCase
 {
     public function testProcessNoUser(): void
     {
@@ -58,7 +58,7 @@ class SyncStarredReposTest extends WebTestCase
         $redisClient->expects($this->never())
             ->method('__call');
 
-        $processor = new SyncStarredRepos(
+        $handler = new StarredReposSyncHandler(
             $doctrine,
             $userRepository,
             $starRepository,
@@ -68,7 +68,7 @@ class SyncStarredReposTest extends WebTestCase
             $redisClient
         );
 
-        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
+        $handler->__invoke(new StarredReposSync(123));
     }
 
     public function testProcessSuccessfulMessage(): void
@@ -166,7 +166,7 @@ class SyncStarredReposTest extends WebTestCase
         $redisClient->expects($this->exactly(2))
             ->method('__call');
 
-        $processor = new SyncStarredRepos(
+        $handler = new StarredReposSyncHandler(
             $doctrine,
             $userRepository,
             $starRepository,
@@ -176,7 +176,7 @@ class SyncStarredReposTest extends WebTestCase
             $redisClient
         );
 
-        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
+        $handler->__invoke(new StarredReposSync(123));
 
         $records = $logHandler->getRecords();
 
@@ -252,7 +252,7 @@ class SyncStarredReposTest extends WebTestCase
         $redisClient->expects($this->exactly(2))
             ->method('__call');
 
-        $processor = new SyncStarredRepos(
+        $handler = new StarredReposSyncHandler(
             $doctrine,
             $userRepository,
             $starRepository,
@@ -262,7 +262,7 @@ class SyncStarredReposTest extends WebTestCase
             $redisClient
         );
 
-        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
+        $handler->__invoke(new StarredReposSync(123));
 
         $records = $logHandler->getRecords();
 
@@ -357,7 +357,7 @@ class SyncStarredReposTest extends WebTestCase
         $redisClient->expects($this->once())
             ->method('__call');
 
-        $processor = new SyncStarredRepos(
+        $handler = new StarredReposSyncHandler(
             $doctrine,
             $userRepository,
             $starRepository,
@@ -367,7 +367,7 @@ class SyncStarredReposTest extends WebTestCase
             $redisClient
         );
 
-        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
+        $handler->__invoke(new StarredReposSync(123));
     }
 
     /**
@@ -466,7 +466,7 @@ class SyncStarredReposTest extends WebTestCase
         $redisClient->expects($this->exactly(2))
             ->method('__call');
 
-        $processor = new SyncStarredRepos(
+        $handler = new StarredReposSyncHandler(
             $doctrine,
             $userRepository,
             $starRepository,
@@ -476,7 +476,7 @@ class SyncStarredReposTest extends WebTestCase
             $redisClient
         );
 
-        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
+        $handler->__invoke(new StarredReposSync(123));
 
         $records = $logHandler->getRecords();
 
@@ -525,7 +525,7 @@ class SyncStarredReposTest extends WebTestCase
         $redisClient->expects($this->never())
             ->method('__call');
 
-        $processor = new SyncStarredRepos(
+        $handler = new StarredReposSyncHandler(
             $doctrine,
             $userRepository,
             $starRepository,
@@ -535,7 +535,7 @@ class SyncStarredReposTest extends WebTestCase
             $redisClient
         );
 
-        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
+        $handler->__invoke(new StarredReposSync(123));
 
         $records = $logHandler->getRecords();
 
@@ -606,7 +606,7 @@ class SyncStarredReposTest extends WebTestCase
         $redisClient->expects($this->once())
             ->method('__call');
 
-        $processor = new SyncStarredRepos(
+        $handler = new StarredReposSyncHandler(
             $doctrine,
             $userRepository,
             $starRepository,
@@ -616,7 +616,7 @@ class SyncStarredReposTest extends WebTestCase
             $redisClient
         );
 
-        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
+        $handler->__invoke(new StarredReposSync(123));
 
         $records = $logHandler->getRecords();
 
@@ -671,7 +671,7 @@ class SyncStarredReposTest extends WebTestCase
         // override factory to avoid real call to Github
         self::$container->set('banditore.client.github.test', $githubClient);
 
-        $processor = self::$container->get('banditore.consumer.sync_starred_repos.test');
+        $handler = self::$container->get('banditore.message_handler.sync_starred_repos.test');
 
         // before import
         $stars = self::$container->get('banditore.repository.star.test')->findAllByUser(123);
@@ -679,7 +679,7 @@ class SyncStarredReposTest extends WebTestCase
         $this->assertSame(555, $stars[0], 'User 123 has "symfony/symfony" starred repo');
         $this->assertSame(666, $stars[1], 'User 123 has "test/test" starred repo');
 
-        $processor->process(new Message((string) json_encode(['user_id' => 123])), []);
+        $handler->__invoke(new StarredReposSync(123));
 
         /** @var Repo */
         $repo = self::$container->get('banditore.repository.repo.test')->find(777);

@@ -1,20 +1,15 @@
-parameters:
-    my_consumer.processor.service: 'App\Consumer\MyConsumer'
-
 services:
     _defaults:
         autowire: true
         autoconfigure: true
-        public: false
 
     # autowire
     App\:
         resource: '../src/*'
-        exclude: '../src/{Entity,DataFixtures}'
+        exclude: '../src/{Entity,Migrations,Kernel.php}'
 
     App\Controller\:
         resource: '../src/Controller'
-        public: true
         tags: ['controller.service_arguments']
 
     # autorwire parameters
@@ -34,6 +29,14 @@ services:
             $host: "%env(PROJECT_HOST)%"
             $scheme: "%env(PROJECT_SCHEME)%"
 
+    App\Command\SyncStarredReposCommand:
+        arguments:
+            $transport: "@messenger.transport.sync_starred_repos"
+
+    App\Command\SyncVersionsCommand:
+        arguments:
+            $transport: "@messenger.transport.sync_versions"
+
     App\Webfeeds\WebfeedsWriter:
         tags:
             - { name: marcw_rss_writer.extension.writer }
@@ -41,12 +44,12 @@ services:
     # lazy consumer
     # to avoid triggering Github Client Discovery
     # which will make a doctrine query on Travis because the default limit to Github will be reached
-    App\Consumer\SyncStarredRepos:
+    App\MessageHandler\StarredReposSyncHandler:
         lazy: true
         arguments:
             $redis: "@snc_redis.app_cache"
 
-    App\Consumer\SyncVersions:
+    App\MessageHandler\VersionsSyncHandler:
         lazy: true
 
     # github stuff
@@ -72,15 +75,8 @@ services:
     # force this service to be injected at first instead of the default one (from marcw)
     MarcW\RssWriter\RssWriter: '@banditore.writer.rss'
 
-    # alias to service from their class name
-    Swarrot\SwarrotBundle\Broker\AmqpLibFactory:
-        alias: swarrot.factory.amqp_lib
-
     AshleyDawson\SimplePagination\Paginator:
         alias: ashley_dawson_simple_pagination.paginator
-
-    Swarrot\SwarrotBundle\Broker\Publisher:
-        alias: swarrot.publisher
 
     Predis\Client:
         alias: snc_redis.guzzle_cache

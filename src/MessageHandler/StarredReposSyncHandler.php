@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Consumer;
+namespace App\MessageHandler;
 
 use App\Entity\Repo;
 use App\Entity\Star;
 use App\Entity\User;
 use App\Github\RateLimitTrait;
+use App\Message\StarredReposSync;
 use App\Repository\RepoRepository;
 use App\Repository\StarRepository;
 use App\Repository\UserRepository;
@@ -13,8 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Github\Client;
 use Predis\ClientInterface as RedisClientInterface;
 use Psr\Log\LoggerInterface;
-use Swarrot\Broker\Message;
-use Swarrot\Processor\ProcessorInterface;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 /**
  * Consumer message to sync starred repos from user.
@@ -23,7 +23,7 @@ use Swarrot\Processor\ProcessorInterface;
  *     - when user logged in
  *     - when we periodically sync user starred repos
  */
-class SyncStarredRepos implements ProcessorInterface
+class StarredReposSyncHandler implements MessageHandlerInterface
 {
     use RateLimitTrait;
 
@@ -51,7 +51,7 @@ class SyncStarredRepos implements ProcessorInterface
         $this->redis = $redis;
     }
 
-    public function process(Message $message, array $options): bool
+    public function __invoke(StarredReposSync $message): bool
     {
         // in case no client with safe RateLimit were found
         if (null === $this->client) {
@@ -60,13 +60,13 @@ class SyncStarredRepos implements ProcessorInterface
             return false;
         }
 
-        $data = json_decode((string) $message->getBody(), true);
+        $userId = $message->getUserId();
 
         /** @var User|null */
-        $user = $this->userRepository->find($data['user_id']);
+        $user = $this->userRepository->find($userId);
 
         if (null === $user) {
-            $this->logger->error('Can not find user', ['user' => $data['user_id']]);
+            $this->logger->error('Can not find user', ['user' => $userId]);
 
             return false;
         }

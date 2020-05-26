@@ -2,15 +2,16 @@
 
 namespace App\Command;
 
-use App\Consumer\SyncStarredRepos;
+use App\Message\StarredReposSync;
+use App\MessageHandler\StarredReposSyncHandler;
 use App\Repository\UserRepository;
-use Swarrot\Broker\Message;
-use Swarrot\SwarrotBundle\Broker\AmqpLibFactory;
-use Swarrot\SwarrotBundle\Broker\Publisher;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Transport\Receiver\MessageCountAwareInterface;
+use Symfony\Component\Messenger\Transport\TransportInterface;
 
 /**
  * This command sync starred repos from user(s).
@@ -22,16 +23,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SyncStarredReposCommand extends Command
 {
     private $userRepository;
-    private $publisher;
-    private $syncUser;
-    private $amqplibFactory;
+    private $syncRepo;
+    private $transport;
+    private $bus;
 
-    public function __construct(UserRepository $userRepository, Publisher $publisher, SyncStarredRepos $syncUser, AmqpLibFactory $amqplibFactory)
+    public function __construct(UserRepository $userRepository, StarredReposSyncHandler $syncRepo, TransportInterface $transport, MessageBusInterface $bus)
     {
         $this->userRepository = $userRepository;
-        $this->publisher = $publisher;
-        $this->syncUser = $syncUser;
-        $this->amqplibFactory = $amqplibFactory;
+        $this->syncRepo = $syncRepo;
+        $this->transport = $transport;
+        $this->bus = $bus;
 
         parent::__construct();
     }
@@ -64,14 +65,11 @@ class SyncStarredReposCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption('use_queue')) {
+        if ($input->getOption('use_queue') && $this->transport instanceof MessageCountAwareInterface) {
             // check that queue is empty before pushing new messages
-            $message = $this->amqplibFactory
-                ->getChannel('rabbitmq')
-                ->basic_get('banditore.sync_starred_repos');
-
-            if (null !== $message && 0 < $message->delivery_info['message_count']) {
-                $output->writeln('Current queue as too much messages (<error>' . $message->delivery_info['message_count'] . '</error>), <comment>skipping</comment>.');
+            $count = $this->transport->getMessageCount();
+            if (0 < $count) {
+                $output->writeln('Current queue as too much messages (<error>' . $count . '</error>), <comment>skipping</comment>.');
 
                 return 1;
             }
@@ -93,20 +91,12 @@ class SyncStarredReposCommand extends Command
 
             $output->writeln('[' . $userSynced . '/' . $totalUsers . '] Sync user <info>' . $userId . '</info> … ');
 
-            $message = new Message((string) json_encode([
-                'user_id' => $userId,
-            ]));
+            $message = new StarredReposSync($userId);
 
             if ($input->getOption('use_queue')) {
-                $this->publisher->publish(
-                    'banditore.sync_starred_repos.publisher',
-                    $message
-                );
+                $this->bus->dispatch($message);
             } else {
-                $this->syncUser->process(
-                    $message,
-                    []
-                );
+                $this->syncRepo->__invoke($message);
             }
         }
 

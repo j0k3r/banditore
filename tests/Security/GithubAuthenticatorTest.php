@@ -11,7 +11,6 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Http\Adapter\Guzzle6\Client as Guzzle6Client;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
-use Swarrot\Broker\Message;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class GithubAuthenticatorTest extends WebTestCase
@@ -44,14 +43,6 @@ class GithubAuthenticatorTest extends WebTestCase
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
-        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $publisher->expects($this->once())
-            ->method('publish')
-            ->with('banditore.sync_starred_repos.publisher', new Message((string) json_encode(['user_id' => 123])));
-
-        self::$container->set('swarrot.publisher', $publisher);
         self::$container->set('banditore.client.github.application', $githubClient);
         self::$container->get('oauth2.registry')->getClient('github')->getOAuth2Provider()->setHttpClient($guzzleClient);
 
@@ -78,6 +69,14 @@ class GithubAuthenticatorTest extends WebTestCase
 
         $message = self::$container->get('session')->getFlashBag()->get('info');
         $this->assertSame('Successfully logged in!', $message[0]);
+
+        $transport = self::$container->get('messenger.transport.sync_starred_repos');
+        $this->assertCount(1, $transport->get());
+
+        $messages = (array) $transport->get();
+        /** @var \App\Message\StarredReposSync */
+        $message = $messages[0]->getMessage();
+        $this->assertSame(123, $message->getUserId());
     }
 
     public function testCallbackWithNewUser(): void
@@ -108,14 +107,6 @@ class GithubAuthenticatorTest extends WebTestCase
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
-        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $publisher->expects($this->once())
-            ->method('publish')
-            ->with('banditore.sync_starred_repos.publisher', new Message((string) json_encode(['user_id' => 456])));
-
-        self::$container->set('swarrot.publisher', $publisher);
         self::$container->set('banditore.client.github.application', $githubClient);
         self::$container->get('oauth2.registry')->getClient('github')->getOAuth2Provider()->setHttpClient($guzzleClient);
 
@@ -142,5 +133,13 @@ class GithubAuthenticatorTest extends WebTestCase
 
         $message = self::$container->get('session')->getFlashBag()->get('info');
         $this->assertSame('Successfully logged in. Your starred repos will soon be synced!', $message[0]);
+
+        $transport = self::$container->get('messenger.transport.sync_starred_repos');
+        $this->assertCount(1, $transport->get());
+
+        $messages = (array) $transport->get();
+        /** @var \App\Message\StarredReposSync */
+        $message = $messages[0]->getMessage();
+        $this->assertSame(456, $message->getUserId());
     }
 }

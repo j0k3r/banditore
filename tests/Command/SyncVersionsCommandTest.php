@@ -3,11 +3,12 @@
 namespace App\Tests\Command;
 
 use App\Command\SyncVersionsCommand;
-use PhpAmqpLib\Message\AMQPMessage;
-use Swarrot\Broker\Message;
+use App\Message\VersionsSync;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Transport\AmqpExt\AmqpTransport;
 
 class SyncVersionsCommandTest extends WebTestCase
 {
@@ -15,26 +16,26 @@ class SyncVersionsCommandTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
+        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $publisher->expects($this->never())
-            ->method('publish');
+        $bus->expects($this->never())
+            ->method('dispatch');
 
-        $syncVersions = $this->getMockBuilder('App\Consumer\SyncVersions')
+        $syncVersion = $this->getMockBuilder('App\MessageHandler\VersionsSyncHandler')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $syncVersions->expects($this->any())
-            ->method('process');
+        $syncVersion->expects($this->any())
+            ->method('__invoke');
 
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
             self::$kernel->getContainer()->get('banditore.repository.repo.test'),
-            $publisher,
-            $syncVersions,
-            self::$kernel->getContainer()->get('swarrot.factory.default')
+            $syncVersion,
+            self::$kernel->getContainer()->get('messenger.transport.sync_versions.test'),
+            $bus
         ));
 
         $command = $application->find('banditore:sync:versions');
@@ -51,27 +52,27 @@ class SyncVersionsCommandTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
+        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $publisher->expects($this->any())
-            ->method('publish')
-            ->with('banditore.sync_versions.publisher');
+        $bus->expects($this->any())
+            ->method('dispatch')
+            ->willReturn(new Envelope(new VersionsSync(555)));
 
-        $syncVersions = $this->getMockBuilder('App\Consumer\SyncVersions')
+        $syncVersion = $this->getMockBuilder('App\MessageHandler\VersionsSyncHandler')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $syncVersions->expects($this->never())
-            ->method('process');
+        $syncVersion->expects($this->any())
+            ->method('__invoke');
 
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
             self::$kernel->getContainer()->get('banditore.repository.repo.test'),
-            $publisher,
-            $syncVersions,
-            $this->getAmqpMessage(0)
+            $syncVersion,
+            $this->getTransportMessageCount(0),
+            $bus
         ));
 
         $command = $application->find('banditore:sync:versions');
@@ -89,26 +90,26 @@ class SyncVersionsCommandTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
+        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $publisher->expects($this->never())
-            ->method('publish');
+        $bus->expects($this->never())
+            ->method('dispatch');
 
-        $syncVersions = $this->getMockBuilder('App\Consumer\SyncVersions')
+        $syncVersion = $this->getMockBuilder('App\MessageHandler\VersionsSyncHandler')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $syncVersions->expects($this->never())
-            ->method('process');
+        $syncVersion->expects($this->never())
+            ->method('__invoke');
 
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
             self::$kernel->getContainer()->get('banditore.repository.repo.test'),
-            $publisher,
-            $syncVersions,
-            $this->getAmqpMessage(10)
+            $syncVersion,
+            $this->getTransportMessageCount(10),
+            $bus
         ));
 
         $command = $application->find('banditore:sync:versions');
@@ -125,31 +126,30 @@ class SyncVersionsCommandTest extends WebTestCase
     public function testCommandSyncOneUserById(): void
     {
         $client = static::createClient();
+        $message = new VersionsSync(555);
 
-        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
+        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $publisher->expects($this->once())
-            ->method('publish')
-            ->with(
-                'banditore.sync_versions.publisher',
-                new Message((string) json_encode(['repo_id' => 555]))
-            );
+        $bus->expects($this->once())
+            ->method('dispatch')
+            ->with($message)
+            ->willReturn(new Envelope($message));
 
-        $syncVersions = $this->getMockBuilder('App\Consumer\SyncVersions')
+        $syncVersion = $this->getMockBuilder('App\MessageHandler\VersionsSyncHandler')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $syncVersions->expects($this->never())
-            ->method('process');
+        $syncVersion->expects($this->never())
+            ->method('__invoke');
 
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
             self::$kernel->getContainer()->get('banditore.repository.repo.test'),
-            $publisher,
-            $syncVersions,
-            $this->getAmqpMessage(0)
+            $syncVersion,
+            $this->getTransportMessageCount(0),
+            $bus
         ));
 
         $command = $application->find('banditore:sync:versions');
@@ -168,31 +168,29 @@ class SyncVersionsCommandTest extends WebTestCase
     public function testCommandSyncOneUserByUsername(): void
     {
         $client = static::createClient();
+        $message = new VersionsSync(666);
 
-        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
+        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $publisher->expects($this->never())
-            ->method('publish');
+        $bus->expects($this->never())
+            ->method('dispatch');
 
-        $syncVersions = $this->getMockBuilder('App\Consumer\SyncVersions')
+        $syncVersion = $this->getMockBuilder('App\MessageHandler\VersionsSyncHandler')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $syncVersions->expects($this->once())
-            ->method('process')
-            ->with(
-                new Message((string) json_encode(['repo_id' => 666])),
-                []
-            );
+        $syncVersion->expects($this->once())
+            ->method('__invoke')
+            ->with($message);
 
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
             self::$kernel->getContainer()->get('banditore.repository.repo.test'),
-            $publisher,
-            $syncVersions,
-            self::$kernel->getContainer()->get('swarrot.factory.default')
+            $syncVersion,
+            self::$kernel->getContainer()->get('messenger.transport.sync_versions.test'),
+            $bus
         ));
 
         $command = $application->find('banditore:sync:versions');
@@ -211,26 +209,26 @@ class SyncVersionsCommandTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $publisher = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\Publisher')
+        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $publisher->expects($this->never())
-            ->method('publish');
+        $bus->expects($this->never())
+            ->method('dispatch');
 
-        $syncVersions = $this->getMockBuilder('App\Consumer\SyncVersions')
+        $syncVersion = $this->getMockBuilder('App\MessageHandler\VersionsSyncHandler')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $syncVersions->expects($this->never())
-            ->method('process');
+        $syncVersion->expects($this->never())
+            ->method('__invoke');
 
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
             self::$kernel->getContainer()->get('banditore.repository.repo.test'),
-            $publisher,
-            $syncVersions,
-            self::$kernel->getContainer()->get('swarrot.factory.default')
+            $syncVersion,
+            self::$kernel->getContainer()->get('messenger.transport.sync_versions.test'),
+            $bus
         ));
 
         $command = $application->find('banditore:sync:versions');
@@ -244,31 +242,16 @@ class SyncVersionsCommandTest extends WebTestCase
         $this->assertStringContainsString('No repos found', $tester->getDisplay());
     }
 
-    private function getAmqpMessage(int $totalMessage = 0): \Swarrot\SwarrotBundle\Broker\AmqpLibFactory
+    private function getTransportMessageCount(int $totalMessage = 0): AmqpTransport
     {
-        $message = new AMQPMessage();
-        $message->delivery_info = [
-            'message_count' => $totalMessage,
-        ];
-
-        $amqpChannel = $this->getMockBuilder('PhpAmqpLib\Channel\AMQPChannel')
+        $connection = $this->getMockBuilder('Symfony\Component\Messenger\Transport\AmqpExt\Connection')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $amqpChannel->expects($this->once())
-            ->method('basic_get')
-            ->with('banditore.sync_versions')
-            ->willReturn($message);
+        $connection->expects($this->once())
+            ->method('countMessagesInQueues')
+            ->willReturn($totalMessage);
 
-        $amqpLibFactory = $this->getMockBuilder('Swarrot\SwarrotBundle\Broker\AmqpLibFactory')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $amqpLibFactory->expects($this->once())
-            ->method('getChannel')
-            ->with('rabbitmq')
-            ->willReturn($amqpChannel);
-
-        return $amqpLibFactory;
+        return new AmqpTransport($connection);
     }
 }

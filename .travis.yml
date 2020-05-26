@@ -1,7 +1,14 @@
+os: linux
+dist: xenial
 language: php
 
-# because of RabbitMQ not yet (really) available on Xenial
-dist: trusty
+addons:
+    apt:
+        packages:
+            - rabbitmq-server
+            - pkg-config
+            - librabbitmq-dev
+            - librabbitmq4
 
 services:
     - mysql
@@ -17,7 +24,7 @@ cache:
     directories:
         - $HOME/.composer/cache/files
 
-matrix:
+jobs:
     fast_finish: true
     include:
         - php: 7.2
@@ -32,6 +39,10 @@ matrix:
 before_install:
     - echo 'date.timezone = "Europe/Paris"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - echo "extension=redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    # install amqp
+    - pear config-set preferred_state beta
+    - pecl channel-update pecl.php.net
+    - printf "\n" | pecl install amqp
 
 install:
     - composer install --no-interaction --optimize-autoloader --no-progress --prefer-dist --no-suggest
@@ -41,7 +52,8 @@ before_script:
     - php bin/console doctrine:database:create --env=test
     - php bin/console doctrine:schema:create --env=test
     - php bin/console doctrine:fixtures:load --env=test -n
-    - php bin/rabbit vhost:mapping:create -p guest config/rabbit_vhost.yaml
+    # using dev env because tests queues are "in memory"
+    - php bin/console messenger:setup-transports --env=dev
     - if [ "$COVERAGE" = "run" ]; then PHPUNIT_FLAGS="--coverage-clover build/logs/clover.xml"; fi;
 
 script:
