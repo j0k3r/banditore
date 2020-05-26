@@ -120,6 +120,9 @@
     "doctrine/reflection": {
         "version": "1.2.1"
     },
+    "doctrine/sql-formatter": {
+        "version": "1.1.1"
+    },
     "friendsofphp/php-cs-fixer": {
         "version": "2.2",
         "recipe": {
@@ -143,9 +146,6 @@
     },
     "http-interop/http-factory-guzzle": {
         "version": "1.0.0"
-    },
-    "jdorn/sql-formatter": {
-        "version": "v1.2.17"
     },
     "jean85/pretty-package-versions": {
         "version": "1.2"
