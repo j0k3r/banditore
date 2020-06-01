@@ -4210,22 +4210,23 @@
         },
         {
             "name": "symfony/asset",
-            "version": "v5.0.8",
+            "version": "v5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/asset.git",
-                "reference": "be35f49cf2cf1c54de30bc31d2c5ff3c1d880be8"
+                "reference": "2f07b5993f1607c1c489bac3e15a000c33668b4b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/asset/zipball/be35f49cf2cf1c54de30bc31d2c5ff3c1d880be8",
-                "reference": "be35f49cf2cf1c54de30bc31d2c5ff3c1d880be8",
+                "url": "https://api.github.com/repos/symfony/asset/zipball/2f07b5993f1607c1c489bac3e15a000c33668b4b",
+                "reference": "2f07b5993f1607c1c489bac3e15a000c33668b4b",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2.5"
+                "php": ">=7.2.5"
             },
             "require-dev": {
+                "symfony/http-client": "^4.4|^5.0",
                 "symfony/http-foundation": "^4.4|^5.0",
                 "symfony/http-kernel": "^4.4|^5.0"
             },
@@ -4235,7 +4236,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "5.0-dev"
+                    "dev-master": "5.1-dev"
                 }
             },
             "autoload": {
@@ -4262,7 +4263,7 @@
             ],
             "description": "Symfony Asset Component",
             "homepage": "https://symfony.com",
-            "time": "2020-04-12T14:40:17+00:00"
+            "time": "2020-05-30T20:35:19+00:00"
         },
         {
             "name": "symfony/cache",
