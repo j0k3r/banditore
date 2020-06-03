@@ -197,7 +197,7 @@ class VersionsSyncHandler implements MessageHandlerInterface
                         ];
                 }
 
-                $newRelease['message'] = $this->removePgpSignature($newRelease['message']);
+                $newRelease['message'] = $this->removePgpSignature((string) $newRelease['message']);
             }
 
             // render markdown in plain html and use default markdown file if it fails
