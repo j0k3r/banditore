@@ -195,6 +195,22 @@ class VersionsSyncHandler implements MessageHandlerInterface
                             'published_at' => $commitInfo['author']['date'],
                             'message' => $commitInfo['message'],
                         ];
+                        break;
+                    case 'blob':
+                        $blobInfo = $githubGitApi->blobs()->show($username, $repoName, $tag['object']['sha']);
+
+                        $newRelease += [
+                            'name' => $tag['name'],
+                            'prerelease' => false,
+                            // we can't retrieve a date for a blob tag, sadly.
+                            'published_at' => date('c'),
+                            'message' => '(blob, size ' . $blobInfo['size'] . ') ' . base64_decode($blobInfo['content'], true),
+                        ];
+                        break;
+                    default:
+                        $this->logger->error('<error>Tag object type not supported: ' . $tag['object']['type'] . ' (for: ' . $repo->getFullName() . ')</error>');
+
+                        continue 2;
                 }
 
                 $newRelease['message'] = $this->removePgpSignature((string) $newRelease['message']);

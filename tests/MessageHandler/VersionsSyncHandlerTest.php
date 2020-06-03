@@ -1119,6 +1119,259 @@ class VersionsSyncHandlerTest extends WebTestCase
         $this->assertSame('<p>This is the first release after our major push.</p>', $versions[1]->getBody(), 'Version V1.1.0 body is ok');
     }
 
+    public function testProcessSuccessfulMessageWithBlobTag(): void
+    {
+        $uow = $this->getMockBuilder('Doctrine\ORM\UnitOfWork')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $uow->expects($this->once())
+            ->method('getScheduledEntityInsertions')
+            ->willReturn([]);
+
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(false); // simulate a closing manager
+        $em->expects($this->once())
+            ->method('getUnitOfWork')
+            ->willReturn($uow);
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->willReturn($em);
+        $doctrine->expects($this->once())
+            ->method('resetManager')
+            ->willReturn($em);
+
+        $repo = new Repo();
+        $repo->setId(123);
+        $repo->setFullName('bob/wow');
+        $repo->setName('wow');
+
+        $repoRepository = $this->getMockBuilder('App\Repository\RepoRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repoRepository->expects($this->once())
+            ->method('find')
+            ->with(123)
+            ->willReturn($repo);
+
+        $versionRepository = $this->getMockBuilder('App\Repository\VersionRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $versionRepository->expects($this->once())
+            ->method('findExistingOne')
+            ->willReturn(null);
+
+        $pubsubhubbub = $this->getMockBuilder('App\PubSubHubbub\Publisher')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $pubsubhubbub->expects($this->once())
+            ->method('pingHub')
+            ->with([123]);
+
+        $responses = new MockHandler([
+            // rate_limit
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
+            // repo/tags
+            $this->getOKResponse([[
+                'name' => 'street/wilson_gardens',
+                'zipball_url' => 'https://api.github.com/repos/nivbend/gitstery/zipball/street/wilson_gardens',
+                'tarball_url' => 'https://api.github.com/repos/nivbend/gitstery/tarball/street/wilson_gardens',
+                'commit' => [
+                    'sha' => '659f0c110cd80286eaff33d34b9caf6c8e183102',
+                    'url' => 'https://api.github.com/repos/nivbend/gitstery/commits/659f0c110cd80286eaff33d34b9caf6c8e183102',
+                ],
+            ]]),
+            // git/refs/tags
+            $this->getOKResponse([
+                [
+                    'ref' => 'refs/tags/solution',
+                    'url' => 'https://api.github.com/repos/nivbend/gitstery/git/refs/tags/solution',
+                    'object' => [
+                        'sha' => 'b3618a9ec1bbc13bf7133c50fb8d15ef8cbe7594',
+                        'type' => 'blob',
+                        'url' => 'https://api.github.com/repos/nivbend/gitstery/git/blobs/b3618a9ec1bbc13bf7133c50fb8d15ef8cbe7594',
+                    ],
+                ],
+            ]),
+            // TAG solution
+            // repos/release with tag solution (which is not a release)
+            new Response(404, ['Content-Type' => 'application/json'], (string) json_encode([
+                'message' => 'Not Found',
+                'documentation_url' => 'https://developer.github.com/v3',
+            ])),
+            // retrieve tag information from the blob
+            $this->getOKResponse([
+                'sha' => 'b3618a9ec1bbc13bf7133c50fb8d15ef8cbe7594',
+                'url' => 'https://api.github.com/repos/nivbend/gitstery/git/blobs/b3618a9ec1bbc13bf7133c50fb8d15ef8cbe7594',
+                'size' => 40,
+                'content' => "ZGUxMzI0OTUxYWZlNmU0NjI0MDY2MGNiYzAzYzE1MDBhOTBmYzkyOA==\n",
+                'encoding' => 'base64',
+            ]),
+            // markdown
+            new Response(200, ['Content-Type' => 'text/html'], '<p>(blob, size 40) de1324951afe6e46240660cbc03c1500a90fc928</p>'),
+            // rate_limit
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
+        ]);
+
+        $clientHandler = HandlerStack::create($responses);
+        $guzzleClient = new Client([
+            'handler' => $clientHandler,
+        ]);
+
+        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpBuilder = new Builder($httpClient);
+        $githubClient = new GithubClient($httpBuilder);
+
+        $logger = new Logger('foo');
+        $logHandler = new TestHandler();
+        $logger->pushHandler($logHandler);
+
+        $handler = new VersionsSyncHandler(
+            $doctrine,
+            $repoRepository,
+            $versionRepository,
+            $pubsubhubbub,
+            $githubClient,
+            $logger
+        );
+
+        $handler->__invoke(new VersionsSync(123));
+
+        $records = $logHandler->getRecords();
+
+        $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
+        $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
+        $this->assertSame('[10] <comment>1</comment> new versions for <info>bob/wow</info>', $records[2]['message']);
+    }
+
+    public function testBadTagObjectType(): void
+    {
+        $uow = $this->getMockBuilder('Doctrine\ORM\UnitOfWork')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $uow->expects($this->once())
+            ->method('getScheduledEntityInsertions')
+            ->willReturn([]);
+
+        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $em->expects($this->once())
+            ->method('isOpen')
+            ->willReturn(false); // simulate a closing manager
+        $em->expects($this->once())
+            ->method('getUnitOfWork')
+            ->willReturn($uow);
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->willReturn($em);
+        $doctrine->expects($this->once())
+            ->method('resetManager')
+            ->willReturn($em);
+
+        $repo = new Repo();
+        $repo->setId(123);
+        $repo->setFullName('bob/wow');
+        $repo->setName('wow');
+
+        $repoRepository = $this->getMockBuilder('App\Repository\RepoRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repoRepository->expects($this->once())
+            ->method('find')
+            ->with(123)
+            ->willReturn($repo);
+
+        $versionRepository = $this->getMockBuilder('App\Repository\VersionRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $versionRepository->expects($this->once())
+            ->method('findExistingOne')
+            ->willReturn(null);
+
+        $pubsubhubbub = $this->getMockBuilder('App\PubSubHubbub\Publisher')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $pubsubhubbub->expects($this->never())
+            ->method('pingHub');
+
+        $responses = new MockHandler([
+            // rate_limit
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
+            // repo/tags
+            $this->getOKResponse([[
+                'name' => 'awesometag',
+                'zipball_url' => 'https://api.github.com/repos/aweosome/repo/zipball/street/awesometag',
+                'tarball_url' => 'https://api.github.com/repos/aweosome/repo/tarball/street/awesometag',
+                'commit' => [
+                    'sha' => '659f0c110cd80286eaff33d34b9caf6c8e183102',
+                    'url' => 'https://api.github.com/repos/aweosome/repo/commits/659f0c110cd80286eaff33d34b9caf6c8e183102',
+                ],
+            ]]),
+            // git/refs/tags
+            $this->getOKResponse([
+                [
+                    'ref' => 'refs/tags/awesometag',
+                    'url' => 'https://api.github.com/repos/aweosome/repo/git/refs/tags/awesometag',
+                    'object' => [
+                        'sha' => 'b3618a9ec1bbc13bf7133c50fb8d15ef8cbe7594',
+                        'type' => 'unknown',
+                        'url' => 'https://api.github.com/repos/aweosome/repo/git/blobs/b3618a9ec1bbc13bf7133c50fb8d15ef8cbe7594',
+                    ],
+                ],
+            ]),
+            // rate_limit
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
+        ]);
+
+        $clientHandler = HandlerStack::create($responses);
+        $guzzleClient = new Client([
+            'handler' => $clientHandler,
+        ]);
+
+        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpBuilder = new Builder($httpClient);
+        $githubClient = new GithubClient($httpBuilder);
+
+        $logger = new Logger('foo');
+        $logHandler = new TestHandler();
+        $logger->pushHandler($logHandler);
+
+        $handler = new VersionsSyncHandler(
+            $doctrine,
+            $repoRepository,
+            $versionRepository,
+            $pubsubhubbub,
+            $githubClient,
+            $logger
+        );
+
+        $handler->__invoke(new VersionsSync(123));
+
+        $records = $logHandler->getRecords();
+
+        $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
+        $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
+        $this->assertSame('<error>Tag object type not supported: unknown (for: bob/wow)</error>', $records[2]['message']);
+    }
+
     private function getOKResponse(array $body): Response
     {
         return new Response(
