@@ -7,8 +7,8 @@ use App\Message\VersionsSync;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpTransport;
 use Symfony\Component\Messenger\Envelope;
-use Symfony\Component\Messenger\Transport\AmqpExt\AmqpTransport;
 
 class SyncVersionsCommandTest extends WebTestCase
 {
@@ -244,7 +244,7 @@ class SyncVersionsCommandTest extends WebTestCase
 
     private function getTransportMessageCount(int $totalMessage = 0): AmqpTransport
     {
-        $connection = $this->getMockBuilder('Symfony\Component\Messenger\Transport\AmqpExt\Connection')
+        $connection = $this->getMockBuilder('Symfony\Component\Messenger\Bridge\Amqp\Transport\Connection')
             ->disableOriginalConstructor()
             ->getMock();
 

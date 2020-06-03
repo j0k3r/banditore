@@ -31,20 +31,20 @@
         "sensio/framework-extra-bundle": "^5.5",
         "sentry/sentry-symfony": "~3.0",
         "snc/redis-bundle": "^3.2",
-        "symfony/asset": "^5.0",
-        "symfony/dotenv": "^5.0",
+        "symfony/amqp-messenger": "5.1.*",
+        "symfony/asset": "5.1.*",
+        "symfony/dotenv": "5.1.*",
         "symfony/flex": "^1.6",
-        "symfony/form": "^5.0",
-        "symfony/messenger": "^5.0",
+        "symfony/form": "5.1.*",
         "symfony/monolog-bundle": "^3.5",
         "symfony/orm-pack": "^1.0",
         "symfony/polyfill-apcu": "^1.0",
-        "symfony/proxy-manager-bridge": "^5.0",
-        "symfony/security-bundle": "^5.0",
-        "symfony/translation": "^5.0",
+        "symfony/proxy-manager-bridge": "5.1.*",
+        "symfony/security-bundle": "5.1.*",
+        "symfony/translation": "5.1.*",
         "symfony/twig-pack": "^1.0",
-        "symfony/validator": "^5.0",
-        "twig/twig": "^2.0||^3.0"
+        "symfony/validator": "5.1.*",
+        "twig/twig": "^2.0|^3.0"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.0",
@@ -57,19 +57,20 @@
         "phpstan/phpstan-doctrine": "^0.12.13",
         "phpstan/phpstan-phpunit": "^0.12.8",
         "phpstan/phpstan-symfony": "^0.12.6",
-        "symfony/browser-kit": "^5.0",
-        "symfony/css-selector": "^5.0",
-        "symfony/debug-bundle": "^5.0",
+        "symfony/browser-kit": "5.1.*",
+        "symfony/css-selector": "5.1.*",
+        "symfony/debug-bundle": "5.1.*",
         "symfony/maker-bundle": "^1.15",
-        "symfony/phpunit-bridge": "~5.0",
-        "symfony/web-profiler-bundle": "^5.0"
+        "symfony/phpunit-bridge": "5.1.*",
+        "symfony/web-profiler-bundle": "5.1.*"
     },
     "conflict": {
         "symfony/symfony": "*"
     },
     "scripts": {
         "auto-scripts": {
-            "cache:clear": "symfony-cmd"
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
         "post-install-cmd": [
             "@auto-scripts"
@@ -98,7 +99,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": true,
-            "require": "^5.0"
+            "require": "5.1.*"
         }
     }
 }
