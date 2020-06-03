@@ -7,7 +7,7 @@ use App\Message\StarredReposSync;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Messenger\Transport\AmqpExt\AmqpTransport;
+use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpTransport;
 
 class SyncStarredReposCommandTest extends WebTestCase
 {
@@ -246,7 +246,7 @@ class SyncStarredReposCommandTest extends WebTestCase
 
     private function getTransportMessageCount(int $totalMessage = 0): AmqpTransport
     {
-        $connection = $this->getMockBuilder('Symfony\Component\Messenger\Transport\AmqpExt\Connection')
+        $connection = $this->getMockBuilder('Symfony\Component\Messenger\Bridge\Amqp\Transport\Connection')
             ->disableOriginalConstructor()
             ->getMock();
 

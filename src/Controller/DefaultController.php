@@ -91,7 +91,7 @@ class DefaultController extends AbstractController
 
         // Paginate using the current page number
         try {
-            $pagination = $paginator->paginate((int) $request->query->get('page', 1));
+            $pagination = $paginator->paginate((int) $request->query->get('page', '1'));
         } catch (InvalidPageNumberException $e) {
             throw $this->createNotFoundException($e->getMessage());
         }
