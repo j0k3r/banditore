@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c9ba84f8f82fcf45a68e74165c2c0d4b",
+    "content-hash": "b625e8f2204c3697c093455c12487778",
     "packages": [
         {
             "name": "ashleydawson/simple-pagination",
@@ -58,16 +58,16 @@
         },
         {
             "name": "ashleydawson/simple-pagination-bundle",
-            "version": "dev-feature/symfony-4",
+            "version": "5.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/j0k3r/SimplePaginationBundle.git",
-                "reference": "bebdd43b74d818eb6d92368b9498b079ff5e4c3a"
+                "url": "https://github.com/AshleyDawson/SimplePaginationBundle.git",
+                "reference": "6304a4fcd4aecfa7dae13031bd95561ec389bbe8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/j0k3r/SimplePaginationBundle/zipball/bebdd43b74d818eb6d92368b9498b079ff5e4c3a",
-                "reference": "bebdd43b74d818eb6d92368b9498b079ff5e4c3a",
+                "url": "https://api.github.com/repos/AshleyDawson/SimplePaginationBundle/zipball/6304a4fcd4aecfa7dae13031bd95561ec389bbe8",
+                "reference": "6304a4fcd4aecfa7dae13031bd95561ec389bbe8",
                 "shasum": ""
             },
             "require": {
@@ -91,6 +91,7 @@
                     "/Tests/"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -102,22 +103,19 @@
             ],
             "description": "Symfony bundle for Simple Pagination, the simple, lightweight and universal paginator that implements pagination on collections of things",
             "keywords": [
+                "Flexible",
+                "Simple",
                 "bundle",
                 "easy",
-                "flexible",
                 "lightweight",
                 "lite",
                 "pager",
                 "pagination",
                 "paginator",
-                "simple",
                 "symfony",
                 "universal"
             ],
-            "support": {
-                "source": "https://github.com/j0k3r/SimplePaginationBundle/tree/feature/symfony-4"
-            },
-            "time": "2020-05-17T07:12:46+00:00"
+            "time": "2020-06-04T08:51:00+00:00"
         },
         {
             "name": "brick/math",
@@ -9800,16 +9798,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.4.0",
+            "version": "v4.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "bd43ec7152eaaab3bd8c6d0aa95ceeb1df8ee120"
+                "reference": "53c2753d756f5adb586dca79c2ec0e2654dd9463"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/bd43ec7152eaaab3bd8c6d0aa95ceeb1df8ee120",
-                "reference": "bd43ec7152eaaab3bd8c6d0aa95ceeb1df8ee120",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/53c2753d756f5adb586dca79c2ec0e2654dd9463",
+                "reference": "53c2753d756f5adb586dca79c2ec0e2654dd9463",
                 "shasum": ""
             },
             "require": {
@@ -9848,7 +9846,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2020-04-10T16:34:50+00:00"
+            "time": "2020-06-03T07:24:19+00:00"
         },
         {
             "name": "php-coveralls/php-coveralls",
@@ -11003,7 +11001,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "ashleydawson/simple-pagination-bundle": 20,
         "m6web/redis-mock": 20
     },
     "prefer-stable": false,
