@@ -191,4 +191,4 @@ It aims to find the best client with enough rate limit remain (defined as 50).
 - it first checks using the GitHub OAuth app
 - then it checks using all user GitHub token
 
-Which means, if you have 5 users on the app, you'll be able to make (1 + 5) x 5.000 = 25.000 calls per hour
+Which means, if you have 5 users on the app, you'll be able to make (1 + 5) x 5.000 = 30.000 calls per hour
