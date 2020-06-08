@@ -9104,27 +9104,28 @@
         },
         {
             "name": "phpstan/phpstan-doctrine",
-            "version": "0.12.13",
+            "version": "0.12.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan-doctrine.git",
-                "reference": "5fab376975c2f2d99865837cfe693dc258ca9e61"
+                "reference": "b43fe3e682022eb9436a914657cf0c7b58ddf768"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan-doctrine/zipball/5fab376975c2f2d99865837cfe693dc258ca9e61",
-                "reference": "5fab376975c2f2d99865837cfe693dc258ca9e61",
+                "url": "https://api.github.com/repos/phpstan/phpstan-doctrine/zipball/b43fe3e682022eb9436a914657cf0c7b58ddf768",
+                "reference": "b43fe3e682022eb9436a914657cf0c7b58ddf768",
                 "shasum": ""
             },
             "require": {
                 "php": "~7.1",
-                "phpstan/phpstan": "^0.12.3"
+                "phpstan/phpstan": "^0.12.26"
             },
             "conflict": {
                 "doctrine/collections": "<1.0",
                 "doctrine/common": "<2.7",
                 "doctrine/mongodb-odm": "<1.2",
-                "doctrine/orm": "<2.5"
+                "doctrine/orm": "<2.5",
+                "doctrine/persistence": "<1.3"
             },
             "require-dev": {
                 "consistence/coding-standard": "^3.0.1",
@@ -9164,7 +9165,7 @@
                 "MIT"
             ],
             "description": "Doctrine extensions for PHPStan",
-            "time": "2020-05-13T17:45:51+00:00"
+            "time": "2020-06-01T13:11:40+00:00"
         },
         {
             "name": "phpstan/phpstan-phpunit",
