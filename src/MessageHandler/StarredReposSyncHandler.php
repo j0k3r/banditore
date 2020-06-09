@@ -12,6 +12,7 @@ use App\Repository\StarRepository;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Github\Client;
+use Github\Exception\RuntimeException;
 use Predis\ClientInterface as RedisClientInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
@@ -170,7 +171,12 @@ class StarredReposSyncHandler implements MessageHandlerInterface
 
             $em->flush();
 
-            $starredRepos = $githubUserApi->starred($user->getUsername(), ++$page, $perPage);
+            try {
+                $starredRepos = $githubUserApi->starred($user->getUsername(), ++$page, $perPage);
+            } catch (RuntimeException $e) {
+                // api limit is reached or whatever other error, we'll try next time
+                return null;
+            }
         } while (!empty($starredRepos));
 
         // now remove unstarred repos
