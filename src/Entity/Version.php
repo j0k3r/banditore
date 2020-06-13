@@ -37,7 +37,7 @@ class Version
     private $tagName;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="name", type="string", length=191, nullable=true)
      */
@@ -58,7 +58,7 @@ class Version
     private $createdAt;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="body", type="text", nullable=true)
      */
@@ -66,7 +66,7 @@ class Version
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Repo", inversedBy="versions")
-     * @ORM\JoinColumn(name="repo_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="repo_id", referencedColumnName="id", nullable=false)
      */
     private $repo;
 
@@ -135,7 +135,7 @@ class Version
      */
     public function getName()
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     /**
@@ -207,7 +207,7 @@ class Version
      */
     public function getBody()
     {
-        return $this->body;
+        return (string) $this->body;
     }
 
     public function hydrateFromGithub(array $data): void

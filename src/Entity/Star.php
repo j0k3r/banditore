@@ -26,13 +26,13 @@ class Star
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="stars")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Repo", inversedBy="stars")
-     * @ORM\JoinColumn(name="repo_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="repo_id", referencedColumnName="id", nullable=false)
      */
     private $repo;
 

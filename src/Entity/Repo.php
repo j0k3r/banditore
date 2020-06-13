@@ -38,21 +38,21 @@ class Repo
     private $fullName;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="homepage", type="string", nullable=true)
      */
     private $homepage;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="language", type="string", nullable=true)
      */
@@ -80,18 +80,22 @@ class Repo
     private $updatedAt;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      *
      * @ORM\Column(name="removed_at", type="datetime", nullable=true)
      */
     private $removedAt;
 
     /**
+     * @var ArrayCollection<Star>
+     *
      * @ORM\OneToMany(targetEntity="Star", mappedBy="repo")
      */
     private $stars;
 
     /**
+     * @var ArrayCollection<Version>
+     *
      * @ORM\OneToMany(targetEntity="Version", mappedBy="repo")
      */
     private $versions;
@@ -195,7 +199,7 @@ class Repo
      */
     public function getDescription()
     {
-        return $this->description;
+        return (string) $this->description;
     }
 
     /**
@@ -219,7 +223,7 @@ class Repo
      */
     public function getHomepage()
     {
-        return $this->homepage;
+        return (string) $this->homepage;
     }
 
     /**
@@ -243,7 +247,7 @@ class Repo
      */
     public function getLanguage()
     {
-        return $this->language;
+        return (string) $this->language;
     }
 
     /**
@@ -358,7 +362,7 @@ class Repo
     /**
      * Get removedAt.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getRemovedAt()
     {

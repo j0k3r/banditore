@@ -1,7 +1,15 @@
 parameters:
+    level: max
+    paths:
+        - src
+        - tests
+
     symfony:
         container_xml_path: %rootDir%/../../../var/cache/test/App_KernelTestDebugContainer.xml
         console_application_loader: tests/console-application.php
+
+    doctrine:
+        objectManagerLoader: tests/object-manager.php
 
     # https://github.com/phpstan/phpstan/issues/694#issuecomment-350724288
     autoload_files:
@@ -15,3 +23,4 @@ parameters:
 
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
