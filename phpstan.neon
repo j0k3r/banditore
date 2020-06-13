@@ -1,4 +1,9 @@
 parameters:
+    level: max
+    paths:
+        - src
+        - tests
+
     symfony:
         container_xml_path: %rootDir%/../../../var/cache/test/App_KernelTestDebugContainer.xml
         console_application_loader: tests/console-application.php
@@ -15,3 +20,4 @@ parameters:
 
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
