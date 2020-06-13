@@ -8,6 +8,9 @@ parameters:
         container_xml_path: %rootDir%/../../../var/cache/test/App_KernelTestDebugContainer.xml
         console_application_loader: tests/console-application.php
 
+    doctrine:
+        objectManagerLoader: tests/object-manager.php
+
     # https://github.com/phpstan/phpstan/issues/694#issuecomment-350724288
     autoload_files:
         - vendor/bin/.phpunit/phpunit-8.3-0/vendor/autoload.php

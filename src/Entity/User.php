@@ -52,7 +52,7 @@ class User implements UserInterface, EquatableInterface
     private $avatar;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="name", type="string", length=191, nullable=true)
      */
@@ -80,13 +80,15 @@ class User implements UserInterface, EquatableInterface
     private $updatedAt;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      *
      * @ORM\Column(name="removed_at", type="datetime", nullable=true)
      */
     private $removedAt;
 
     /**
+     * @var ArrayCollection<Star>
+     *
      * @ORM\OneToMany(targetEntity="Star", mappedBy="user")
      */
     private $stars;
@@ -200,7 +202,7 @@ class User implements UserInterface, EquatableInterface
      */
     public function getName()
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     /**
@@ -336,7 +338,7 @@ class User implements UserInterface, EquatableInterface
     /**
      * Get removedAt.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getRemovedAt()
     {
