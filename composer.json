@@ -18,7 +18,7 @@
         "ashleydawson/simple-pagination-bundle": "^5.0.0",
         "cache/predis-adapter": "^1.0",
         "doctrine/doctrine-bundle": "^2.0",
-        "doctrine/doctrine-migrations-bundle": "^2.1",
+        "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^2.5",
         "knplabs/github-api": "^2.2",
         "knplabs/knp-time-bundle": "^1.11",

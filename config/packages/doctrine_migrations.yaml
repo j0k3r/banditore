@@ -1,4 +1,3 @@
 doctrine_migrations:
-    dir_name: "%kernel.project_dir%/migrations"
-    name: Banditore Migrations
-    namespace: DoctrineMigrations
+    migrations_paths:
+        'DoctrineMigrations': '%kernel.project_dir%/migrations'
