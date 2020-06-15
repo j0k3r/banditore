@@ -4208,7 +4208,7 @@
         },
         {
             "name": "symfony/amqp-messenger",
-            "version": "v5.1.0",
+            "version": "v5.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/amqp-messenger.git",
@@ -4824,16 +4824,16 @@
         },
         {
             "name": "symfony/doctrine-messenger",
-            "version": "v5.1.0",
+            "version": "v5.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/doctrine-messenger.git",
-                "reference": "f0f0bae7249223973d768a4afdc9bd6388e7a055"
+                "reference": "a928616ec539355fdd57ad92216e4ebd95e05566"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/doctrine-messenger/zipball/f0f0bae7249223973d768a4afdc9bd6388e7a055",
-                "reference": "f0f0bae7249223973d768a4afdc9bd6388e7a055",
+                "url": "https://api.github.com/repos/symfony/doctrine-messenger/zipball/a928616ec539355fdd57ad92216e4ebd95e05566",
+                "reference": "a928616ec539355fdd57ad92216e4ebd95e05566",
                 "shasum": ""
             },
             "require": {
@@ -4846,7 +4846,6 @@
             },
             "require-dev": {
                 "doctrine/dbal": "^2.6|^3.0",
-                "doctrine/orm": "^2.6.3",
                 "doctrine/persistence": "^1.3",
                 "symfony/property-access": "^4.4|^5.0",
                 "symfony/serializer": "^4.4|^5.0"
@@ -4881,7 +4880,7 @@
             ],
             "description": "Symfony Doctrine Messenger Bridge",
             "homepage": "https://symfony.com",
-            "time": "2020-05-29T03:19:22+00:00"
+            "time": "2020-06-09T14:24:29+00:00"
         },
         {
             "name": "symfony/dotenv",
@@ -5794,7 +5793,7 @@
         },
         {
             "name": "symfony/messenger",
-            "version": "v5.1.0",
+            "version": "v5.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/messenger.git",
@@ -6938,7 +6937,7 @@
         },
         {
             "name": "symfony/redis-messenger",
-            "version": "v5.1.0",
+            "version": "v5.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/redis-messenger.git",
