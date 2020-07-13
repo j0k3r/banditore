@@ -2216,16 +2216,16 @@
         },
         {
             "name": "knplabs/github-api",
-            "version": "v2.14.0",
+            "version": "v2.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/php-github-api.git",
-                "reference": "953c9b453d3258a97755ec3557d112f271176f74"
+                "reference": "03445f26843ec44319fe1f3c2a8ef6fcd545a154"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/953c9b453d3258a97755ec3557d112f271176f74",
-                "reference": "953c9b453d3258a97755ec3557d112f271176f74",
+                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/03445f26843ec44319fe1f3c2a8ef6fcd545a154",
+                "reference": "03445f26843ec44319fe1f3c2a8ef6fcd545a154",
                 "shasum": ""
             },
             "require": {
@@ -2243,12 +2243,14 @@
                 "guzzlehttp/psr7": "^1.2",
                 "php-http/guzzle6-adapter": "^1.0 || ^2.0",
                 "php-http/mock-client": "^1.2",
+                "phpstan/phpstan": "^0.12.23",
                 "phpunit/phpunit": "^7.0 || ^8.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.14.x-dev"
+                    "dev-2.x": "2.15.x-dev",
+                    "dev-master": "3.0.x-dev"
                 }
             },
             "autoload": {
@@ -2285,7 +2287,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-04-25T20:36:03+00:00"
+            "time": "2020-07-11T16:45:45+00:00"
         },
         {
             "name": "knplabs/knp-time-bundle",
