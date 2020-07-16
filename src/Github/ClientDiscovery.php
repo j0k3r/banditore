@@ -70,7 +70,7 @@ class ClientDiscovery
         );
 
         // try with the application default client
-        $this->client->authenticate($this->clientId, $this->clientSecret, GithubClient::AUTH_HTTP_PASSWORD);
+        $this->client->authenticate($this->clientId, $this->clientSecret, GithubClient::AUTH_CLIENT_ID);
 
         $remaining = $this->getRateLimits($this->client, $this->logger);
         if ($remaining >= self::THRESHOLD_RATE_REMAIN_APP) {
@@ -83,7 +83,7 @@ class ClientDiscovery
         // when at least one is ok, use it!
         $users = $this->userRepository->findAllTokens();
         foreach ($users as $user) {
-            $this->client->authenticate($user['accessToken'], null, GithubClient::AUTH_HTTP_TOKEN);
+            $this->client->authenticate($user['accessToken'], null, GithubClient::AUTH_ACCESS_TOKEN);
 
             $remaining = $this->getRateLimits($this->client, $this->logger);
             if ($remaining >= self::THRESHOLD_RATE_REMAIN_USER) {
