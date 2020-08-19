@@ -90,10 +90,6 @@
         {
             "type": "vcs",
             "url": "https://github.com/j0k3r/RedisMock"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/j0k3r/SimplePaginationBundle"
         }
     ],
     "extra": {
