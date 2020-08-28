@@ -2355,16 +2355,16 @@
         },
         {
             "name": "knpuniversity/oauth2-client-bundle",
-            "version": "v2.2.0",
+            "version": "v2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/knpuniversity/oauth2-client-bundle.git",
-                "reference": "0a6dc939db5582c37847690099c7452775185879"
+                "reference": "9d1eb0e16cb34d72deaf4ae38a7259da0ce23590"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/knpuniversity/oauth2-client-bundle/zipball/0a6dc939db5582c37847690099c7452775185879",
-                "reference": "0a6dc939db5582c37847690099c7452775185879",
+                "url": "https://api.github.com/repos/knpuniversity/oauth2-client-bundle/zipball/9d1eb0e16cb34d72deaf4ae38a7259da0ce23590",
+                "reference": "9d1eb0e16cb34d72deaf4ae38a7259da0ce23590",
                 "shasum": ""
             },
             "require": {
@@ -2408,7 +2408,7 @@
                 "oauth",
                 "oauth2"
             ],
-            "time": "2020-07-21T15:08:07+00:00"
+            "time": "2020-08-26T23:53:51+00:00"
         },
         {
             "name": "laminas/laminas-code",
