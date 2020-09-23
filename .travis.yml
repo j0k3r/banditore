@@ -2,6 +2,11 @@ os: linux
 dist: xenial
 language: php
 
+# avoid double Travis build when the PR is created on upstream
+if: |
+    type = pull_request OR \
+    branch = master
+
 addons:
     apt:
         packages:
