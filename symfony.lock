@@ -574,6 +574,9 @@
     "symfony/property-info": {
         "version": "v5.1.0"
     },
+    "symfony/proxy-manager-bridge": {
+        "version": "v5.1.5"
+    },
     "symfony/redis-messenger": {
         "version": "v5.1.0"
     },
