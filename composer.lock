@@ -4576,16 +4576,16 @@
         },
         {
             "name": "symfony/asset",
-            "version": "v5.1.5",
+            "version": "v5.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/asset.git",
-                "reference": "2f07b5993f1607c1c489bac3e15a000c33668b4b"
+                "reference": "ef0bcafce1c14bbf49838b01e990a8bfafd071eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/asset/zipball/2f07b5993f1607c1c489bac3e15a000c33668b4b",
-                "reference": "2f07b5993f1607c1c489bac3e15a000c33668b4b",
+                "url": "https://api.github.com/repos/symfony/asset/zipball/ef0bcafce1c14bbf49838b01e990a8bfafd071eb",
+                "reference": "ef0bcafce1c14bbf49838b01e990a8bfafd071eb",
                 "shasum": ""
             },
             "require": {
@@ -4643,7 +4643,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-05-30T20:35:19+00:00"
+            "time": "2020-09-02T16:23:27+00:00"
         },
         {
             "name": "symfony/cache",
