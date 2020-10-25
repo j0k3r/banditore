@@ -32,9 +32,9 @@ cache:
 jobs:
     fast_finish: true
     include:
-        - php: 7.2
-          env: CS_FIXER=run
         - php: 7.3
+          env: CS_FIXER=run
+        - php: 7.2
           env: COVERAGE=run
         - php: 7.4
         - php: nightly
@@ -64,7 +64,7 @@ before_script:
 script:
     - php bin/simple-phpunit -v $PHPUNIT_FLAGS
     - if [ "$CS_FIXER" = "run" ]; then php bin/php-cs-fixer fix --verbose --dry-run ; fi;
-    - if [ "$CS_FIXER" = "run" ]; then php bin/phpstan analyse ; fi;
+    - if [ "$CS_FIXER" = "run" ]; then php bin/phpstan analyse --no-progress ; fi;
 
 after_success:
     - |
