@@ -50,7 +50,6 @@
         "doctrine/doctrine-fixtures-bundle": "^3.0",
         "friendsofphp/php-cs-fixer": "~2.0",
         "m6web/redis-mock": "dev-predis-1.x",
-        "php-coveralls/php-coveralls": "^2.0",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "^0.12.6",
         "phpstan/phpstan-deprecation-rules": "^0.12.3",
