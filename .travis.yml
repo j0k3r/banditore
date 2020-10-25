@@ -69,5 +69,8 @@ script:
 after_success:
     - |
         if [ "$COVERAGE" = "run" ]; then
-            php bin/php-coveralls -v
+            wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.4.2/php-coveralls.phar
+            chmod +x php-coveralls.phar
+
+            php php-coveralls.phar -v -x build/logs/clover.xml
         fi
