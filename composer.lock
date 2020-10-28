@@ -1779,14 +1779,10 @@
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2"
+                "php": "^7.1 || ^8.0"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^7.0",
-                "phpstan/phpstan": "^0.12.18",
-                "phpunit/phpunit": "^8.0",
-                "psalm/plugin-phpunit": "^0.10.0",
-                "vimeo/psalm": "^3.10"
+                "bamarni/composer-bin-plugin": "^1.4"
             },
             "bin": [
                 "bin/sql-formatter"
@@ -1819,7 +1815,7 @@
                 "highlight",
                 "sql"
             ],
-            "time": "2020-04-27T09:31:00+00:00"
+            "time": "2020-07-30T16:57:33+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -4891,7 +4887,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-09-18T14:27:32+00:00"
+            "time": "2020-10-07T15:23:00+00:00"
         },
         {
             "name": "symfony/dependency-injection",
@@ -10469,16 +10465,16 @@
         },
         {
             "name": "symfony/browser-kit",
-            "version": "v5.1.7",
+            "version": "v5.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/browser-kit.git",
-                "reference": "8944cc83bb18f83f577225c695d999044e7c62b0"
+                "reference": "65b7d208280f2700f43ba44a8059a25d7b01347b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/browser-kit/zipball/8944cc83bb18f83f577225c695d999044e7c62b0",
-                "reference": "8944cc83bb18f83f577225c695d999044e7c62b0",
+                "url": "https://api.github.com/repos/symfony/browser-kit/zipball/65b7d208280f2700f43ba44a8059a25d7b01347b",
+                "reference": "65b7d208280f2700f43ba44a8059a25d7b01347b",
                 "shasum": ""
             },
             "require": {
@@ -10495,11 +10491,6 @@
                 "symfony/process": ""
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.1-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\BrowserKit\\": ""
@@ -10538,7 +10529,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-02T08:49:02+00:00"
+            "time": "2020-10-24T12:01:57+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -10689,16 +10680,16 @@
         },
         {
             "name": "symfony/dom-crawler",
-            "version": "v5.1.7",
+            "version": "v5.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "6d6885e167aad0af4128b392f22d8f2a33dd88ec"
+                "reference": "0969122fe144dd8ab2e8c98c7e03eedc621b368c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/6d6885e167aad0af4128b392f22d8f2a33dd88ec",
-                "reference": "6d6885e167aad0af4128b392f22d8f2a33dd88ec",
+                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/0969122fe144dd8ab2e8c98c7e03eedc621b368c",
+                "reference": "0969122fe144dd8ab2e8c98c7e03eedc621b368c",
                 "shasum": ""
             },
             "require": {
@@ -10718,11 +10709,6 @@
                 "symfony/css-selector": ""
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.1-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\DomCrawler\\": ""
@@ -10761,7 +10747,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-09-02T16:23:27+00:00"
+            "time": "2020-10-24T12:01:57+00:00"
         },
         {
             "name": "symfony/maker-bundle",
