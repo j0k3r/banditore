@@ -32,9 +32,9 @@ cache:
 jobs:
     fast_finish: true
     include:
-        - php: 7.3
-          env: CS_FIXER=run
         - php: 7.2
+          env: CS_FIXER=run
+        - php: 7.3
           env: COVERAGE=run
         - php: 7.4
         - php: nightly
@@ -42,6 +42,7 @@ jobs:
         - php: nightly
 
 before_install:
+    - composer selfupdate --1
     - echo 'date.timezone = "Europe/Paris"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - echo "extension=redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     # install amqp
