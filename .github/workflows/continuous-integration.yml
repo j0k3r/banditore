@@ -1,0 +1,126 @@
+name: "CI"
+
+on:
+  pull_request:
+    branches:
+      - "master"
+  push:
+    branches:
+      - "master"
+
+env:
+  fail-fast: true
+  APP_ENV: test
+
+jobs:
+  phpunit:
+    name: "PHPUnit"
+    runs-on: "ubuntu-20.04"
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: f43_test
+        ports:
+          - 3306:3306
+      rabbitmq:
+        image: rabbitmq:3-management
+        ports:
+          - 5672:5672
+      redis:
+        image: redis:6-alpine
+        ports:
+          - 6379:6379
+
+    strategy:
+      matrix:
+        php-version:
+          - "7.2"
+          - "7.3"
+          - "7.4"
+        coverage:
+          - "disabled"
+        include:
+          - coverage: "enabled"
+            php-version: "7.2"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+        with:
+          fetch-depth: 2
+
+      - name: "Install PHP with PCOV"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          coverage: "pcov"
+          tools: composer:v1
+          extensions: pdo, pdo_mysql, curl, redis
+          ini-values: "date.timezone=Europe/Paris"
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Cache dependencies installed with composer"
+        uses: "actions/cache@v2"
+        with:
+          path: "~/.composer/cache"
+          key: "php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('composer.lock') }}"
+          restore-keys: "php-${{ matrix.php-version }}-composer-locked-"
+
+      - name: "Install dependencies with composer"
+        run: "composer install --no-interaction --optimize-autoloader --no-progress --prefer-dist"
+
+      - name: "Create database"
+        run: "php bin/console doctrine:database:create --env=test"
+
+      - name: "Create schema"
+        run: "php bin/console doctrine:schema:create --env=test"
+
+      - name: "Load fixtures"
+        run: "php bin/console doctrine:fixtures:load --env=test -n"
+
+      - name: "Setup messenger queue"
+        run: "php bin/console messenger:setup-transports --env=dev"
+
+      - name: "Run PHPUnit (with coverage)"
+        run: "php bin/simple-phpunit -v --coverage-clover=coverage.xml"
+        if: "${{ matrix.coverage == 'enabled' }}"
+
+      - name: "Run PHPUnit"
+        run: "php bin/simple-phpunit -v"
+        if: "${{ matrix.coverage == 'disabled' }}"
+
+      - name: "Upload coverage file"
+        uses: "actions/upload-artifact@v2"
+        if: "${{ matrix.coverage == 'enabled' }}"
+        with:
+          path: "coverage.xml"
+          retention-days: 1
+
+  upload_coverage:
+    name: "Upload coverage to Coveralls"
+    runs-on: "ubuntu-20.04"
+    needs:
+      - "phpunit"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+        with:
+          fetch-depth: 2
+
+      - name: "Download coverage files"
+        uses: "actions/download-artifact@v2"
+
+      - name: "Retrieve Coveralls phar"
+        run: "wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.4.2/php-coveralls.phar"
+
+      - name: "Enable Coveralls phar"
+        run: "chmod +x php-coveralls.phar"
+
+      - name: "Upload to Coveralls"
+        run: "php php-coveralls.phar -v -x artifact/coverage.xml -o artifact/coveralls-upload.json"
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
