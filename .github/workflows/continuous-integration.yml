@@ -14,18 +14,11 @@ env:
 
 jobs:
   phpunit:
-    name: "PHPUnit"
+    name: "PHPUnit (PHP ${{ matrix.php }})"
     runs-on: "ubuntu-20.04"
     services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: f43_test
-        ports:
-          - 3306:3306
       rabbitmq:
-        image: rabbitmq:3-management
+        image: rabbitmq:3-alpine
         ports:
           - 5672:5672
       redis:
@@ -35,15 +28,13 @@ jobs:
 
     strategy:
       matrix:
-        php-version:
+        php:
           - "7.2"
           - "7.3"
           - "7.4"
-        coverage:
-          - "disabled"
         include:
-          - coverage: "enabled"
-            php-version: "7.2"
+          - php: "7.4"
+            coverage: true
 
     steps:
       - name: "Checkout"
@@ -54,7 +45,7 @@ jobs:
       - name: "Install PHP with PCOV"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "${{ matrix.php-version }}"
+          php-version: "${{ matrix.php }}"
           coverage: "pcov"
           tools: composer:v1
           extensions: pdo, pdo_mysql, curl, redis
@@ -62,12 +53,19 @@ jobs:
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: "Setup MySQL"
+        run: sudo systemctl start mysql.service
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
       - name: "Cache dependencies installed with composer"
         uses: "actions/cache@v2"
         with:
-          path: "~/.composer/cache"
-          key: "php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('composer.lock') }}"
-          restore-keys: "php-${{ matrix.php-version }}-composer-locked-"
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: "php-${{ matrix.php }}-composer-locked-${{ hashFiles('composer.lock') }}"
+          restore-keys: "php-${{ matrix.php }}-composer-locked-"
 
       - name: "Install dependencies with composer"
         run: "composer install --no-interaction --optimize-autoloader --no-progress --prefer-dist"
@@ -86,41 +84,22 @@ jobs:
 
       - name: "Run PHPUnit (with coverage)"
         run: "php bin/simple-phpunit -v --coverage-clover=coverage.xml"
-        if: "${{ matrix.coverage == 'enabled' }}"
+        if: matrix.coverage
 
       - name: "Run PHPUnit"
         run: "php bin/simple-phpunit -v"
-        if: "${{ matrix.coverage == 'disabled' }}"
-
-      - name: "Upload coverage file"
-        uses: "actions/upload-artifact@v2"
-        if: "${{ matrix.coverage == 'enabled' }}"
-        with:
-          path: "coverage.xml"
-          retention-days: 1
-
-  upload_coverage:
-    name: "Upload coverage to Coveralls"
-    runs-on: "ubuntu-20.04"
-    needs:
-      - "phpunit"
-
-    steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v2"
-        with:
-          fetch-depth: 2
-
-      - name: "Download coverage files"
-        uses: "actions/download-artifact@v2"
+        if: "${{ !matrix.coverage }}"
 
       - name: "Retrieve Coveralls phar"
+        if: matrix.coverage
         run: "wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.4.2/php-coveralls.phar"
 
       - name: "Enable Coveralls phar"
+        if: matrix.coverage
         run: "chmod +x php-coveralls.phar"
 
       - name: "Upload to Coveralls"
-        run: "php php-coveralls.phar -v -x artifact/coverage.xml -o artifact/coveralls-upload.json"
+        if: matrix.coverage
+        run: "php php-coveralls.phar -v -x coverage.xml -o coveralls-upload.json"
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
