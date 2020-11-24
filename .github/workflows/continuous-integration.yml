@@ -33,7 +33,7 @@ jobs:
           - "7.3"
           - "7.4"
         include:
-          - php: "7.4"
+          - php: "7.2"
             coverage: true
 
     steps:
@@ -54,7 +54,9 @@ jobs:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Setup MySQL"
-        run: sudo systemctl start mysql.service
+        run: |
+          sudo systemctl start mysql.service
+          sudo mysql -u root -proot -e "CREATE DATABASE banditore_test"
 
       - name: Get composer cache directory
         id: composer-cache
@@ -69,9 +71,6 @@ jobs:
 
       - name: "Install dependencies with composer"
         run: "composer install --no-interaction --optimize-autoloader --no-progress --prefer-dist"
-
-      - name: "Create database"
-        run: "php bin/console doctrine:database:create --env=test"
 
       - name: "Create schema"
         run: "php bin/console doctrine:schema:create --env=test"
