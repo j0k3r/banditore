@@ -31,7 +31,7 @@
         "sensio/framework-extra-bundle": "^5.5",
         "sentry/sentry-symfony": "~3.0",
         "snc/redis-bundle": "^3.2",
-        "symfony/amqp-messenger": "5.1.*",
+        "symfony/amqp-messenger": "5.2.*",
         "symfony/asset": "5.1.*",
         "symfony/dotenv": "5.1.*",
         "symfony/flex": "^1.6",
