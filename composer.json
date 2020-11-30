@@ -33,7 +33,7 @@
         "snc/redis-bundle": "^3.2",
         "symfony/amqp-messenger": "5.1.*",
         "symfony/asset": "5.1.*",
-        "symfony/dotenv": "5.1.*",
+        "symfony/dotenv": "5.2.*",
         "symfony/flex": "^1.6",
         "symfony/form": "5.1.*",
         "symfony/monolog-bundle": "^3.5",
