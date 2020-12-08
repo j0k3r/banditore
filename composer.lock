@@ -532,10 +532,6 @@
                 }
             ],
             "description": "Composer plugin that provides efficient querying for installed package versions (no runtime IO)",
-            "support": {
-                "issues": "https://github.com/composer/package-versions-deprecated/issues",
-                "source": "https://github.com/composer/package-versions-deprecated/tree/1.11.99.1"
-            },
             "funding": [
                 {
                     "url": "https://packagist.com",
@@ -1398,10 +1394,6 @@
                 "constructor",
                 "instantiate"
             ],
-            "support": {
-                "issues": "https://github.com/doctrine/instantiator/issues",
-                "source": "https://github.com/doctrine/instantiator/tree/1.4.0"
-            },
             "funding": [
                 {
                     "url": "https://www.doctrine-project.org/sponsorship.html",
@@ -1776,14 +1768,10 @@
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2"
+                "php": "^7.1 || ^8.0"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^7.0",
-                "phpstan/phpstan": "^0.12.18",
-                "phpunit/phpunit": "^8.0",
-                "psalm/plugin-phpunit": "^0.10.0",
-                "vimeo/psalm": "^3.10"
+                "bamarni/composer-bin-plugin": "^1.4"
             },
             "bin": [
                 "bin/sql-formatter"
@@ -1816,7 +1804,7 @@
                 "highlight",
                 "sql"
             ],
-            "time": "2020-04-27T09:31:00+00:00"
+            "time": "2020-07-30T16:57:33+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -2175,10 +2163,6 @@
                 "gist",
                 "github"
             ],
-            "support": {
-                "issues": "https://github.com/KnpLabs/php-github-api/issues",
-                "source": "https://github.com/KnpLabs/php-github-api/tree/v2.17.0"
-            },
             "funding": [
                 {
                     "url": "https://github.com/acrobat",
@@ -3244,10 +3228,6 @@
                 "message",
                 "psr-7"
             ],
-            "support": {
-                "issues": "https://github.com/php-http/message/issues",
-                "source": "https://github.com/php-http/message/tree/1.10.0"
-            },
             "time": "2020-11-11T10:19:56+00:00"
         },
         {
@@ -4408,10 +4388,6 @@
                 "redis",
                 "symfony"
             ],
-            "support": {
-                "issues": "https://github.com/snc/SncRedisBundle/issues",
-                "source": "https://github.com/snc/SncRedisBundle/tree/3.2.4"
-            },
             "time": "2020-11-07T16:46:54+00:00"
         },
         {
@@ -9478,11 +9454,6 @@
                 "validation",
                 "versioning"
             ],
-            "support": {
-                "irc": "irc://irc.freenode.org/composer",
-                "issues": "https://github.com/composer/semver/issues",
-                "source": "https://github.com/composer/semver/tree/3.2.4"
-            },
             "funding": [
                 {
                     "url": "https://packagist.com",
@@ -9541,11 +9512,6 @@
                 "Xdebug",
                 "performance"
             ],
-            "support": {
-                "irc": "irc://irc.freenode.org/composer",
-                "issues": "https://github.com/composer/xdebug-handler/issues",
-                "source": "https://github.com/composer/xdebug-handler/tree/1.4.5"
-            },
             "funding": [
                 {
                     "url": "https://packagist.com",
@@ -9700,10 +9666,6 @@
                 "Fixture",
                 "persistence"
             ],
-            "support": {
-                "issues": "https://github.com/doctrine/DoctrineFixturesBundle/issues",
-                "source": "https://github.com/doctrine/DoctrineFixturesBundle/tree/3.4.0"
-            },
             "funding": [
                 {
                     "url": "https://www.doctrine-project.org/sponsorship.html",
@@ -9722,16 +9684,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v2.16.8",
+            "version": "v2.17.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/PHP-CS-Fixer.git",
-                "reference": "0f8286f9601a211c83bebf7f3125610479ec084a"
+                "reference": "5274ce3d3200a2b374baa42143cb9dfcdcc2fa52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/0f8286f9601a211c83bebf7f3125610479ec084a",
-                "reference": "0f8286f9601a211c83bebf7f3125610479ec084a",
+                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/5274ce3d3200a2b374baa42143cb9dfcdcc2fa52",
+                "reference": "5274ce3d3200a2b374baa42143cb9dfcdcc2fa52",
                 "shasum": ""
             },
             "require": {
@@ -9740,7 +9702,7 @@
                 "doctrine/annotations": "^1.2",
                 "ext-json": "*",
                 "ext-tokenizer": "*",
-                "php": "^5.6 || ^7.0",
+                "php": "^5.6 || ^7.0 || ^8.0",
                 "php-cs-fixer/diff": "^1.3",
                 "symfony/console": "^3.4.43 || ^4.1.6 || ^5.0",
                 "symfony/event-dispatcher": "^3.0 || ^4.0 || ^5.0",
@@ -9778,6 +9740,11 @@
                 "php-cs-fixer"
             ],
             "type": "application",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.17-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "PhpCsFixer\\": "src/"
@@ -9816,7 +9783,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-12-06T22:38:21+00:00"
+            "time": "2020-12-07T20:43:00+00:00"
         },
         {
             "name": "m6web/redis-mock",
