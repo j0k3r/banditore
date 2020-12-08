@@ -13,7 +13,7 @@ class DefaultControllerTest extends WebTestCase
     /** @var \Symfony\Bundle\FrameworkBundle\KernelBrowser */
     private $client = null;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->client = static::createClient();
     }
