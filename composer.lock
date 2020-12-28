@@ -7692,7 +7692,7 @@
         },
         {
             "name": "symfony/proxy-manager-bridge",
-            "version": "v5.2.0",
+            "version": "v5.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/proxy-manager-bridge.git",
