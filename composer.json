@@ -20,7 +20,7 @@
         "doctrine/doctrine-bundle": "^2.0",
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^2.5",
-        "knplabs/github-api": "^2.2",
+        "knplabs/github-api": "^3.0",
         "knplabs/knp-time-bundle": "^1.11",
         "knpuniversity/oauth2-client-bundle": "^2.1",
         "laminas/laminas-code": "^3.4",

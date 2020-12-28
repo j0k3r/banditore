@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "71fa5dfbd563f06a4d2c00be5abab2da",
+    "content-hash": "e99e04393fa78c9ed37fd36941211d84",
     "packages": [
         {
             "name": "ashleydawson/simple-pagination",
@@ -2181,40 +2181,47 @@
         },
         {
             "name": "knplabs/github-api",
-            "version": "v2.18.0",
+            "version": "v3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/php-github-api.git",
-                "reference": "60d0d5fd450aae8fa147eea53f1fee4b0f59a57f"
+                "reference": "adf4ecaafc96e2c7a43370e229b58d722f2ad97a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/60d0d5fd450aae8fa147eea53f1fee4b0f59a57f",
-                "reference": "60d0d5fd450aae8fa147eea53f1fee4b0f59a57f",
+                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/adf4ecaafc96e2c7a43370e229b58d722f2ad97a",
+                "reference": "adf4ecaafc96e2c7a43370e229b58d722f2ad97a",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1",
-                "php-http/cache-plugin": "^1.4",
-                "php-http/client-common": "^1.6 || ^2.0",
-                "php-http/client-implementation": "^1.0",
-                "php-http/discovery": "^1.0",
-                "php-http/httplug": "^1.1 || ^2.0",
+                "ext-json": "*",
+                "php": "^7.2.5 || ^8.0",
+                "php-http/cache-plugin": "^1.7.1",
+                "php-http/client-common": "^2.3",
+                "php-http/discovery": "^1.12",
+                "php-http/httplug": "^2.2",
+                "php-http/multipart-stream-builder": "^1.1.2",
                 "psr/cache": "^1.0",
-                "psr/http-message": "^1.0"
+                "psr/http-client-implementation": "^1.0",
+                "psr/http-factory-implementation": "^1.0",
+                "psr/http-message": "^1.0",
+                "symfony/polyfill-php80": "^1.17"
             },
             "require-dev": {
-                "cache/array-adapter": "^0.4",
-                "guzzlehttp/psr7": "^1.2",
-                "php-http/guzzle6-adapter": "^1.0 || ^2.0",
-                "php-http/mock-client": "^1.2",
-                "phpstan/phpstan": "^0.12.23",
-                "phpunit/phpunit": "^7.0 || ^8.0"
+                "guzzlehttp/guzzle": "^7.2",
+                "guzzlehttp/psr7": "^1.7",
+                "http-interop/http-factory-guzzle": "^1.0",
+                "php-http/mock-client": "^1.4.1",
+                "phpstan/extension-installer": "^1.0.5",
+                "phpstan/phpstan": "^0.12.57",
+                "phpstan/phpstan-deprecation-rules": "^0.12.5",
+                "phpunit/phpunit": "^8.5 || ^9.4",
+                "symfony/cache": "^5.1.8"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-2.x": "2.18.x-dev",
+                    "dev-2.x": "2.19.x-dev",
                     "dev-master": "3.0.x-dev"
                 }
             },
@@ -2252,7 +2259,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-12-11T19:39:25+00:00"
+            "time": "2020-12-21T18:38:02+00:00"
         },
         {
             "name": "knplabs/knp-time-bundle",
@@ -3292,6 +3299,64 @@
                 "uri"
             ],
             "time": "2015-12-19T14:08:53+00:00"
+        },
+        {
+            "name": "php-http/multipart-stream-builder",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/multipart-stream-builder.git",
+                "reference": "121299c2aad475a19087bc6298a1c9aa4d5c1ecc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/multipart-stream-builder/zipball/121299c2aad475a19087bc6298a1c9aa4d5c1ecc",
+                "reference": "121299c2aad475a19087bc6298a1c9aa4d5c1ecc",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0",
+                "php-http/discovery": "^1.7",
+                "php-http/message-factory": "^1.0.2",
+                "psr/http-factory": "^1.0",
+                "psr/http-message": "^1.0"
+            },
+            "require-dev": {
+                "nyholm/psr7": "^1.0",
+                "php-http/message": "^1.5",
+                "phpunit/phpunit": "^7.5.15 || ^8.5 || ^9.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Http\\Message\\MultipartStream\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com"
+                }
+            ],
+            "description": "A builder class that help you create a multipart stream",
+            "homepage": "http://php-http.org",
+            "keywords": [
+                "factory",
+                "http",
+                "message",
+                "multipart stream",
+                "stream"
+            ],
+            "time": "2020-07-13T15:48:43+00:00"
         },
         {
             "name": "php-http/promise",
@@ -5916,16 +5981,16 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v5.2.0",
+            "version": "v5.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "5b9fc5d85a6cec73832ff170ccd468d97dd082d9"
+                "reference": "a77cbec69ea90dea509beef29b79748c0df33a83"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/5b9fc5d85a6cec73832ff170ccd468d97dd082d9",
-                "reference": "5b9fc5d85a6cec73832ff170ccd468d97dd082d9",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/a77cbec69ea90dea509beef29b79748c0df33a83",
+                "reference": "a77cbec69ea90dea509beef29b79748c0df33a83",
                 "shasum": ""
             },
             "require": {
@@ -5995,7 +6060,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-11-28T13:45:20+00:00"
+            "time": "2020-12-14T10:56:50+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
