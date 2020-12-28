@@ -5189,16 +5189,16 @@
         },
         {
             "name": "symfony/dotenv",
-            "version": "v5.2.0",
+            "version": "v5.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dotenv.git",
-                "reference": "264ca18dd6e4ab3cfa525ee52cceff9540a1019e"
+                "reference": "204a9dc6f70a13d9d24ebbf2c5ce51be235f3d7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dotenv/zipball/264ca18dd6e4ab3cfa525ee52cceff9540a1019e",
-                "reference": "264ca18dd6e4ab3cfa525ee52cceff9540a1019e",
+                "url": "https://api.github.com/repos/symfony/dotenv/zipball/204a9dc6f70a13d9d24ebbf2c5ce51be235f3d7b",
+                "reference": "204a9dc6f70a13d9d24ebbf2c5ce51be235f3d7b",
                 "shasum": ""
             },
             "require": {
@@ -5252,7 +5252,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-11-18T09:42:36+00:00"
+            "time": "2020-12-08T17:02:38+00:00"
         },
         {
             "name": "symfony/error-handler",
