@@ -4391,21 +4391,21 @@
         },
         {
             "name": "snc/redis-bundle",
-            "version": "3.2.4",
+            "version": "3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/snc/SncRedisBundle.git",
-                "reference": "417086eccdd2619f230353fdac952b83bbd0977a"
+                "reference": "e3b42f149e5dcf7c147ccedab6e9154203b93b3b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/417086eccdd2619f230353fdac952b83bbd0977a",
-                "reference": "417086eccdd2619f230353fdac952b83bbd0977a",
+                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/e3b42f149e5dcf7c147ccedab6e9154203b93b3b",
+                "reference": "e3b42f149e5dcf7c147ccedab6e9154203b93b3b",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3",
-                "symfony/framework-bundle": "^3.4 || ^4.2 || ^5.0",
+                "php": "^7.2 || ^8.0",
+                "symfony/framework-bundle": "^3.4.23 || ^4.2.4 || ^5.0",
                 "symfony/http-foundation": "^3.4 || ^4.2 || ^5.0",
                 "symfony/yaml": "^3.4 || ^4.2 || ^5.0"
             },
@@ -4413,14 +4413,14 @@
                 "doctrine/doctrine-bundle": "^1.11.2 || ^2.0",
                 "doctrine/orm": "^2.6.4",
                 "ext-pdo_sqlite": "*",
-                "phpunit/phpunit": "^7.5",
+                "phpunit/phpunit": "^8.5",
                 "predis/predis": "^1.1",
                 "swiftmailer/swiftmailer": "^6.0",
                 "symfony/browser-kit": "^3.4 || ^4.2 || ^5.0",
                 "symfony/console": "^3.4 || ^4.2 || ^5.0",
                 "symfony/dom-crawler": "^3.4 || ^4.2 || ^5.0",
                 "symfony/filesystem": "^3.4 || ^4.2 || ^5.0",
-                "symfony/phpunit-bridge": "^4.3.5",
+                "symfony/phpunit-bridge": "^4.4.8",
                 "symfony/profiler-pack": "^1.0",
                 "symfony/swiftmailer-bundle": "^2.0 || ^3.0",
                 "symfony/twig-bundle": "^3.4 || ^4.2 || ^5.0"
@@ -4466,7 +4466,7 @@
                 "redis",
                 "symfony"
             ],
-            "time": "2020-11-07T16:46:54+00:00"
+            "time": "2021-01-12T19:20:24+00:00"
         },
         {
             "name": "symfony/amqp-messenger",
@@ -9264,16 +9264,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v5.2.0",
+            "version": "v5.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "bb73619b2ae5121bbbcd9f191dfd53ded17ae598"
+                "reference": "290ea5e03b8cf9b42c783163123f54441fb06939"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/bb73619b2ae5121bbbcd9f191dfd53ded17ae598",
-                "reference": "bb73619b2ae5121bbbcd9f191dfd53ded17ae598",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/290ea5e03b8cf9b42c783163123f54441fb06939",
+                "reference": "290ea5e03b8cf9b42c783163123f54441fb06939",
                 "shasum": ""
             },
             "require": {
@@ -9332,7 +9332,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-11-28T10:57:20+00:00"
+            "time": "2020-12-08T17:02:38+00:00"
         },
         {
             "name": "twig/extra-bundle",
