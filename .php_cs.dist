@@ -1,5 +1,10 @@
 <?php
 
+$finder = PhpCsFixer\Finder::create()
+    ->exclude(['vendor', 'var', 'web'])
+    ->in(__DIR__)
+;
+
 return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
     ->setRules([
@@ -21,9 +26,5 @@ return PhpCsFixer\Config::create()
         'strict_param' => true,
         'concat_space' => ['spacing' => 'one'],
     ])
-    ->setFinder(
-        PhpCsFixer\Finder::create()
-            ->exclude(['vendor', 'var', 'web'])
-            ->in(__DIR__)
-    )
+    ->setFinder($finder)
 ;
