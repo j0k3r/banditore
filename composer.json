@@ -28,7 +28,7 @@
         "marcw/rss-writer": "^0.4",
         "php-http/guzzle6-adapter": "^2.0",
         "ramsey/uuid": "^4.0",
-        "sensio/framework-extra-bundle": "^5.5",
+        "sensio/framework-extra-bundle": "^6.0",
         "sentry/sentry-symfony": "~3.0",
         "snc/redis-bundle": "^3.2",
         "symfony/amqp-messenger": "5.2.*",
