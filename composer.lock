@@ -5230,7 +5230,7 @@
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v5.2.2",
+            "version": "v5.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
@@ -5297,7 +5297,7 @@
             "description": "Allows you to standardize and centralize the way objects are constructed in your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/dependency-injection/tree/v5.2.2"
+                "source": "https://github.com/symfony/dependency-injection/tree/v5.2.3"
             },
             "funding": [
                 {
@@ -5874,7 +5874,7 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v5.2.2",
+            "version": "v5.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
@@ -5916,7 +5916,7 @@
             "description": "Provides basic utilities for the filesystem",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/filesystem/tree/v5.2.2"
+                "source": "https://github.com/symfony/filesystem/tree/v5.2.3"
             },
             "funding": [
                 {
@@ -8182,7 +8182,7 @@
         },
         {
             "name": "symfony/proxy-manager-bridge",
-            "version": "v5.2.2",
+            "version": "v5.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/proxy-manager-bridge.git",
@@ -8229,7 +8229,7 @@
             "description": "Provides integration for ProxyManager with various Symfony components",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/proxy-manager-bridge/tree/v5.2.2"
+                "source": "https://github.com/symfony/proxy-manager-bridge/tree/v5.2.3"
             },
             "funding": [
                 {
