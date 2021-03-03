@@ -2379,28 +2379,31 @@
         },
         {
             "name": "knplabs/knp-time-bundle",
-            "version": "v1.15.0",
+            "version": "v1.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/KnpTimeBundle.git",
-                "reference": "96bc6523babd1a85988f8b4ecd2730c3aa064b8c"
+                "reference": "5937765753967d691ffde7ea23770a74df9b11ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/KnpTimeBundle/zipball/96bc6523babd1a85988f8b4ecd2730c3aa064b8c",
-                "reference": "96bc6523babd1a85988f8b4ecd2730c3aa064b8c",
+                "url": "https://api.github.com/repos/KnpLabs/KnpTimeBundle/zipball/5937765753967d691ffde7ea23770a74df9b11ba",
+                "reference": "5937765753967d691ffde7ea23770a74df9b11ba",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1.3",
-                "symfony/config": "~3.4|^4.3|^5.0",
-                "symfony/dependency-injection": "~3.4|^4.3|^5.0",
+                "php": ">=7.2.5",
+                "symfony/config": "^4.3|^5.0",
+                "symfony/dependency-injection": "^4.3|^5.0",
                 "symfony/translation": "^4.3|^5.0"
+            },
+            "conflict": {
+                "phpunit/phpunit": "<8.0"
             },
             "require-dev": {
                 "symfony/framework-bundle": "^4.3|^5.0",
-                "symfony/phpunit-bridge": "^4.3|^5.0",
-                "symfony/templating": "~3.4|^4.3|^5.0",
+                "symfony/phpunit-bridge": "^5.2",
+                "symfony/templating": "^4.3|^5.0",
                 "symfony/twig-bundle": "^4.3|^5.0"
             },
             "suggest": {
@@ -2443,9 +2446,9 @@
             ],
             "support": {
                 "issues": "https://github.com/KnpLabs/KnpTimeBundle/issues",
-                "source": "https://github.com/KnpLabs/KnpTimeBundle/tree/v1.15.0"
+                "source": "https://github.com/KnpLabs/KnpTimeBundle/tree/v1.16.0"
             },
-            "time": "2021-01-15T18:15:43+00:00"
+            "time": "2021-03-02T16:13:12+00:00"
         },
         {
             "name": "knpuniversity/oauth2-client-bundle",
