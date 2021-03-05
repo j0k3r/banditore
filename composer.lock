@@ -9037,16 +9037,16 @@
         },
         {
             "name": "symfony/translation",
-            "version": "v5.2.3",
+            "version": "v5.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation.git",
-                "reference": "c021864d4354ee55160ddcfd31dc477a1bc77949"
+                "reference": "74b0353ab34ff4cca827a2cf909e325d96815e60"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation/zipball/c021864d4354ee55160ddcfd31dc477a1bc77949",
-                "reference": "c021864d4354ee55160ddcfd31dc477a1bc77949",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/74b0353ab34ff4cca827a2cf909e325d96815e60",
+                "reference": "74b0353ab34ff4cca827a2cf909e325d96815e60",
                 "shasum": ""
             },
             "require": {
@@ -9063,7 +9063,7 @@
                 "symfony/yaml": "<4.4"
             },
             "provide": {
-                "symfony/translation-implementation": "2.0"
+                "symfony/translation-implementation": "2.3"
             },
             "require-dev": {
                 "psr/log": "~1.0",
@@ -9110,7 +9110,7 @@
             "description": "Provides tools to internationalize your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/translation/tree/v5.2.3"
+                "source": "https://github.com/symfony/translation/tree/v5.2.4"
             },
             "funding": [
                 {
@@ -9126,7 +9126,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-27T10:15:41+00:00"
+            "time": "2021-03-04T15:41:09+00:00"
         },
         {
             "name": "symfony/translation-contracts",
