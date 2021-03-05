@@ -54,7 +54,7 @@ jobs:
           php-version: "${{ matrix.php }}"
           coverage: "pcov"
           tools: composer:v2
-          extensions: pdo, pdo_mysql, curl, redis
+          extensions: pdo, pdo_mysql, curl, redis, amqp
           ini-values: "date.timezone=Europe/Paris"
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
