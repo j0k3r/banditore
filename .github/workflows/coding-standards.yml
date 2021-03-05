@@ -27,7 +27,7 @@ jobs:
         with:
           coverage: "none"
           php-version: "${{ matrix.php }}"
-          tools: cs2pr, composer:v2
+          tools: composer:v2
           ini-values: "date.timezone=Europe/Paris"
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -38,7 +38,7 @@ jobs:
           composer-options: "--optimize-autoloader --prefer-dist"
 
       - name: "Run PHP CS Fixer"
-        run: "bin/php-cs-fixer fix --verbose --dry-run --format=checkstyle | cs2pr"
+        run: "bin/php-cs-fixer fix --verbose --dry-run"
 
       - name: "Generate test cache for PHPStan"
         run: "php bin/console cache:clear --env=test"
@@ -47,4 +47,4 @@ jobs:
         run: "php bin/simple-phpunit install"
 
       - name: "Run PHPStan"
-        run: "php bin/phpstan analyse --no-progress --error-format=checkstyle | cs2pr"
+        run: "php bin/phpstan analyse --no-progress"
