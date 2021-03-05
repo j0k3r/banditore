@@ -115,6 +115,7 @@ class SyncStarredReposCommand extends Command
         }
 
         if ($input->getOption('username')) {
+            // @phpstan-ignore-next-line
             $user = $this->userRepository->findOneByUsername((string) $input->getOption('username'));
 
             if ($user) {

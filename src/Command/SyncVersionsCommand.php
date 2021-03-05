@@ -116,6 +116,7 @@ class SyncVersionsCommand extends Command
         }
 
         if ($input->getOption('repo_name')) {
+            // @phpstan-ignore-next-line
             $repo = $this->repoRepository->findOneByFullName((string) $input->getOption('repo_name'));
 
             if ($repo) {
