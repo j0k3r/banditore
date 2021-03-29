@@ -9461,16 +9461,16 @@
         },
         {
             "name": "symfony/validator",
-            "version": "v5.2.4",
+            "version": "v5.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "db23f365a5646da5f7650c0da4a7a571c1ff37b1"
+                "reference": "67354644f9baba3cc122134c255b7461b7e0fe31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/db23f365a5646da5f7650c0da4a7a571c1ff37b1",
-                "reference": "db23f365a5646da5f7650c0da4a7a571c1ff37b1",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/67354644f9baba3cc122134c255b7461b7e0fe31",
+                "reference": "67354644f9baba3cc122134c255b7461b7e0fe31",
                 "shasum": ""
             },
             "require": {
@@ -9495,7 +9495,7 @@
             "require-dev": {
                 "doctrine/annotations": "^1.10.4",
                 "doctrine/cache": "~1.0",
-                "egulias/email-validator": "^2.1.10",
+                "egulias/email-validator": "^2.1.10|^3",
                 "symfony/cache": "^4.4|^5.0",
                 "symfony/config": "^4.4|^5.0",
                 "symfony/console": "^4.4|^5.0",
@@ -9552,7 +9552,7 @@
             "description": "Provides tools to validate values",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/validator/tree/v5.2.4"
+                "source": "https://github.com/symfony/validator/tree/v5.2.6"
             },
             "funding": [
                 {
@@ -9568,7 +9568,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-03-04T15:41:09+00:00"
+            "time": "2021-03-23T12:45:44+00:00"
         },
         {
             "name": "symfony/var-dumper",
