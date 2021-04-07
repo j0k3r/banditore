@@ -61,8 +61,6 @@ jobs:
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v1"
-        with:
-          composer-options: "--optimize-autoloader --prefer-dist"
 
       - name: "Create database"
         run: "php bin/console doctrine:database:create --env=test"
