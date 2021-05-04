@@ -18,8 +18,8 @@ class ClientDiscovery
 {
     use RateLimitTrait;
 
-    const THRESHOLD_RATE_REMAIN_APP = 200;
-    const THRESHOLD_RATE_REMAIN_USER = 2000;
+    public const THRESHOLD_RATE_REMAIN_APP = 200;
+    public const THRESHOLD_RATE_REMAIN_USER = 2000;
 
     private $userRepository;
     private $redis;
