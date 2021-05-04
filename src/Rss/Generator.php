@@ -14,8 +14,8 @@ use MarcW\RssWriter\Extension\Core\Item;
  */
 class Generator
 {
-    const CHANNEL_TITLE = 'New releases from starred repo of %USERNAME%';
-    const CHANNEL_DESCRIPTION = 'Here are all the new releases from all repos starred by %USERNAME%';
+    public const CHANNEL_TITLE = 'New releases from starred repo of %USERNAME%';
+    public const CHANNEL_DESCRIPTION = 'Here are all the new releases from all repos starred by %USERNAME%';
 
     /**
      * It will return the RSS for the given user with all the latests releases given.

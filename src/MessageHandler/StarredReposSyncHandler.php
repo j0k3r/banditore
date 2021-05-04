@@ -28,7 +28,7 @@ class StarredReposSyncHandler implements MessageHandlerInterface
 {
     use RateLimitTrait;
 
-    const DAYS_SINCE_LAST_UPDATE = 1;
+    public const DAYS_SINCE_LAST_UPDATE = 1;
 
     private $doctrine;
     private $userRepository;

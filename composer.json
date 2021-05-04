@@ -48,7 +48,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.0",
-        "friendsofphp/php-cs-fixer": "~2.0",
+        "friendsofphp/php-cs-fixer": "~3.0",
         "m6web/redis-mock": "dev-predis-1.x",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "^0.12.6",
