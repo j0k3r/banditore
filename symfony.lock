@@ -65,7 +65,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "2.3",
-            "ref": "6e0f582596a8f1c865aaa0d3cceb9bf0daf609b4"
+            "ref": "c9e656a395646ea4fad2bd3e2b3816028baf9026"
         },
         "files": [
             "config/packages/doctrine.yaml",
@@ -125,15 +125,15 @@
         "version": "1.1.1"
     },
     "friendsofphp/php-cs-fixer": {
-        "version": "2.17",
+        "version": "3.0",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "2.17",
-            "ref": "f0d4b4ddb4e2bb73b227e3987b6ecc53cd8be431"
+            "version": "3.0",
+            "ref": "be2103eb4a20942e28a6dd87736669b757132435"
         },
         "files": [
-            ".php_cs.dist"
+            ".php-cs-fixer.dist.php"
         ]
     },
     "friendsofphp/proxy-manager-lts": {
