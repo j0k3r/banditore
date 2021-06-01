@@ -599,7 +599,7 @@
         ]
     },
     "symfony/runtime": {
-        "version": "v5.3.3"
+        "version": "v5.3.0"
     },
     "symfony/security-bundle": {
         "version": "5.3",
