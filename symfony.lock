@@ -365,12 +365,12 @@
         "version": "v3.4.40"
     },
     "symfony/console": {
-        "version": "5.1",
+        "version": "5.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "5.1",
-            "ref": "c6d02bdfba9da13c22157520e32a602dbee8a75c"
+            "version": "5.3",
+            "ref": "da0c8be8157600ad34f10ff0c9cc91232522e047"
         },
         "files": [
             "bin/console"
@@ -440,19 +440,18 @@
         "version": "v4.4.8"
     },
     "symfony/framework-bundle": {
-        "version": "5.2",
+        "version": "5.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "5.2",
-            "ref": "6ec87563dcc85cd0c48856dcfbfc29610506d250"
+            "version": "5.3",
+            "ref": "8af7647cd89416f68e41df5c343a5e531d2bf025"
         },
         "files": [
             "config/packages/cache.yaml",
             "config/packages/framework.yaml",
-            "config/packages/test/framework.yaml",
             "config/preload.php",
-            "config/routes/dev/framework.yaml",
+            "config/routes/framework.yaml",
             "config/services.yaml",
             "public/index.php",
             "src/Controller/.gitignore",
@@ -470,9 +469,6 @@
     },
     "symfony/http-kernel": {
         "version": "v3.4.40"
-    },
-    "symfony/intl": {
-        "version": "v4.4.8"
     },
     "symfony/maker-bundle": {
         "version": "1.0",
@@ -519,13 +515,16 @@
     "symfony/orm-pack": {
         "version": "v1.0.8"
     },
+    "symfony/password-hasher": {
+        "version": "v5.3.0"
+    },
     "symfony/phpunit-bridge": {
-        "version": "5.1",
+        "version": "5.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "5.1",
-            "ref": "bf16921ef8309a81d9f046e9b6369c46bcbd031f"
+            "version": "5.3",
+            "ref": "96ecb38bd6370ce71cff0af755a636ba3a2bb394"
         },
         "files": [
             ".env.test",
@@ -564,6 +563,9 @@
     "symfony/polyfill-php80": {
         "version": "v1.17.0"
     },
+    "symfony/polyfill-php81": {
+        "version": "v1.23.0"
+    },
     "symfony/polyfill-uuid": {
         "version": "v1.17.0"
     },
@@ -596,13 +598,16 @@
             "config/routes.yaml"
         ]
     },
+    "symfony/runtime": {
+        "version": "v5.3.3"
+    },
     "symfony/security-bundle": {
-        "version": "5.1",
+        "version": "5.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "5.1",
-            "ref": "0a4bae19389d3b9cba1ca0102e3b2bccea724603"
+            "version": "5.3",
+            "ref": "8b35bfc00a7716db4ca5a764a4b338476ca3a704"
         },
         "files": [
             "config/packages/security.yaml"
