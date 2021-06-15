@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7f94fa9cd30e06ec1963dd6e4239592e",
+    "content-hash": "6c4422c8fa215eface8d58f48d52ad75",
     "packages": [
         {
             "name": "ashleydawson/simple-pagination",
@@ -1936,16 +1936,16 @@
         },
         {
             "name": "friendsofphp/proxy-manager-lts",
-            "version": "v1.0.4",
+            "version": "v1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/proxy-manager-lts.git",
-                "reference": "587bfddfd9847c1d0417c4cf07d1dbf19aa6d136"
+                "reference": "006aa5d32f887a4db4353b13b5b5095613e0611f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/proxy-manager-lts/zipball/587bfddfd9847c1d0417c4cf07d1dbf19aa6d136",
-                "reference": "587bfddfd9847c1d0417c4cf07d1dbf19aa6d136",
+                "url": "https://api.github.com/repos/FriendsOfPHP/proxy-manager-lts/zipball/006aa5d32f887a4db4353b13b5b5095613e0611f",
+                "reference": "006aa5d32f887a4db4353b13b5b5095613e0611f",
                 "shasum": ""
             },
             "require": {
@@ -2002,7 +2002,7 @@
             ],
             "support": {
                 "issues": "https://github.com/FriendsOfPHP/proxy-manager-lts/issues",
-                "source": "https://github.com/FriendsOfPHP/proxy-manager-lts/tree/v1.0.4"
+                "source": "https://github.com/FriendsOfPHP/proxy-manager-lts/tree/v1.0.5"
             },
             "funding": [
                 {
@@ -2014,7 +2014,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-05-19T14:35:49+00:00"
+            "time": "2021-05-22T16:11:15+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -5896,16 +5896,16 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v5.2.7",
+            "version": "v5.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "056e92acc21d977c37e6ea8e97374b2a6c8551b0"
+                "reference": "348116319d7fb7d1faa781d26a48922428013eb2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/056e92acc21d977c37e6ea8e97374b2a6c8551b0",
-                "reference": "056e92acc21d977c37e6ea8e97374b2a6c8551b0",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/348116319d7fb7d1faa781d26a48922428013eb2",
+                "reference": "348116319d7fb7d1faa781d26a48922428013eb2",
                 "shasum": ""
             },
             "require": {
@@ -5938,7 +5938,7 @@
             "description": "Provides basic utilities for the filesystem",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/filesystem/tree/v5.2.7"
+                "source": "https://github.com/symfony/filesystem/tree/v5.3.0"
             },
             "funding": [
                 {
@@ -5954,7 +5954,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-04-01T10:42:13+00:00"
+            "time": "2021-05-26T17:43:10+00:00"
         },
         {
             "name": "symfony/finder",
@@ -8204,16 +8204,16 @@
         },
         {
             "name": "symfony/proxy-manager-bridge",
-            "version": "v5.2.9",
+            "version": "v5.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/proxy-manager-bridge.git",
-                "reference": "1c89e22a22e01f040849a28f7fe63c6a16e6c99f"
+                "reference": "4e4997e77f30b4caed2b3cebefdecd7031e25a00"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/proxy-manager-bridge/zipball/1c89e22a22e01f040849a28f7fe63c6a16e6c99f",
-                "reference": "1c89e22a22e01f040849a28f7fe63c6a16e6c99f",
+                "url": "https://api.github.com/repos/symfony/proxy-manager-bridge/zipball/4e4997e77f30b4caed2b3cebefdecd7031e25a00",
+                "reference": "4e4997e77f30b4caed2b3cebefdecd7031e25a00",
                 "shasum": ""
             },
             "require": {
@@ -8251,7 +8251,7 @@
             "description": "Provides integration for ProxyManager with various Symfony components",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/proxy-manager-bridge/tree/v5.2.9"
+                "source": "https://github.com/symfony/proxy-manager-bridge/tree/v5.3.0"
             },
             "funding": [
                 {
@@ -8267,7 +8267,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-05-15T12:42:34+00:00"
+            "time": "2021-05-26T12:52:38+00:00"
         },
         {
             "name": "symfony/redis-messenger",
