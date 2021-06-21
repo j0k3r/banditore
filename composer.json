@@ -29,7 +29,7 @@
         "php-http/guzzle6-adapter": "^2.0",
         "ramsey/uuid": "^4.0",
         "sensio/framework-extra-bundle": "^6.0",
-        "sentry/sentry-symfony": "~3.0",
+        "sentry/sentry-symfony": "~4.1",
         "snc/redis-bundle": "^3.2",
         "symfony/amqp-messenger": "5.2.*",
         "symfony/asset": "5.2.*",
