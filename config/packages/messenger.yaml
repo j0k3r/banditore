@@ -28,3 +28,10 @@ framework:
                 middleware:
                     - doctrine_ping_connection
                     - doctrine_close_connection
+
+when@test:
+    framework:
+        messenger:
+            transports:
+                sync_starred_repos: 'in-memory://'
+                sync_versions: 'in-memory://'

@@ -1,5 +1,0 @@
-framework:
-    messenger:
-        transports:
-            sync_starred_repos: 'in-memory://'
-            sync_versions: 'in-memory://'
