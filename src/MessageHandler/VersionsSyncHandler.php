@@ -15,7 +15,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 /**
- * Consumer message to sync user repo (usually happen after a successful login).
+ * Consumer message to sync new version from a given repo.
  */
 class VersionsSyncHandler implements MessageHandlerInterface
 {
