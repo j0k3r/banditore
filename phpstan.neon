@@ -20,6 +20,14 @@ parameters:
         - '#Cannot call method api\(\) on Github\\Client\|null#'
         - '#expects Github\\Client, Github\\Client\|null given#'
         - '#Cannot call method getAttribute\(\) on DOMNode\|null#'
+        # because `session` service is deprecated in Symfony 5 and can't find a way to set
+        # a session variable within tests
+        -
+            message: '#is not registered in the container#'
+            path: tests/Security/GithubAuthenticatorTest.php
+        -
+            message: '#on object\|null#'
+            path: tests/Security/GithubAuthenticatorTest.php
 
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingIterableValueType: false

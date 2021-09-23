@@ -1,6 +1,5 @@
 doctrine:
     dbal:
-        override_url: true
         url: '%env(resolve:DATABASE_URL)%'
         # driver: pdo_mysql
         # host: "%database_host%"

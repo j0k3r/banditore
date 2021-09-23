@@ -7,75 +7,75 @@ use App\Entity\Version;
 use App\Message\StarredReposSync;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
-use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
+use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
-class GithubAuthenticator extends SocialAuthenticator
+class GithubAuthenticator extends OAuth2Authenticator
 {
     private $clientRegistry;
-    private $em;
+    private $entityManager;
     private $router;
     private $bus;
 
-    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $em, RouterInterface $router, MessageBusInterface $bus)
+    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, MessageBusInterface $bus)
     {
         $this->clientRegistry = $clientRegistry;
-        $this->em = $em;
+        $this->entityManager = $entityManager;
         $this->router = $router;
         $this->bus = $bus;
     }
 
-    public function supports(Request $request)
+    public function supports(Request $request): ?bool
     {
+        // continue ONLY if the current ROUTE matches the check ROUTE
         return 'github_callback' === $request->attributes->get('_route');
     }
 
-    public function getCredentials(Request $request)
+    public function authenticate(Request $request): PassportInterface
     {
-        return $this->fetchAccessToken($this->getGithubClient());
+        $client = $this->clientRegistry->getClient('github');
+        $accessToken = $this->fetchAccessToken($client);
+
+        return new SelfValidatingPassport(
+            new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
+                /** @var \League\OAuth2\Client\Provider\GithubResourceOwner */
+                $githubUser = $client->fetchUserFromToken($accessToken);
+
+                /** @var User|null */
+                $user = $this->entityManager->getRepository(User::class)->find($githubUser->getId());
+
+                // always update user information at login
+                if (null === $user) {
+                    $user = new User();
+                }
+
+                $user->setAccessToken($accessToken->getToken());
+                $user->hydrateFromGithub($githubUser);
+
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
+
+                return $user;
+            })
+        );
     }
 
-    public function getUser($credentials, UserProviderInterface $userProvider)
-    {
-        /** @var \League\OAuth2\Client\Provider\GithubResourceOwner */
-        $githubUser = $this->getGithubClient()->fetchUserFromToken($credentials);
-
-        /** @var User|null */
-        $user = $this->em->getRepository(User::class)->find($githubUser->getId());
-
-        // always update user information at login
-        if (null === $user) {
-            $user = new User();
-        }
-
-        $user->setAccessToken($credentials->getToken());
-        $user->hydrateFromGithub($githubUser);
-
-        $this->em->persist($user);
-        $this->em->flush();
-
-        return $user;
-    }
-
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
-    {
-        // failure, what failure?
-        return null;
-    }
-
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         /** @var User */
         $user = $token->getUser();
 
         /** @var \App\Repository\VersionRepository */
-        $versionRepo = $this->em->getRepository(Version::class);
+        $versionRepo = $this->entityManager->getRepository(Version::class);
         $versions = $versionRepo->countForUser($user->getId());
 
         // if no versions were found, it means the user logged in for the first time
@@ -94,16 +94,10 @@ class GithubAuthenticator extends SocialAuthenticator
         return new RedirectResponse($this->router->generate('dashboard'));
     }
 
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        return new RedirectResponse($this->router->generate('connect'));
-    }
+        $message = strtr($exception->getMessageKey(), $exception->getMessageData());
 
-    /**
-     * @return \KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface
-     */
-    private function getGithubClient()
-    {
-        return $this->clientRegistry->getClient('github');
+        return new Response($message, Response::HTTP_FORBIDDEN);
     }
 }

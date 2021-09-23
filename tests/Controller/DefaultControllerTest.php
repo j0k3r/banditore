@@ -5,8 +5,6 @@ namespace App\Tests\Controller;
 use App\Entity\User;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 class DefaultControllerTest extends WebTestCase
 {
@@ -31,7 +29,7 @@ class DefaultControllerTest extends WebTestCase
         /** @var User */
         $user = self::$container->get('banditore.repository.user.test')->find(123);
 
-        $this->logIn($user);
+        $this->client->loginUser($user);
         $this->client->request('GET', '/');
 
         $this->assertResponseRedirects('/dashboard', 302);
@@ -52,7 +50,7 @@ class DefaultControllerTest extends WebTestCase
         /** @var User */
         $user = self::$container->get('banditore.repository.user.test')->find(123);
 
-        $this->logIn($user);
+        $this->client->loginUser($user);
         $this->client->request('GET', '/connect');
 
         $this->assertResponseRedirects('/dashboard', 302);
@@ -70,7 +68,7 @@ class DefaultControllerTest extends WebTestCase
         /** @var User */
         $user = self::$container->get('banditore.repository.user.test')->find(123);
 
-        $this->logIn($user);
+        $this->client->loginUser($user);
         $crawler = $this->client->request('GET', '/dashboard');
 
         $this->assertResponseIsSuccessful();
@@ -92,7 +90,7 @@ class DefaultControllerTest extends WebTestCase
         /** @var User */
         $user = self::$container->get('banditore.repository.user.test')->find(123);
 
-        $this->logIn($user);
+        $this->client->loginUser($user);
         $crawler = $this->client->request('GET', '/dashboard?page=20000');
 
         $this->assertResponseRedirects('/dashboard', 302);
@@ -103,7 +101,7 @@ class DefaultControllerTest extends WebTestCase
         /** @var User */
         $user = self::$container->get('banditore.repository.user.test')->find(123);
 
-        $this->logIn($user);
+        $this->client->loginUser($user);
         $this->client->request('GET', '/dashboard?page=dsdsds');
 
         $this->assertResponseStatusCodeSame(404);
@@ -146,19 +144,5 @@ class DefaultControllerTest extends WebTestCase
         $data = json_decode((string) $this->client->getResponse()->getContent(), true);
 
         $this->assertTrue($data['is_fresh']);
-    }
-
-    private function logIn(User $user): void
-    {
-        $session = self::$container->get('session');
-
-        $firewall = 'main';
-
-        $token = new PostAuthenticationGuardToken($user, $firewall, ['ROLE_ADMIN']);
-        $session->set('_security_' . $firewall, serialize($token));
-        $session->save();
-
-        $cookie = new Cookie($session->getName(), $session->getId());
-        $this->client->getCookieJar()->set($cookie);
     }
 }

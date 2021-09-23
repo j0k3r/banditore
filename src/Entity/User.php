@@ -365,10 +365,15 @@ class User implements UserInterface, EquatableInterface
             }
         }
 
-        if ($this->username !== $user->getUsername()) {
+        if ($this->username !== $user->getUserIdentifier()) {
             return false;
         }
 
         return true;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->getUsername();
     }
 }

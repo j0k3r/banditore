@@ -20,7 +20,7 @@ class GithubAuthenticatorTest extends WebTestCase
         $client = static::createClient();
 
         $responses = new MockHandler([
-            // /login/oauth/access_token (to retrieve the access_token from `getCredentials()`)
+            // /login/oauth/access_token (to retrieve the access_token from `authenticate()`)
             new Response(200, ['Content-Type' => 'application/json'], (string) json_encode([
                 'access_token' => 'blablabla',
             ])),
@@ -84,7 +84,7 @@ class GithubAuthenticatorTest extends WebTestCase
         $client = static::createClient();
 
         $responses = new MockHandler([
-            // /login/oauth/access_token (to retrieve the access_token from `getCredentials()`)
+            // /login/oauth/access_token (to retrieve the access_token from `authenticate()`)
             new Response(200, ['Content-Type' => 'application/json'], (string) json_encode([
                 'access_token' => 'superboum',
             ])),
