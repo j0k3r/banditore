@@ -1018,12 +1018,14 @@ class VersionsSyncHandlerTest extends WebTestCase
 
         $handler = self::$container->get('banditore.message_handler.sync_versions.test');
 
+        /** @var Version[] */
         $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 666]);
         $this->assertCount(1, $versions, 'Repo 666 has 1 version');
         $this->assertSame('1.0.0', $versions[0]->getTagName(), 'Repo 666 has 1 version, which is 1.0.0');
 
         $handler->__invoke(new VersionsSync(666));
 
+        /** @var Version[] */
         $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 666]);
         $this->assertCount(4, $versions, 'Repo 666 has now 4 versions');
         $this->assertSame('1.0.0', $versions[0]->getTagName(), 'Repo 666 has 4 version. First one is 1.0.0');
@@ -1106,12 +1108,14 @@ class VersionsSyncHandlerTest extends WebTestCase
 
         $handler = self::$container->get('banditore.message_handler.sync_versions.test');
 
+        /** @var Version[] */
         $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 555]);
         $this->assertCount(1, $versions, 'Repo 555 has 1 version');
         $this->assertSame('1.0.21', $versions[0]->getTagName(), 'Repo 555 has 1 version, which is 1.0.21');
 
         $handler->__invoke(new VersionsSync(555));
 
+        /** @var Version[] */
         $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 555]);
         $this->assertCount(2, $versions, 'Repo 555 has now 2 versions');
         $this->assertSame('1.0.21', $versions[0]->getTagName(), 'Repo 555 has 2 version. First one is 1.0.21');

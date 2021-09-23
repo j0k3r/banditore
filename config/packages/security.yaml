@@ -1,4 +1,9 @@
 security:
+    # https://symfony.com/doc/current/security/authenticator_manager.html
+    enable_authenticator_manager: true
+    # https://symfony.com/doc/current/security.html#c-hashing-passwords
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         github_provider:
@@ -12,12 +17,13 @@ security:
             security: false
 
         main:
-            anonymous: true
             lazy: true
 
-            guard:
-                authenticators:
-                    - App\Security\GithubAuthenticator
+            custom_authenticators:
+                - App\Security\GithubAuthenticator
+
+            logout:
+                path: logout
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
