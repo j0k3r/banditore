@@ -217,7 +217,7 @@ class VersionsSyncHandler implements MessageHandlerInterface
             }
 
             // render markdown in plain html and use default markdown file if it fails
-            if (isset($newRelease['message']) && \strlen(trim($newRelease['message'])) > 0) {
+            if (isset($newRelease['message']) && '' !== trim($newRelease['message'])) {
                 try {
                     /** @var \Github\Api\Markdown */
                     $githubMarkdownApi = $this->client->api('markdown');
