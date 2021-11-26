@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -27,7 +28,7 @@ class DefaultControllerTest extends WebTestCase
     public function testIndexLoggedIn(): void
     {
         /** @var User */
-        $user = self::$container->get('banditore.repository.user.test')->find(123);
+        $user = self::getContainer()->get(UserRepository::class)->find(123);
 
         $this->client->loginUser($user);
         $this->client->request('GET', '/');
@@ -48,7 +49,7 @@ class DefaultControllerTest extends WebTestCase
     public function testConnectWithLoggedInUser(): void
     {
         /** @var User */
-        $user = self::$container->get('banditore.repository.user.test')->find(123);
+        $user = self::getContainer()->get(UserRepository::class)->find(123);
 
         $this->client->loginUser($user);
         $this->client->request('GET', '/connect');
@@ -66,7 +67,7 @@ class DefaultControllerTest extends WebTestCase
     public function testDashboard(): void
     {
         /** @var User */
-        $user = self::$container->get('banditore.repository.user.test')->find(123);
+        $user = self::getContainer()->get(UserRepository::class)->find(123);
 
         $this->client->loginUser($user);
         $crawler = $this->client->request('GET', '/dashboard');
@@ -88,7 +89,7 @@ class DefaultControllerTest extends WebTestCase
     public function testDashboardPageTooHigh(): void
     {
         /** @var User */
-        $user = self::$container->get('banditore.repository.user.test')->find(123);
+        $user = self::getContainer()->get(UserRepository::class)->find(123);
 
         $this->client->loginUser($user);
         $crawler = $this->client->request('GET', '/dashboard?page=20000');
@@ -99,7 +100,7 @@ class DefaultControllerTest extends WebTestCase
     public function testDashboardBadPage(): void
     {
         /** @var User */
-        $user = self::$container->get('banditore.repository.user.test')->find(123);
+        $user = self::getContainer()->get(UserRepository::class)->find(123);
 
         $this->client->loginUser($user);
         $this->client->request('GET', '/dashboard?page=dsdsds');
@@ -110,7 +111,7 @@ class DefaultControllerTest extends WebTestCase
     public function testRss(): void
     {
         /** @var User */
-        $user = self::$container->get('banditore.repository.user.test')->find(123);
+        $user = self::getContainer()->get(UserRepository::class)->find(123);
         $crawler = $this->client->request('GET', '/' . $user->getUuid() . '.atom');
 
         $this->assertResponseIsSuccessful();
