@@ -242,7 +242,7 @@ class ClientDiscoveryTest extends WebTestCase
         $client = static::createClient();
 
         try {
-            self::$container->get('snc_redis.guzzle_cache.test')->connect();
+            self::getContainer()->get('snc_redis.guzzle_cache')->connect();
         } catch (\Exception $e) {
             $this->markTestSkipped('Redis is not installed/activated');
         }
@@ -263,7 +263,7 @@ class ClientDiscoveryTest extends WebTestCase
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
-        $disco = self::$container->get('banditore.github.client_discovery.test');
+        $disco = self::getContainer()->get(\App\Github\ClientDiscovery::class);
         $disco->setGithubClient($githubClient);
 
         $resClient = $disco->find();

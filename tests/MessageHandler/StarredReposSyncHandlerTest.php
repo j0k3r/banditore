@@ -6,6 +6,8 @@ use App\Entity\Repo;
 use App\Entity\User;
 use App\Message\StarredReposSync;
 use App\MessageHandler\StarredReposSyncHandler;
+use App\Repository\RepoRepository;
+use App\Repository\StarRepository;
 use Github\Client as GithubClient;
 use Github\HttpClient\Builder;
 use GuzzleHttp\Client;
@@ -669,12 +671,12 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $client = static::createClient();
 
         // override factory to avoid real call to Github
-        self::$container->set('banditore.client.github.test', $githubClient);
+        self::getContainer()->set('banditore.client.github.test', $githubClient);
 
-        $handler = self::$container->get('banditore.message_handler.sync_starred_repos.test');
+        $handler = self::getContainer()->get(StarredReposSyncHandler::class);
 
         // before import
-        $stars = self::$container->get('banditore.repository.star.test')->findAllByUser(123);
+        $stars = self::getContainer()->get(StarRepository::class)->findAllByUser(123);
         $this->assertCount(2, $stars, 'User 123 has 2 starred repos');
         $this->assertSame(555, $stars[0], 'User 123 has "symfony/symfony" starred repo');
         $this->assertSame(666, $stars[1], 'User 123 has "test/test" starred repo');
@@ -682,12 +684,12 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $handler->__invoke(new StarredReposSync(123));
 
         /** @var Repo */
-        $repo = self::$container->get('banditore.repository.repo.test')->find(777);
+        $repo = self::getContainer()->get(RepoRepository::class)->find(777);
         $this->assertNotNull($repo, 'Imported repo with id 777 exists');
         $this->assertSame('j0k3r/banditore', $repo->getFullName(), 'Imported repo with id 777 exists');
 
         // validate that `test/test` association got removed
-        $stars = self::$container->get('banditore.repository.star.test')->findAllByUser(123);
+        $stars = self::getContainer()->get(StarRepository::class)->findAllByUser(123);
         $this->assertCount(2, $stars, 'User 123 has 2 starred repos');
         $this->assertSame(666, $stars[0], 'User 123 has "test/test" starred repo');
         $this->assertSame(777, $stars[1], 'User 123 has "j0k3r/banditore" starred repo');

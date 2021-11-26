@@ -6,6 +6,7 @@ use App\Entity\Repo;
 use App\Entity\Version;
 use App\Message\VersionsSync;
 use App\MessageHandler\VersionsSyncHandler;
+use App\Repository\VersionRepository;
 use Github\Client as GithubClient;
 use Github\HttpClient\Builder;
 use GuzzleHttp\Client;
@@ -1004,7 +1005,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         $client = static::createClient();
 
         // override factory to avoid real call to Github
-        self::$container->set('banditore.client.github.test', $githubClient);
+        self::getContainer()->set('banditore.client.github.test', $githubClient);
 
         // mock pubsubhubbub request
         $guzzleClientPub = $this->getMockBuilder('GuzzleHttp\Client')
@@ -1014,19 +1015,19 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->method('__call') // post
             ->willReturn(new Response(204));
 
-        self::$container->set('banditore.client.guzzle.test', $guzzleClientPub);
+        self::getContainer()->set('banditore.client.guzzle.test', $guzzleClientPub);
 
-        $handler = self::$container->get('banditore.message_handler.sync_versions.test');
+        $handler = self::getContainer()->get(VersionsSyncHandler::class);
 
         /** @var Version[] */
-        $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 666]);
+        $versions = self::getContainer()->get(VersionRepository::class)->findBy(['repo' => 666]);
         $this->assertCount(1, $versions, 'Repo 666 has 1 version');
         $this->assertSame('1.0.0', $versions[0]->getTagName(), 'Repo 666 has 1 version, which is 1.0.0');
 
         $handler->__invoke(new VersionsSync(666));
 
         /** @var Version[] */
-        $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 666]);
+        $versions = self::getContainer()->get(VersionRepository::class)->findBy(['repo' => 666]);
         $this->assertCount(4, $versions, 'Repo 666 has now 4 versions');
         $this->assertSame('1.0.0', $versions[0]->getTagName(), 'Repo 666 has 4 version. First one is 1.0.0');
         $this->assertSame('1.0.1', $versions[1]->getTagName(), 'Repo 666 has 4 version. Second one is 1.0.1');
@@ -1094,7 +1095,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         $client = static::createClient();
 
         // override factory to avoid real call to Github
-        self::$container->set('banditore.client.github.test', $githubClient);
+        self::getContainer()->set('banditore.client.github.test', $githubClient);
 
         // mock pubsubhubbub request
         $guzzleClientPub = $this->getMockBuilder('GuzzleHttp\Client')
@@ -1104,19 +1105,19 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->method('__call') // post
             ->willReturn(new Response(204));
 
-        self::$container->set('banditore.client.guzzle.test', $guzzleClientPub);
+        self::getContainer()->set('banditore.client.guzzle.test', $guzzleClientPub);
 
-        $handler = self::$container->get('banditore.message_handler.sync_versions.test');
+        $handler = self::getContainer()->get(VersionsSyncHandler::class);
 
         /** @var Version[] */
-        $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 555]);
+        $versions = self::getContainer()->get(VersionRepository::class)->findBy(['repo' => 555]);
         $this->assertCount(1, $versions, 'Repo 555 has 1 version');
         $this->assertSame('1.0.21', $versions[0]->getTagName(), 'Repo 555 has 1 version, which is 1.0.21');
 
         $handler->__invoke(new VersionsSync(555));
 
         /** @var Version[] */
-        $versions = self::$container->get('banditore.repository.version.test')->findBy(['repo' => 555]);
+        $versions = self::getContainer()->get(VersionRepository::class)->findBy(['repo' => 555]);
         $this->assertCount(2, $versions, 'Repo 555 has now 2 versions');
         $this->assertSame('1.0.21', $versions[0]->getTagName(), 'Repo 555 has 2 version. First one is 1.0.21');
         $this->assertSame('V1.1.0', $versions[1]->getTagName(), 'Repo 555 has 2 version. Second one is V1.1.0');

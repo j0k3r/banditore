@@ -1,50 +1,9 @@
 services:
-
     # see https://github.com/symfony/symfony/issues/24543
-    banditore.repository.user.test:
-        alias: App\Repository\UserRepository
-        public: true
-
-    banditore.repository.version.test:
-        alias: App\Repository\VersionRepository
-        public: true
-
-    banditore.repository.repo.test:
-        alias: App\Repository\RepoRepository
-        public: true
-
-    banditore.repository.star.test:
-        alias: App\Repository\StarRepository
-        public: true
-
-    banditore.message_handler.sync_versions.test:
-        alias: App\MessageHandler\VersionsSyncHandler
-        public: true
-
-    banditore.message_handler.sync_starred_repos.test:
-        alias: App\MessageHandler\StarredReposSyncHandler
-        public: true
-
-    banditore.github.client_discovery.test:
-        alias: App\Github\ClientDiscovery
-        public: true
-
-    banditore.client.guzzle.test:
-        alias: banditore.client.guzzle
-        public: true
-
     banditore.client.github.test:
         alias: banditore.client.github
         public: true
 
-    snc_redis.guzzle_cache.test:
-        alias: snc_redis.guzzle_cache
-        public: true
-
-    messenger.transport.sync_starred_repos.test:
-        alias: messenger.transport.sync_starred_repos
-        public: true
-
-    messenger.transport.sync_versions.test:
-        alias: messenger.transport.sync_versions
+    banditore.client.guzzle.test:
+        alias: banditore.client.guzzle
         public: true

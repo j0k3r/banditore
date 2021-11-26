@@ -3,6 +3,7 @@
 namespace App\Tests\Security;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Github\Client as GithubClient;
 use Github\HttpClient\Builder;
 use GuzzleHttp\Client;
@@ -43,14 +44,14 @@ class GithubAuthenticatorTest extends WebTestCase
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
-        self::$container->set('banditore.client.github.application', $githubClient);
-        self::$container->get('oauth2.registry')->getClient('github')->getOAuth2Provider()->setHttpClient($guzzleClient);
+        self::getContainer()->set('banditore.client.github.application', $githubClient);
+        self::getContainer()->get('oauth2.registry')->getClient('github')->getOAuth2Provider()->setHttpClient($guzzleClient);
 
-        self::$container->get('session')->set(OAuth2Client::OAUTH2_SESSION_STATE_KEY, 'MyAwesomeState');
+        self::getContainer()->get('session')->set(OAuth2Client::OAUTH2_SESSION_STATE_KEY, 'MyAwesomeState');
 
         // before login
         /** @var User */
-        $user = self::$container->get('banditore.repository.user.test')->find(123);
+        $user = self::getContainer()->get(UserRepository::class)->find(123);
         $this->assertSame('1234567890', $user->getAccessToken());
         $this->assertSame('http://0.0.0.0/avatar.jpg', $user->getAvatar());
 
@@ -58,7 +59,7 @@ class GithubAuthenticatorTest extends WebTestCase
 
         // after login
         /** @var User */
-        $user = self::$container->get('banditore.repository.user.test')->find(123);
+        $user = self::getContainer()->get(UserRepository::class)->find(123);
         $this->assertSame('blablabla', $user->getAccessToken());
         $this->assertSame('http://avat.ar/my.png', $user->getAvatar());
 
@@ -67,10 +68,10 @@ class GithubAuthenticatorTest extends WebTestCase
         $response = $client->getResponse();
         $this->assertSame('/dashboard', $response->getTargetUrl());
 
-        $message = self::$container->get('session')->getFlashBag()->get('info');
+        $message = self::getContainer()->get('session')->getFlashBag()->get('info');
         $this->assertSame('Successfully logged in!', $message[0]);
 
-        $transport = self::$container->get('messenger.transport.sync_starred_repos');
+        $transport = self::getContainer()->get('messenger.transport.sync_starred_repos');
         $this->assertCount(1, $transport->get());
 
         $messages = (array) $transport->get();
@@ -107,20 +108,20 @@ class GithubAuthenticatorTest extends WebTestCase
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
-        self::$container->set('banditore.client.github.application', $githubClient);
-        self::$container->get('oauth2.registry')->getClient('github')->getOAuth2Provider()->setHttpClient($guzzleClient);
+        self::getContainer()->set('banditore.client.github.application', $githubClient);
+        self::getContainer()->get('oauth2.registry')->getClient('github')->getOAuth2Provider()->setHttpClient($guzzleClient);
 
-        self::$container->get('session')->set(OAuth2Client::OAUTH2_SESSION_STATE_KEY, 'MyAwesomeState');
+        self::getContainer()->get('session')->set(OAuth2Client::OAUTH2_SESSION_STATE_KEY, 'MyAwesomeState');
 
         // before login
-        $user = self::$container->get('banditore.repository.user.test')->find(456);
+        $user = self::getContainer()->get(UserRepository::class)->find(456);
         $this->assertNull($user, 'User 456 does not YET exist');
 
         $client->request('GET', '/callback?state=MyAwesomeState&code=MyAwesomeCode');
 
         // after login
         /** @var User */
-        $user = self::$container->get('banditore.repository.user.test')->find(456);
+        $user = self::getContainer()->get(UserRepository::class)->find(456);
         $this->assertSame('superboum', $user->getAccessToken());
         $this->assertSame('http://avat.ar/down.png', $user->getAvatar());
         $this->assertSame('getdown', $user->getUsername());
@@ -131,10 +132,10 @@ class GithubAuthenticatorTest extends WebTestCase
         $response = $client->getResponse();
         $this->assertSame('/dashboard', $response->getTargetUrl());
 
-        $message = self::$container->get('session')->getFlashBag()->get('info');
+        $message = self::getContainer()->get('session')->getFlashBag()->get('info');
         $this->assertSame('Successfully logged in. Your starred repos will soon be synced!', $message[0]);
 
-        $transport = self::$container->get('messenger.transport.sync_starred_repos');
+        $transport = self::getContainer()->get('messenger.transport.sync_starred_repos');
         $this->assertCount(1, $transport->get());
 
         $messages = (array) $transport->get();

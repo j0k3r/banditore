@@ -4,6 +4,7 @@ namespace App\Tests\Command;
 
 use App\Command\SyncStarredReposCommand;
 use App\Message\StarredReposSync;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -33,9 +34,9 @@ class SyncStarredReposCommandTest extends WebTestCase
 
         $application = new Application($client->getKernel());
         $application->add(new SyncStarredReposCommand(
-            self::$kernel->getContainer()->get('banditore.repository.user.test'),
+            self::getContainer()->get(UserRepository::class),
             $syncRepo,
-            self::$kernel->getContainer()->get('messenger.transport.sync_starred_repos.test'),
+            self::getContainer()->get('messenger.transport.sync_starred_repos'),
             $bus
         ));
 
@@ -72,7 +73,7 @@ class SyncStarredReposCommandTest extends WebTestCase
 
         $application = new Application($client->getKernel());
         $application->add(new SyncStarredReposCommand(
-            self::$kernel->getContainer()->get('banditore.repository.user.test'),
+            self::getContainer()->get(UserRepository::class),
             $syncRepo,
             $this->getTransportMessageCount(0),
             $bus
@@ -109,7 +110,7 @@ class SyncStarredReposCommandTest extends WebTestCase
 
         $application = new Application($client->getKernel());
         $application->add(new SyncStarredReposCommand(
-            self::$kernel->getContainer()->get('banditore.repository.user.test'),
+            self::getContainer()->get(UserRepository::class),
             $syncRepo,
             $this->getTransportMessageCount(10),
             $bus
@@ -149,7 +150,7 @@ class SyncStarredReposCommandTest extends WebTestCase
 
         $application = new Application($client->getKernel());
         $application->add(new SyncStarredReposCommand(
-            self::$kernel->getContainer()->get('banditore.repository.user.test'),
+            self::getContainer()->get(UserRepository::class),
             $syncRepo,
             $this->getTransportMessageCount(0),
             $bus
@@ -189,9 +190,9 @@ class SyncStarredReposCommandTest extends WebTestCase
 
         $application = new Application($client->getKernel());
         $application->add(new SyncStarredReposCommand(
-            self::$kernel->getContainer()->get('banditore.repository.user.test'),
+            self::getContainer()->get(UserRepository::class),
             $syncRepo,
-            self::$kernel->getContainer()->get('messenger.transport.sync_starred_repos.test'),
+            self::getContainer()->get('messenger.transport.sync_starred_repos'),
             $bus
         ));
 
@@ -227,9 +228,9 @@ class SyncStarredReposCommandTest extends WebTestCase
 
         $application = new Application($client->getKernel());
         $application->add(new SyncStarredReposCommand(
-            self::$kernel->getContainer()->get('banditore.repository.user.test'),
+            self::getContainer()->get(UserRepository::class),
             $syncRepo,
-            self::$kernel->getContainer()->get('messenger.transport.sync_starred_repos.test'),
+            self::getContainer()->get('messenger.transport.sync_starred_repos'),
             $bus
         ));
 

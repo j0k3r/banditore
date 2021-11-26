@@ -4,6 +4,7 @@ namespace App\Tests\Command;
 
 use App\Command\SyncVersionsCommand;
 use App\Message\VersionsSync;
+use App\Repository\RepoRepository;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -32,9 +33,9 @@ class SyncVersionsCommandTest extends WebTestCase
 
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
-            self::$kernel->getContainer()->get('banditore.repository.repo.test'),
+            self::getContainer()->get(RepoRepository::class),
             $syncVersion,
-            self::$kernel->getContainer()->get('messenger.transport.sync_versions.test'),
+            self::getContainer()->get('messenger.transport.sync_versions'),
             $bus
         ));
 
@@ -69,7 +70,7 @@ class SyncVersionsCommandTest extends WebTestCase
 
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
-            self::$kernel->getContainer()->get('banditore.repository.repo.test'),
+            self::getContainer()->get(RepoRepository::class),
             $syncVersion,
             $this->getTransportMessageCount(0),
             $bus
@@ -106,7 +107,7 @@ class SyncVersionsCommandTest extends WebTestCase
 
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
-            self::$kernel->getContainer()->get('banditore.repository.repo.test'),
+            self::getContainer()->get(RepoRepository::class),
             $syncVersion,
             $this->getTransportMessageCount(10),
             $bus
@@ -146,7 +147,7 @@ class SyncVersionsCommandTest extends WebTestCase
 
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
-            self::$kernel->getContainer()->get('banditore.repository.repo.test'),
+            self::getContainer()->get(RepoRepository::class),
             $syncVersion,
             $this->getTransportMessageCount(0),
             $bus
@@ -187,9 +188,9 @@ class SyncVersionsCommandTest extends WebTestCase
 
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
-            self::$kernel->getContainer()->get('banditore.repository.repo.test'),
+            self::getContainer()->get(RepoRepository::class),
             $syncVersion,
-            self::$kernel->getContainer()->get('messenger.transport.sync_versions.test'),
+            self::getContainer()->get('messenger.transport.sync_versions'),
             $bus
         ));
 
@@ -225,9 +226,9 @@ class SyncVersionsCommandTest extends WebTestCase
 
         $application = new Application($client->getKernel());
         $application->add(new SyncVersionsCommand(
-            self::$kernel->getContainer()->get('banditore.repository.repo.test'),
+            self::getContainer()->get(RepoRepository::class),
             $syncVersion,
-            self::$kernel->getContainer()->get('messenger.transport.sync_versions.test'),
+            self::getContainer()->get('messenger.transport.sync_versions'),
             $bus
         ));
 
