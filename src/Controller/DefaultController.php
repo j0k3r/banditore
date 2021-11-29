@@ -20,18 +20,21 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Security;
 
 class DefaultController extends AbstractController
 {
     private $repoVersion;
     private $diffInterval;
     private $redis;
+    private $security;
 
-    public function __construct(VersionRepository $repoVersion, int $diffInterval, RedisClient $redis)
+    public function __construct(VersionRepository $repoVersion, int $diffInterval, RedisClient $redis, Security $security)
     {
         $this->repoVersion = $repoVersion;
         $this->diffInterval = $diffInterval;
         $this->redis = $redis;
+        $this->security = $security;
     }
 
     /**
@@ -39,7 +42,7 @@ class DefaultController extends AbstractController
      */
     public function indexAction(): Response
     {
-        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+        if ($this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('dashboard'));
         }
 
@@ -71,7 +74,7 @@ class DefaultController extends AbstractController
      */
     public function dashboardAction(Request $request, Paginator $paginator): Response
     {
-        if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+        if (!$this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('homepage'));
         }
 
@@ -125,7 +128,7 @@ class DefaultController extends AbstractController
      */
     public function connectAction(ClientRegistry $oauth): RedirectResponse
     {
-        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+        if ($this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('dashboard'));
         }
 
