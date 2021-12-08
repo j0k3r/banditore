@@ -4,6 +4,7 @@ namespace App\Github;
 
 use App\Cache\CustomRedisCachePool;
 use App\Repository\UserRepository;
+use Github\AuthMethod;
 use Github\Client as GithubClient;
 use Predis\Client as RedisClient;
 use Psr\Log\LoggerInterface;
@@ -70,7 +71,7 @@ class ClientDiscovery
         );
 
         // try with the application default client
-        $this->client->authenticate($this->clientId, $this->clientSecret, GithubClient::AUTH_CLIENT_ID);
+        $this->client->authenticate($this->clientId, $this->clientSecret, AuthMethod::CLIENT_ID);
 
         $remaining = $this->getRateLimits($this->client, $this->logger);
         if ($remaining >= self::THRESHOLD_RATE_REMAIN_APP) {
@@ -83,7 +84,7 @@ class ClientDiscovery
         // when at least one is ok, use it!
         $users = $this->userRepository->findAllTokens();
         foreach ($users as $user) {
-            $this->client->authenticate($user['accessToken'], null, GithubClient::AUTH_ACCESS_TOKEN);
+            $this->client->authenticate($user['accessToken'], null, AuthMethod::ACCESS_TOKEN);
 
             $remaining = $this->getRateLimits($this->client, $this->logger);
             if ($remaining >= self::THRESHOLD_RATE_REMAIN_USER) {
