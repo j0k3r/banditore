@@ -184,12 +184,6 @@
     "laminas/laminas-code": {
         "version": "3.4.1"
     },
-    "laminas/laminas-eventmanager": {
-        "version": "3.2.1"
-    },
-    "laminas/laminas-zendframework-bridge": {
-        "version": "1.0.3"
-    },
     "league/oauth2-client": {
         "version": "2.4.1"
     },
@@ -233,7 +227,7 @@
         "version": "1.7.4"
     },
     "php-http/guzzle6-adapter": {
-        "version": "v2.0.1"
+        "version": "v2.0.2"
     },
     "php-http/httplug": {
         "version": "2.1.0"
@@ -543,7 +537,7 @@
         "version": "v1.17.0"
     },
     "symfony/polyfill-intl-idn": {
-        "version": "v1.17.0"
+        "version": "v1.23.0"
     },
     "symfony/polyfill-intl-normalizer": {
         "version": "v1.17.0"

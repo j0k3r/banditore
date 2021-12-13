@@ -63,7 +63,7 @@ class SyncStarredReposCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption('use_queue') && $this->transport instanceof MessageCountAwareInterface) {
             // check that queue is empty before pushing new messages

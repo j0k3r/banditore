@@ -23,7 +23,7 @@ class CustomRedisCachePool extends PredisCachePool
     /**
      * {@inheritdoc}
      */
-    protected function storeItemInCache(PhpCacheItem $item, $ttl)
+    protected function storeItemInCache(PhpCacheItem $item, $ttl): bool
     {
         if ($ttl < 0) {
             return false;
