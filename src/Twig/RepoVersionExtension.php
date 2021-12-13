@@ -10,7 +10,7 @@ use Twig\TwigFilter;
  */
 class RepoVersionExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('link_to_version', [$this, 'linkToVersion']),

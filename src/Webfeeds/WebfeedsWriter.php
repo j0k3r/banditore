@@ -14,14 +14,14 @@ use MarcW\RssWriter\WriterRegistererInterface;
  */
 class WebfeedsWriter implements WriterRegistererInterface
 {
-    public function getRegisteredWriters()
+    public function getRegisteredWriters(): array
     {
         return [
             Webfeeds::class => [$this, 'write'],
         ];
     }
 
-    public function getRegisteredNamespaces()
+    public function getRegisteredNamespaces(): array
     {
         return [
             'webfeeds' => 'http://webfeeds.org/rss/1.0',

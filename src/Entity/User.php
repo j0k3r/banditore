@@ -278,17 +278,17 @@ class User implements UserInterface, EquatableInterface
         $this->setName($info['name']);
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
         return ['ROLE_USER'];
     }
 
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return '';
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return null;
     }
