@@ -5,3 +5,6 @@
 #        #
 #        # If you're using ParaTest, "TEST_TOKEN" is set by ParaTest otherwise nothing is appended to the database name.
 #        dbname: main_test%env(default::TEST_TOKEN)%
+doctrine:
+    dbal:
+        logging: false
