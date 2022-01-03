@@ -390,21 +390,21 @@
         },
         {
             "name": "cache/tag-interop",
-            "version": "1.0.1",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-cache/tag-interop.git",
-                "reference": "909a5df87e698f1665724a9e84851c11c45fbfb9"
+                "reference": "b062b1d735357da50edf8387f7a8696f3027d328"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-cache/tag-interop/zipball/909a5df87e698f1665724a9e84851c11c45fbfb9",
-                "reference": "909a5df87e698f1665724a9e84851c11c45fbfb9",
+                "url": "https://api.github.com/repos/php-cache/tag-interop/zipball/b062b1d735357da50edf8387f7a8696f3027d328",
+                "reference": "b062b1d735357da50edf8387f7a8696f3027d328",
                 "shasum": ""
             },
             "require": {
                 "php": "^5.5 || ^7.0 || ^8.0",
-                "psr/cache": "^1.0"
+                "psr/cache": "^1.0 || ^2.0"
             },
             "type": "library",
             "extra": {
@@ -443,9 +443,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-cache/tag-interop/issues",
-                "source": "https://github.com/php-cache/tag-interop/tree/1.0.1"
+                "source": "https://github.com/php-cache/tag-interop/tree/1.1.0"
             },
-            "time": "2020-12-04T14:11:04+00:00"
+            "time": "2021-12-31T10:03:23+00:00"
         },
         {
             "name": "clue/stream-filter",
@@ -2699,16 +2699,16 @@
         },
         {
             "name": "league/oauth2-client",
-            "version": "2.6.0",
+            "version": "2.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-client.git",
-                "reference": "badb01e62383430706433191b82506b6df24ad98"
+                "reference": "2334c249907190c132364f5dae0287ab8666aa19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/badb01e62383430706433191b82506b6df24ad98",
-                "reference": "badb01e62383430706433191b82506b6df24ad98",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/2334c249907190c132364f5dae0287ab8666aa19",
+                "reference": "2334c249907190c132364f5dae0287ab8666aa19",
                 "shasum": ""
             },
             "require": {
@@ -2717,9 +2717,9 @@
                 "php": "^5.6 || ^7.0 || ^8.0"
             },
             "require-dev": {
-                "mockery/mockery": "^1.3",
-                "php-parallel-lint/php-parallel-lint": "^1.2",
-                "phpunit/phpunit": "^5.7 || ^6.0 || ^9.3",
+                "mockery/mockery": "^1.3.5",
+                "php-parallel-lint/php-parallel-lint": "^1.3.1",
+                "phpunit/phpunit": "^5.7 || ^6.0 || ^9.5",
                 "squizlabs/php_codesniffer": "^2.3 || ^3.0"
             },
             "type": "library",
@@ -2763,9 +2763,9 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/oauth2-client/issues",
-                "source": "https://github.com/thephpleague/oauth2-client/tree/2.6.0"
+                "source": "https://github.com/thephpleague/oauth2-client/tree/2.6.1"
             },
-            "time": "2020-10-28T02:03:40+00:00"
+            "time": "2021-12-22T16:42:49+00:00"
         },
         {
             "name": "league/oauth2-github",
@@ -4449,16 +4449,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "3.3.4",
+            "version": "3.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "ecbd09ea5d053a202cf773cb24ab28af820831bd"
+                "reference": "c186c44c32899ad0cf5b4e942d71035f01b87b64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/ecbd09ea5d053a202cf773cb24ab28af820831bd",
-                "reference": "ecbd09ea5d053a202cf773cb24ab28af820831bd",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/c186c44c32899ad0cf5b4e942d71035f01b87b64",
+                "reference": "c186c44c32899ad0cf5b4e942d71035f01b87b64",
                 "shasum": ""
             },
             "require": {
@@ -4466,7 +4466,7 @@
                 "ext-mbstring": "*",
                 "guzzlehttp/promises": "^1.4",
                 "guzzlehttp/psr7": "^1.7|^2.0",
-                "jean85/pretty-package-versions": "^1.5|^2.0.1",
+                "jean85/pretty-package-versions": "^1.5|^2.0.4",
                 "php": "^7.2|^8.0",
                 "php-http/async-client-implementation": "^1.0",
                 "php-http/client-common": "^1.5|^2.0",
@@ -4537,7 +4537,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/3.3.4"
+                "source": "https://github.com/getsentry/sentry-php/tree/3.3.5"
             },
             "funding": [
                 {
@@ -4549,7 +4549,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2021-11-08T08:44:00+00:00"
+            "time": "2021-12-27T12:31:24+00:00"
         },
         {
             "name": "sentry/sentry-symfony",
@@ -6353,16 +6353,16 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v5.4.1",
+            "version": "v5.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "78b69fc4532253f3025db7f2429d8765e506cbf2"
+                "reference": "5e344f1402584a56631c81a24ec9403e3159c790"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/78b69fc4532253f3025db7f2429d8765e506cbf2",
-                "reference": "78b69fc4532253f3025db7f2429d8765e506cbf2",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/5e344f1402584a56631c81a24ec9403e3159c790",
+                "reference": "5e344f1402584a56631c81a24ec9403e3159c790",
                 "shasum": ""
             },
             "require": {
@@ -6420,7 +6420,7 @@
             "description": "Provides powerful methods to fetch HTTP resources synchronously or asynchronously",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v5.4.1"
+                "source": "https://github.com/symfony/http-client/tree/v5.4.2"
             },
             "funding": [
                 {
@@ -6436,7 +6436,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-12-01T15:04:08+00:00"
+            "time": "2021-12-29T10:10:35+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
@@ -6703,16 +6703,16 @@
         },
         {
             "name": "symfony/messenger",
-            "version": "v5.4.0",
+            "version": "v5.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/messenger.git",
-                "reference": "2b4b5acf641656ea0a3af35c4fa2289a66dab45d"
+                "reference": "c35f9937b3bde678377ec0d5879760ad007cb500"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/messenger/zipball/2b4b5acf641656ea0a3af35c4fa2289a66dab45d",
-                "reference": "2b4b5acf641656ea0a3af35c4fa2289a66dab45d",
+                "url": "https://api.github.com/repos/symfony/messenger/zipball/c35f9937b3bde678377ec0d5879760ad007cb500",
+                "reference": "c35f9937b3bde678377ec0d5879760ad007cb500",
                 "shasum": ""
             },
             "require": {
@@ -6773,7 +6773,7 @@
             "description": "Helps applications send and receive messages to/from other applications or via message queues",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/messenger/tree/v5.4.0"
+                "source": "https://github.com/symfony/messenger/tree/v5.4.2"
             },
             "funding": [
                 {
@@ -6789,7 +6789,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-23T15:22:30+00:00"
+            "time": "2021-12-16T21:52:00+00:00"
         },
         {
             "name": "symfony/monolog-bridge",
@@ -8398,16 +8398,16 @@
         },
         {
             "name": "symfony/redis-messenger",
-            "version": "v5.4.0",
+            "version": "v5.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/redis-messenger.git",
-                "reference": "d3f3fa0c06337ae883bdefbead6fe7bdce19d5e0"
+                "reference": "b4bf15c6b735eeb52fbbe3c402aa4428d83f9794"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/redis-messenger/zipball/d3f3fa0c06337ae883bdefbead6fe7bdce19d5e0",
-                "reference": "d3f3fa0c06337ae883bdefbead6fe7bdce19d5e0",
+                "url": "https://api.github.com/repos/symfony/redis-messenger/zipball/b4bf15c6b735eeb52fbbe3c402aa4428d83f9794",
+                "reference": "b4bf15c6b735eeb52fbbe3c402aa4428d83f9794",
                 "shasum": ""
             },
             "require": {
@@ -8445,7 +8445,7 @@
             "description": "Symfony Redis extension Messenger Bridge",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/redis-messenger/tree/v5.4.0"
+                "source": "https://github.com/symfony/redis-messenger/tree/v5.4.2"
             },
             "funding": [
                 {
@@ -8461,7 +8461,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-28T15:25:38+00:00"
+            "time": "2021-12-28T17:15:56+00:00"
         },
         {
             "name": "symfony/routing",
@@ -9941,16 +9941,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v5.4.0",
+            "version": "v5.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "034ccc0994f1ae3f7499fa5b1f2e75d5e7a94efc"
+                "reference": "b9eb163846a61bb32dfc147f7859e274fab38b58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/034ccc0994f1ae3f7499fa5b1f2e75d5e7a94efc",
-                "reference": "034ccc0994f1ae3f7499fa5b1f2e75d5e7a94efc",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/b9eb163846a61bb32dfc147f7859e274fab38b58",
+                "reference": "b9eb163846a61bb32dfc147f7859e274fab38b58",
                 "shasum": ""
             },
             "require": {
@@ -9996,7 +9996,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v5.4.0"
+                "source": "https://github.com/symfony/yaml/tree/v5.4.2"
             },
             "funding": [
                 {
@@ -10012,7 +10012,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-28T15:25:38+00:00"
+            "time": "2021-12-16T21:58:21+00:00"
         },
         {
             "name": "twig/extra-bundle",
@@ -11608,16 +11608,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v5.4.0",
+            "version": "v5.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "5be20b3830f726e019162b26223110c8f47cf274"
+                "reference": "2b3ba8722c4aaf3e88011be5e7f48710088fb5e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/5be20b3830f726e019162b26223110c8f47cf274",
-                "reference": "5be20b3830f726e019162b26223110c8f47cf274",
+                "url": "https://api.github.com/repos/symfony/process/zipball/2b3ba8722c4aaf3e88011be5e7f48710088fb5e4",
+                "reference": "2b3ba8722c4aaf3e88011be5e7f48710088fb5e4",
                 "shasum": ""
             },
             "require": {
@@ -11650,7 +11650,7 @@
             "description": "Executes commands in sub-processes",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v5.4.0"
+                "source": "https://github.com/symfony/process/tree/v5.4.2"
             },
             "funding": [
                 {
@@ -11666,7 +11666,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-28T15:25:38+00:00"
+            "time": "2021-12-27T21:01:00+00:00"
         },
         {
             "name": "symfony/web-profiler-bundle",
