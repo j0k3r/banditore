@@ -140,7 +140,6 @@ a.pure-button-primary:hover {
     position: absolute;
     top: 0;
     right: 0;
-    display: block;
     margin: 7px;
 }
 
@@ -195,7 +194,7 @@ a.pure-button-primary:hover {
     height: 50%;
     margin: 0 auto;
     /*position: absolute;*/
-    top: 0px;
+    top: 0;
     left: 0;
     bottom: 0;
     right: 0;
@@ -394,7 +393,7 @@ aside.feed b:after {
  * From https://isabelcastillo.com/error-info-messages-css
  */
 .alert {
-    margin: 10px 0px;
+    margin: 10px 0;
     padding: 12px;
     border-radius: .5em;
 }
