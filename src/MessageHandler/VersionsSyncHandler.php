@@ -254,7 +254,8 @@ class VersionsSyncHandler implements MessageHandlerInterface
      */
     private function removePgpSignature(string $message): string
     {
-        if ($pos = stripos($message, '-----BEGIN PGP SIGNATURE-----')) {
+        $pos = stripos($message, '-----BEGIN PGP SIGNATURE-----');
+        if ($pos) {
             return trim(substr($message, 0, $pos));
         }
 
