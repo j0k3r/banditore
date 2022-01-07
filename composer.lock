@@ -4667,16 +4667,16 @@
         },
         {
             "name": "snc/redis-bundle",
-            "version": "4.0.1",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/snc/SncRedisBundle.git",
-                "reference": "468e2e96d2c7bfa075397ec80f8c56c56ed3a91b"
+                "reference": "8a3bbd5871b6fa8aad0a8887a31f8531ab5a411a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/468e2e96d2c7bfa075397ec80f8c56c56ed3a91b",
-                "reference": "468e2e96d2c7bfa075397ec80f8c56c56ed3a91b",
+                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/8a3bbd5871b6fa8aad0a8887a31f8531ab5a411a",
+                "reference": "8a3bbd5871b6fa8aad0a8887a31f8531ab5a411a",
                 "shasum": ""
             },
             "require": {
@@ -4750,9 +4750,9 @@
             ],
             "support": {
                 "issues": "https://github.com/snc/SncRedisBundle/issues",
-                "source": "https://github.com/snc/SncRedisBundle/tree/4.0.1"
+                "source": "https://github.com/snc/SncRedisBundle/tree/4.0.2"
             },
-            "time": "2021-12-07T09:45:24+00:00"
+            "time": "2022-01-06T12:13:25+00:00"
         },
         {
             "name": "symfony/amqp-messenger",
