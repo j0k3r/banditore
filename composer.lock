@@ -4553,16 +4553,16 @@
         },
         {
             "name": "sentry/sentry-symfony",
-            "version": "4.2.5",
+            "version": "4.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-symfony.git",
-                "reference": "2d3016484d83291a5da137d1a9347e70f0fe526a"
+                "reference": "c3f2c687b45e3e42573372ac75e643c9e4f3f896"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-symfony/zipball/2d3016484d83291a5da137d1a9347e70f0fe526a",
-                "reference": "2d3016484d83291a5da137d1a9347e70f0fe526a",
+                "url": "https://api.github.com/repos/getsentry/sentry-symfony/zipball/c3f2c687b45e3e42573372ac75e643c9e4f3f896",
+                "reference": "c3f2c687b45e3e42573372ac75e643c9e4f3f896",
                 "shasum": ""
             },
             "require": {
@@ -4570,7 +4570,7 @@
                 "php": "^7.2||^8.0",
                 "php-http/discovery": "^1.11",
                 "sentry/sdk": "^3.1",
-                "symfony/cache-contracts": "^1.1||^2.4",
+                "symfony/cache-contracts": "^1.1||^2.4||^3.0",
                 "symfony/config": "^3.4.44||^4.4.20||^5.0.11||^6.0",
                 "symfony/console": "^3.4.44||^4.4.20||^5.0.11||^6.0",
                 "symfony/dependency-injection": "^3.4.44||^4.4.20||^5.0.11||^6.0",
@@ -4651,7 +4651,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-symfony/issues",
-                "source": "https://github.com/getsentry/sentry-symfony/tree/4.2.5"
+                "source": "https://github.com/getsentry/sentry-symfony/tree/4.2.6"
             },
             "funding": [
                 {
@@ -4663,7 +4663,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2021-12-13T08:52:25+00:00"
+            "time": "2022-01-10T08:56:54+00:00"
         },
         {
             "name": "snc/redis-bundle",
