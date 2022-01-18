@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2de5aca6ca158889c4d48ca4bdf1da56",
+    "content-hash": "c3575bf4cbdd2e7455836786d6c38775",
     "packages": [
         {
             "name": "ashleydawson/simple-pagination",
@@ -515,16 +515,16 @@
         },
         {
             "name": "composer/package-versions-deprecated",
-            "version": "1.11.99.4",
+            "version": "1.11.99.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/package-versions-deprecated.git",
-                "reference": "b174585d1fe49ceed21928a945138948cb394600"
+                "reference": "b4f54f74ef3453349c24a845d22392cd31e65f1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/package-versions-deprecated/zipball/b174585d1fe49ceed21928a945138948cb394600",
-                "reference": "b174585d1fe49ceed21928a945138948cb394600",
+                "url": "https://api.github.com/repos/composer/package-versions-deprecated/zipball/b4f54f74ef3453349c24a845d22392cd31e65f1d",
+                "reference": "b4f54f74ef3453349c24a845d22392cd31e65f1d",
                 "shasum": ""
             },
             "require": {
@@ -568,7 +568,7 @@
             "description": "Composer plugin that provides efficient querying for installed package versions (no runtime IO)",
             "support": {
                 "issues": "https://github.com/composer/package-versions-deprecated/issues",
-                "source": "https://github.com/composer/package-versions-deprecated/tree/1.11.99.4"
+                "source": "https://github.com/composer/package-versions-deprecated/tree/1.11.99.5"
             },
             "funding": [
                 {
@@ -584,7 +584,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-09-13T08:41:34+00:00"
+            "time": "2022-01-17T14:14:24+00:00"
         },
         {
             "name": "doctrine/annotations",
