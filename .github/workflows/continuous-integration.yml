@@ -1,4 +1,4 @@
-name: "CI"
+name: CI
 
 on:
   pull_request:
@@ -14,7 +14,7 @@ env:
 
 jobs:
   phpunit:
-    name: "PHPUnit (PHP ${{ matrix.php }})"
+    name: PHPUnit (PHP ${{ matrix.php }})
     runs-on: "ubuntu-20.04"
     services:
       mysql:
@@ -40,13 +40,13 @@ jobs:
           - "8.1"
 
     steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v2"
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
           fetch-depth: 2
 
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@v2"
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
         with:
           php-version: "${{ matrix.php }}"
           coverage: "none"
@@ -56,20 +56,28 @@ jobs:
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v1"
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
 
-      - name: "Create database"
-        run: "php bin/console doctrine:database:create --env=test"
+      - name: Install dependencies with Yarn
+        run: yarn install
 
-      - name: "Create schema"
-        run: "php bin/console doctrine:schema:create --env=test"
+      - name: Install dependencies with Composer
+        uses: ramsey/composer-install@v2
 
-      - name: "Load fixtures"
-        run: "php bin/console doctrine:fixtures:load --env=test -n"
+      - name: Create database
+        run: php bin/console doctrine:database:create --env=test
 
-      - name: "Setup messenger queue"
-        run: "php bin/console messenger:setup-transports --env=dev"
+      - name: Create schema
+        run: php bin/console doctrine:schema:create --env=test
 
-      - name: "Run PHPUnit"
-        run: "php bin/simple-phpunit -v"
+      - name: Load fixtures
+        run: php bin/console doctrine:fixtures:load --env=test -n
+
+      - name: Setup messenger queue
+        run: php bin/console messenger:setup-transports --env=dev
+
+      - name: Run PHPUnit
+        run: php bin/simple-phpunit -v

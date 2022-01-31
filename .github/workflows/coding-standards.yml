@@ -1,4 +1,4 @@
-name: "CS"
+name: CS
 
 on:
   pull_request:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   coding-standards:
-    name: "CS Fixer & PHPStan"
+    name: CS Fixer & PHPStan
     runs-on: "ubuntu-20.04"
 
     strategy:
@@ -19,11 +19,11 @@ jobs:
           - "7.4"
 
     steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v2"
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@v2"
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
         with:
           coverage: "none"
           php-version: "${{ matrix.php }}"
@@ -32,17 +32,17 @@ jobs:
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v1"
+      - name: Install dependencies with Composer
+        uses: ramsey/composer-install@v2
 
-      - name: "Run PHP CS Fixer"
-        run: "bin/php-cs-fixer fix --verbose --dry-run"
+      - name: Run PHP CS Fixer
+        run: bin/php-cs-fixer fix --verbose --dry-run
 
-      - name: "Generate test cache for PHPStan"
-        run: "php bin/console cache:clear --env=test"
+      - name: Generate test cache for PHPStan
+        run: php bin/console cache:clear --env=test
 
-      - name: "Install PHPUnit for PHPStan"
-        run: "php bin/simple-phpunit install"
+      - name: Install PHPUnit for PHPStan
+        run: php bin/simple-phpunit install
 
-      - name: "Run PHPStan"
-        run: "php bin/phpstan analyse --no-progress"
+      - name: Run PHPStan
+        run: php bin/phpstan analyse --no-progress

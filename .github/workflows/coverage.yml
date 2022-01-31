@@ -1,4 +1,4 @@
-name: "Coverage"
+name: Coverage
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ env:
 
 jobs:
   phpunit:
-    name: "PHPUnit"
+    name: PHPUnit
     runs-on: "ubuntu-20.04"
     services:
       mysql:
@@ -37,13 +37,13 @@ jobs:
           - "7.4"
 
     steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v2"
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
           fetch-depth: 2
 
-      - name: "Install PHP with PCOV"
-        uses: "shivammathur/setup-php@v2"
+      - name: Install PHP with PCOV
+        uses: shivammathur/setup-php@v2
         with:
           php-version: "${{ matrix.php }}"
           coverage: "pcov"
@@ -53,31 +53,31 @@ jobs:
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v1"
+      - name: Install dependencies with Composer
+        uses: ramsey/composer-install@v2
 
-      - name: "Create database"
-        run: "php bin/console doctrine:database:create --env=test"
+      - name: Create database
+        run: php bin/console doctrine:database:create --env=test
 
-      - name: "Create schema"
-        run: "php bin/console doctrine:schema:create --env=test"
+      - name: Create schema
+        run: php bin/console doctrine:schema:create --env=test
 
-      - name: "Load fixtures"
-        run: "php bin/console doctrine:fixtures:load --env=test -n"
+      - name: Load fixtures
+        run: php bin/console doctrine:fixtures:load --env=test -n
 
-      - name: "Setup messenger queue"
-        run: "php bin/console messenger:setup-transports --env=dev"
+      - name: Setup messenger queue
+        run: php bin/console messenger:setup-transports --env=dev
 
-      - name: "Run PHPUnit (with coverage)"
-        run: "php bin/simple-phpunit -v --coverage-clover=coverage.xml"
+      - name: Run PHPUnit (with coverage)
+        run: php bin/simple-phpunit -v --coverage-clover=coverage.xml
 
-      - name: "Retrieve Coveralls phar"
-        run: "wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.5.1/php-coveralls.phar"
+      - name: Retrieve Coveralls phar
+        run: wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.5.1/php-coveralls.phar
 
-      - name: "Enable Coveralls phar"
-        run: "chmod +x php-coveralls.phar"
+      - name: Enable Coveralls phar
+        run: chmod +x php-coveralls.phar
 
-      - name: "Upload to Coveralls"
-        run: "php php-coveralls.phar -v -x coverage.xml -o coveralls-upload.json"
+      - name: Upload to Coveralls
+        run: php php-coveralls.phar -v -x coverage.xml -o coveralls-upload.json
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
