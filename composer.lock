@@ -2061,12 +2061,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2123,12 +2123,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\Promise\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\Promise\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2216,12 +2216,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\Psr7\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\Psr7\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2570,16 +2570,16 @@
         },
         {
             "name": "knpuniversity/oauth2-client-bundle",
-            "version": "v2.9.0",
+            "version": "v2.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/knpuniversity/oauth2-client-bundle.git",
-                "reference": "2c925911cca6ed16b0695000bf927d405815dc36"
+                "reference": "eb260409723a7bf204c2aa842b3488980372e874"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/knpuniversity/oauth2-client-bundle/zipball/2c925911cca6ed16b0695000bf927d405815dc36",
-                "reference": "2c925911cca6ed16b0695000bf927d405815dc36",
+                "url": "https://api.github.com/repos/knpuniversity/oauth2-client-bundle/zipball/eb260409723a7bf204c2aa842b3488980372e874",
+                "reference": "eb260409723a7bf204c2aa842b3488980372e874",
                 "shasum": ""
             },
             "require": {
@@ -2624,9 +2624,9 @@
             ],
             "support": {
                 "issues": "https://github.com/knpuniversity/oauth2-client-bundle/issues",
-                "source": "https://github.com/knpuniversity/oauth2-client-bundle/tree/v2.9.0"
+                "source": "https://github.com/knpuniversity/oauth2-client-bundle/tree/v2.10.0"
             },
-            "time": "2021-11-22T01:40:58+00:00"
+            "time": "2022-02-23T15:00:49+00:00"
         },
         {
             "name": "laminas/laminas-code",
