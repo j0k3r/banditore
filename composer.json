@@ -85,7 +85,12 @@
             "php": "7.4.26"
         },
         "bin-dir": "bin",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "symfony/flex": true,
+            "symfony/runtime": true
+        }
     },
     "repositories": [
         {
