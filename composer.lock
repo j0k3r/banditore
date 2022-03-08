@@ -4666,16 +4666,16 @@
         },
         {
             "name": "snc/redis-bundle",
-            "version": "4.1.5",
+            "version": "4.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/snc/SncRedisBundle.git",
-                "reference": "f23d544741df8ff2fe56fa3391f02bedc7725a9f"
+                "reference": "34d6e3b8c676bf13d71675726179bca0d5de1069"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/f23d544741df8ff2fe56fa3391f02bedc7725a9f",
-                "reference": "f23d544741df8ff2fe56fa3391f02bedc7725a9f",
+                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/34d6e3b8c676bf13d71675726179bca0d5de1069",
+                "reference": "34d6e3b8c676bf13d71675726179bca0d5de1069",
                 "shasum": ""
             },
             "require": {
@@ -4693,7 +4693,7 @@
                 "doctrine/coding-standard": "^9.0",
                 "ext-pdo_sqlite": "*",
                 "ext-redis": "*",
-                "friendsofphp/proxy-manager-lts": "^1.0",
+                "friendsofphp/proxy-manager-lts": "^1.0.6",
                 "monolog/monolog": "*",
                 "phpunit/phpunit": "^8.5 || ^9.5",
                 "predis/predis": "^1.1",
@@ -4749,9 +4749,9 @@
             ],
             "support": {
                 "issues": "https://github.com/snc/SncRedisBundle/issues",
-                "source": "https://github.com/snc/SncRedisBundle/tree/4.1.5"
+                "source": "https://github.com/snc/SncRedisBundle/tree/4.1.6"
             },
-            "time": "2022-01-28T20:56:50+00:00"
+            "time": "2022-03-05T09:40:24+00:00"
         },
         {
             "name": "symfony/amqp-messenger",
