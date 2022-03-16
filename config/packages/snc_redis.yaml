@@ -8,10 +8,6 @@ snc_redis:
             type: predis
             alias: guzzle_cache
             dsn: "%env(REDIS_URL_GUZZLE_CACHE)%"
-        doctrine_cache:
-            type: predis
-            alias: doctrine_cache
-            dsn: "%env(REDIS_URL_DOCTRINE_CACHE)%"
         app_cache:
             type: predis
             alias: app_cache
