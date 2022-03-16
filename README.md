@@ -17,6 +17,7 @@ Banditore retrieves new releases from your GitHub starred repositories and put t
  - Redis (to cache requests to the GitHub API)
  - [RabbitMQ](https://www.rabbitmq.com/), which is optional (see below)
  - [Supervisor](http://supervisord.org/) (only if you use RabbitMQ)
+ - [NVM](https://github.com/nvm-sh/nvm#install--update-script) & [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/) to install assets
 
 ## Installation
 
@@ -37,14 +38,21 @@ Banditore retrieves new releases from your GitHub starred repositories and put t
     If you want to use:
      - **Sentry** to retrieve all errors, [register here](https://sentry.io/signup/) and get your dsn (in Project Settings > DSN).
 
-5. Setup the database
+4. Setup the database
 
     ```bash
     php bin/console doctrine:database:create -e prod
     php bin/console doctrine:schema:create -e prod
     ```
 
-4. You can now launch the website:
+5. Install assets
+
+    ```bash
+    nvm install
+    yarn install
+    ```
+
+6. You can now launch the website:
 
     ```bash
     php bin/console server:run -e prod
