@@ -17,6 +17,7 @@
 # exclude copied file from package.json
 public/css/*.min.css
 public/css/*-min.css
+public/fonts/*
 
 ###> symfony/framework-bundle ###
 /.env.local

@@ -1,9 +1,10 @@
 {
     "private": true,
     "scripts": {
-        "postinstall": "yarn copy-purecss && yarn copy-fontawesome",
+        "postinstall": "yarn copy-purecss && yarn copy-fontawesome && yarn copy-fontawesome-fonts",
         "copy-purecss": "cp node_modules/purecss/build/pure-min.css public/css && cp node_modules/purecss/build/grids-responsive-min.css public/css",
-        "copy-fontawesome": "cp node_modules/font-awesome/css/font-awesome.min.css public/css"
+        "copy-fontawesome": "cp node_modules/font-awesome/css/font-awesome.min.css public/css",
+        "copy-fontawesome-fonts": "cp node_modules/font-awesome/fonts/* public/fonts"
     },
     "dependencies": {
         "font-awesome": "^4.7.0",
