@@ -7,7 +7,7 @@ security:
     providers:
         github_provider:
             entity:
-                class: App:User
+                class: App\Entity\User
                 property: githubId
 
     firewalls:
