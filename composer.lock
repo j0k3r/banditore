@@ -2512,16 +2512,16 @@
         },
         {
             "name": "knplabs/knp-time-bundle",
-            "version": "v1.18.0",
+            "version": "v1.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/KnpTimeBundle.git",
-                "reference": "239c964c67087f3e1e9dbcfe6fb1d4af36ff884b"
+                "reference": "56e4d154bcd14c1b67c0d1defa1e7d00d27430e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/KnpTimeBundle/zipball/239c964c67087f3e1e9dbcfe6fb1d4af36ff884b",
-                "reference": "239c964c67087f3e1e9dbcfe6fb1d4af36ff884b",
+                "url": "https://api.github.com/repos/KnpLabs/KnpTimeBundle/zipball/56e4d154bcd14c1b67c0d1defa1e7d00d27430e3",
+                "reference": "56e4d154bcd14c1b67c0d1defa1e7d00d27430e3",
                 "shasum": ""
             },
             "require": {
@@ -2579,9 +2579,9 @@
             ],
             "support": {
                 "issues": "https://github.com/KnpLabs/KnpTimeBundle/issues",
-                "source": "https://github.com/KnpLabs/KnpTimeBundle/tree/v1.18.0"
+                "source": "https://github.com/KnpLabs/KnpTimeBundle/tree/v1.19.0"
             },
-            "time": "2022-02-07T18:02:40+00:00"
+            "time": "2022-05-10T00:14:22+00:00"
         },
         {
             "name": "knpuniversity/oauth2-client-bundle",
