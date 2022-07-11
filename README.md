@@ -32,7 +32,7 @@ Banditore retrieves new releases from your GitHub starred repositories and put t
 3. Install dependencies using [Composer](https://getcomposer.org/download/) and define your parameter during the installation
 
     ```bash
-    SYMFONY_ENV=prod composer install -o --no-dev
+    APP_ENV=prod composer install -o --no-dev
     ```
 
     If you want to use:
