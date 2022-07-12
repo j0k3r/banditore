@@ -83,7 +83,8 @@ You just need to define these 2 cronjobs (replace all `/path/to/banditore` with 
 1. You'll need to declare exchanges and queues. Replace `guest` by the user of your RabbitMQ instance (`guest` is the default one):
 
  ```bash
- php bin/rabbit vhost:mapping:create -p guest app/config/rabbit_vhost.yml
+ php bin/console messenger:setup-transports -vvv sync_starred_repos
+ php bin/console messenger:setup-transports -vvv sync_versions
  ```
 
 2. You now have two queues and two exchanges defined:

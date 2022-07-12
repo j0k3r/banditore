@@ -185,7 +185,7 @@ class VersionsSyncHandler implements MessageHandlerInterface
                             'message' => $tagInfo['message'],
                         ];
                         break;
-                    // https://api.github.com/repos/ampproject/amphtml/git/commits/c0a5834b32ae4b45b4bacf677c391e0f9cca82fb
+                        // https://api.github.com/repos/ampproject/amphtml/git/commits/c0a5834b32ae4b45b4bacf677c391e0f9cca82fb
                     case 'commit':
                         $commitInfo = $githubGitApi->commits()->show($username, $repoName, $tag['object']['sha']);
 
