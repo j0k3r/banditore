@@ -100,7 +100,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
             ->willReturn([['uuid' => '7fc8de31-5371-4f0a-b606-a7e164c41d46']]);
 
         $method = new \ReflectionMethod(
-          'App\PubSubHubbub\Publisher', 'retrieveFeedUrls'
+            'App\PubSubHubbub\Publisher', 'retrieveFeedUrls'
         );
 
         $method->setAccessible(true);
