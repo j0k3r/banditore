@@ -7,7 +7,7 @@ font-awesome@^4.7.0:
   resolved "https://registry.yarnpkg.com/font-awesome/-/font-awesome-4.7.0.tgz#8fa8cf0411a1a31afd07b06d2902bb9fc815a133"
   integrity sha512-U6kGnykA/6bFmg1M/oT9EkFeIYv7JlX3bozwQJWiiLz6L0w3F5vBVPxHlwyX/vtNq1ckcpRKOB9f2Qal/VtFpg==
 
-purecss@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/purecss/-/purecss-2.1.0.tgz#7d7eca2896e57a75cf7620ccf73aa42ded4ddc97"
-  integrity sha512-QIgWhat8QkHTXdejFJNwZuw0pZ7Mj0MHILHNz8sV6HZBfbWtHpW3b1+Q1D6W/9x4chFhaq9u4+Uk8YbwELzsXg==
+purecss@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/purecss/-/purecss-2.2.0.tgz#71249802e1babd562b236cf5d0b75b16f158a421"
+  integrity sha512-jEPrAALLgE+InDARWdPDt0AkZ1Bi0yXxHj4BOwWImq06sGIDe5CagPyS6Z9WGyEgMuZonrrhinInJ80nAHTIUA==

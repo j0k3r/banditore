@@ -8,6 +8,6 @@
     },
     "dependencies": {
         "font-awesome": "^4.7.0",
-        "purecss": "^2.1.0"
+        "purecss": "^2.2.0"
     }
 }
