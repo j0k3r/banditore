@@ -312,12 +312,12 @@
         "version": "2.3.2"
     },
     "sentry/sentry-symfony": {
-        "version": "4.3",
+        "version": "4.4",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "main",
             "version": "4.0",
-            "ref": "3d8dc8c0f689e2e94f860d2e36f81fcc26348069"
+            "ref": "9ac202e84b6fb3c276cb3d7846006e0df65272d0"
         },
         "files": [
             "config/packages/sentry.yaml"
