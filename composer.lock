@@ -2823,16 +2823,16 @@
         },
         {
             "name": "league/oauth2-github",
-            "version": "3.0.0",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-github.git",
-                "reference": "266e9589a99e75bf696314e9ad8224009fccb91c"
+                "reference": "97f31cd70e76f81e8f5b4e2ab6f3708e2db7ac18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-github/zipball/266e9589a99e75bf696314e9ad8224009fccb91c",
-                "reference": "266e9589a99e75bf696314e9ad8224009fccb91c",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-github/zipball/97f31cd70e76f81e8f5b4e2ab6f3708e2db7ac18",
+                "reference": "97f31cd70e76f81e8f5b4e2ab6f3708e2db7ac18",
                 "shasum": ""
             },
             "require": {
@@ -2883,9 +2883,9 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/oauth2-github/issues",
-                "source": "https://github.com/thephpleague/oauth2-github/tree/3.0.0"
+                "source": "https://github.com/thephpleague/oauth2-github/tree/3.1.0"
             },
-            "time": "2021-05-10T13:15:40+00:00"
+            "time": "2022-11-04T14:01:49+00:00"
         },
         {
             "name": "marcw/rss-writer",
