@@ -62,7 +62,7 @@
         "symfony/css-selector": "5.4.*",
         "symfony/debug-bundle": "5.4.*",
         "symfony/maker-bundle": "^1.15",
-        "symfony/phpunit-bridge": "6.1.*",
+        "symfony/phpunit-bridge": "6.2.*",
         "symfony/web-profiler-bundle": "5.4.*"
     },
     "conflict": {
