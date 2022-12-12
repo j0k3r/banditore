@@ -4726,16 +4726,16 @@
         },
         {
             "name": "snc/redis-bundle",
-            "version": "4.3.2",
+            "version": "4.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/snc/SncRedisBundle.git",
-                "reference": "5797249b34fce59880227221c99606132676d920"
+                "reference": "feec42e459cf74c938074a7b6ca4051d3f2a0275"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/5797249b34fce59880227221c99606132676d920",
-                "reference": "5797249b34fce59880227221c99606132676d920",
+                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/feec42e459cf74c938074a7b6ca4051d3f2a0275",
+                "reference": "feec42e459cf74c938074a7b6ca4051d3f2a0275",
                 "shasum": ""
             },
             "require": {
@@ -4811,9 +4811,9 @@
             ],
             "support": {
                 "issues": "https://github.com/snc/SncRedisBundle/issues",
-                "source": "https://github.com/snc/SncRedisBundle/tree/4.3.2"
+                "source": "https://github.com/snc/SncRedisBundle/tree/4.4.1"
             },
-            "time": "2022-11-10T19:02:11+00:00"
+            "time": "2022-12-10T10:06:29+00:00"
         },
         {
             "name": "symfony/amqp-messenger",
@@ -6261,16 +6261,16 @@
         },
         {
             "name": "symfony/framework-bundle",
-            "version": "v5.4.14",
+            "version": "v5.4.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/framework-bundle.git",
-                "reference": "00ac4d7e31597f6a49759bd925d83fc87d4ade68"
+                "reference": "70bfb2e76b8d97b2b19058bd65046b4cc1f04e3d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/framework-bundle/zipball/00ac4d7e31597f6a49759bd925d83fc87d4ade68",
-                "reference": "00ac4d7e31597f6a49759bd925d83fc87d4ade68",
+                "url": "https://api.github.com/repos/symfony/framework-bundle/zipball/70bfb2e76b8d97b2b19058bd65046b4cc1f04e3d",
+                "reference": "70bfb2e76b8d97b2b19058bd65046b4cc1f04e3d",
                 "shasum": ""
             },
             "require": {
@@ -6392,7 +6392,7 @@
             "description": "Provides a tight integration between Symfony components and the Symfony full-stack framework",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/framework-bundle/tree/v5.4.14"
+                "source": "https://github.com/symfony/framework-bundle/tree/v5.4.16"
             },
             "funding": [
                 {
@@ -6408,7 +6408,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-10-07T08:01:20+00:00"
+            "time": "2022-11-25T14:26:10+00:00"
         },
         {
             "name": "symfony/http-client",
