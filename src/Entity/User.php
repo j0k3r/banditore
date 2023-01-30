@@ -16,7 +16,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *     name="user",
  *     uniqueConstraints={@ORM\UniqueConstraint(name="uuid", columns={"uuid"})}
  * )
+ *
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class User implements UserInterface, EquatableInterface
@@ -25,7 +27,9 @@ class User implements UserInterface, EquatableInterface
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="NONE")
      */
     private $id;
@@ -255,6 +259,7 @@ class User implements UserInterface, EquatableInterface
 
     /**
      * @ORM\PrePersist
+     *
      * @ORM\PreUpdate
      */
     public function timestamps(): void

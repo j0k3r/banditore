@@ -9,7 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
  * Repo.
  *
  * @ORM\Table(name="repo")
+ *
  * @ORM\Entity(repositoryClass="App\Repository\RepoRepository")
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class Repo
@@ -18,7 +20,9 @@ class Repo
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="NONE")
      */
     private $id;
@@ -324,6 +328,7 @@ class Repo
 
     /**
      * @ORM\PrePersist
+     *
      * @ORM\PreUpdate
      */
     public function timestamps(): void
