@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  *     name="star",
  *     uniqueConstraints={@ORM\UniqueConstraint(name="user_repo_unique", columns={"user_id","repo_id"})}
  * )
+ *
  * @ORM\Entity(repositoryClass="App\Repository\StarRepository")
  */
 class Star
@@ -19,19 +20,23 @@ class Star
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="stars")
+     *
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Repo", inversedBy="stars")
+     *
      * @ORM\JoinColumn(name="repo_id", referencedColumnName="id", nullable=false)
      */
     private $repo;

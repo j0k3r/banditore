@@ -12,10 +12,12 @@ use Doctrine\ORM\Mapping as ORM;
  *     name="version",
  *     uniqueConstraints={@ORM\UniqueConstraint(name="repo_version_unique", columns={"repo_id","tag_name"})},
  *     indexes={
+ *
  *         @ORM\Index(name="created_at_idx", columns={"created_at"}),
  *         @ORM\Index(name="tag_name_name_created_at_prerelease_repo_id", columns={"tag_name","name","created_at","prerelease","repo_id"})
  *     }
  * )
+ *
  * @ORM\Entity(repositoryClass="App\Repository\VersionRepository")
  */
 class Version
@@ -24,7 +26,9 @@ class Version
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
@@ -66,6 +70,7 @@ class Version
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Repo", inversedBy="versions")
+     *
      * @ORM\JoinColumn(name="repo_id", referencedColumnName="id", nullable=false)
      */
     private $repo;
