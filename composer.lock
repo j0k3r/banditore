@@ -2625,16 +2625,16 @@
         },
         {
             "name": "knpuniversity/oauth2-client-bundle",
-            "version": "v2.13.0",
+            "version": "v2.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/knpuniversity/oauth2-client-bundle.git",
-                "reference": "3d130053e7e510a97f976ca5ba3107e5bd84c9bc"
+                "reference": "f7fe73e98f193503b8aaf2e11f50a0d72539dc7c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/knpuniversity/oauth2-client-bundle/zipball/3d130053e7e510a97f976ca5ba3107e5bd84c9bc",
-                "reference": "3d130053e7e510a97f976ca5ba3107e5bd84c9bc",
+                "url": "https://api.github.com/repos/knpuniversity/oauth2-client-bundle/zipball/f7fe73e98f193503b8aaf2e11f50a0d72539dc7c",
+                "reference": "f7fe73e98f193503b8aaf2e11f50a0d72539dc7c",
                 "shasum": ""
             },
             "require": {
@@ -2679,9 +2679,9 @@
             ],
             "support": {
                 "issues": "https://github.com/knpuniversity/oauth2-client-bundle/issues",
-                "source": "https://github.com/knpuniversity/oauth2-client-bundle/tree/v2.13.0"
+                "source": "https://github.com/knpuniversity/oauth2-client-bundle/tree/v2.13.1"
             },
-            "time": "2023-02-02T14:57:35+00:00"
+            "time": "2023-02-03T13:57:47+00:00"
         },
         {
             "name": "laminas/laminas-code",
