@@ -7,12 +7,14 @@ when@prod:
         # If you are using Monolog, you also need these additional configuration and services to log the errors correctly:
         # https://docs.sentry.io/platforms/php/guides/symfony/#monolog-integration
         register_error_listener: false
+        register_error_handler: false
 
     monolog:
         handlers:
             sentry:
                 type: service
-                id: Sentry\Monolog\Handler
+                level: !php/const Monolog\Logger::ERROR
+                hub_id: Sentry\State\HubInterface
 
     services:
         Sentry\Integration\IgnoreErrorsIntegration:
