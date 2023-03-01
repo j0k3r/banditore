@@ -312,12 +312,12 @@
         "version": "2.3.2"
     },
     "sentry/sentry-symfony": {
-        "version": "4.4",
+        "version": "4.6",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "main",
-            "version": "4.0",
-            "ref": "9ac202e84b6fb3c276cb3d7846006e0df65272d0"
+            "version": "4.6",
+            "ref": "f7b4706a3e8a6f096b7392f3146f4f7f65ff594c"
         },
         "files": [
             "config/packages/sentry.yaml"
@@ -474,7 +474,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "5.4",
-            "ref": "dfe610928a5c61619bdfc830cd7fa7f091368023"
+            "ref": "8bd5f27013fb1d7217191c548e340f0bdb11912c"
         },
         "files": [
             "config/packages/messenger.yaml"
