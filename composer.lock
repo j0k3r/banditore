@@ -2465,16 +2465,16 @@
         },
         {
             "name": "knplabs/github-api",
-            "version": "v3.10.0",
+            "version": "v3.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/php-github-api.git",
-                "reference": "799aa2b8c9dd9b03e5c353339d083601407e3cc4"
+                "reference": "c68b874ac3267c3cc0544b726dbb4e49a72a9920"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/799aa2b8c9dd9b03e5c353339d083601407e3cc4",
-                "reference": "799aa2b8c9dd9b03e5c353339d083601407e3cc4",
+                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/c68b874ac3267c3cc0544b726dbb4e49a72a9920",
+                "reference": "c68b874ac3267c3cc0544b726dbb4e49a72a9920",
                 "shasum": ""
             },
             "require": {
@@ -2508,7 +2508,7 @@
             "extra": {
                 "branch-alias": {
                     "dev-2.x": "2.20.x-dev",
-                    "dev-master": "3.9.x-dev"
+                    "dev-master": "3.10.x-dev"
                 }
             },
             "autoload": {
@@ -2541,7 +2541,7 @@
             ],
             "support": {
                 "issues": "https://github.com/KnpLabs/php-github-api/issues",
-                "source": "https://github.com/KnpLabs/php-github-api/tree/v3.10.0"
+                "source": "https://github.com/KnpLabs/php-github-api/tree/v3.11.0"
             },
             "funding": [
                 {
@@ -2549,7 +2549,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-03-09T10:26:52+00:00"
+            "time": "2023-03-10T11:40:14+00:00"
         },
         {
             "name": "knplabs/knp-time-bundle",
