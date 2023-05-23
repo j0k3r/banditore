@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8bd9840e0d06f1b03022bd579153be4b",
+    "content-hash": "5161a7a30e1af5757da694c95686b06d",
     "packages": [
         {
             "name": "ashleydawson/simple-pagination",

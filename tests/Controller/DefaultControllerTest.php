@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class DefaultControllerTest extends WebTestCase
 {
     /** @var \Symfony\Bundle\FrameworkBundle\KernelBrowser */
-    private $client = null;
+    private $client;
 
     protected function setUp(): void
     {

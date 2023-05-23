@@ -20,9 +20,6 @@ use Cache\Adapter\Predis\PredisCachePool;
  */
 class CustomRedisCachePool extends PredisCachePool
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function storeItemInCache(PhpCacheItem $item, $ttl): bool
     {
         if ($ttl < 0) {
@@ -47,7 +44,7 @@ class CustomRedisCachePool extends PredisCachePool
             return true;
         }
 
-        if (isset($body[0]['ref']) && false !== strpos($body[0]['ref'], 'refs/tags/')) {
+        if (isset($body[0]['ref']) && str_contains($body[0]['ref'], 'refs/tags/')) {
             // response for git/refs/tags
             foreach ($body as $key => $element) {
                 $body[$key] = [
