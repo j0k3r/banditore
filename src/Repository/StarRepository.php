@@ -39,14 +39,10 @@ class StarRepository extends ServiceEntityRepository
 
     /**
      * Remove stars for a user.
-     *
-     * @param int $userId
-     *
-     * @return mixed
      */
-    public function removeFromUser(array $repoIds, $userId)
+    public function removeFromUser(array $repoIds, int $userId): void
     {
-        return $this->createQueryBuilder('s')
+        $this->createQueryBuilder('s')
             ->delete()
             ->where('s.repo IN (:ids)')->setParameter('ids', $repoIds)
             ->andWhere('s.user = :userId')->setParameter('userId', $userId)

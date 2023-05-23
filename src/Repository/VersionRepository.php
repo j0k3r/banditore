@@ -120,7 +120,7 @@ class VersionRepository extends ServiceEntityRepository
     /**
      * Retrieve the latest version saved.
      *
-     * @return mixed
+     * @return array|null
      */
     public function findLatest()
     {

@@ -190,21 +190,16 @@ class StarredReposSyncHandler implements MessageHandlerInterface
      * When user unstar a repo we also need to remove that association.
      *
      * @param array $newStars Current starred repos Id of the user
-     *
-     * @return mixed
      */
-    private function doCleanOldStar(User $user, array $newStars)
+    private function doCleanOldStar(User $user, array $newStars): void
     {
         $currentStars = $this->starRepository->findAllByUser($user->getId());
-
         $repoIdsToRemove = array_diff($currentStars, $newStars);
 
-        if (empty($repoIdsToRemove)) {
-            return null;
+        if (!empty($repoIdsToRemove)) {
+            $this->logger->info('Removed stars: ' . \count($repoIdsToRemove), ['user' => $user->getUsername()]);
+
+            $this->starRepository->removeFromUser($repoIdsToRemove, $user->getId());
         }
-
-        $this->logger->info('Removed stars: ' . \count($repoIdsToRemove), ['user' => $user->getUsername()]);
-
-        return $this->starRepository->removeFromUser($repoIdsToRemove, $user->getId());
     }
 }
