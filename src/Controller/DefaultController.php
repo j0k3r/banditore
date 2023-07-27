@@ -134,7 +134,7 @@ class DefaultController extends AbstractController
 
         return $oauth
             ->getClient('github')
-            ->redirect([], []);
+            ->redirect(['user:email'], []);
     }
 
     /**
