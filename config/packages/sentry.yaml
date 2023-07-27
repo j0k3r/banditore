@@ -13,6 +13,7 @@ when@prod:
         handlers:
             sentry:
                 type: service
+                id: Sentry\Monolog\Handler
                 level: !php/const Monolog\Logger::ERROR
                 hub_id: Sentry\State\HubInterface
 
