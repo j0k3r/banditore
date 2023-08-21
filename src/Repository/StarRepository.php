@@ -57,7 +57,7 @@ class StarRepository extends ServiceEntityRepository
      */
     public function countTotal()
     {
-        return $this->createQueryBuilder('s')
+        return (int) $this->createQueryBuilder('s')
             ->select('COUNT(s.id) as total')
             ->getQuery()
             ->getSingleScalarResult();

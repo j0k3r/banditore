@@ -44,7 +44,7 @@ class RepoRepository extends ServiceEntityRepository
      */
     public function countTotal()
     {
-        return $this->createQueryBuilder('r')
+        return (int) $this->createQueryBuilder('r')
             ->select('COUNT(r.id) as total')
             ->getQuery()
             ->getSingleScalarResult();
