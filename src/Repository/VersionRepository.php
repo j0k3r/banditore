@@ -111,7 +111,7 @@ class VersionRepository extends ServiceEntityRepository
      */
     public function countTotal()
     {
-        return $this->createQueryBuilder('v')
+        return (int) $this->createQueryBuilder('v')
             ->select('COUNT(v.id) as total')
             ->getQuery()
             ->getSingleScalarResult();
