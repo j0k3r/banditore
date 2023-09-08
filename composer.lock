@@ -4597,16 +4597,16 @@
         },
         {
             "name": "sentry/sentry-symfony",
-            "version": "4.10.0",
+            "version": "4.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-symfony.git",
-                "reference": "be9d93e5aed6a76a98dc980ae9e6fb56a29083b1"
+                "reference": "6c17890bfc65aa7e2ee33ee505231e6660778cc5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-symfony/zipball/be9d93e5aed6a76a98dc980ae9e6fb56a29083b1",
-                "reference": "be9d93e5aed6a76a98dc980ae9e6fb56a29083b1",
+                "url": "https://api.github.com/repos/getsentry/sentry-symfony/zipball/6c17890bfc65aa7e2ee33ee505231e6660778cc5",
+                "reference": "6c17890bfc65aa7e2ee33ee505231e6660778cc5",
                 "shasum": ""
             },
             "require": {
@@ -4698,7 +4698,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-symfony/issues",
-                "source": "https://github.com/getsentry/sentry-symfony/tree/4.10.0"
+                "source": "https://github.com/getsentry/sentry-symfony/tree/4.11.0"
             },
             "funding": [
                 {
@@ -4710,7 +4710,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-08-01T13:42:19+00:00"
+            "time": "2023-09-07T14:41:20+00:00"
         },
         {
             "name": "snc/redis-bundle",
@@ -8951,16 +8951,16 @@
         },
         {
             "name": "symfony/security-http",
-            "version": "v5.4.26",
+            "version": "v5.4.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security-http.git",
-                "reference": "9291eec227de5179eb0a1b60cc6265ee6f987b4a"
+                "reference": "7815edb5716e765063469b6b9232d4eaf8c03516"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-http/zipball/9291eec227de5179eb0a1b60cc6265ee6f987b4a",
-                "reference": "9291eec227de5179eb0a1b60cc6265ee6f987b4a",
+                "url": "https://api.github.com/repos/symfony/security-http/zipball/7815edb5716e765063469b6b9232d4eaf8c03516",
+                "reference": "7815edb5716e765063469b6b9232d4eaf8c03516",
                 "shasum": ""
             },
             "require": {
@@ -9016,7 +9016,7 @@
             "description": "Symfony Security Component - HTTP Integration",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/security-http/tree/v5.4.26"
+                "source": "https://github.com/symfony/security-http/tree/v5.4.28"
             },
             "funding": [
                 {
@@ -9032,7 +9032,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-13T14:03:15+00:00"
+            "time": "2023-08-23T10:00:20+00:00"
         },
         {
             "name": "symfony/service-contracts",
