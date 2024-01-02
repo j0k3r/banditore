@@ -263,7 +263,7 @@ class ClientDiscoveryTest extends WebTestCase
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
-        $disco = self::getContainer()->get(\App\Github\ClientDiscovery::class);
+        $disco = self::getContainer()->get(ClientDiscovery::class);
         $disco->setGithubClient($githubClient);
 
         $resClient = $disco->find();
