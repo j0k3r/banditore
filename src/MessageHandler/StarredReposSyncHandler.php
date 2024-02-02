@@ -41,7 +41,7 @@ class StarredReposSyncHandler implements MessageHandlerInterface
     /**
      * Client parameter can be null when no available client were found by the Github Client Discovery.
      */
-    public function __construct(ManagerRegistry $doctrine, UserRepository $userRepository, StarRepository $starRepository, RepoRepository $repoRepository, Client $client = null, LoggerInterface $logger, RedisClientInterface $redis)
+    public function __construct(ManagerRegistry $doctrine, UserRepository $userRepository, StarRepository $starRepository, RepoRepository $repoRepository, ?Client $client, LoggerInterface $logger, RedisClientInterface $redis)
     {
         $this->doctrine = $doctrine;
         $this->userRepository = $userRepository;

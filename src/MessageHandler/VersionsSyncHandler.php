@@ -31,7 +31,7 @@ class VersionsSyncHandler implements MessageHandlerInterface
     /**
      * Client parameter can be null when no available client were found by the Github Client Discovery.
      */
-    public function __construct(ManagerRegistry $doctrine, RepoRepository $repoRepository, VersionRepository $versionRepository, Publisher $pubsubhubbub, Client $client = null, LoggerInterface $logger)
+    public function __construct(ManagerRegistry $doctrine, RepoRepository $repoRepository, VersionRepository $versionRepository, Publisher $pubsubhubbub, ?Client $client, LoggerInterface $logger)
     {
         $this->doctrine = $doctrine;
         $this->repoRepository = $repoRepository;
