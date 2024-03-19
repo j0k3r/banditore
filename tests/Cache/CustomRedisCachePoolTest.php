@@ -101,14 +101,14 @@ class CustomRedisCachePoolTest extends WebTestCase
             ->willReturn($redisStatus);
 
         $body = (string) json_encode([[
-                'ref' => 'refs/tags/1.0.0',
-                'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/refs/tags/1.0.0',
-                'object' => [
-                    'sha' => '04b99722e0c25bfc45926cd3a1081c04a8e950ed',
-                    'type' => 'commit',
-                    'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/commits/04b99722e0c25bfc45926cd3a1081c04a8e950ed',
-                ],
+            'ref' => 'refs/tags/1.0.0',
+            'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/refs/tags/1.0.0',
+            'object' => [
+                'sha' => '04b99722e0c25bfc45926cd3a1081c04a8e950ed',
+                'type' => 'commit',
+                'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/commits/04b99722e0c25bfc45926cd3a1081c04a8e950ed',
             ],
+        ],
             [
                 'ref' => 'refs/tags/1.0.1',
                 'url' => 'https://api.github.com/repos/snc/SncRedisBundle/git/refs/tags/1.0.1',
