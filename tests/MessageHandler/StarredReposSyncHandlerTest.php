@@ -114,8 +114,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
 
         $starRepository->expects($this->once())
             ->method('removeFromUser')
-            ->with([1 => 777], 123)
-            ->willReturn(true);
+            ->with([1 => 777], 123);
 
         $repo = new Repo();
         $repo->setId(666);
