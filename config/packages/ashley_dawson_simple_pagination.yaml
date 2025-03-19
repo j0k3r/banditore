@@ -1,5 +1,0 @@
-ashley_dawson_simple_pagination:
-    defaults:
-        items_per_page: 30
-        pages_in_range: 5
-        template: default/_pagination.html.twig

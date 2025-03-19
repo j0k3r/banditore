@@ -46,9 +46,9 @@ class Generator
                 ->setIcon($user->getAvatar())
                 ->setAccentColor('10556B')
         );
-        $channel->setTitle(str_replace('%USERNAME%', $user->getUserName(), self::CHANNEL_TITLE))
+        $channel->setTitle(str_replace('%USERNAME%', $user->getUsername(), self::CHANNEL_TITLE))
             ->setLink($feedUrl)
-            ->setDescription(str_replace('%USERNAME%', $user->getUserName(), self::CHANNEL_DESCRIPTION))
+            ->setDescription(str_replace('%USERNAME%', $user->getUsername(), self::CHANNEL_DESCRIPTION))
             ->setLanguage('en')
             ->setCopyright('(c) ' . (new \DateTime())->format('Y') . ' banditore')
             ->setLastBuildDate(isset($releases[0]) ? $releases[0]['createdAt'] : new \DateTime())

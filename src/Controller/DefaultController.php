@@ -3,13 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Pagination\Exception\InvalidPageNumberException;
+use App\Pagination\Paginator;
 use App\Repository\RepoRepository;
 use App\Repository\StarRepository;
 use App\Repository\UserRepository;
 use App\Repository\VersionRepository;
 use App\Rss\Generator;
-use AshleyDawson\SimplePagination\Exception\InvalidPageNumberException;
-use AshleyDawson\SimplePagination\Paginator;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
 use MarcW\RssWriter\RssWriter;

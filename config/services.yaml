@@ -89,8 +89,11 @@ services:
     # force this service to be injected at first instead of the default one (from marcw)
     MarcW\RssWriter\RssWriter: '@banditore.writer.rss'
 
-    AshleyDawson\SimplePagination\Paginator:
-        alias: ashley_dawson_simple_pagination.paginator
+    App\Pagination\Paginator:
+        arguments:
+            -
+                itemsPerPage: 30
+                pagesInRange: 5
 
     Predis\Client:
         alias: snc_redis.guzzle_cache

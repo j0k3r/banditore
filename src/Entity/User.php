@@ -91,7 +91,7 @@ class User implements UserInterface, EquatableInterface
     private $removedAt;
 
     /**
-     * @var ArrayCollection<Star>
+     * @var ArrayCollection<int, Star>
      *
      * @ORM\OneToMany(targetEntity="Star", mappedBy="user")
      */
