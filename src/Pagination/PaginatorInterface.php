@@ -15,7 +15,7 @@ interface PaginatorInterface
      * @param int $currentPageNumber Page number, usually passed from the current request
      *
      * @throws \InvalidArgumentException
-     * @throws \AshleyDawson\SimplePagination\Exception\InvalidPageNumberException
+     * @throws InvalidPageNumberException
      *
      * @return Pagination Collection of items returned by the slice callback with pagination meta information
      */
@@ -24,14 +24,12 @@ interface PaginatorInterface
     /**
      * Get sliceCallback.
      *
-     * @return callable
+     * @return \Closure
      */
     public function getSliceCallback();
 
     /**
      * Set sliceCallback.
-     *
-     * @param callable $sliceCallback
      *
      * @return $this
      */
@@ -40,14 +38,12 @@ interface PaginatorInterface
     /**
      * Get itemTotalCallback.
      *
-     * @return callable
+     * @return \Closure
      */
     public function getItemTotalCallback();
 
     /**
      * Set itemTotalCallback.
-     *
-     * @param callable $itemTotalCallback
      *
      * @return $this
      */
@@ -59,9 +55,9 @@ interface PaginatorInterface
     public function getBeforeQueryCallback();
 
     /**
-     * @param \Closure $beforeQueryCallback
+     * @return $this
      */
-    public function setBeforeQueryCallback($beforeQueryCallback);
+    public function setBeforeQueryCallback(\Closure $beforeQueryCallback);
 
     /**
      * @return \Closure
@@ -69,9 +65,9 @@ interface PaginatorInterface
     public function getAfterQueryCallback();
 
     /**
-     * @param \Closure $afterQueryCallback
+     * @return $this
      */
-    public function setAfterQueryCallback($afterQueryCallback);
+    public function setAfterQueryCallback(\Closure $afterQueryCallback);
 
     /**
      * Get itemsPerPage.

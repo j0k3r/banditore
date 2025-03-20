@@ -12,8 +12,6 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class Publisher
 {
-    /** @var string */
-    protected $hub;
     /** @var RouterInterface */
     protected $router;
     /** @var Client */
@@ -30,9 +28,8 @@ class Publisher
      * @param string          $host   Host of the project (used to generate route from a command)
      * @param string          $scheme Scheme of the project (used to generate route from a command)
      */
-    public function __construct($hub, RouterInterface $router, Client $client, UserRepository $userRepository, $host, $scheme)
+    public function __construct(protected $hub, RouterInterface $router, Client $client, UserRepository $userRepository, $host, $scheme)
     {
-        $this->hub = $hub;
         $this->router = $router;
         $this->client = $client;
         $this->userRepository = $userRepository;

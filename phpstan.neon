@@ -32,6 +32,12 @@ parameters:
             identifier: binaryOp.invalid
         -
             identifier: method.nonObject
+        -
+            path: src/Pagination/PaginatorInterface.php
+            identifier: throws.notThrowable
+        -
+            path: src/Repository/VersionRepository.php
+            identifier: return.type
 
     inferPrivatePropertyTypeFromConstructor: true
     treatPhpDocTypesAsCertain: false

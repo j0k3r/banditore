@@ -8,6 +8,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Repo|null findOneByFullName(string $fullName)
+ *
+ * @extends ServiceEntityRepository<Repo>
  */
 class RepoRepository extends ServiceEntityRepository
 {

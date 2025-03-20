@@ -24,17 +24,8 @@ use Symfony\Component\Security\Core\Security;
 
 class DefaultController extends AbstractController
 {
-    private $repoVersion;
-    private $diffInterval;
-    private $redis;
-    private $security;
-
-    public function __construct(VersionRepository $repoVersion, int $diffInterval, RedisClient $redis, Security $security)
+    public function __construct(private readonly VersionRepository $repoVersion, private readonly int $diffInterval, private readonly RedisClient $redis, private readonly Security $security)
     {
-        $this->repoVersion = $repoVersion;
-        $this->diffInterval = $diffInterval;
-        $this->redis = $redis;
-        $this->security = $security;
     }
 
     /**
@@ -83,14 +74,10 @@ class DefaultController extends AbstractController
         $userId = $user->getId();
 
         // Pass the item total
-        $paginator->setItemTotalCallback(function () use ($userId) {
-            return $this->repoVersion->countForUser($userId);
-        });
+        $paginator->setItemTotalCallback(fn () => $this->repoVersion->countForUser($userId));
 
         // Pass the slice
-        $paginator->setSliceCallback(function ($offset, $length) use ($userId) {
-            return $this->repoVersion->findForUser($userId, $offset, $length);
-        });
+        $paginator->setSliceCallback(fn ($offset, $length) => $this->repoVersion->findForUser($userId, $offset, $length));
 
         // Paginate using the current page number
         try {

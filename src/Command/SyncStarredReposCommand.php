@@ -22,17 +22,11 @@ use Symfony\Component\Messenger\Transport\TransportInterface;
  */
 class SyncStarredReposCommand extends Command
 {
-    private $userRepository;
     private $syncRepo;
-    private $transport;
-    private $bus;
 
-    public function __construct(UserRepository $userRepository, StarredReposSyncHandler $syncRepo, TransportInterface $transport, MessageBusInterface $bus)
+    public function __construct(private readonly UserRepository $userRepository, StarredReposSyncHandler $syncRepo, private readonly TransportInterface $transport, private readonly MessageBusInterface $bus)
     {
-        $this->userRepository = $userRepository;
         $this->syncRepo = $syncRepo;
-        $this->transport = $transport;
-        $this->bus = $bus;
 
         parent::__construct();
     }

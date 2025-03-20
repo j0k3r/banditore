@@ -28,7 +28,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
 
     public function testNoHubDefined(): void
     {
-        $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
+        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -44,7 +44,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
 
     public function testBadResponse(): void
     {
-        $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
+        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
         $userRepository->expects($this->once())
@@ -68,7 +68,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
 
     public function testGoodResponse(): void
     {
-        $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
+        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
         $userRepository->expects($this->once())
@@ -91,7 +91,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
 
     public function testUrlGeneration(): void
     {
-        $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
+        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
         $userRepository->expects($this->once())
@@ -100,7 +100,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
             ->willReturn([['uuid' => '7fc8de31-5371-4f0a-b606-a7e164c41d46']]);
 
         $method = new \ReflectionMethod(
-            'App\PubSubHubbub\Publisher', 'retrieveFeedUrls'
+            Publisher::class, 'retrieveFeedUrls'
         );
 
         $method->setAccessible(true);
@@ -118,7 +118,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
      */
     private function getServiceContainer(RouteCollection $routes): \Symfony\Component\DependencyInjection\Container
     {
-        $loader = $this->getMockBuilder('Symfony\Component\Config\Loader\LoaderInterface')->getMock();
+        $loader = $this->getMockBuilder(\Symfony\Component\Config\Loader\LoaderInterface::class)->getMock();
 
         $loader
             ->expects($this->any())
@@ -126,7 +126,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
             ->willReturn($routes)
         ;
 
-        $sc = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\Container')->onlyMethods(['get'])->getMock();
+        $sc = $this->getMockBuilder(\Symfony\Component\DependencyInjection\Container::class)->onlyMethods(['get'])->getMock();
 
         $sc
             ->expects($this->any())

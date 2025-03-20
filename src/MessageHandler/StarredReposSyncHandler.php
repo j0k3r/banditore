@@ -30,26 +30,11 @@ class StarredReposSyncHandler implements MessageHandlerInterface
 
     public const DAYS_SINCE_LAST_UPDATE = 1;
 
-    private $doctrine;
-    private $userRepository;
-    private $starRepository;
-    private $repoRepository;
-    private $client;
-    private $logger;
-    private $redis;
-
     /**
      * Client parameter can be null when no available client were found by the Github Client Discovery.
      */
-    public function __construct(ManagerRegistry $doctrine, UserRepository $userRepository, StarRepository $starRepository, RepoRepository $repoRepository, ?Client $client, LoggerInterface $logger, RedisClientInterface $redis)
+    public function __construct(private ManagerRegistry $doctrine, private UserRepository $userRepository, private StarRepository $starRepository, private RepoRepository $repoRepository, private ?Client $client, private LoggerInterface $logger, private RedisClientInterface $redis)
     {
-        $this->doctrine = $doctrine;
-        $this->userRepository = $userRepository;
-        $this->starRepository = $starRepository;
-        $this->repoRepository = $repoRepository;
-        $this->client = $client;
-        $this->logger = $logger;
-        $this->redis = $redis;
     }
 
     public function __invoke(StarredReposSync $message): bool
@@ -173,7 +158,7 @@ class StarredReposSyncHandler implements MessageHandlerInterface
 
             try {
                 $starredRepos = $githubUserApi->starred($user->getUsername(), ++$page, $perPage);
-            } catch (RuntimeException $e) {
+            } catch (RuntimeException) {
                 // api limit is reached or whatever other error, we'll try next time
                 return null;
             }

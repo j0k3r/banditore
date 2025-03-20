@@ -21,24 +21,11 @@ class VersionsSyncHandler implements MessageHandlerInterface
 {
     use RateLimitTrait;
 
-    private $doctrine;
-    private $repoRepository;
-    private $versionRepository;
-    private $pubsubhubbub;
-    private $logger;
-    private $client;
-
     /**
      * Client parameter can be null when no available client were found by the Github Client Discovery.
      */
-    public function __construct(ManagerRegistry $doctrine, RepoRepository $repoRepository, VersionRepository $versionRepository, Publisher $pubsubhubbub, ?Client $client, LoggerInterface $logger)
+    public function __construct(private ManagerRegistry $doctrine, private RepoRepository $repoRepository, private VersionRepository $versionRepository, private Publisher $pubsubhubbub, private ?Client $client, private LoggerInterface $logger)
     {
-        $this->doctrine = $doctrine;
-        $this->repoRepository = $repoRepository;
-        $this->versionRepository = $versionRepository;
-        $this->pubsubhubbub = $pubsubhubbub;
-        $this->client = $client;
-        $this->logger = $logger;
     }
 
     public function __invoke(VersionsSync $message): bool
@@ -107,7 +94,7 @@ class VersionsSyncHandler implements MessageHandlerInterface
             $em = $this->doctrine->resetManager();
         }
 
-        list($username, $repoName) = explode('/', $repo->getFullName());
+        [$username, $repoName] = explode('/', $repo->getFullName());
 
         // this is a simple call to retrieve at least one tag from the selected repo
         // using git/refs/tags when repo has no tag throws a 404 which can't be cached
@@ -204,7 +191,7 @@ class VersionsSyncHandler implements MessageHandlerInterface
                             'prerelease' => false,
                             // we can't retrieve a date for a blob tag, sadly.
                             'published_at' => date('c'),
-                            'message' => '(blob, size ' . $blobInfo['size'] . ') ' . base64_decode($blobInfo['content'], true),
+                            'message' => '(blob, size ' . $blobInfo['size'] . ') ' . base64_decode((string) $blobInfo['content'], true),
                         ];
                         break;
                     default:

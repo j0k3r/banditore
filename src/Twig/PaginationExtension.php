@@ -19,7 +19,7 @@ class PaginationExtension extends AbstractExtension
         return [
             new TwigFunction(
                 'pagination_render',
-                [$this, 'render'],
+                $this->render(...),
                 [
                     'is_safe' => ['html'],
                     'needs_environment' => true,

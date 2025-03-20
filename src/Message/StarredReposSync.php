@@ -4,11 +4,8 @@ namespace App\Message;
 
 class StarredReposSync
 {
-    private $userId;
-
-    public function __construct(int $userId)
+    public function __construct(private readonly int $userId)
     {
-        $this->userId = $userId;
     }
 
     public function getUserId(): int

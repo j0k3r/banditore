@@ -68,16 +68,14 @@ class Version
      */
     private $body;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Repo", inversedBy="versions")
-     *
-     * @ORM\JoinColumn(name="repo_id", referencedColumnName="id", nullable=false)
-     */
-    private $repo;
-
-    public function __construct(Repo $repo)
-    {
-        $this->repo = $repo;
+    public function __construct(
+        /**
+         * @ORM\ManyToOne(targetEntity="App\Entity\Repo", inversedBy="versions")
+         *
+         * @ORM\JoinColumn(name="repo_id", referencedColumnName="id", nullable=false)
+         */
+        private Repo $repo,
+    ) {
     }
 
     /**
@@ -220,7 +218,7 @@ class Version
         $this->setTagName($data['tag_name']);
         $this->setName($data['name']);
         $this->setPrerelease($data['prerelease']);
-        $this->setCreatedAt((new \DateTime())->setTimestamp(strtotime($data['published_at'])));
+        $this->setCreatedAt((new \DateTime())->setTimestamp(strtotime((string) $data['published_at'])));
         $this->setBody($data['message']);
     }
 }

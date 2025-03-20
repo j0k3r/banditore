@@ -5,6 +5,8 @@ namespace App\Pagination;
 /**
  * Class Pagination.
  *
+ * @implements \IteratorAggregate<int, mixed>
+ *
  * @author Ashley Dawson <ashley@ashleydawson.co.uk>
  */
 class Pagination implements \IteratorAggregate, \Countable
@@ -21,7 +23,6 @@ class Pagination implements \IteratorAggregate, \Countable
     private int $totalNumberOfItems;
     private int $firstPageNumberInRange;
     private int $lastPageNumberInRange;
-    private $meta;
 
     /**
      * Get items.
@@ -305,31 +306,15 @@ class Pagination implements \IteratorAggregate, \Countable
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->items);
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return \count($this->items);
-    }
-
-    /**
-     * Get meta.
-     */
-    public function getMeta()
-    {
-        return $this->meta;
-    }
-
-    /**
-     * @return Pagination
-     */
-    public function setMeta($meta)
-    {
-        $this->meta = $meta;
-
-        return $this;
     }
 }
