@@ -19,7 +19,7 @@ class ClientDiscoveryTest extends WebTestCase
 {
     public function testUseApplicationDefaultClient(): void
     {
-        $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
+        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -37,7 +37,7 @@ class ClientDiscoveryTest extends WebTestCase
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
-        $redis = (new RedisMockFactory())->getAdapter('Predis\Client', true);
+        $redis = (new RedisMockFactory())->getAdapter(\Predis\Client::class, true);
 
         $logger = new Logger('foo');
         $logHandler = new TestHandler();
@@ -56,13 +56,13 @@ class ClientDiscoveryTest extends WebTestCase
 
         $records = $logHandler->getRecords();
 
-        $this->assertInstanceOf('Github\Client', $resClient);
+        $this->assertInstanceOf(GithubClient::class, $resClient);
         $this->assertSame('RateLimit ok (' . (ClientDiscovery::THRESHOLD_RATE_REMAIN_APP + 1) . ') with default application', $records[0]['message']);
     }
 
     public function testUseUserToken(): void
     {
-        $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
+        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -99,7 +99,7 @@ class ClientDiscoveryTest extends WebTestCase
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
-        $redis = (new RedisMockFactory())->getAdapter('Predis\Client', true);
+        $redis = (new RedisMockFactory())->getAdapter(\Predis\Client::class, true);
 
         $logger = new Logger('foo');
         $logHandler = new TestHandler();
@@ -118,13 +118,13 @@ class ClientDiscoveryTest extends WebTestCase
 
         $records = $logHandler->getRecords();
 
-        $this->assertInstanceOf('Github\Client', $resClient);
+        $this->assertInstanceOf(GithubClient::class, $resClient);
         $this->assertSame('RateLimit ok (' . (ClientDiscovery::THRESHOLD_RATE_REMAIN_USER + 150) . ') with user: lion', $records[0]['message']);
     }
 
     public function testNoTokenAvailable(): void
     {
-        $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
+        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -154,7 +154,7 @@ class ClientDiscoveryTest extends WebTestCase
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
-        $redis = (new RedisMockFactory())->getAdapter('Predis\Client', true);
+        $redis = (new RedisMockFactory())->getAdapter(\Predis\Client::class, true);
 
         $logger = new Logger('foo');
         $logHandler = new TestHandler();
@@ -180,7 +180,7 @@ class ClientDiscoveryTest extends WebTestCase
 
     public function testOneCallFail(): void
     {
-        $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
+        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -210,7 +210,7 @@ class ClientDiscoveryTest extends WebTestCase
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
-        $redis = (new RedisMockFactory())->getAdapter('Predis\Client', true);
+        $redis = (new RedisMockFactory())->getAdapter(\Predis\Client::class, true);
 
         $logger = new Logger('foo');
         $logHandler = new TestHandler();
@@ -229,7 +229,7 @@ class ClientDiscoveryTest extends WebTestCase
 
         $records = $logHandler->getRecords();
 
-        $this->assertInstanceOf('Github\Client', $resClient);
+        $this->assertInstanceOf(GithubClient::class, $resClient);
         $this->assertSame('RateLimit call goes bad.', $records[0]['message']);
         $this->assertSame('RateLimit ok (' . (ClientDiscovery::THRESHOLD_RATE_REMAIN_USER + 100) . ') with user: bob', $records[1]['message']);
     }
@@ -243,7 +243,7 @@ class ClientDiscoveryTest extends WebTestCase
 
         try {
             self::getContainer()->get('snc_redis.guzzle_cache')->connect();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->markTestSkipped('Redis is not installed/activated');
         }
 
@@ -268,6 +268,6 @@ class ClientDiscoveryTest extends WebTestCase
 
         $resClient = $disco->find();
 
-        $this->assertInstanceOf('Github\Client', $resClient);
+        $this->assertInstanceOf(GithubClient::class, $resClient);
     }
 }

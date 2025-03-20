@@ -21,17 +21,8 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 
 class GithubAuthenticator extends OAuth2Authenticator
 {
-    private $clientRegistry;
-    private $entityManager;
-    private $router;
-    private $bus;
-
-    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, MessageBusInterface $bus)
+    public function __construct(private readonly ClientRegistry $clientRegistry, private readonly EntityManagerInterface $entityManager, private readonly RouterInterface $router, private readonly MessageBusInterface $bus)
     {
-        $this->clientRegistry = $clientRegistry;
-        $this->entityManager = $entityManager;
-        $this->router = $router;
-        $this->bus = $bus;
     }
 
     public function supports(Request $request): ?bool

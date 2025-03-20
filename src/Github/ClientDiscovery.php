@@ -21,22 +21,10 @@ class ClientDiscovery
 
     public const THRESHOLD_RATE_REMAIN_APP = 200;
     public const THRESHOLD_RATE_REMAIN_USER = 2000;
-
-    private $userRepository;
-    private $redis;
-    private $clientId;
-    private $clientSecret;
-    private $logger;
     private $client;
 
-    public function __construct(UserRepository $userRepository, RedisClient $redis, string $clientId, string $clientSecret, LoggerInterface $logger)
+    public function __construct(private UserRepository $userRepository, private RedisClient $redis, private string $clientId, private string $clientSecret, private LoggerInterface $logger)
     {
-        $this->userRepository = $userRepository;
-        $this->redis = $redis;
-        $this->clientId = $clientId;
-        $this->clientSecret = $clientSecret;
-        $this->logger = $logger;
-
         $this->client = new GithubClient();
     }
 

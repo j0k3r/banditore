@@ -91,14 +91,14 @@ class Repo
     private $removedAt;
 
     /**
-     * @var ArrayCollection<Star>
+     * @var ArrayCollection<int, Star>
      *
      * @ORM\OneToMany(targetEntity="Star", mappedBy="repo")
      */
     private $stars;
 
     /**
-     * @var ArrayCollection<Version>
+     * @var ArrayCollection<int, Version>
      *
      * @ORM\OneToMany(targetEntity="Version", mappedBy="repo")
      */

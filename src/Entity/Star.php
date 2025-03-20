@@ -28,30 +28,24 @@ class Star
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="stars")
-     *
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
-     */
-    private $user;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Repo", inversedBy="stars")
-     *
-     * @ORM\JoinColumn(name="repo_id", referencedColumnName="id", nullable=false)
-     */
-    private $repo;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
     private $createdAt;
 
-    public function __construct(User $user, Repo $repo)
+    public function __construct(/**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="stars")
+     *
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     */
+        private User $user, /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Repo", inversedBy="stars")
+     *
+     * @ORM\JoinColumn(name="repo_id", referencedColumnName="id", nullable=false)
+     */
+        private Repo $repo)
     {
-        $this->user = $user;
-        $this->repo = $repo;
         $this->createdAt = new \DateTime();
     }
 

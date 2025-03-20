@@ -13,7 +13,7 @@ class RepoVersionExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('link_to_version', [$this, 'linkToVersion']),
+            new TwigFilter('link_to_version', $this->linkToVersion(...)),
         ];
     }
 

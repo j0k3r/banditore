@@ -88,11 +88,11 @@ class AppFixtures extends Fixture
     private function loadStars(ObjectManager $manager): void
     {
         /** @var User */
-        $user1 = $this->getReference('user1');
+        $user1 = $this->getReference('user1', User::class);
         /** @var Repo */
-        $repo1 = $this->getReference('repo1');
+        $repo1 = $this->getReference('repo1', Repo::class);
         /** @var Repo */
-        $repo2 = $this->getReference('repo2');
+        $repo2 = $this->getReference('repo2', Repo::class);
 
         $star1 = new Star($user1, $repo1);
         $star2 = new Star($user1, $repo2);
@@ -108,11 +108,11 @@ class AppFixtures extends Fixture
     private function loadVersions(ObjectManager $manager): void
     {
         /** @var Repo */
-        $repo1 = $this->getReference('repo1');
+        $repo1 = $this->getReference('repo1', Repo::class);
         /** @var Repo */
-        $repo2 = $this->getReference('repo2');
+        $repo2 = $this->getReference('repo2', Repo::class);
         /** @var Repo */
-        $repo3 = $this->getReference('repo3');
+        $repo3 = $this->getReference('repo3', Repo::class);
 
         $version1 = new Version($repo1);
         $version1->hydrateFromGithub([

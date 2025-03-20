@@ -32,7 +32,7 @@ class CustomRedisCachePool extends PredisCachePool
             return parent::storeItemInCache($item, $ttl);
         }
 
-        $body = json_decode($currentItem['body'], true);
+        $body = json_decode((string) $currentItem['body'], true);
         // we don't need to reduce empty array ^^
         if (empty($body)) {
             return parent::storeItemInCache($item, $ttl);
@@ -44,7 +44,7 @@ class CustomRedisCachePool extends PredisCachePool
             return true;
         }
 
-        if (isset($body[0]['ref']) && str_contains($body[0]['ref'], 'refs/tags/')) {
+        if (isset($body[0]['ref']) && str_contains((string) $body[0]['ref'], 'refs/tags/')) {
             // response for git/refs/tags
             foreach ($body as $key => $element) {
                 $body[$key] = [

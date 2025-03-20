@@ -17,14 +17,14 @@ class SyncStarredReposCommandTest extends WebTestCase
         $client = static::createClient();
         $message = new StarredReposSync(123);
 
-        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
+        $bus = $this->getMockBuilder(\Symfony\Component\Messenger\MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncRepo = $this->getMockBuilder('App\MessageHandler\StarredReposSyncHandler')
+        $syncRepo = $this->getMockBuilder(\App\MessageHandler\StarredReposSyncHandler::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -55,7 +55,7 @@ class SyncStarredReposCommandTest extends WebTestCase
         $client = static::createClient();
         $message = new StarredReposSync(123);
 
-        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
+        $bus = $this->getMockBuilder(\Symfony\Component\Messenger\MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -64,7 +64,7 @@ class SyncStarredReposCommandTest extends WebTestCase
             ->with($message)
             ->willReturn(new \Symfony\Component\Messenger\Envelope($message));
 
-        $syncRepo = $this->getMockBuilder('App\MessageHandler\StarredReposSyncHandler')
+        $syncRepo = $this->getMockBuilder(\App\MessageHandler\StarredReposSyncHandler::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -94,14 +94,14 @@ class SyncStarredReposCommandTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
+        $bus = $this->getMockBuilder(\Symfony\Component\Messenger\MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncRepo = $this->getMockBuilder('App\MessageHandler\StarredReposSyncHandler')
+        $syncRepo = $this->getMockBuilder(\App\MessageHandler\StarredReposSyncHandler::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -132,7 +132,7 @@ class SyncStarredReposCommandTest extends WebTestCase
         $client = static::createClient();
         $message = new StarredReposSync(123);
 
-        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
+        $bus = $this->getMockBuilder(\Symfony\Component\Messenger\MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -141,7 +141,7 @@ class SyncStarredReposCommandTest extends WebTestCase
             ->with($message)
             ->willReturn(new \Symfony\Component\Messenger\Envelope($message));
 
-        $syncRepo = $this->getMockBuilder('App\MessageHandler\StarredReposSyncHandler')
+        $syncRepo = $this->getMockBuilder(\App\MessageHandler\StarredReposSyncHandler::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -173,14 +173,14 @@ class SyncStarredReposCommandTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
+        $bus = $this->getMockBuilder(\Symfony\Component\Messenger\MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncRepo = $this->getMockBuilder('App\MessageHandler\StarredReposSyncHandler')
+        $syncRepo = $this->getMockBuilder(\App\MessageHandler\StarredReposSyncHandler::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -212,14 +212,14 @@ class SyncStarredReposCommandTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $bus = $this->getMockBuilder('Symfony\Component\Messenger\MessageBusInterface')
+        $bus = $this->getMockBuilder(\Symfony\Component\Messenger\MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncRepo = $this->getMockBuilder('App\MessageHandler\StarredReposSyncHandler')
+        $syncRepo = $this->getMockBuilder(\App\MessageHandler\StarredReposSyncHandler::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -247,7 +247,7 @@ class SyncStarredReposCommandTest extends WebTestCase
 
     private function getTransportMessageCount(int $totalMessage = 0): AmqpTransport
     {
-        $connection = $this->getMockBuilder('Symfony\Component\Messenger\Bridge\Amqp\Transport\Connection')
+        $connection = $this->getMockBuilder(\Symfony\Component\Messenger\Bridge\Amqp\Transport\Connection::class)
             ->disableOriginalConstructor()
             ->getMock();
 

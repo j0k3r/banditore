@@ -17,7 +17,7 @@ class WebfeedsWriter implements WriterRegistererInterface
     public function getRegisteredWriters(): array
     {
         return [
-            Webfeeds::class => [$this, 'write'],
+            Webfeeds::class => $this->write(...),
         ];
     }
 
