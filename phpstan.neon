@@ -11,10 +11,6 @@ parameters:
     doctrine:
         objectManagerLoader: tests/object-manager.php
 
-    # https://github.com/phpstan/phpstan/issues/694#issuecomment-350724288
-    bootstrapFiles:
-        - vendor/bin/.phpunit/phpunit-8.5-0/vendor/autoload.php
-
     ignoreErrors:
         -
             identifier: missingType.iterableValue

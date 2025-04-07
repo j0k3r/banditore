@@ -69,7 +69,7 @@ jobs:
         run: php bin/console messenger:setup-transports --env=dev
 
       - name: Run PHPUnit (with coverage)
-        run: php bin/simple-phpunit -v --coverage-clover=coverage.xml
+        run: php bin/phpunit -v --coverage-clover=coverage.xml
 
       - name: Retrieve Coveralls phar
         run: wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.5.1/php-coveralls.phar

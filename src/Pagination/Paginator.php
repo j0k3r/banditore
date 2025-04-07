@@ -60,10 +60,16 @@ class Paginator implements PaginatorInterface
      */
     public function __construct(?array $config = null)
     {
-        if (\is_array($config)) {
+        if (\array_key_exists('itemTotalCallback', $config)) {
             $this->setItemTotalCallback($config['itemTotalCallback']);
+        }
+        if (\array_key_exists('sliceCallback', $config)) {
             $this->setSliceCallback($config['sliceCallback']);
+        }
+        if (\array_key_exists('itemsPerPage', $config)) {
             $this->setItemsPerPage($config['itemsPerPage']);
+        }
+        if (\array_key_exists('pagesInRange', $config)) {
             $this->setPagesInRange($config['pagesInRange']);
         }
     }
@@ -155,13 +161,19 @@ class Paginator implements PaginatorInterface
             ->setCurrentPageNumber($currentPageNumber)
             ->setFirstPageNumber(1)
             ->setLastPageNumber($numberOfPages)
-            ->setPreviousPageNumber($previousPageNumber)
-            ->setNextPageNumber($nextPageNumber)
             ->setItemsPerPage($this->itemsPerPage)
             ->setTotalNumberOfItems($totalNumberOfItems)
             ->setFirstPageNumberInRange(min($pages))
             ->setLastPageNumberInRange(max($pages))
         ;
+
+        if ($previousPageNumber) {
+            $pagination->setPreviousPageNumber($previousPageNumber);
+        }
+
+        if ($nextPageNumber) {
+            $pagination->setNextPageNumber($nextPageNumber);
+        }
 
         return $pagination;
     }

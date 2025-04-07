@@ -16,7 +16,7 @@ prepare:
 	php bin/console cache:clear --env=test
 
 test:
-	php bin/simple-phpunit --coverage-html build/coverage
+	php bin/phpunit --coverage-html build/coverage
 
 reset:
 	php bin/console doctrine:schema:drop --force --env=test
