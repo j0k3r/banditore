@@ -6,7 +6,12 @@ use App\Entity\Repo;
 use App\Entity\Version;
 use App\Message\VersionsSync;
 use App\MessageHandler\VersionsSyncHandler;
+use App\PubSubHubbub\Publisher;
+use App\Repository\RepoRepository;
 use App\Repository\VersionRepository;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\UnitOfWork;
 use Github\Client as GithubClient;
 use Github\HttpClient\Builder;
 use GuzzleHttp\Client;
@@ -23,11 +28,11 @@ class VersionsSyncHandlerTest extends WebTestCase
 {
     public function testProcessNoRepo(): void
     {
-        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $repoRepository = $this->getMockBuilder('App\Repository\RepoRepository')
+        $repoRepository = $this->getMockBuilder(RepoRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -36,15 +41,15 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->with(123)
             ->willReturn(null);
 
-        $versionRepository = $this->getMockBuilder('App\Repository\VersionRepository')
+        $versionRepository = $this->getMockBuilder(VersionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $pubsubhubbub = $this->getMockBuilder('App\PubSubHubbub\Publisher')
+        $pubsubhubbub = $this->getMockBuilder(Publisher::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $githubClient = $this->getMockBuilder('Github\Client')
+        $githubClient = $this->getMockBuilder(GithubClient::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -194,14 +199,14 @@ class VersionsSyncHandlerTest extends WebTestCase
 
     public function testProcessSuccessfulMessage(): void
     {
-        $uow = $this->getMockBuilder('Doctrine\ORM\UnitOfWork')
+        $uow = $this->getMockBuilder(UnitOfWork::class)
             ->disableOriginalConstructor()
             ->getMock();
         $uow->expects($this->exactly(3))
             ->method('getScheduledEntityInsertions')
             ->willReturn([]);
 
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->once())
@@ -211,7 +216,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->method('getUnitOfWork')
             ->willReturn($uow);
 
-        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
@@ -226,7 +231,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         $repo->setFullName('bob/wow');
         $repo->setName('wow');
 
-        $repoRepository = $this->getMockBuilder('App\Repository\RepoRepository')
+        $repoRepository = $this->getMockBuilder(RepoRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -235,7 +240,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->with(123)
             ->willReturn($repo);
 
-        $versionRepository = $this->getMockBuilder('App\Repository\VersionRepository')
+        $versionRepository = $this->getMockBuilder(VersionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -248,7 +253,7 @@ class VersionsSyncHandlerTest extends WebTestCase
                 }
             });
 
-        $pubsubhubbub = $this->getMockBuilder('App\PubSubHubbub\Publisher')
+        $pubsubhubbub = $this->getMockBuilder(Publisher::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -292,14 +297,14 @@ class VersionsSyncHandlerTest extends WebTestCase
      */
     public function testProcessRepoTagFailed(): void
     {
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->once())
             ->method('isOpen')
             ->willReturn(true);
 
-        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
@@ -311,7 +316,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         $repo->setFullName('bob/wow');
         $repo->setName('wow');
 
-        $repoRepository = $this->getMockBuilder('App\Repository\RepoRepository')
+        $repoRepository = $this->getMockBuilder(RepoRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -320,11 +325,11 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->with(123)
             ->willReturn($repo);
 
-        $versionRepository = $this->getMockBuilder('App\Repository\VersionRepository')
+        $versionRepository = $this->getMockBuilder(VersionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $pubsubhubbub = $this->getMockBuilder('App\PubSubHubbub\Publisher')
+        $pubsubhubbub = $this->getMockBuilder(Publisher::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -376,14 +381,14 @@ class VersionsSyncHandlerTest extends WebTestCase
      */
     public function testProcessRepoNotFound(): void
     {
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->once())
             ->method('isOpen')
             ->willReturn(true);
 
-        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
@@ -395,7 +400,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         $repo->setFullName('bob/wow');
         $repo->setName('wow');
 
-        $repoRepository = $this->getMockBuilder('App\Repository\RepoRepository')
+        $repoRepository = $this->getMockBuilder(RepoRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -404,11 +409,11 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->with(123)
             ->willReturn($repo);
 
-        $versionRepository = $this->getMockBuilder('App\Repository\VersionRepository')
+        $versionRepository = $this->getMockBuilder(VersionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $pubsubhubbub = $this->getMockBuilder('App\PubSubHubbub\Publisher')
+        $pubsubhubbub = $this->getMockBuilder(Publisher::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -462,13 +467,13 @@ class VersionsSyncHandlerTest extends WebTestCase
      */
     public function testProcessCallsRemaingLow(): void
     {
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->never())
             ->method('isOpen');
 
-        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->never())
@@ -479,7 +484,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         $repo->setFullName('bob/wow');
         $repo->setName('wow');
 
-        $repoRepository = $this->getMockBuilder('App\Repository\RepoRepository')
+        $repoRepository = $this->getMockBuilder(RepoRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -488,11 +493,11 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->with(123)
             ->willReturn($repo);
 
-        $versionRepository = $this->getMockBuilder('App\Repository\VersionRepository')
+        $versionRepository = $this->getMockBuilder(VersionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $pubsubhubbub = $this->getMockBuilder('App\PubSubHubbub\Publisher')
+        $pubsubhubbub = $this->getMockBuilder(Publisher::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -540,14 +545,14 @@ class VersionsSyncHandlerTest extends WebTestCase
      */
     public function testProcessMarkdownFailed(): void
     {
-        $uow = $this->getMockBuilder('Doctrine\ORM\UnitOfWork')
+        $uow = $this->getMockBuilder(UnitOfWork::class)
             ->disableOriginalConstructor()
             ->getMock();
         $uow->expects($this->once())
             ->method('getScheduledEntityInsertions')
             ->willReturn([]);
 
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->once())
@@ -557,7 +562,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->method('getUnitOfWork')
             ->willReturn($uow);
 
-        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
@@ -569,7 +574,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         $repo->setFullName('bob/wow');
         $repo->setName('wow');
 
-        $repoRepository = $this->getMockBuilder('App\Repository\RepoRepository')
+        $repoRepository = $this->getMockBuilder(RepoRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -578,7 +583,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->with(123)
             ->willReturn($repo);
 
-        $versionRepository = $this->getMockBuilder('App\Repository\VersionRepository')
+        $versionRepository = $this->getMockBuilder(VersionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -586,7 +591,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->method('findExistingOne')
             ->willReturn(null);
 
-        $pubsubhubbub = $this->getMockBuilder('App\PubSubHubbub\Publisher')
+        $pubsubhubbub = $this->getMockBuilder(Publisher::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -668,14 +673,14 @@ class VersionsSyncHandlerTest extends WebTestCase
      */
     public function testProcessNoTagFound(): void
     {
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->once())
             ->method('isOpen')
             ->willReturn(true);
 
-        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
@@ -687,7 +692,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         $repo->setFullName('bob/wow');
         $repo->setName('wow');
 
-        $repoRepository = $this->getMockBuilder('App\Repository\RepoRepository')
+        $repoRepository = $this->getMockBuilder(RepoRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -696,11 +701,11 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->with(123)
             ->willReturn($repo);
 
-        $versionRepository = $this->getMockBuilder('App\Repository\VersionRepository')
+        $versionRepository = $this->getMockBuilder(VersionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $pubsubhubbub = $this->getMockBuilder('App\PubSubHubbub\Publisher')
+        $pubsubhubbub = $this->getMockBuilder(Publisher::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -755,14 +760,14 @@ class VersionsSyncHandlerTest extends WebTestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('booboo');
 
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->once())
             ->method('isOpen')
             ->willReturn(true);
 
-        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
@@ -774,7 +779,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         $repo->setFullName('bob/wow');
         $repo->setName('wow');
 
-        $repoRepository = $this->getMockBuilder('App\Repository\RepoRepository')
+        $repoRepository = $this->getMockBuilder(RepoRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -783,7 +788,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->with(123)
             ->willReturn($repo);
 
-        $versionRepository = $this->getMockBuilder('App\Repository\VersionRepository')
+        $versionRepository = $this->getMockBuilder(VersionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -791,7 +796,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->method('findExistingOne')
             ->will($this->throwException(new \Exception('booboo')));
 
-        $pubsubhubbub = $this->getMockBuilder('App\PubSubHubbub\Publisher')
+        $pubsubhubbub = $this->getMockBuilder(Publisher::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -853,14 +858,14 @@ class VersionsSyncHandlerTest extends WebTestCase
      */
     public function testProcessGitRefTagFailed(): void
     {
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->once())
             ->method('isOpen')
             ->willReturn(true);
 
-        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
@@ -872,7 +877,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         $repo->setFullName('bob/wow');
         $repo->setName('wow');
 
-        $repoRepository = $this->getMockBuilder('App\Repository\RepoRepository')
+        $repoRepository = $this->getMockBuilder(RepoRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -881,11 +886,11 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->with(123)
             ->willReturn($repo);
 
-        $versionRepository = $this->getMockBuilder('App\Repository\VersionRepository')
+        $versionRepository = $this->getMockBuilder(VersionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $pubsubhubbub = $this->getMockBuilder('App\PubSubHubbub\Publisher')
+        $pubsubhubbub = $this->getMockBuilder(Publisher::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -944,22 +949,22 @@ class VersionsSyncHandlerTest extends WebTestCase
 
     public function testProcessWithBadClient(): void
     {
-        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $repoRepository = $this->getMockBuilder('App\Repository\RepoRepository')
+        $repoRepository = $this->getMockBuilder(RepoRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $repoRepository->expects($this->never())
             ->method('find');
 
-        $versionRepository = $this->getMockBuilder('App\Repository\VersionRepository')
+        $versionRepository = $this->getMockBuilder(VersionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $pubsubhubbub = $this->getMockBuilder('App\PubSubHubbub\Publisher')
+        $pubsubhubbub = $this->getMockBuilder(Publisher::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1008,7 +1013,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         self::getContainer()->set('banditore.client.github.test', $githubClient);
 
         // mock pubsubhubbub request
-        $guzzleClientPub = $this->getMockBuilder('GuzzleHttp\Client')
+        $guzzleClientPub = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->getMock();
         $guzzleClientPub->expects($this->once())
@@ -1098,7 +1103,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         self::getContainer()->set('banditore.client.github.test', $githubClient);
 
         // mock pubsubhubbub request
-        $guzzleClientPub = $this->getMockBuilder('GuzzleHttp\Client')
+        $guzzleClientPub = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->getMock();
         $guzzleClientPub->expects($this->once())
@@ -1126,14 +1131,14 @@ class VersionsSyncHandlerTest extends WebTestCase
 
     public function testProcessSuccessfulMessageWithBlobTag(): void
     {
-        $uow = $this->getMockBuilder('Doctrine\ORM\UnitOfWork')
+        $uow = $this->getMockBuilder(UnitOfWork::class)
             ->disableOriginalConstructor()
             ->getMock();
         $uow->expects($this->once())
             ->method('getScheduledEntityInsertions')
             ->willReturn([]);
 
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->once())
@@ -1143,7 +1148,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->method('getUnitOfWork')
             ->willReturn($uow);
 
-        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
@@ -1158,7 +1163,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         $repo->setFullName('bob/wow');
         $repo->setName('wow');
 
-        $repoRepository = $this->getMockBuilder('App\Repository\RepoRepository')
+        $repoRepository = $this->getMockBuilder(RepoRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1167,7 +1172,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->with(123)
             ->willReturn($repo);
 
-        $versionRepository = $this->getMockBuilder('App\Repository\VersionRepository')
+        $versionRepository = $this->getMockBuilder(VersionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1175,7 +1180,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->method('findExistingOne')
             ->willReturn(null);
 
-        $pubsubhubbub = $this->getMockBuilder('App\PubSubHubbub\Publisher')
+        $pubsubhubbub = $this->getMockBuilder(Publisher::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1261,14 +1266,14 @@ class VersionsSyncHandlerTest extends WebTestCase
 
     public function testBadTagObjectType(): void
     {
-        $uow = $this->getMockBuilder('Doctrine\ORM\UnitOfWork')
+        $uow = $this->getMockBuilder(UnitOfWork::class)
             ->disableOriginalConstructor()
             ->getMock();
         $uow->expects($this->once())
             ->method('getScheduledEntityInsertions')
             ->willReturn([]);
 
-        $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->once())
@@ -1278,7 +1283,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->method('getUnitOfWork')
             ->willReturn($uow);
 
-        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
@@ -1293,7 +1298,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         $repo->setFullName('bob/wow');
         $repo->setName('wow');
 
-        $repoRepository = $this->getMockBuilder('App\Repository\RepoRepository')
+        $repoRepository = $this->getMockBuilder(RepoRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1302,7 +1307,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->with(123)
             ->willReturn($repo);
 
-        $versionRepository = $this->getMockBuilder('App\Repository\VersionRepository')
+        $versionRepository = $this->getMockBuilder(VersionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1310,7 +1315,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->method('findExistingOne')
             ->willReturn(null);
 
-        $pubsubhubbub = $this->getMockBuilder('App\PubSubHubbub\Publisher')
+        $pubsubhubbub = $this->getMockBuilder(Publisher::class)
             ->disableOriginalConstructor()
             ->getMock();
 

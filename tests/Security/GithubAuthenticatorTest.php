@@ -3,6 +3,7 @@
 namespace App\Tests\Security;
 
 use App\Entity\User;
+use App\Message\StarredReposSync;
 use App\Repository\UserRepository;
 use Github\Client as GithubClient;
 use Github\HttpClient\Builder;
@@ -13,6 +14,7 @@ use GuzzleHttp\Psr7\Response;
 use Http\Adapter\Guzzle6\Client as Guzzle6Client;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class GithubAuthenticatorTest extends WebTestCase
 {
@@ -64,7 +66,7 @@ class GithubAuthenticatorTest extends WebTestCase
         $this->assertSame('http://avat.ar/my.png', $user->getAvatar());
 
         $this->assertSame(302, $client->getResponse()->getStatusCode());
-        /** @var \Symfony\Component\HttpFoundation\RedirectResponse */
+        /** @var RedirectResponse */
         $response = $client->getResponse();
         $this->assertSame('/dashboard', $response->getTargetUrl());
 
@@ -75,7 +77,7 @@ class GithubAuthenticatorTest extends WebTestCase
         $this->assertCount(1, $transport->get());
 
         $messages = (array) $transport->get();
-        /** @var \App\Message\StarredReposSync */
+        /** @var StarredReposSync */
         $message = $messages[0]->getMessage();
         $this->assertSame(123, $message->getUserId());
     }
@@ -128,7 +130,7 @@ class GithubAuthenticatorTest extends WebTestCase
         $this->assertSame('Any', $user->getName());
 
         $this->assertSame(302, $client->getResponse()->getStatusCode());
-        /** @var \Symfony\Component\HttpFoundation\RedirectResponse */
+        /** @var RedirectResponse */
         $response = $client->getResponse();
         $this->assertSame('/dashboard', $response->getTargetUrl());
 
@@ -139,7 +141,7 @@ class GithubAuthenticatorTest extends WebTestCase
         $this->assertCount(1, $transport->get());
 
         $messages = (array) $transport->get();
-        /** @var \App\Message\StarredReposSync */
+        /** @var StarredReposSync */
         $message = $messages[0]->getMessage();
         $this->assertSame(456, $message->getUserId());
     }

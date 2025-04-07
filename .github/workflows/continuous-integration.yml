@@ -15,7 +15,7 @@ env:
 jobs:
   phpunit:
     name: PHPUnit (PHP ${{ matrix.php }})
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-latest"
     services:
       mysql:
         image: mysql:5.7
@@ -35,9 +35,6 @@ jobs:
     strategy:
       matrix:
         php:
-          - "7.4"
-          - "8.0"
-          - "8.1"
           - "8.2"
           - "8.3"
 
@@ -83,4 +80,4 @@ jobs:
         run: php bin/console messenger:setup-transports --env=dev
 
       - name: Run PHPUnit
-        run: php bin/simple-phpunit -v
+        run: php bin/phpunit -v

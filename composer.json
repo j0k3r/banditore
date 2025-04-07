@@ -14,8 +14,7 @@
         }
     },
     "require": {
-        "php": "^7.4.9",
-        "ashleydawson/simple-pagination-bundle": "^5.0.0",
+        "php": ">=8.2",
         "cache/predis-adapter": "^1.0",
         "composer/package-versions-deprecated": "1.11.99.5",
         "doctrine/doctrine-bundle": "^2.0",
@@ -46,6 +45,7 @@
         "symfony/translation": "5.4.*",
         "symfony/twig-bundle": "5.4.*",
         "symfony/validator": "5.4.*",
+        "symfony/yaml": "5.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.0|^3.0"
     },
@@ -54,11 +54,13 @@
         "friendsofphp/php-cs-fixer": "~3.0",
         "m6web/redis-mock": "dev-predis-1.x",
         "phpstan/extension-installer": "^1.0",
-        "phpstan/phpstan": "^0.12.6",
-        "phpstan/phpstan-deprecation-rules": "^0.12.3",
-        "phpstan/phpstan-doctrine": "^0.12.13",
-        "phpstan/phpstan-phpunit": "^0.12.8",
-        "phpstan/phpstan-symfony": "^0.12.6",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-doctrine": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
+        "phpunit/phpunit": "^9.6.22",
+        "rector/rector": "^2.0",
         "symfony/browser-kit": "5.4.*",
         "symfony/css-selector": "5.4.*",
         "symfony/debug-bundle": "5.4.*",
@@ -82,9 +84,6 @@
         ]
     },
     "config": {
-        "platform": {
-            "php": "7.4.26"
-        },
         "bin-dir": "bin",
         "sort-packages": true,
         "allow-plugins": {

@@ -3,8 +3,9 @@
 namespace App\Tests\Twig;
 
 use App\Twig\RepoVersionExtension;
+use PHPUnit\Framework\TestCase;
 
-class RepoVersionExtensionTest extends \PHPUnit\Framework\TestCase
+class RepoVersionExtensionTest extends TestCase
 {
     public function test(): void
     {

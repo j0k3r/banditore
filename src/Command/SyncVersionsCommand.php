@@ -23,17 +23,11 @@ use Symfony\Component\Messenger\Transport\TransportInterface;
  */
 class SyncVersionsCommand extends Command
 {
-    private $repoRepository;
     private $syncVersions;
-    private $transport;
-    private $bus;
 
-    public function __construct(RepoRepository $repoRepository, VersionsSyncHandler $syncVersions, TransportInterface $transport, MessageBusInterface $bus)
+    public function __construct(private readonly RepoRepository $repoRepository, VersionsSyncHandler $syncVersions, private readonly TransportInterface $transport, private readonly MessageBusInterface $bus)
     {
-        $this->repoRepository = $repoRepository;
         $this->syncVersions = $syncVersions;
-        $this->transport = $transport;
-        $this->bus = $bus;
 
         parent::__construct();
     }

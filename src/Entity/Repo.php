@@ -2,106 +2,90 @@
 
 namespace App\Entity;
 
+use App\Repository\RepoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Repo.
- *
- * @ORM\Table(name="repo")
- *
- * @ORM\Entity(repositoryClass="App\Repository\RepoRepository")
- *
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: RepoRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: 'repo')]
 class Repo
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="NONE")
      */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=191)
      */
+    #[ORM\Column(name: 'name', type: 'string', length: 191)]
     private $name;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="full_name", type="string", length=191)
      */
+    #[ORM\Column(name: 'full_name', type: 'string', length: 191)]
     private $fullName;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="description", type="text", nullable=true)
      */
+    #[ORM\Column(name: 'description', type: 'text', nullable: true)]
     private $description;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="homepage", type="string", nullable=true)
      */
+    #[ORM\Column(name: 'homepage', type: 'string', nullable: true)]
     private $homepage;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="language", type="string", nullable=true)
      */
+    #[ORM\Column(name: 'language', type: 'string', nullable: true)]
     private $language;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="owner_avatar", type="string", length=191)
      */
+    #[ORM\Column(name: 'owner_avatar', type: 'string', length: 191)]
     private $ownerAvatar;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
+    #[ORM\Column(name: 'created_at', type: 'datetime', nullable: false)]
     private $createdAt;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=false)
      */
+    #[ORM\Column(name: 'updated_at', type: 'datetime', nullable: false)]
     private $updatedAt;
 
     /**
      * @var \DateTime|null
-     *
-     * @ORM\Column(name="removed_at", type="datetime", nullable=true)
      */
+    #[ORM\Column(name: 'removed_at', type: 'datetime', nullable: true)]
     private $removedAt;
 
     /**
-     * @var ArrayCollection<Star>
-     *
-     * @ORM\OneToMany(targetEntity="Star", mappedBy="repo")
+     * @var ArrayCollection<int, Star>
      */
+    #[ORM\OneToMany(targetEntity: Star::class, mappedBy: 'repo')]
     private $stars;
 
     /**
-     * @var ArrayCollection<Version>
-     *
-     * @ORM\OneToMany(targetEntity="Version", mappedBy="repo")
+     * @var ArrayCollection<int, Version>
      */
+    #[ORM\OneToMany(targetEntity: Version::class, mappedBy: 'repo')]
     private $versions;
 
     public function __construct()
@@ -326,11 +310,8 @@ class Repo
         return $this->updatedAt;
     }
 
-    /**
-     * @ORM\PrePersist
-     *
-     * @ORM\PreUpdate
-     */
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
     public function timestamps(): void
     {
         if (null === $this->createdAt) {

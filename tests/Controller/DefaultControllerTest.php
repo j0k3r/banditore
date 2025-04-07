@@ -5,11 +5,13 @@ namespace App\Tests\Controller;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class DefaultControllerTest extends WebTestCase
 {
-    /** @var \Symfony\Bundle\FrameworkBundle\KernelBrowser */
+    /** @var KernelBrowser */
     private $client;
 
     protected function setUp(): void
@@ -40,7 +42,7 @@ class DefaultControllerTest extends WebTestCase
     {
         $this->client->request('GET', '/connect');
 
-        /** @var \Symfony\Component\HttpFoundation\RedirectResponse */
+        /** @var RedirectResponse */
         $response = $this->client->getResponse();
         $this->assertSame(302, $response->getStatusCode());
         $this->assertStringContainsString('https://github.com/login/oauth/authorize?', $response->getTargetUrl());

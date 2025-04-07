@@ -3,15 +3,19 @@
 namespace App\Tests\PubSubHubbub;
 
 use App\PubSubHubbub\Publisher;
+use App\Repository\UserRepository;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
-class PublisherTest extends \PHPUnit\Framework\TestCase
+class PublisherTest extends TestCase
 {
     /** @var Router */
     private $router;
@@ -28,7 +32,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
 
     public function testNoHubDefined(): void
     {
-        $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -44,7 +48,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
 
     public function testBadResponse(): void
     {
-        $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
         $userRepository->expects($this->once())
@@ -68,7 +72,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
 
     public function testGoodResponse(): void
     {
-        $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
         $userRepository->expects($this->once())
@@ -91,7 +95,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
 
     public function testUrlGeneration(): void
     {
-        $userRepository = $this->getMockBuilder('App\Repository\UserRepository')
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
         $userRepository->expects($this->once())
@@ -100,7 +104,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
             ->willReturn([['uuid' => '7fc8de31-5371-4f0a-b606-a7e164c41d46']]);
 
         $method = new \ReflectionMethod(
-            'App\PubSubHubbub\Publisher', 'retrieveFeedUrls'
+            Publisher::class, 'retrieveFeedUrls'
         );
 
         $method->setAccessible(true);
@@ -116,9 +120,9 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
     /**
      * @see \Symfony\Bundle\FrameworkBundle\Tests\Routing\RouterTest
      */
-    private function getServiceContainer(RouteCollection $routes): \Symfony\Component\DependencyInjection\Container
+    private function getServiceContainer(RouteCollection $routes): Container
     {
-        $loader = $this->getMockBuilder('Symfony\Component\Config\Loader\LoaderInterface')->getMock();
+        $loader = $this->getMockBuilder(LoaderInterface::class)->getMock();
 
         $loader
             ->expects($this->any())
@@ -126,7 +130,7 @@ class PublisherTest extends \PHPUnit\Framework\TestCase
             ->willReturn($routes)
         ;
 
-        $sc = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\Container')->onlyMethods(['get'])->getMock();
+        $sc = $this->getMockBuilder(Container::class)->onlyMethods(['get'])->getMock();
 
         $sc
             ->expects($this->any())

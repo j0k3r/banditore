@@ -5,6 +5,7 @@ namespace App\Tests\Cache;
 use App\Cache\CustomRedisCachePool;
 use Cache\Adapter\Common\CacheItem;
 use GuzzleHttp\Psr7\Response;
+use Predis\ClientInterface;
 use Predis\Response\Status;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -13,7 +14,7 @@ class CustomRedisCachePoolTest extends WebTestCase
     public function testResponseWithEmptyBody(): void
     {
         $redisStatus = new Status('OK');
-        $cache = $this->getMockBuilder('Predis\ClientInterface')
+        $cache = $this->getMockBuilder(ClientInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -40,7 +41,7 @@ class CustomRedisCachePoolTest extends WebTestCase
     public function testResponseWith404(): void
     {
         $redisStatus = new Status('OK');
-        $cache = $this->getMockBuilder('Predis\ClientInterface')
+        $cache = $this->getMockBuilder(ClientInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -60,7 +61,7 @@ class CustomRedisCachePoolTest extends WebTestCase
 
     public function testResponseWithRelease(): void
     {
-        $cache = $this->getMockBuilder('Predis\ClientInterface')
+        $cache = $this->getMockBuilder(ClientInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -92,7 +93,7 @@ class CustomRedisCachePoolTest extends WebTestCase
     public function testResponseWithRefTags(): void
     {
         $redisStatus = new Status('OK');
-        $cache = $this->getMockBuilder('Predis\ClientInterface')
+        $cache = $this->getMockBuilder(ClientInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -137,7 +138,7 @@ class CustomRedisCachePoolTest extends WebTestCase
     public function testResponseWithTag(): void
     {
         $redisStatus = new Status('OK');
-        $cache = $this->getMockBuilder('Predis\ClientInterface')
+        $cache = $this->getMockBuilder(ClientInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -172,7 +173,7 @@ class CustomRedisCachePoolTest extends WebTestCase
     public function testResponseWithStarredRepos(): void
     {
         $redisStatus = new Status('OK');
-        $cache = $this->getMockBuilder('Predis\ClientInterface')
+        $cache = $this->getMockBuilder(ClientInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 

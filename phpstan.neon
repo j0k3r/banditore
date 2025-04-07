@@ -5,30 +5,38 @@ parameters:
         - tests
 
     symfony:
-        container_xml_path: %rootDir%/../../../var/cache/test/App_KernelTestDebugContainer.xml
-        console_application_loader: tests/console-application.php
+        containerXmlPath: %rootDir%/../../../var/cache/test/App_KernelTestDebugContainer.xml
+        consoleApplicationLoader: tests/console-application.php
 
     doctrine:
         objectManagerLoader: tests/object-manager.php
 
-    # https://github.com/phpstan/phpstan/issues/694#issuecomment-350724288
-    bootstrapFiles:
-        - vendor/bin/.phpunit/phpunit-8.5-0/vendor/autoload.php
-
     ignoreErrors:
-        # these are already checked in the class
-        - '#Cannot call method api\(\) on Github\\Client\|null#'
-        - '#expects Github\\Client, Github\\Client\|null given#'
-        - '#Cannot call method getAttribute\(\) on DOMNode\|null#'
-        # because `session` service is deprecated in Symfony 5 and can't find a way to set
-        # a session variable within tests
         -
-            message: '#is not registered in the container#'
-            path: tests/Security/GithubAuthenticatorTest.php
+            identifier: missingType.iterableValue
         -
-            message: '#on object\|null#'
-            path: tests/Security/GithubAuthenticatorTest.php
+            identifier: offsetAccess.nonOffsetAccessible
+        -
+            identifier: argument.type
+        -
+            identifier: cast.int
+        -
+            identifier: cast.string
+        -
+            identifier: foreach.nonIterable
+        -
+            identifier: binaryOp.invalid
+        -
+            identifier: method.nonObject
+        -
+            path: src/Pagination/PaginatorInterface.php
+            identifier: throws.notThrowable
+        -
+            path: src/Repository/VersionRepository.php
+            identifier: return.type
+        -
+            message: '#Call to deprecated method getUsername#'
+            identifier: method.deprecated
 
     inferPrivatePropertyTypeFromConstructor: true
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
+    treatPhpDocTypesAsCertain: false

@@ -5,12 +5,15 @@ namespace App\Security;
 use App\Entity\User;
 use App\Entity\Version;
 use App\Message\StarredReposSync;
+use App\Repository\VersionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
+use League\OAuth2\Client\Provider\GithubResourceOwner;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -21,17 +24,8 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 
 class GithubAuthenticator extends OAuth2Authenticator
 {
-    private $clientRegistry;
-    private $entityManager;
-    private $router;
-    private $bus;
-
-    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, MessageBusInterface $bus)
+    public function __construct(private readonly ClientRegistry $clientRegistry, private readonly EntityManagerInterface $entityManager, private readonly RouterInterface $router, private readonly MessageBusInterface $bus)
     {
-        $this->clientRegistry = $clientRegistry;
-        $this->entityManager = $entityManager;
-        $this->router = $router;
-        $this->bus = $bus;
     }
 
     public function supports(Request $request): ?bool
@@ -47,7 +41,7 @@ class GithubAuthenticator extends OAuth2Authenticator
 
         return new SelfValidatingPassport(
             new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
-                /** @var \League\OAuth2\Client\Provider\GithubResourceOwner */
+                /** @var GithubResourceOwner */
                 $githubUser = $client->fetchUserFromToken($accessToken);
 
                 /** @var User|null */
@@ -74,7 +68,7 @@ class GithubAuthenticator extends OAuth2Authenticator
         /** @var User */
         $user = $token->getUser();
 
-        /** @var \App\Repository\VersionRepository */
+        /** @var VersionRepository */
         $versionRepo = $this->entityManager->getRepository(Version::class);
         $versions = $versionRepo->countForUser($user->getId());
 
@@ -85,7 +79,7 @@ class GithubAuthenticator extends OAuth2Authenticator
             $message = 'Successfully logged in. Your starred repos will soon be synced!';
         }
 
-        /** @var \Symfony\Component\HttpFoundation\Session\Flash\FlashBag */
+        /** @var FlashBag */
         $flash = $request->getSession()->getBag('flashes');
         $flash->add('info', $message);
 

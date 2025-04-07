@@ -55,7 +55,7 @@ Banditore retrieves new releases from your GitHub starred repositories and put t
 6. You can now launch the website:
 
     ```bash
-    php bin/console server:run -e prod
+    php -S localhost:8000 -t public/
     ```
 
     And access it at this address: `http://127.0.0.1:8000`

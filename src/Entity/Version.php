@@ -2,82 +2,63 @@
 
 namespace App\Entity;
 
+use App\Repository\VersionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Version
  * Which is an alias of Release (because RELEASE is a reserved keywords).
- *
- * @ORM\Table(
- *     name="version",
- *     uniqueConstraints={@ORM\UniqueConstraint(name="repo_version_unique", columns={"repo_id","tag_name"})},
- *     indexes={
- *
- *         @ORM\Index(name="created_at_idx", columns={"created_at"}),
- *         @ORM\Index(name="tag_name_name_created_at_prerelease_repo_id", columns={"tag_name","name","created_at","prerelease","repo_id"})
- *     }
- * )
- *
- * @ORM\Entity(repositoryClass="App\Repository\VersionRepository")
  */
+#[ORM\Entity(repositoryClass: VersionRepository::class)]
+#[ORM\Table(name: 'version')]
+#[ORM\Index(name: 'created_at_idx', columns: ['created_at'])]
+#[ORM\Index(name: 'tag_name_name_created_at_prerelease_repo_id', columns: ['tag_name', 'name', 'created_at', 'prerelease', 'repo_id'])]
+#[ORM\UniqueConstraint(name: 'repo_version_unique', columns: ['repo_id', 'tag_name'])]
 class Version
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="tag_name", type="string", length=191)
      */
+    #[ORM\Column(name: 'tag_name', type: 'string', length: 191)]
     private $tagName;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="name", type="string", length=191, nullable=true)
      */
+    #[ORM\Column(name: 'name', type: 'string', length: 191, nullable: true)]
     private $name;
 
     /**
      * @var bool
-     *
-     * @ORM\Column(name="prerelease", type="boolean")
      */
+    #[ORM\Column(name: 'prerelease', type: 'boolean')]
     private $prerelease;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime")
      */
+    #[ORM\Column(name: 'created_at', type: 'datetime')]
     private $createdAt;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="body", type="text", nullable=true)
      */
+    #[ORM\Column(name: 'body', type: 'text', nullable: true)]
     private $body;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Repo", inversedBy="versions")
-     *
-     * @ORM\JoinColumn(name="repo_id", referencedColumnName="id", nullable=false)
-     */
-    private $repo;
-
-    public function __construct(Repo $repo)
-    {
-        $this->repo = $repo;
+    public function __construct(
+        #[ORM\ManyToOne(targetEntity: Repo::class, inversedBy: 'versions')]
+        #[ORM\JoinColumn(name: 'repo_id', referencedColumnName: 'id', nullable: false)]
+        private readonly Repo $repo,
+    ) {
     }
 
     /**
@@ -220,7 +201,7 @@ class Version
         $this->setTagName($data['tag_name']);
         $this->setName($data['name']);
         $this->setPrerelease($data['prerelease']);
-        $this->setCreatedAt((new \DateTime())->setTimestamp(strtotime($data['published_at'])));
+        $this->setCreatedAt((new \DateTime())->setTimestamp(strtotime((string) $data['published_at'])));
         $this->setBody($data['message']);
     }
 }

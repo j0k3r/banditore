@@ -4,8 +4,9 @@ namespace App\Tests\Rss;
 
 use App\Entity\User;
 use App\Rss\Generator;
+use PHPUnit\Framework\TestCase;
 
-class GeneratorTest extends \PHPUnit\Framework\TestCase
+class GeneratorTest extends TestCase
 {
     public function test(): void
     {

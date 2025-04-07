@@ -3,13 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Pagination\Exception\InvalidPageNumberException;
+use App\Pagination\Paginator;
 use App\Repository\RepoRepository;
 use App\Repository\StarRepository;
 use App\Repository\UserRepository;
 use App\Repository\VersionRepository;
 use App\Rss\Generator;
-use AshleyDawson\SimplePagination\Exception\InvalidPageNumberException;
-use AshleyDawson\SimplePagination\Paginator;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
 use MarcW\RssWriter\RssWriter;
@@ -24,22 +24,11 @@ use Symfony\Component\Security\Core\Security;
 
 class DefaultController extends AbstractController
 {
-    private $repoVersion;
-    private $diffInterval;
-    private $redis;
-    private $security;
-
-    public function __construct(VersionRepository $repoVersion, int $diffInterval, RedisClient $redis, Security $security)
+    public function __construct(private readonly VersionRepository $repoVersion, private readonly int $diffInterval, private readonly RedisClient $redis, private readonly Security $security)
     {
-        $this->repoVersion = $repoVersion;
-        $this->diffInterval = $diffInterval;
-        $this->redis = $redis;
-        $this->security = $security;
     }
 
-    /**
-     * @Route("/", name="homepage")
-     */
+    #[Route(path: '/', name: 'homepage')]
     public function indexAction(): Response
     {
         if ($this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -49,9 +38,7 @@ class DefaultController extends AbstractController
         return $this->render('default/index.html.twig');
     }
 
-    /**
-     * @Route("/status", name="status")
-     */
+    #[Route(path: '/status', name: 'status')]
     public function statusAction(): Response
     {
         $latest = $this->repoVersion->findLatest();
@@ -69,9 +56,7 @@ class DefaultController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/dashboard", name="dashboard")
-     */
+    #[Route(path: '/dashboard', name: 'dashboard')]
     public function dashboardAction(Request $request, Paginator $paginator): Response
     {
         if (!$this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -83,14 +68,10 @@ class DefaultController extends AbstractController
         $userId = $user->getId();
 
         // Pass the item total
-        $paginator->setItemTotalCallback(function () use ($userId) {
-            return $this->repoVersion->countForUser($userId);
-        });
+        $paginator->setItemTotalCallback(fn () => $this->repoVersion->countForUser($userId));
 
         // Pass the slice
-        $paginator->setSliceCallback(function ($offset, $length) use ($userId) {
-            return $this->repoVersion->findForUser($userId, $offset, $length);
-        });
+        $paginator->setSliceCallback(fn ($offset, $length) => $this->repoVersion->findForUser($userId, $offset, $length));
 
         // Paginate using the current page number
         try {
@@ -113,9 +94,8 @@ class DefaultController extends AbstractController
     /**
      * Empty callback action.
      * The request will be handle by the GithubAuthenticator.
-     *
-     * @Route("/callback", name="github_callback")
      */
+    #[Route(path: '/callback', name: 'github_callback')]
     public function githubCallbackAction(): RedirectResponse
     {
         return $this->redirect($this->generateUrl('github_connect'));
@@ -123,9 +103,8 @@ class DefaultController extends AbstractController
 
     /**
      * Link to this controller to start the "connect" process.
-     *
-     * @Route("/connect", name="github_connect")
      */
+    #[Route(path: '/connect', name: 'github_connect')]
     public function connectAction(ClientRegistry $oauth): RedirectResponse
     {
         if ($this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -137,9 +116,7 @@ class DefaultController extends AbstractController
             ->redirect(['user:email'], []);
     }
 
-    /**
-     * @Route("/{uuid}.atom", name="rss_user")
-     */
+    #[Route(path: '/{uuid}.atom', name: 'rss_user')]
     public function rssAction(User $user, Generator $rssGenerator, RssWriter $rssWriter): RssStreamedResponse
     {
         $channel = $rssGenerator->generate(
@@ -153,9 +130,8 @@ class DefaultController extends AbstractController
 
     /**
      * Display some global stats.
-     *
-     * @Route("/stats", name="stats")
      */
+    #[Route(path: '/stats', name: 'stats')]
     public function statsAction(RepoRepository $repoRepo, StarRepository $repoStar, UserRepository $repoUser): Response
     {
         $nbRepos = $repoRepo->countTotal();
