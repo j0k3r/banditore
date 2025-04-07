@@ -144,16 +144,6 @@ class Paginator implements PaginatorInterface
         }
         $afterQueryCallback($this, $pagination);
 
-        $previousPageNumber = null;
-        if (($currentPageNumber - 1) > 0) {
-            $previousPageNumber = $currentPageNumber - 1;
-        }
-
-        $nextPageNumber = null;
-        if (($currentPageNumber + 1) <= $numberOfPages) {
-            $nextPageNumber = $currentPageNumber + 1;
-        }
-
         $pagination
             ->setItems($items)
             ->setPages($pages)
@@ -167,12 +157,14 @@ class Paginator implements PaginatorInterface
             ->setLastPageNumberInRange(max($pages))
         ;
 
-        if ($previousPageNumber) {
-            $pagination->setPreviousPageNumber($previousPageNumber);
+        $previousPageNumber = null;
+        if (($currentPageNumber - 1) > 0) {
+            $pagination->setPreviousPageNumber($currentPageNumber - 1);
         }
 
-        if ($nextPageNumber) {
-            $pagination->setNextPageNumber($nextPageNumber);
+        $nextPageNumber = null;
+        if (($currentPageNumber + 1) <= $numberOfPages) {
+            $pagination->setNextPageNumber($currentPageNumber + 1);
         }
 
         return $pagination;
