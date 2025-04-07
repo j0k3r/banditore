@@ -5,8 +5,9 @@ namespace App\Tests\Webfeeds;
 use App\Webfeeds\Webfeeds;
 use App\Webfeeds\WebfeedsWriter;
 use MarcW\RssWriter\RssWriter;
+use PHPUnit\Framework\TestCase;
 
-class WebfeedsWriterTest extends \PHPUnit\Framework\TestCase
+class WebfeedsWriterTest extends TestCase
 {
     public function test(): void
     {

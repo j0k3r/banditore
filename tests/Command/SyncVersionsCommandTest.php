@@ -4,12 +4,15 @@ namespace App\Tests\Command;
 
 use App\Command\SyncVersionsCommand;
 use App\Message\VersionsSync;
+use App\MessageHandler\VersionsSyncHandler;
 use App\Repository\RepoRepository;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpTransport;
+use Symfony\Component\Messenger\Bridge\Amqp\Transport\Connection;
 use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class SyncVersionsCommandTest extends WebTestCase
 {
@@ -17,14 +20,14 @@ class SyncVersionsCommandTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $bus = $this->getMockBuilder(\Symfony\Component\Messenger\MessageBusInterface::class)
+        $bus = $this->getMockBuilder(MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncVersion = $this->getMockBuilder(\App\MessageHandler\VersionsSyncHandler::class)
+        $syncVersion = $this->getMockBuilder(VersionsSyncHandler::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -53,7 +56,7 @@ class SyncVersionsCommandTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $bus = $this->getMockBuilder(\Symfony\Component\Messenger\MessageBusInterface::class)
+        $bus = $this->getMockBuilder(MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -61,7 +64,7 @@ class SyncVersionsCommandTest extends WebTestCase
             ->method('dispatch')
             ->willReturn(new Envelope(new VersionsSync(555)));
 
-        $syncVersion = $this->getMockBuilder(\App\MessageHandler\VersionsSyncHandler::class)
+        $syncVersion = $this->getMockBuilder(VersionsSyncHandler::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -91,14 +94,14 @@ class SyncVersionsCommandTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $bus = $this->getMockBuilder(\Symfony\Component\Messenger\MessageBusInterface::class)
+        $bus = $this->getMockBuilder(MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncVersion = $this->getMockBuilder(\App\MessageHandler\VersionsSyncHandler::class)
+        $syncVersion = $this->getMockBuilder(VersionsSyncHandler::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -129,7 +132,7 @@ class SyncVersionsCommandTest extends WebTestCase
         $client = static::createClient();
         $message = new VersionsSync(555);
 
-        $bus = $this->getMockBuilder(\Symfony\Component\Messenger\MessageBusInterface::class)
+        $bus = $this->getMockBuilder(MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -138,7 +141,7 @@ class SyncVersionsCommandTest extends WebTestCase
             ->with($message)
             ->willReturn(new Envelope($message));
 
-        $syncVersion = $this->getMockBuilder(\App\MessageHandler\VersionsSyncHandler::class)
+        $syncVersion = $this->getMockBuilder(VersionsSyncHandler::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -171,14 +174,14 @@ class SyncVersionsCommandTest extends WebTestCase
         $client = static::createClient();
         $message = new VersionsSync(666);
 
-        $bus = $this->getMockBuilder(\Symfony\Component\Messenger\MessageBusInterface::class)
+        $bus = $this->getMockBuilder(MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncVersion = $this->getMockBuilder(\App\MessageHandler\VersionsSyncHandler::class)
+        $syncVersion = $this->getMockBuilder(VersionsSyncHandler::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -210,14 +213,14 @@ class SyncVersionsCommandTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $bus = $this->getMockBuilder(\Symfony\Component\Messenger\MessageBusInterface::class)
+        $bus = $this->getMockBuilder(MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncVersion = $this->getMockBuilder(\App\MessageHandler\VersionsSyncHandler::class)
+        $syncVersion = $this->getMockBuilder(VersionsSyncHandler::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -245,7 +248,7 @@ class SyncVersionsCommandTest extends WebTestCase
 
     private function getTransportMessageCount(int $totalMessage = 0): AmqpTransport
     {
-        $connection = $this->getMockBuilder(\Symfony\Component\Messenger\Bridge\Amqp\Transport\Connection::class)
+        $connection = $this->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->getMock();
 

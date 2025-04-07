@@ -28,9 +28,7 @@ class DefaultController extends AbstractController
     {
     }
 
-    /**
-     * @Route("/", name="homepage")
-     */
+    #[Route(path: '/', name: 'homepage')]
     public function indexAction(): Response
     {
         if ($this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -40,9 +38,7 @@ class DefaultController extends AbstractController
         return $this->render('default/index.html.twig');
     }
 
-    /**
-     * @Route("/status", name="status")
-     */
+    #[Route(path: '/status', name: 'status')]
     public function statusAction(): Response
     {
         $latest = $this->repoVersion->findLatest();
@@ -60,9 +56,7 @@ class DefaultController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/dashboard", name="dashboard")
-     */
+    #[Route(path: '/dashboard', name: 'dashboard')]
     public function dashboardAction(Request $request, Paginator $paginator): Response
     {
         if (!$this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -100,9 +94,8 @@ class DefaultController extends AbstractController
     /**
      * Empty callback action.
      * The request will be handle by the GithubAuthenticator.
-     *
-     * @Route("/callback", name="github_callback")
      */
+    #[Route(path: '/callback', name: 'github_callback')]
     public function githubCallbackAction(): RedirectResponse
     {
         return $this->redirect($this->generateUrl('github_connect'));
@@ -110,9 +103,8 @@ class DefaultController extends AbstractController
 
     /**
      * Link to this controller to start the "connect" process.
-     *
-     * @Route("/connect", name="github_connect")
      */
+    #[Route(path: '/connect', name: 'github_connect')]
     public function connectAction(ClientRegistry $oauth): RedirectResponse
     {
         if ($this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -124,9 +116,7 @@ class DefaultController extends AbstractController
             ->redirect(['user:email'], []);
     }
 
-    /**
-     * @Route("/{uuid}.atom", name="rss_user")
-     */
+    #[Route(path: '/{uuid}.atom', name: 'rss_user')]
     public function rssAction(User $user, Generator $rssGenerator, RssWriter $rssWriter): RssStreamedResponse
     {
         $channel = $rssGenerator->generate(
@@ -140,9 +130,8 @@ class DefaultController extends AbstractController
 
     /**
      * Display some global stats.
-     *
-     * @Route("/stats", name="stats")
      */
+    #[Route(path: '/stats', name: 'stats')]
     public function statsAction(RepoRepository $repoRepo, StarRepository $repoStar, UserRepository $repoUser): Response
     {
         $nbRepos = $repoRepo->countTotal();

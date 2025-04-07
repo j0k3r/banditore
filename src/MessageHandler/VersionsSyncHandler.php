@@ -9,7 +9,10 @@ use App\Message\VersionsSync;
 use App\PubSubHubbub\Publisher;
 use App\Repository\RepoRepository;
 use App\Repository\VersionRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
+use Github\Api\GitData;
+use Github\Api\Markdown;
 use Github\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
@@ -82,7 +85,7 @@ class VersionsSyncHandler implements MessageHandlerInterface
     {
         $newVersion = 0;
 
-        /** @var \Doctrine\ORM\EntityManager */
+        /** @var EntityManager */
         $em = $this->doctrine->getManager();
 
         /** @var \Github\Api\Repo */
@@ -90,7 +93,7 @@ class VersionsSyncHandler implements MessageHandlerInterface
 
         // in case of the manager is closed following a previous exception
         if (!$em->isOpen()) {
-            /** @var \Doctrine\ORM\EntityManager */
+            /** @var EntityManager */
             $em = $this->doctrine->resetManager();
         }
 
@@ -119,7 +122,7 @@ class VersionsSyncHandler implements MessageHandlerInterface
 
         // use git/refs/tags because tags aren't order by date creation (so we retrieve ALL tags every time …)
         try {
-            /** @var \Github\Api\GitData */
+            /** @var GitData */
             $githubGitApi = $this->client->api('git');
 
             $tags = $githubGitApi->tags()->all($username, $repoName);
@@ -206,7 +209,7 @@ class VersionsSyncHandler implements MessageHandlerInterface
             // render markdown in plain html and use default markdown file if it fails
             if (isset($newRelease['message']) && '' !== trim($newRelease['message'])) {
                 try {
-                    /** @var \Github\Api\Markdown */
+                    /** @var Markdown */
                     $githubMarkdownApi = $this->client->api('markdown');
 
                     $newRelease['message'] = $githubMarkdownApi->render($newRelease['message'], 'gfm', $repo->getFullName());

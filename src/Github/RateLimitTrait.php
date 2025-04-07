@@ -2,6 +2,7 @@
 
 namespace App\Github;
 
+use Github\Api\RateLimit;
 use Github\Client;
 use Http\Client\Exception\HttpException;
 use Psr\Log\LoggerInterface;
@@ -17,7 +18,7 @@ trait RateLimitTrait
     private function getRateLimits(Client $client, LoggerInterface $logger)
     {
         try {
-            /** @var \Github\Api\RateLimit */
+            /** @var RateLimit */
             $rateLimit = $client->api('rate_limit');
 
             $rateLimitResource = $rateLimit->getResource('core');

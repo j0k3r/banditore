@@ -12,17 +12,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Webfeeds
 {
     /**
-     * @Assert\Url
-     *
      * @var string|null
      */
+    #[Assert\Url]
     private $logo;
 
     /**
-     * @Assert\Url
-     *
      * @var string|null
      */
+    #[Assert\Url]
     private $icon;
 
     /**

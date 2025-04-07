@@ -12,13 +12,6 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class Publisher
 {
-    /** @var RouterInterface */
-    protected $router;
-    /** @var Client */
-    protected $client;
-    /** @var UserRepository */
-    protected $userRepository;
-
     /**
      * Create a new publisher.
      *
@@ -28,15 +21,11 @@ class Publisher
      * @param string          $host   Host of the project (used to generate route from a command)
      * @param string          $scheme Scheme of the project (used to generate route from a command)
      */
-    public function __construct(protected $hub, RouterInterface $router, Client $client, UserRepository $userRepository, $host, $scheme)
+    public function __construct(protected $hub, protected RouterInterface $router, protected Client $client, protected UserRepository $userRepository, $host, $scheme)
     {
-        $this->router = $router;
-        $this->client = $client;
-        $this->userRepository = $userRepository;
-
         // allow generating url from command to use the correct host/scheme (instead of http://localhost)
         // @see http://symfony.com/doc/current/console/request_context.html
-        $context = $router->getContext();
+        $context = $this->router->getContext();
         $context->setHost($host);
         $context->setScheme($scheme);
     }

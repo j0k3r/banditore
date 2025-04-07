@@ -10,6 +10,7 @@ use App\Message\StarredReposSync;
 use App\Repository\RepoRepository;
 use App\Repository\StarRepository;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Github\Client;
 use Github\Exception\RuntimeException;
@@ -94,7 +95,7 @@ class StarredReposSyncHandler implements MessageHandlerInterface
         $page = 1;
         $perPage = 100;
 
-        /** @var \Doctrine\ORM\EntityManager */
+        /** @var EntityManager */
         $em = $this->doctrine->getManager();
 
         /** @var \Github\Api\User */
@@ -102,7 +103,7 @@ class StarredReposSyncHandler implements MessageHandlerInterface
 
         // in case of the manager is closed following a previous exception
         if (!$em->isOpen()) {
-            /** @var \Doctrine\ORM\EntityManager */
+            /** @var EntityManager */
             $em = $this->doctrine->resetManager();
         }
 

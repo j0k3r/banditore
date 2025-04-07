@@ -88,12 +88,12 @@ class Paginator implements PaginatorInterface
 
         $beforeQueryCallback = $this->beforeQueryCallback instanceof \Closure
             ? $this->beforeQueryCallback
-            : function () {}
+            : function (): void {}
         ;
 
         $afterQueryCallback = $this->afterQueryCallback instanceof \Closure
             ? $this->afterQueryCallback
-            : function () {}
+            : function (): void {}
         ;
 
         $pagination = new Pagination();

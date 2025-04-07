@@ -3,6 +3,7 @@
 namespace App\Tests\Github;
 
 use App\Github\ClientDiscovery;
+use App\Repository\UserRepository;
 use Github\Client as GithubClient;
 use Github\HttpClient\Builder;
 use GuzzleHttp\Client;
@@ -19,7 +20,7 @@ class ClientDiscoveryTest extends WebTestCase
 {
     public function testUseApplicationDefaultClient(): void
     {
-        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -62,7 +63,7 @@ class ClientDiscoveryTest extends WebTestCase
 
     public function testUseUserToken(): void
     {
-        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -124,7 +125,7 @@ class ClientDiscoveryTest extends WebTestCase
 
     public function testNoTokenAvailable(): void
     {
-        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -180,7 +181,7 @@ class ClientDiscoveryTest extends WebTestCase
 
     public function testOneCallFail(): void
     {
-        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 

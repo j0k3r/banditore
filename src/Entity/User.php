@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use League\OAuth2\Client\Provider\GithubResourceOwner;
@@ -11,90 +12,73 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * User.
- *
- * @ORM\Table(
- *     name="user",
- *     uniqueConstraints={@ORM\UniqueConstraint(name="uuid", columns={"uuid"})}
- * )
- *
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- *
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: 'user')]
+#[ORM\UniqueConstraint(name: 'uuid', columns: ['uuid'])]
 class User implements UserInterface, EquatableInterface
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="NONE")
      */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="uuid", type="guid", length=191, unique=true, nullable=false)
      */
+    #[ORM\Column(name: 'uuid', type: 'guid', length: 191, unique: true, nullable: false)]
     private $uuid;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="username", type="string", length=191, unique=true, nullable=false)
      */
+    #[ORM\Column(name: 'username', type: 'string', length: 191, unique: true, nullable: false)]
     private $username;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="avatar", type="string", length=191)
      */
+    #[ORM\Column(name: 'avatar', type: 'string', length: 191)]
     private $avatar;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="name", type="string", length=191, nullable=true)
      */
+    #[ORM\Column(name: 'name', type: 'string', length: 191, nullable: true)]
     private $name;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="access_token", type="string", length=100, nullable=false)
      */
+    #[ORM\Column(name: 'access_token', type: 'string', length: 100, nullable: false)]
     private $accessToken;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
+    #[ORM\Column(name: 'created_at', type: 'datetime', nullable: false)]
     private $createdAt;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=false)
      */
+    #[ORM\Column(name: 'updated_at', type: 'datetime', nullable: false)]
     private $updatedAt;
 
     /**
      * @var \DateTime|null
-     *
-     * @ORM\Column(name="removed_at", type="datetime", nullable=true)
      */
+    #[ORM\Column(name: 'removed_at', type: 'datetime', nullable: true)]
     private $removedAt;
 
     /**
      * @var ArrayCollection<int, Star>
-     *
-     * @ORM\OneToMany(targetEntity="Star", mappedBy="user")
      */
+    #[ORM\OneToMany(targetEntity: \Star::class, mappedBy: 'user')]
     private $stars;
 
     public function __construct()
@@ -257,11 +241,8 @@ class User implements UserInterface, EquatableInterface
         return $this->updatedAt;
     }
 
-    /**
-     * @ORM\PrePersist
-     *
-     * @ORM\PreUpdate
-     */
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
     public function timestamps(): void
     {
         if (null === $this->createdAt) {

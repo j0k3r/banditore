@@ -8,6 +8,9 @@ use App\Message\StarredReposSync;
 use App\MessageHandler\StarredReposSyncHandler;
 use App\Repository\RepoRepository;
 use App\Repository\StarRepository;
+use App\Repository\UserRepository;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\ORM\EntityManager;
 use Github\Client as GithubClient;
 use Github\HttpClient\Builder;
 use GuzzleHttp\Client;
@@ -24,11 +27,11 @@ class StarredReposSyncHandlerTest extends WebTestCase
 {
     public function testProcessNoUser(): void
     {
-        $doctrine = $this->getMockBuilder(\Doctrine\Bundle\DoctrineBundle\Registry::class)
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -75,14 +78,14 @@ class StarredReposSyncHandlerTest extends WebTestCase
 
     public function testProcessSuccessfulMessage(): void
     {
-        $em = $this->getMockBuilder(\Doctrine\ORM\EntityManager::class)
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->once())
             ->method('isOpen')
             ->willReturn(true);
 
-        $doctrine = $this->getMockBuilder(\Doctrine\Bundle\DoctrineBundle\Registry::class)
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
@@ -94,7 +97,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $user->setUsername('bob');
         $user->setName('Bobby');
 
-        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -190,14 +193,14 @@ class StarredReposSyncHandlerTest extends WebTestCase
 
     public function testUserRemovedFromGitHub(): void
     {
-        $em = $this->getMockBuilder(\Doctrine\ORM\EntityManager::class)
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->once())
             ->method('isOpen')
             ->willReturn(true);
 
-        $doctrine = $this->getMockBuilder(\Doctrine\Bundle\DoctrineBundle\Registry::class)
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
@@ -209,7 +212,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $user->setUsername('bob');
         $user->setName('Bobby');
 
-        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -279,14 +282,14 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('booboo');
 
-        $em = $this->getMockBuilder(\Doctrine\ORM\EntityManager::class)
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->once())
             ->method('isOpen')
             ->willReturn(true);
 
-        $doctrine = $this->getMockBuilder(\Doctrine\Bundle\DoctrineBundle\Registry::class)
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
@@ -298,7 +301,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $user->setUsername('bob');
         $user->setName('Bobby');
 
-        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -376,14 +379,14 @@ class StarredReposSyncHandlerTest extends WebTestCase
      */
     public function testProcessSuccessfulMessageNoStarToRemove(): void
     {
-        $em = $this->getMockBuilder(\Doctrine\ORM\EntityManager::class)
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->once())
             ->method('isOpen')
             ->willReturn(false); // simulate a closing manager
 
-        $doctrine = $this->getMockBuilder(\Doctrine\Bundle\DoctrineBundle\Registry::class)
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->once())
@@ -398,7 +401,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $user->setUsername('bob');
         $user->setName('Bobby');
 
-        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -489,11 +492,11 @@ class StarredReposSyncHandlerTest extends WebTestCase
 
     public function testProcessWithBadClient(): void
     {
-        $doctrine = $this->getMockBuilder(\Doctrine\Bundle\DoctrineBundle\Registry::class)
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -545,13 +548,13 @@ class StarredReposSyncHandlerTest extends WebTestCase
 
     public function testProcessWithRateLimitReached(): void
     {
-        $em = $this->getMockBuilder(\Doctrine\ORM\EntityManager::class)
+        $em = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $em->expects($this->never())
             ->method('isOpen');
 
-        $doctrine = $this->getMockBuilder(\Doctrine\Bundle\DoctrineBundle\Registry::class)
+        $doctrine = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $doctrine->expects($this->never())
@@ -562,7 +565,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $user->setUsername('bob');
         $user->setName('Bobby');
 
-        $userRepository = $this->getMockBuilder(\App\Repository\UserRepository::class)
+        $userRepository = $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 

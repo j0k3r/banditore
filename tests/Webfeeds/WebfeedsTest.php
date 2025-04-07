@@ -3,8 +3,9 @@
 namespace App\Tests\Webfeeds;
 
 use App\Webfeeds\Webfeeds;
+use PHPUnit\Framework\TestCase;
 
-class WebfeedsTest extends \PHPUnit\Framework\TestCase
+class WebfeedsTest extends TestCase
 {
     public function test(): void
     {
