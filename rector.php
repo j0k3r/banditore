@@ -15,7 +15,7 @@ return RectorConfig::configure()
         __DIR__ . '/tests',
     ])->withRootFiles()
     ->withImportNames(importShortClasses: false)
-    ->withAttributesSets(symfony: true, doctrine: true, gedmo: true, sensiolabs: true, phpunit: true)
+    ->withAttributesSets(symfony: true, doctrine: true, gedmo: true, sensiolabs: true)
     ->withConfiguredRule(ClassPropertyAssignToConstructorPromotionRector::class, [
         'inline_public' => true,
     ])

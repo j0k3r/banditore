@@ -21,7 +21,6 @@ use GuzzleHttp\Psr7\Response;
 use Http\Adapter\Guzzle6\Client as Guzzle6Client;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
-use PHPUnit\Framework\Attributes\Group;
 use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -994,8 +993,9 @@ class VersionsSyncHandlerTest extends WebTestCase
 
     /**
      * Using mocks only for request.
+     *
+     * @group only
      */
-    #[Group('only')]
     public function testFunctionalConsumer(): void
     {
         $clientHandler = HandlerStack::create($this->getWorkingResponses());

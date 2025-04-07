@@ -79,13 +79,13 @@ class Repo
     /**
      * @var ArrayCollection<int, Star>
      */
-    #[ORM\OneToMany(targetEntity: \Star::class, mappedBy: 'repo')]
+    #[ORM\OneToMany(targetEntity: Star::class, mappedBy: 'repo')]
     private $stars;
 
     /**
      * @var ArrayCollection<int, Version>
      */
-    #[ORM\OneToMany(targetEntity: \Version::class, mappedBy: 'repo')]
+    #[ORM\OneToMany(targetEntity: Version::class, mappedBy: 'repo')]
     private $versions;
 
     public function __construct()

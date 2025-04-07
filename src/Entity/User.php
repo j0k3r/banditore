@@ -78,7 +78,7 @@ class User implements UserInterface, EquatableInterface
     /**
      * @var ArrayCollection<int, Star>
      */
-    #[ORM\OneToMany(targetEntity: \Star::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Star::class, mappedBy: 'user')]
     private $stars;
 
     public function __construct()

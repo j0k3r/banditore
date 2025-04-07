@@ -38,6 +38,9 @@ parameters:
         -
             path: src/Repository/VersionRepository.php
             identifier: return.type
+        -
+            message: '#Call to deprecated method getUsername#'
+            identifier: method.deprecated
 
     inferPrivatePropertyTypeFromConstructor: true
     treatPhpDocTypesAsCertain: false

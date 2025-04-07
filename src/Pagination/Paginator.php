@@ -188,7 +188,7 @@ class Paginator implements PaginatorInterface
         return $this->beforeQueryCallback;
     }
 
-    public function setBeforeQueryCallback($beforeQueryCallback)
+    public function setBeforeQueryCallback(\Closure $beforeQueryCallback)
     {
         $this->beforeQueryCallback = $beforeQueryCallback;
 
@@ -200,7 +200,7 @@ class Paginator implements PaginatorInterface
         return $this->afterQueryCallback;
     }
 
-    public function setAfterQueryCallback($afterQueryCallback)
+    public function setAfterQueryCallback(\Closure $afterQueryCallback)
     {
         $this->afterQueryCallback = $afterQueryCallback;
 
