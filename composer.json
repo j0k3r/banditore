@@ -19,7 +19,7 @@
         "composer/package-versions-deprecated": "1.11.99.5",
         "doctrine/doctrine-bundle": "^2.0",
         "doctrine/doctrine-migrations-bundle": "^3.0",
-        "doctrine/orm": "^2.5",
+        "doctrine/orm": "^3.4",
         "knplabs/github-api": "^3.0",
         "knplabs/knp-time-bundle": "^1.11",
         "knpuniversity/oauth2-client-bundle": "^2.1",
