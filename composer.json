@@ -33,6 +33,7 @@
         "symfony/amqp-messenger": "*",
         "symfony/asset": "*",
         "symfony/dotenv": "*",
+        "symfony/expression-language": "*",
         "symfony/flex": "^2.5",
         "symfony/form": "*",
         "symfony/monolog-bundle": "^3.5",
