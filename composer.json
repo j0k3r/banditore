@@ -28,7 +28,7 @@
         "marcw/rss-writer": "dev-fix/symfony-6",
         "php-http/guzzle7-adapter": "^1.1",
         "ramsey/uuid": "^4.0",
-        "sentry/sentry-symfony": "~4.0",
+        "sentry/sentry-symfony": "^5.0",
         "snc/redis-bundle": "^4.0",
         "symfony/amqp-messenger": "*",
         "symfony/asset": "*",

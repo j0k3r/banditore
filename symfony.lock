@@ -140,9 +140,6 @@
     "guzzlehttp/psr7": {
         "version": "1.6.1"
     },
-    "http-interop/http-factory-guzzle": {
-        "version": "1.0.0"
-    },
     "jean85/pretty-package-versions": {
         "version": "1.2"
     },
@@ -223,9 +220,6 @@
     },
     "php-http/message": {
         "version": "1.8.0"
-    },
-    "php-http/message-factory": {
-        "version": "v1.0.2"
     },
     "php-http/multipart-stream-builder": {
         "version": "1.1.2"
@@ -310,19 +304,16 @@
     "ramsey/uuid": {
         "version": "4.0.1"
     },
-    "sentry/sdk": {
-        "version": "2.1.0"
-    },
     "sentry/sentry": {
         "version": "2.3.2"
     },
     "sentry/sentry-symfony": {
-        "version": "4.14",
+        "version": "5.6",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "main",
-            "version": "4.6",
-            "ref": "3cbed34d60ded4d22d10b43cd08bb463a6f4ce26"
+            "version": "5.0",
+            "ref": "b6cb4b34429dadecd7187852123be19d628fa37a"
         },
         "files": [
             "config/packages/sentry.yaml"
@@ -449,12 +440,6 @@
             "src/Controller/.gitignore",
             "src/Kernel.php"
         ]
-    },
-    "symfony/http-client": {
-        "version": "v5.1.5"
-    },
-    "symfony/http-client-contracts": {
-        "version": "v2.2.0"
     },
     "symfony/http-foundation": {
         "version": "v4.4.8"
