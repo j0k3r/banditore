@@ -230,9 +230,6 @@
             "config/packages/http_discovery.yaml"
         ]
     },
-    "php-http/guzzle6-adapter": {
-        "version": "v2.0.2"
-    },
     "php-http/httplug": {
         "version": "2.1.0"
     },
@@ -482,15 +479,6 @@
     "symfony/http-kernel": {
         "version": "v3.4.40"
     },
-    "symfony/maker-bundle": {
-        "version": "1.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
-        }
-    },
     "symfony/messenger": {
         "version": "5.4",
         "recipe": {
@@ -550,9 +538,6 @@
     },
     "symfony/polyfill-intl-icu": {
         "version": "v1.17.0"
-    },
-    "symfony/polyfill-intl-idn": {
-        "version": "v1.23.0"
     },
     "symfony/polyfill-intl-normalizer": {
         "version": "v1.17.0"

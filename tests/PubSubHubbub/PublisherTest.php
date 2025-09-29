@@ -107,8 +107,6 @@ class PublisherTest extends TestCase
             Publisher::class, 'retrieveFeedUrls'
         );
 
-        $method->setAccessible(true);
-
         $urls = $method->invoke(
             new Publisher('http://pubsubhubbub.io', $this->router, new Client(), $userRepository, 'banditore.com', 'http'),
             [123]

@@ -66,7 +66,7 @@ class SyncVersionsCommand extends Command
             if (0 < $count) {
                 $output->writeln('Current queue as too much messages (<error>' . $count . '</error>), <comment>skipping</comment>.');
 
-                return 1;
+                return Command::FAILURE;
             }
         }
 
@@ -75,7 +75,7 @@ class SyncVersionsCommand extends Command
         if (\count(array_filter($repos)) <= 0) {
             $output->writeln('<error>No repos found</error>');
 
-            return 1;
+            return Command::FAILURE;
         }
 
         $repoChecked = 0;
@@ -97,7 +97,7 @@ class SyncVersionsCommand extends Command
 
         $output->writeln('<info>Repo checked: ' . $repoChecked . '</info>');
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
