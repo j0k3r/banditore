@@ -5,6 +5,7 @@ namespace App\Command;
 use App\Message\VersionsSync;
 use App\MessageHandler\VersionsSyncHandler;
 use App\Repository\RepoRepository;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,6 +22,7 @@ use Symfony\Component\Messenger\Transport\TransportInterface;
  *     - one content
  *     - many contents
  */
+#[AsCommand(name: 'banditore:sync:versions', description: 'Sync new version for each repository')]
 class SyncVersionsCommand extends Command
 {
     private $syncVersions;
@@ -35,8 +37,6 @@ class SyncVersionsCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('banditore:sync:versions')
-            ->setDescription('Sync new version for each repository')
             ->addOption(
                 'repo_id',
                 null,

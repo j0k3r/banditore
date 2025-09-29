@@ -9,6 +9,12 @@ when@prod:
         register_error_listener: false
         register_error_handler: false
 
+        # this hooks into critical paths of the framework (and vendors) to perform
+        # automatic instrumentation (there might be some performance penalty)
+        # https://docs.sentry.io/platforms/php/guides/symfony/performance/instrumentation/automatic-instrumentation/
+        tracing:
+            enabled: false
+
     monolog:
         handlers:
             sentry:

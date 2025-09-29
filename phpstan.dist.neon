@@ -35,8 +35,13 @@ parameters:
             path: src/Repository/VersionRepository.php
             identifier: return.type
         -
-            message: '#Call to deprecated method getUsername#'
-            identifier: method.deprecated
+            path: tests/Security/GithubAuthenticatorTest.php
+            identifier: deadCode.unreachable
+            count: 2
+        -
+            path: tests/bootstrap.php
+            identifier: function.alreadyNarrowedType
+            count: 1
 
     inferPrivatePropertyTypeFromConstructor: true
     treatPhpDocTypesAsCertain: false

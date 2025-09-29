@@ -15,12 +15,13 @@ use Github\Api\GitData;
 use Github\Api\Markdown;
 use Github\Client;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 /**
  * Consumer message to sync new version from a given repo.
  */
-class VersionsSyncHandler implements MessageHandlerInterface
+#[AsMessageHandler]
+class VersionsSyncHandler
 {
     use RateLimitTrait;
 
