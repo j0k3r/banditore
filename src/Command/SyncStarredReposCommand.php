@@ -5,6 +5,7 @@ namespace App\Command;
 use App\Message\StarredReposSync;
 use App\MessageHandler\StarredReposSyncHandler;
 use App\Repository\UserRepository;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,6 +21,7 @@ use Symfony\Component\Messenger\Transport\TransportInterface;
  *     - right away, might take longer to process
  *     - by publishing a message in a queue
  */
+#[AsCommand(name: 'banditore:sync:starred-repos', description: 'Sync starred repos for all users')]
 class SyncStarredReposCommand extends Command
 {
     private $syncRepo;
@@ -34,8 +36,6 @@ class SyncStarredReposCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('banditore:sync:starred-repos')
-            ->setDescription('Sync starred repos for all users')
             ->addOption(
                 'id',
                 null,

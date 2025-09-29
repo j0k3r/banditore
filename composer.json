@@ -25,15 +25,15 @@
         "knpuniversity/oauth2-client-bundle": "^2.1",
         "laminas/laminas-code": "^4.5",
         "league/oauth2-github": "^3.0",
-        "marcw/rss-writer": "^0.4",
+        "marcw/rss-writer": "dev-fix/symfony-6",
         "php-http/guzzle7-adapter": "^1.1",
         "ramsey/uuid": "^4.0",
-        "sensio/framework-extra-bundle": "^6.0",
         "sentry/sentry-symfony": "~4.0",
         "snc/redis-bundle": "^4.0",
         "symfony/amqp-messenger": "*",
         "symfony/asset": "*",
         "symfony/dotenv": "*",
+        "symfony/expression-language": "*",
         "symfony/flex": "^2.5",
         "symfony/form": "*",
         "symfony/monolog-bundle": "^3.5",
@@ -50,7 +50,7 @@
         "twig/twig": "^2.0|^3.0"
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "^3.0",
+        "doctrine/doctrine-fixtures-bundle": "^4.1",
         "friendsofphp/php-cs-fixer": "~3.0",
         "m6web/redis-mock": "dev-predis-1.x",
         "phpstan/extension-installer": "^1.0",
@@ -96,12 +96,16 @@
         {
             "type": "vcs",
             "url": "https://github.com/j0k3r/RedisMock"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/j0k3r/rss-writer"
         }
     ],
     "extra": {
         "symfony": {
             "allow-contrib": true,
-            "require": "5.4.*"
+            "require": "6.4.*"
         }
     }
 }

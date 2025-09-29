@@ -14,13 +14,14 @@ use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
 use MarcW\RssWriter\RssWriter;
 use Predis\Client as RedisClient;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Security;
 
 class DefaultController extends AbstractController
 {
@@ -117,8 +118,12 @@ class DefaultController extends AbstractController
     }
 
     #[Route(path: '/{uuid}.atom', name: 'rss_user')]
-    public function rssAction(User $user, Generator $rssGenerator, RssWriter $rssWriter): RssStreamedResponse
-    {
+    public function rssAction(
+        #[MapEntity(expr: 'repository.findOneBy({"uuid": uuid})')]
+        User $user,
+        Generator $rssGenerator,
+        RssWriter $rssWriter,
+    ): RssStreamedResponse {
         $channel = $rssGenerator->generate(
             $user,
             $this->repoVersion->findForUser($user->getId()),

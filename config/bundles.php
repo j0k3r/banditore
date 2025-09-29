@@ -5,7 +5,6 @@ use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
 use Knp\Bundle\TimeBundle\KnpTimeBundle;
 use KnpU\OAuth2ClientBundle\KnpUOAuth2ClientBundle;
-use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Sentry\SentryBundle\SentryBundle;
 use Snc\RedisBundle\SncRedisBundle;
 use Symfony\Bundle\DebugBundle\DebugBundle;
@@ -22,7 +21,6 @@ return [
     DoctrineMigrationsBundle::class => ['all' => true],
     KnpTimeBundle::class => ['all' => true],
     KnpUOAuth2ClientBundle::class => ['all' => true],
-    SensioFrameworkExtraBundle::class => ['all' => true],
     SentryBundle::class => ['prod' => true],
     SncRedisBundle::class => ['all' => true],
     MonologBundle::class => ['all' => true],

@@ -16,7 +16,7 @@ use Github\Client;
 use Github\Exception\RuntimeException;
 use Predis\ClientInterface as RedisClientInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 /**
  * Consumer message to sync starred repos from user.
@@ -25,7 +25,8 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
  *     - when user logged in
  *     - when we periodically sync user starred repos
  */
-class StarredReposSyncHandler implements MessageHandlerInterface
+#[AsMessageHandler]
+class StarredReposSyncHandler
 {
     use RateLimitTrait;
 

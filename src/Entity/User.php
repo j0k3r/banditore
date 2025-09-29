@@ -336,10 +336,8 @@ class User implements UserInterface, EquatableInterface
      *
      * @see https://stackoverflow.com/a/47676103/569101
      * @see https://symfony.com/doc/4.4/reference/configuration/security.html#logout-on-user-change
-     *
-     * @return bool
      */
-    public function isEqualTo(UserInterface $user)
+    public function isEqualTo(UserInterface $user): bool
     {
         if ($user instanceof self) {
             if ($this->accessToken !== $user->getAccessToken()) {
