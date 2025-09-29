@@ -3,7 +3,7 @@
 # Banditore
 
 ![CI](https://github.com/j0k3r/banditore/workflows/CI/badge.svg)
-[![Coveralls Status](https://coveralls.io/repos/github/j0k3r/banditore/badge.svg?branch=master)](https://coveralls.io/github/j0k3r/banditore?branch=master)
+[![codecov](https://codecov.io/github/j0k3r/banditore/graph/badge.svg?token=vGOatWHRG8)](https://codecov.io/github/j0k3r/banditore)
 ![PHPStan level max](https://img.shields.io/badge/PHPStan-level%20max-brightgreen.svg?style=flat)
 
 Banditore retrieves new releases from your GitHub starred repositories and put them in a RSS feed, just for you.
