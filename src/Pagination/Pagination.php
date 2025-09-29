@@ -306,14 +306,12 @@ class Pagination implements \IteratorAggregate, \Countable
         return $this;
     }
 
-    #[\ReturnTypeWillChange]
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->items);
     }
 
-    #[\ReturnTypeWillChange]
-    public function count()
+    public function count(): int
     {
         return \count($this->items);
     }

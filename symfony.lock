@@ -53,9 +53,6 @@
     "doctrine/collections": {
         "version": "1.6.4"
     },
-    "doctrine/common": {
-        "version": "2.13.0"
-    },
     "doctrine/data-fixtures": {
         "version": "1.4.2"
     },
@@ -543,9 +540,6 @@
         "version": "v1.17.0"
     },
     "symfony/polyfill-mbstring": {
-        "version": "v1.17.0"
-    },
-    "symfony/polyfill-php72": {
         "version": "v1.17.0"
     },
     "symfony/polyfill-php73": {
