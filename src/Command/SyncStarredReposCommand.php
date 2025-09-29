@@ -65,7 +65,7 @@ class SyncStarredReposCommand extends Command
             if (0 < $count) {
                 $output->writeln('Current queue as too much messages (<error>' . $count . '</error>), <comment>skipping</comment>.');
 
-                return 1;
+                return Command::FAILURE;
             }
         }
 
@@ -74,7 +74,7 @@ class SyncStarredReposCommand extends Command
         if (\count(array_filter($users)) <= 0) {
             $output->writeln('<error>No users found</error>');
 
-            return 1;
+            return Command::FAILURE;
         }
 
         $userSynced = 0;
@@ -96,7 +96,7 @@ class SyncStarredReposCommand extends Command
 
         $output->writeln('<info>User synced: ' . $userSynced . '</info>');
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**

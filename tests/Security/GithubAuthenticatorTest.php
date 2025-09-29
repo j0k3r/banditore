@@ -11,7 +11,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Http\Adapter\Guzzle6\Client as Guzzle6Client;
+use Http\Adapter\Guzzle7\Client as Guzzle7Client;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -42,7 +42,7 @@ class GithubAuthenticatorTest extends WebTestCase
             'handler' => $clientHandler,
         ]);
 
-        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
@@ -106,7 +106,7 @@ class GithubAuthenticatorTest extends WebTestCase
             'handler' => $clientHandler,
         ]);
 
-        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 

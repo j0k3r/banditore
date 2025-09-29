@@ -18,7 +18,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Http\Adapter\Guzzle6\Client as Guzzle6Client;
+use Http\Adapter\Guzzle7\Client as Guzzle7Client;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use Psr\Log\NullLogger;
@@ -266,7 +266,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             'handler' => $clientHandler,
         ]);
 
-        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
@@ -350,7 +350,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             'handler' => $clientHandler,
         ]);
 
-        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
@@ -434,7 +434,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             'handler' => $clientHandler,
         ]);
 
-        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
@@ -514,7 +514,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             'handler' => $clientHandler,
         ]);
 
-        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
@@ -642,7 +642,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             'handler' => $clientHandler,
         ]);
 
-        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
@@ -726,7 +726,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             'handler' => $clientHandler,
         ]);
 
-        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
@@ -837,7 +837,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             'handler' => $clientHandler,
         ]);
 
-        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
@@ -921,7 +921,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             'handler' => $clientHandler,
         ]);
 
-        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
@@ -1003,7 +1003,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             'handler' => $clientHandler,
         ]);
 
-        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
@@ -1017,7 +1017,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
         $guzzleClientPub->expects($this->once())
-            ->method('__call') // post
+            ->method('post')
             ->willReturn(new Response(204));
 
         self::getContainer()->set('banditore.client.guzzle.test', $guzzleClientPub);
@@ -1093,7 +1093,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             'handler' => $clientHandler,
         ]);
 
-        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
@@ -1107,7 +1107,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
         $guzzleClientPub->expects($this->once())
-            ->method('__call') // post
+            ->method('post')
             ->willReturn(new Response(204));
 
         self::getContainer()->set('banditore.client.guzzle.test', $guzzleClientPub);
@@ -1238,7 +1238,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             'handler' => $clientHandler,
         ]);
 
-        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
@@ -1356,7 +1356,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             'handler' => $clientHandler,
         ]);
 
-        $httpClient = new Guzzle6Client($guzzleClient);
+        $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
 
