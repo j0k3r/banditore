@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "adae4457069d9d1c809666fa7b12019c",
+    "content-hash": "7e5fb008a6e73ce3a6c5ce96936cdb90",
     "packages": [
         {
             "name": "brick/math",
@@ -2140,40 +2140,41 @@
         },
         {
             "name": "knplabs/knp-time-bundle",
-            "version": "v1.20.0",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/KnpTimeBundle.git",
-                "reference": "81ffad54d91f62528466267fd4a2fb8a5a0335f4"
+                "reference": "93e9528415b28a19872d74b28e816045c0fd217b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/KnpTimeBundle/zipball/81ffad54d91f62528466267fd4a2fb8a5a0335f4",
-                "reference": "81ffad54d91f62528466267fd4a2fb8a5a0335f4",
+                "url": "https://api.github.com/repos/KnpLabs/KnpTimeBundle/zipball/93e9528415b28a19872d74b28e816045c0fd217b",
+                "reference": "93e9528415b28a19872d74b28e816045c0fd217b",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.5",
-                "symfony/config": "^5.4|^6.0",
-                "symfony/dependency-injection": "^5.4|^6.0",
-                "symfony/templating": "^5.4|^6.0",
-                "symfony/translation": "^5.4|^6.0"
+                "php": ">=8.1",
+                "symfony/config": "^5.4|^6.0|^7.0",
+                "symfony/dependency-injection": "^5.4|^6.0|^7.0",
+                "symfony/translation": "^5.4|^6.0|^7.0"
             },
             "conflict": {
                 "phpunit/phpunit": "<8.0"
             },
             "require-dev": {
-                "symfony/framework-bundle": "^5.4|^6.0",
-                "symfony/phpunit-bridge": "^5.4|^6.0",
-                "symfony/twig-bundle": "^5.4|^6.0"
+                "phpstan/phpstan": "^1.11",
+                "phpunit/phpunit": "^9.6",
+                "symfony/framework-bundle": "^5.4|^6.0|^7.0",
+                "symfony/phpunit-bridge": "^5.4|^6.0|^7.0",
+                "symfony/twig-bundle": "^5.4|^6.0|^7.0"
             },
             "suggest": {
-                "symfony/twig-bundle": "to use the Twig `time_diff()` function or `|ago` filter"
+                "symfony/twig-bundle": "to use the Twig `time_diff()` function and `|time_diff`/`|duration` filter"
             },
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1.x-dev"
+                    "dev-master": "2.x-dev"
                 }
             },
             "autoload": {
@@ -2188,28 +2189,29 @@
             "authors": [
                 {
                     "name": "KnpLabs Team",
-                    "homepage": "http://knplabs.com"
+                    "homepage": "https://knplabs.com"
                 },
                 {
                     "name": "Symfony Community",
-                    "homepage": "http://github.com/KnpLabs/KnpTimeBundle/contributors"
+                    "homepage": "https://github.com/KnpLabs/KnpTimeBundle/contributors"
                 }
             ],
-            "description": "Making your dates look sensible and descriptive",
-            "homepage": "http://github.com/KnpLabs/KnpTimeBundle",
+            "description": "Making your dates and durations look sensible and descriptive",
+            "homepage": "https://github.com/KnpLabs/KnpTimeBundle",
             "keywords": [
                 "bundle",
                 "date",
                 "descriptive time",
+                "duration",
                 "knp",
                 "knplabs",
                 "time"
             ],
             "support": {
                 "issues": "https://github.com/KnpLabs/KnpTimeBundle/issues",
-                "source": "https://github.com/KnpLabs/KnpTimeBundle/tree/v1.20.0"
+                "source": "https://github.com/KnpLabs/KnpTimeBundle/tree/v2.4.0"
             },
-            "time": "2022-10-11T15:32:58+00:00"
+            "time": "2024-06-11T09:38:28+00:00"
         },
         {
             "name": "knpuniversity/oauth2-client-bundle",
@@ -8275,76 +8277,6 @@
                 }
             ],
             "time": "2025-09-11T14:32:46+00:00"
-        },
-        {
-            "name": "symfony/templating",
-            "version": "v6.4.24",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/templating.git",
-                "reference": "c55c6f96eafa9388390d3ba099fe844f892dbcd6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/templating/zipball/c55c6f96eafa9388390d3ba099fe844f892dbcd6",
-                "reference": "c55c6f96eafa9388390d3ba099fe844f892dbcd6",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.1",
-                "symfony/deprecation-contracts": "^2.5|^3",
-                "symfony/polyfill-ctype": "~1.8"
-            },
-            "require-dev": {
-                "psr/log": "^1|^2|^3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Templating\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Provides all the tools needed to build any kind of template system",
-            "homepage": "https://symfony.com",
-            "support": {
-                "source": "https://github.com/symfony/templating/tree/v6.4.24"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://github.com/nicolas-grekas",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2025-07-10T08:14:14+00:00"
         },
         {
             "name": "symfony/translation",
