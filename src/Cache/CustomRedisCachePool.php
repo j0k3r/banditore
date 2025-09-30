@@ -3,7 +3,6 @@
 namespace App\Cache;
 
 use Cache\Adapter\Common\PhpCacheItem;
-use Cache\Adapter\Predis\PredisCachePool;
 
 /**
  * Store lightweight response from GitHub to avoid having a huge Redis database.

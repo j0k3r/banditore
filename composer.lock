@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7e5fb008a6e73ce3a6c5ce96936cdb90",
+    "content-hash": "7ca07973ca0bac20a5419a38eee94e35",
     "packages": [
         {
             "name": "brick/math",
@@ -127,145 +127,6 @@
             ],
             "support": {
                 "source": "https://github.com/php-cache/adapter-common/tree/1.3.0"
-            },
-            "time": "2022-01-15T15:47:19+00:00"
-        },
-        {
-            "name": "cache/hierarchical-cache",
-            "version": "1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-cache/hierarchical-cache.git",
-                "reference": "dedffd0a74f72c1db76e57ce29885836944e27f3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-cache/hierarchical-cache/zipball/dedffd0a74f72c1db76e57ce29885836944e27f3",
-                "reference": "dedffd0a74f72c1db76e57ce29885836944e27f3",
-                "shasum": ""
-            },
-            "require": {
-                "cache/adapter-common": "^1.0",
-                "php": ">=7.4",
-                "psr/cache": "^1.0 || ^2.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^7.5.20 || ^9.5.10"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Cache\\Hierarchy\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Aaron Scherer",
-                    "email": "aequasi@gmail.com",
-                    "homepage": "https://github.com/aequasi"
-                },
-                {
-                    "name": "Tobias Nyholm",
-                    "email": "tobias.nyholm@gmail.com",
-                    "homepage": "https://github.com/nyholm"
-                }
-            ],
-            "description": "A helper trait and interface to your PSR-6 cache to support hierarchical keys.",
-            "homepage": "http://www.php-cache.com/en/latest/",
-            "keywords": [
-                "cache",
-                "hierarchical",
-                "hierarchy",
-                "psr-6"
-            ],
-            "support": {
-                "source": "https://github.com/php-cache/hierarchical-cache/tree/1.2.0"
-            },
-            "time": "2022-01-15T15:47:19+00:00"
-        },
-        {
-            "name": "cache/predis-adapter",
-            "version": "1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-cache/predis-adapter.git",
-                "reference": "4af5c1a7f95003bab5d313ca5885515bac70228d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-cache/predis-adapter/zipball/4af5c1a7f95003bab5d313ca5885515bac70228d",
-                "reference": "4af5c1a7f95003bab5d313ca5885515bac70228d",
-                "shasum": ""
-            },
-            "require": {
-                "cache/adapter-common": "^1.0",
-                "cache/hierarchical-cache": "^1.0",
-                "php": ">=7.4",
-                "predis/predis": "^1.1",
-                "psr/cache": "^1.0 || ^2.0",
-                "psr/simple-cache": "^1.0"
-            },
-            "provide": {
-                "psr/cache-implementation": "^1.0",
-                "psr/simple-cache-implementation": "^1.0"
-            },
-            "require-dev": {
-                "cache/integration-tests": "^0.17",
-                "phpunit/phpunit": "^7.5.20 || ^9.5.10"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Cache\\Adapter\\Predis\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Aaron Scherer",
-                    "email": "aequasi@gmail.com",
-                    "homepage": "https://github.com/aequasi"
-                },
-                {
-                    "name": "Tobias Nyholm",
-                    "email": "tobias.nyholm@gmail.com",
-                    "homepage": "https://github.com/nyholm"
-                }
-            ],
-            "description": "A PSR-6 cache implementation using Redis (Predis). This implementation supports tags",
-            "homepage": "http://www.php-cache.com/en/latest/",
-            "keywords": [
-                "cache",
-                "predis",
-                "psr-6",
-                "redis",
-                "tag"
-            ],
-            "support": {
-                "source": "https://github.com/php-cache/predis-adapter/tree/1.2.0"
             },
             "time": "2022-01-15T15:47:19+00:00"
         },
@@ -3127,27 +2988,30 @@
         },
         {
             "name": "predis/predis",
-            "version": "v1.1.10",
+            "version": "v3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/predis/predis.git",
-                "reference": "a2fb02d738bedadcffdbb07efa3a5e7bd57f8d6e"
+                "reference": "9e9deec4dfd3ebf65d32eb368f498c646ba2ecd8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/predis/predis/zipball/a2fb02d738bedadcffdbb07efa3a5e7bd57f8d6e",
-                "reference": "a2fb02d738bedadcffdbb07efa3a5e7bd57f8d6e",
+                "url": "https://api.github.com/repos/predis/predis/zipball/9e9deec4dfd3ebf65d32eb368f498c646ba2ecd8",
+                "reference": "9e9deec4dfd3ebf65d32eb368f498c646ba2ecd8",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.9"
+                "php": "^7.2 || ^8.0",
+                "psr/http-message": "^1.0|^2.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.8"
+                "friendsofphp/php-cs-fixer": "^3.3",
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpcov": "^6.0 || ^8.0",
+                "phpunit/phpunit": "^8.0 || ~9.4.4"
             },
             "suggest": {
-                "ext-curl": "Allows access to Webdis when paired with phpiredis",
-                "ext-phpiredis": "Allows faster serialization and deserialization of the Redis protocol"
+                "ext-relay": "Faster connection with in-memory caching (>=0.6.2)"
             },
             "type": "library",
             "autoload": {
@@ -3161,18 +3025,12 @@
             ],
             "authors": [
                 {
-                    "name": "Daniele Alessandri",
-                    "email": "suppakilla@gmail.com",
-                    "homepage": "http://clorophilla.net",
-                    "role": "Creator & Maintainer"
-                },
-                {
                     "name": "Till Krüss",
                     "homepage": "https://till.im",
                     "role": "Maintainer"
                 }
             ],
-            "description": "Flexible and feature-complete Redis client for PHP and HHVM",
+            "description": "A flexible and feature-complete Redis/Valkey client for PHP.",
             "homepage": "http://github.com/predis/predis",
             "keywords": [
                 "nosql",
@@ -3181,7 +3039,7 @@
             ],
             "support": {
                 "issues": "https://github.com/predis/predis/issues",
-                "source": "https://github.com/predis/predis/tree/v1.1.10"
+                "source": "https://github.com/predis/predis/tree/v3.2.0"
             },
             "funding": [
                 {
@@ -3189,7 +3047,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-01-05T17:46:08+00:00"
+            "time": "2025-08-06T06:41:24+00:00"
         },
         {
             "name": "psr/cache",
@@ -4043,56 +3901,56 @@
         },
         {
             "name": "snc/redis-bundle",
-            "version": "4.4.2",
+            "version": "4.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/snc/SncRedisBundle.git",
-                "reference": "ca4c173e2f0c350309e536c832b766e2b299c5d2"
+                "reference": "05bfb149e57dcc206025a920be6b420259106fde"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/ca4c173e2f0c350309e536c832b766e2b299c5d2",
-                "reference": "ca4c173e2f0c350309e536c832b766e2b299c5d2",
+                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/05bfb149e57dcc206025a920be6b420259106fde",
+                "reference": "05bfb149e57dcc206025a920be6b420259106fde",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.4 || ^8.0",
-                "symfony/framework-bundle": "^4.4 || ^5.3 || ^6.0",
-                "symfony/http-foundation": "^4.4 || ^5.3 || ^6.0",
+                "symfony/deprecation-contracts": "^2 || ^3",
+                "symfony/framework-bundle": "^5.4.20 ||^6.0 || ^7.0",
+                "symfony/http-foundation": "^5.4.20 ||^6.0 || ^7.0",
                 "symfony/service-contracts": ">=1.0",
-                "symfony/var-dumper": "^4.4 || ^5.3 || ^6.0"
+                "symfony/var-dumper": "^5.4.20 ||^6.0 || ^7.0"
             },
             "conflict": {
-                "ext-redis": "<5.3",
-                "predis/predis": "<1.1 || >=2.0"
+                "ext-redis": "<5.3.2",
+                "predis/predis": "<2.0"
             },
             "require-dev": {
-                "doctrine/annotations": "^1.13",
-                "doctrine/coding-standard": "^10.0",
+                "doctrine/annotations": "^2.0",
+                "doctrine/coding-standard": "^12.0",
                 "ext-pdo_sqlite": "*",
                 "ext-redis": "*",
                 "friendsofphp/proxy-manager-lts": "^1.0.6",
                 "monolog/monolog": "*",
-                "phpunit/phpunit": "^8.5 || ^9.5",
-                "predis/predis": ">=1.1",
-                "symfony/browser-kit": "^4.4 || ^5.3 || ^6.0",
-                "symfony/cache": "^4.4 || ^5.3 || ^6.0",
-                "symfony/console": "^4.4 || ^5.3 || ^6.0",
-                "symfony/dom-crawler": "^4.4 || ^5.3 || ^6.0",
-                "symfony/filesystem": "^4.4 || ^5.3 || ^6.0",
-                "symfony/phpunit-bridge": "^6.0",
-                "symfony/profiler-pack": "^1.0",
-                "symfony/proxy-manager-bridge": "^4.4 || ^5.3 || ^6.0",
-                "symfony/stopwatch": "^4.4 || ^5.3 || ^6.0",
-                "symfony/twig-bundle": "^4.4 || ^5.3 || ^6.0",
-                "symfony/yaml": "^4.4 || ^5.3 || ^6.0",
-                "vimeo/psalm": "^4.13"
+                "phpunit/phpunit": "^9.5.28 || ^10",
+                "predis/predis": "^2.0 || ^3.0 ",
+                "seec/phpunit-consecutive-params": "^1.1.4",
+                "symfony/browser-kit": "^5.4.20 ||^6.0 || ^7.0",
+                "symfony/cache": "^5.4.20 ||^6.0 || ^7.0",
+                "symfony/config": "^5.4.20 ||^6.0 || ^7.0",
+                "symfony/console": "^5.4.20 ||^6.0 || ^7.0",
+                "symfony/dom-crawler": "^5.4.20 ||^6.0 || ^7.0",
+                "symfony/filesystem": "^5.4.20 ||^6.0 || ^7.0",
+                "symfony/stopwatch": "^5.4.20 ||^6.0 || ^7.0",
+                "symfony/twig-bundle": "^5.4.20 ||^6.0 || ^7.0",
+                "symfony/web-profiler-bundle": "^5.4.20 ||^6.0 || ^7.0",
+                "symfony/yaml": "^5.4.20 ||^6.0 || ^7.0",
+                "vimeo/psalm": "^5|^6"
             },
             "suggest": {
                 "monolog/monolog": "If you want to use the monolog redis handler.",
                 "predis/predis": "If you want to use predis.",
-                "symfony/console": "If you want to use commands to interact with the redis database",
-                "symfony/proxy-manager-bridge": "If you want to lazy-load some services"
+                "symfony/console": "If you want to use commands to interact with the redis database"
             },
             "type": "symfony-bundle",
             "extra": {
@@ -4128,9 +3986,9 @@
             ],
             "support": {
                 "issues": "https://github.com/snc/SncRedisBundle/issues",
-                "source": "https://github.com/snc/SncRedisBundle/tree/4.4.2"
+                "source": "https://github.com/snc/SncRedisBundle/tree/4.10.0"
             },
-            "time": "2022-12-16T13:30:45+00:00"
+            "time": "2025-06-29T12:30:01+00:00"
         },
         {
             "name": "symfony/amqp-messenger",
@@ -9825,53 +9683,6 @@
             "time": "2025-09-27T00:24:15+00:00"
         },
         {
-            "name": "m6web/redis-mock",
-            "version": "dev-predis-1.x",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/j0k3r/RedisMock.git",
-                "reference": "bafffee974f8ae64e2fdcce3251f27cd61a7ae8e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/j0k3r/RedisMock/zipball/bafffee974f8ae64e2fdcce3251f27cd61a7ae8e",
-                "reference": "bafffee974f8ae64e2fdcce3251f27cd61a7ae8e",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1.0"
-            },
-            "require-dev": {
-                "atoum/atoum": "master-dev",
-                "predis/predis": "~1.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "M6Web\\Component\\RedisMock": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "M6Web",
-                    "email": "opensource@m6web.fr",
-                    "homepage": "http://tech.m6web.fr/"
-                }
-            ],
-            "description": "Library providing a PHP mock for Redis",
-            "keywords": [
-                "mock",
-                "redis"
-            ],
-            "support": {
-                "source": "https://github.com/j0k3r/RedisMock/tree/predis-1.x"
-            },
-            "time": "2020-05-17T12:32:49+00:00"
-        },
-        {
             "name": "masterminds/html5",
             "version": "2.10.0",
             "source": {
@@ -13210,7 +13021,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "m6web/redis-mock": 20,
         "marcw/rss-writer": 20
     },
     "prefer-stable": false,
