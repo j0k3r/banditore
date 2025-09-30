@@ -46,6 +46,10 @@ parameters:
             path: src/Cache/PredisCachePool.php
             identifier: return.type
             count: 2
+        -
+            path: src/Entity/User.php
+            identifier: return.type
+            count: 1
 
     inferPrivatePropertyTypeFromConstructor: true
     treatPhpDocTypesAsCertain: false
