@@ -6,9 +6,8 @@ use App\Message\StarredReposSync;
 use App\MessageHandler\StarredReposSyncHandler;
 use App\Repository\UserRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Transport\Receiver\MessageCountAwareInterface;
@@ -22,44 +21,19 @@ use Symfony\Component\Messenger\Transport\TransportInterface;
  *     - by publishing a message in a queue
  */
 #[AsCommand(name: 'banditore:sync:starred-repos', description: 'Sync starred repos for all users')]
-class SyncStarredReposCommand extends Command
+class SyncStarredReposCommand
 {
-    private $syncRepo;
-
-    public function __construct(private readonly UserRepository $userRepository, StarredReposSyncHandler $syncRepo, private readonly TransportInterface $transport, private readonly MessageBusInterface $bus)
+    public function __construct(private readonly UserRepository $userRepository, private readonly StarredReposSyncHandler $syncRepo, private readonly TransportInterface $transport, private readonly MessageBusInterface $bus)
     {
-        $this->syncRepo = $syncRepo;
-
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addOption(
-                'id',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Retrieve only one user using its id'
-            )
-            ->addOption(
-                'username',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Retrieve only one user using its username'
-            )
-            ->addOption(
-                'use_queue',
-                null,
-                InputOption::VALUE_NONE,
-                'Push each user into a queue instead of fetching it right away'
-            )
-        ;
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        if ($input->getOption('use_queue') && $this->transport instanceof MessageCountAwareInterface) {
+    public function __invoke(
+        OutputInterface $output,
+        #[Option(description: 'Retrieve only one user using its id')] string|bool $id = false,
+        #[Option(description: 'Retrieve only one user using its username')] string|bool $username = false,
+        #[Option(description: 'Push each user into a queue instead of fetching it right away')] bool $useQueue = false,
+    ): int {
+        if ($useQueue && $this->transport instanceof MessageCountAwareInterface) {
             // check that queue is empty before pushing new messages
             $count = $this->transport->getMessageCount();
             if (0 < $count) {
@@ -69,7 +43,7 @@ class SyncStarredReposCommand extends Command
             }
         }
 
-        $users = $this->retrieveUsers($input);
+        $users = $this->retrieveUsers($id, $username);
 
         if (\count(array_filter($users)) <= 0) {
             $output->writeln('<error>No users found</error>');
@@ -87,7 +61,7 @@ class SyncStarredReposCommand extends Command
 
             $message = new StarredReposSync($userId);
 
-            if ($input->getOption('use_queue')) {
+            if ($useQueue) {
                 $this->bus->dispatch($message);
             } else {
                 $this->syncRepo->__invoke($message);
@@ -102,14 +76,14 @@ class SyncStarredReposCommand extends Command
     /**
      * Retrieve users to work on.
      */
-    private function retrieveUsers(InputInterface $input): array
+    private function retrieveUsers(?string $id, ?string $username): array
     {
-        if ($input->getOption('id')) {
-            return [$input->getOption('id')];
+        if ($id) {
+            return [$id];
         }
 
-        if ($input->getOption('username')) {
-            $user = $this->userRepository->findOneByUsername((string) $input->getOption('username'));
+        if ($username) {
+            $user = $this->userRepository->findOneByUsername((string) $username);
 
             if ($user) {
                 return [$user->getId()];

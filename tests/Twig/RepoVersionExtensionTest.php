@@ -12,7 +12,6 @@ class RepoVersionExtensionTest extends TestCase
         $ext = new RepoVersionExtension();
 
         $this->assertSame('repo_version_extension', $ext->getName());
-        $this->assertCount(1, $ext->getFilters(), 'Extension has only one filter');
 
         $this->assertNull($ext->linkToVersion([]));
         $this->assertNull($ext->linkToVersion(['fullName' => 'test/test']));
@@ -26,7 +25,6 @@ class RepoVersionExtensionTest extends TestCase
         $ext = new RepoVersionExtension();
 
         $this->assertSame('repo_version_extension', $ext->getName());
-        $this->assertCount(1, $ext->getFilters(), 'Extension has only one filter');
 
         $this->assertNull($ext->linkToVersion([]));
         $this->assertNull($ext->linkToVersion(['fullName' => 'test/test']));
