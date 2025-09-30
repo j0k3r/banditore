@@ -42,6 +42,10 @@ parameters:
             path: tests/bootstrap.php
             identifier: function.alreadyNarrowedType
             count: 1
+        -
+            path: src/Cache/PredisCachePool.php
+            identifier: return.type
+            count: 2
 
     inferPrivatePropertyTypeFromConstructor: true
     treatPhpDocTypesAsCertain: false

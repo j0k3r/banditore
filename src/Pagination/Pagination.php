@@ -13,16 +13,16 @@ class Pagination implements \IteratorAggregate, \Countable
 {
     private array $items = [];
     private array $pages = [];
-    private int $totalNumberOfPages;
-    private int $currentPageNumber;
-    private int $firstPageNumber;
-    private int $lastPageNumber;
-    private int $previousPageNumber;
-    private int $nextPageNumber;
-    private int $itemsPerPage;
-    private int $totalNumberOfItems;
-    private int $firstPageNumberInRange;
-    private int $lastPageNumberInRange;
+    private int $totalNumberOfPages = 0;
+    private int $currentPageNumber = 0;
+    private int $firstPageNumber = 0;
+    private int $lastPageNumber = 0;
+    private int $previousPageNumber = 0;
+    private int $nextPageNumber = 0;
+    private int $itemsPerPage = 0;
+    private int $totalNumberOfItems = 0;
+    private int $firstPageNumberInRange = 0;
+    private int $lastPageNumberInRange = 0;
 
     /**
      * Get items.

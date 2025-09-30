@@ -11,9 +11,9 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Http\Adapter\Guzzle7\Client as Guzzle7Client;
-use M6Web\Component\RedisMock\RedisMockFactory;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
+use Predis\Client as RedisClient;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ClientDiscoveryTest extends WebTestCase
@@ -37,8 +37,7 @@ class ClientDiscoveryTest extends WebTestCase
         $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
-
-        $redis = (new RedisMockFactory())->getAdapter(\Predis\Client::class, true);
+        $redis = new RedisClient();
 
         $logger = new Logger('foo');
         $logHandler = new TestHandler();
@@ -99,8 +98,7 @@ class ClientDiscoveryTest extends WebTestCase
         $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
-
-        $redis = (new RedisMockFactory())->getAdapter(\Predis\Client::class, true);
+        $redis = new RedisClient();
 
         $logger = new Logger('foo');
         $logHandler = new TestHandler();
@@ -154,8 +152,7 @@ class ClientDiscoveryTest extends WebTestCase
         $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
-
-        $redis = (new RedisMockFactory())->getAdapter(\Predis\Client::class, true);
+        $redis = new RedisClient();
 
         $logger = new Logger('foo');
         $logHandler = new TestHandler();
@@ -210,8 +207,7 @@ class ClientDiscoveryTest extends WebTestCase
         $httpClient = new Guzzle7Client($guzzleClient);
         $httpBuilder = new Builder($httpClient);
         $githubClient = new GithubClient($httpBuilder);
-
-        $redis = (new RedisMockFactory())->getAdapter(\Predis\Client::class, true);
+        $redis = new RedisClient();
 
         $logger = new Logger('foo');
         $logHandler = new TestHandler();
