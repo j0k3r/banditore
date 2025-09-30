@@ -15,7 +15,8 @@
     },
     "require": {
         "php": ">=8.2",
-        "cache/adapter-common": "^1.3",
+        "cache/adapter-common": "dev-psr-cache-v3",
+        "cache/tag-interop": "dev-psr-cache-v3",
         "composer/package-versions-deprecated": "1.11.99.5",
         "doctrine/doctrine-bundle": "^2.0",
         "doctrine/doctrine-migrations-bundle": "^3.0",
@@ -96,12 +97,20 @@
         {
             "type": "vcs",
             "url": "https://github.com/j0k3r/rss-writer"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/j0k3r/adapter-common"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/j0k3r/tag-interop"
         }
     ],
     "extra": {
         "symfony": {
             "allow-contrib": true,
-            "require": "6.4.*"
+            "require": "7.3.*"
         }
     }
 }

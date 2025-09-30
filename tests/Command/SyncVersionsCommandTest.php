@@ -6,20 +6,17 @@ use App\Command\SyncVersionsCommand;
 use App\Message\VersionsSync;
 use App\MessageHandler\VersionsSyncHandler;
 use App\Repository\RepoRepository;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpTransport;
 use Symfony\Component\Messenger\Bridge\Amqp\Transport\Connection;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class SyncVersionsCommandTest extends WebTestCase
+class SyncVersionsCommandTest extends KernelTestCase
 {
     public function testCommandSyncAllUsersWithoutQueue(): void
     {
-        $client = static::createClient();
-
         $bus = $this->getMockBuilder(MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -34,28 +31,23 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersion->expects($this->any())
             ->method('__invoke');
 
-        $application = new Application($client->getKernel());
-        $application->add(new SyncVersionsCommand(
+        $command = new SyncVersionsCommand(
             self::getContainer()->get(RepoRepository::class),
             $syncVersion,
             self::getContainer()->get('messenger.transport.sync_versions'),
             $bus
-        ));
+        );
 
-        $command = $application->find('banditore:sync:versions');
+        $output = new BufferedOutput();
 
-        $tester = new CommandTester($command);
-        $tester->execute([
-            'command' => $command->getName(),
-        ]);
+        $res = $command->__invoke($output, false, false, false);
 
-        $this->assertStringContainsString('Check 555 …', $tester->getDisplay());
+        $this->assertSame($res, 0);
+        $this->assertStringContainsString('Check 555 …', $output->fetch());
     }
 
     public function testCommandSyncAllUsersWithQueue(): void
     {
-        $client = static::createClient();
-
         $bus = $this->getMockBuilder(MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -71,29 +63,23 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersion->expects($this->any())
             ->method('__invoke');
 
-        $application = new Application($client->getKernel());
-        $application->add(new SyncVersionsCommand(
+        $command = new SyncVersionsCommand(
             self::getContainer()->get(RepoRepository::class),
             $syncVersion,
             $this->getTransportMessageCount(0),
             $bus
-        ));
+        );
 
-        $command = $application->find('banditore:sync:versions');
+        $output = new BufferedOutput();
 
-        $tester = new CommandTester($command);
-        $tester->execute([
-            'command' => $command->getName(),
-            '--use_queue' => true,
-        ]);
+        $res = $command->__invoke($output, false, false, true);
 
-        $this->assertStringContainsString('Check 555 …', $tester->getDisplay());
+        $this->assertSame($res, 0);
+        $this->assertStringContainsString('Check 555 …', $output->fetch());
     }
 
     public function testCommandSyncAllUsersWithQueueFull(): void
     {
-        $client = static::createClient();
-
         $bus = $this->getMockBuilder(MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -108,28 +94,23 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersion->expects($this->never())
             ->method('__invoke');
 
-        $application = new Application($client->getKernel());
-        $application->add(new SyncVersionsCommand(
+        $command = new SyncVersionsCommand(
             self::getContainer()->get(RepoRepository::class),
             $syncVersion,
             $this->getTransportMessageCount(10),
             $bus
-        ));
+        );
 
-        $command = $application->find('banditore:sync:versions');
+        $output = new BufferedOutput();
 
-        $tester = new CommandTester($command);
-        $tester->execute([
-            'command' => $command->getName(),
-            '--use_queue' => true,
-        ]);
+        $res = $command->__invoke($output, false, false, true);
 
-        $this->assertStringContainsString('Current queue as too much messages (10), skipping.', $tester->getDisplay());
+        $this->assertSame($res, 1);
+        $this->assertStringContainsString('Current queue as too much messages (10), skipping.', $output->fetch());
     }
 
     public function testCommandSyncOneUserById(): void
     {
-        $client = static::createClient();
         $message = new VersionsSync(555);
 
         $bus = $this->getMockBuilder(MessageBusInterface::class)
@@ -148,30 +129,26 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersion->expects($this->never())
             ->method('__invoke');
 
-        $application = new Application($client->getKernel());
-        $application->add(new SyncVersionsCommand(
+        $command = new SyncVersionsCommand(
             self::getContainer()->get(RepoRepository::class),
             $syncVersion,
             $this->getTransportMessageCount(0),
             $bus
-        ));
+        );
 
-        $command = $application->find('banditore:sync:versions');
+        $output = new BufferedOutput();
 
-        $tester = new CommandTester($command);
-        $tester->execute([
-            'command' => $command->getName(),
-            '--use_queue' => true,
-            '--repo_id' => 555,
-        ]);
+        $res = $command->__invoke($output, '555', false, true);
 
-        $this->assertStringContainsString('Check 555 …', $tester->getDisplay());
-        $this->assertStringContainsString('Repo checked: 1', $tester->getDisplay());
+        $this->assertSame($res, 0);
+
+        $buffer = $output->fetch();
+        $this->assertStringContainsString('Check 555 …', $buffer);
+        $this->assertStringContainsString('Repo checked: 1', $buffer);
     }
 
     public function testCommandSyncOneUserByUsername(): void
     {
-        $client = static::createClient();
         $message = new VersionsSync(666);
 
         $bus = $this->getMockBuilder(MessageBusInterface::class)
@@ -189,30 +166,26 @@ class SyncVersionsCommandTest extends WebTestCase
             ->method('__invoke')
             ->with($message);
 
-        $application = new Application($client->getKernel());
-        $application->add(new SyncVersionsCommand(
+        $command = new SyncVersionsCommand(
             self::getContainer()->get(RepoRepository::class),
             $syncVersion,
             self::getContainer()->get('messenger.transport.sync_versions'),
             $bus
-        ));
+        );
 
-        $command = $application->find('banditore:sync:versions');
+        $output = new BufferedOutput();
 
-        $tester = new CommandTester($command);
-        $tester->execute([
-            'command' => $command->getName(),
-            '--repo_name' => 'test/test',
-        ]);
+        $res = $command->__invoke($output, false, 'test/test', false);
 
-        $this->assertStringContainsString('Check 666 …', $tester->getDisplay());
-        $this->assertStringContainsString('Repo checked: 1', $tester->getDisplay());
+        $this->assertSame($res, 0);
+
+        $buffer = $output->fetch();
+        $this->assertStringContainsString('Check 666 …', $buffer);
+        $this->assertStringContainsString('Repo checked: 1', $buffer);
     }
 
     public function testCommandSyncOneUserNotFound(): void
     {
-        $client = static::createClient();
-
         $bus = $this->getMockBuilder(MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -227,23 +200,19 @@ class SyncVersionsCommandTest extends WebTestCase
         $syncVersion->expects($this->never())
             ->method('__invoke');
 
-        $application = new Application($client->getKernel());
-        $application->add(new SyncVersionsCommand(
+        $command = new SyncVersionsCommand(
             self::getContainer()->get(RepoRepository::class),
             $syncVersion,
             self::getContainer()->get('messenger.transport.sync_versions'),
             $bus
-        ));
+        );
 
-        $command = $application->find('banditore:sync:versions');
+        $output = new BufferedOutput();
 
-        $tester = new CommandTester($command);
-        $tester->execute([
-            'command' => $command->getName(),
-            '--repo_name' => 'toto',
-        ]);
+        $res = $command->__invoke($output, false, 'toto', false);
 
-        $this->assertStringContainsString('No repos found', $tester->getDisplay());
+        $this->assertSame($res, 1);
+        $this->assertStringContainsString('No repos found', $output->fetch());
     }
 
     private function getTransportMessageCount(int $totalMessage = 0): AmqpTransport

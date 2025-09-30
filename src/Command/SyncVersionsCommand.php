@@ -6,9 +6,8 @@ use App\Message\VersionsSync;
 use App\MessageHandler\VersionsSyncHandler;
 use App\Repository\RepoRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Transport\Receiver\MessageCountAwareInterface;
@@ -23,44 +22,19 @@ use Symfony\Component\Messenger\Transport\TransportInterface;
  *     - many contents
  */
 #[AsCommand(name: 'banditore:sync:versions', description: 'Sync new version for each repository')]
-class SyncVersionsCommand extends Command
+class SyncVersionsCommand
 {
-    private $syncVersions;
-
-    public function __construct(private readonly RepoRepository $repoRepository, VersionsSyncHandler $syncVersions, private readonly TransportInterface $transport, private readonly MessageBusInterface $bus)
+    public function __construct(private readonly RepoRepository $repoRepository, private readonly VersionsSyncHandler $syncVersions, private readonly TransportInterface $transport, private readonly MessageBusInterface $bus)
     {
-        $this->syncVersions = $syncVersions;
-
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addOption(
-                'repo_id',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Retrieve version only for that repository (using its id)'
-            )
-            ->addOption(
-                'repo_name',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Retrieve version only for that repository (using it full name: username/repo)'
-            )
-            ->addOption(
-                'use_queue',
-                null,
-                InputOption::VALUE_NONE,
-                'Push each repo into a queue instead of fetching it right away'
-            )
-        ;
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        if ($input->getOption('use_queue') && $this->transport instanceof MessageCountAwareInterface) {
+    public function __invoke(
+        OutputInterface $output,
+        #[Option(description: 'Retrieve version only for that repository (using its id)')] string|bool $repoId = false,
+        #[Option(description: 'Retrieve version only for that repository (using it full name: username/repo)')] string|bool $repoName = false,
+        #[Option(description: 'Push each repo into a queue instead of fetching it right away')] bool $useQueue = false,
+    ): int {
+        if ($useQueue && $this->transport instanceof MessageCountAwareInterface) {
             // check that queue is empty before pushing new messages
             $count = $this->transport->getMessageCount();
             if (0 < $count) {
@@ -70,7 +44,7 @@ class SyncVersionsCommand extends Command
             }
         }
 
-        $repos = $this->retrieveRepos($input);
+        $repos = $this->retrieveRepos($repoId, $repoName);
 
         if (\count(array_filter($repos)) <= 0) {
             $output->writeln('<error>No repos found</error>');
@@ -88,7 +62,7 @@ class SyncVersionsCommand extends Command
 
             $message = new VersionsSync($repoId);
 
-            if ($input->getOption('use_queue')) {
+            if ($useQueue) {
                 $this->bus->dispatch($message);
             } else {
                 $this->syncVersions->__invoke($message);
@@ -103,14 +77,14 @@ class SyncVersionsCommand extends Command
     /**
      * Retrieve repos to work on.
      */
-    private function retrieveRepos(InputInterface $input): array
+    private function retrieveRepos(?string $repoId, ?string $repoName): array
     {
-        if ($input->getOption('repo_id')) {
-            return [$input->getOption('repo_id')];
+        if ($repoId) {
+            return [$repoId];
         }
 
-        if ($input->getOption('repo_name')) {
-            $repo = $this->repoRepository->findOneByFullName((string) $input->getOption('repo_name'));
+        if ($repoName) {
+            $repo = $this->repoRepository->findOneByFullName((string) $repoName);
 
             if ($repo) {
                 return [$repo->getId()];

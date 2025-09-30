@@ -17,7 +17,7 @@ class PredisCachePool extends AbstractCachePool
     {
     }
 
-    protected function fetchObjectFromCache($key)
+    protected function fetchObjectFromCache($key): array
     {
         $value = $this->cache->get($this->getHierarchyKey($key));
         if (!$value) {
@@ -32,12 +32,12 @@ class PredisCachePool extends AbstractCachePool
         return $result;
     }
 
-    protected function clearAllObjectsFromCache()
+    protected function clearAllObjectsFromCache(): bool
     {
         return 'OK' === $this->cache->flushdb()->getPayload();
     }
 
-    protected function clearOneObjectFromCache($key)
+    protected function clearOneObjectFromCache($key): bool
     {
         $path = null;
         $keyString = $this->getHierarchyKey($key, $path);
@@ -49,7 +49,7 @@ class PredisCachePool extends AbstractCachePool
         return $this->cache->del($keyString) >= 0;
     }
 
-    protected function storeItemInCache(PhpCacheItem $item, $ttl)
+    protected function storeItemInCache(PhpCacheItem $item, $ttl): bool
     {
         if ($ttl < 0) {
             return false;

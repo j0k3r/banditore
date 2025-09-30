@@ -2,21 +2,14 @@
 
 namespace App\Twig;
 
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
+use Twig\Attribute\AsTwigFilter;
 
 /**
  * Took a repo with version information to display a link to that version on Github.
  */
-class RepoVersionExtension extends AbstractExtension
+class RepoVersionExtension
 {
-    public function getFilters(): array
-    {
-        return [
-            new TwigFilter('link_to_version', $this->linkToVersion(...)),
-        ];
-    }
-
+    #[AsTwigFilter('link_to_version')]
     public function linkToVersion(array $repo): ?string
     {
         if (!isset($repo['fullName']) || !isset($repo['tagName'])) {

@@ -6,19 +6,17 @@ use App\Command\SyncStarredReposCommand;
 use App\Message\StarredReposSync;
 use App\MessageHandler\StarredReposSyncHandler;
 use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpTransport;
 use Symfony\Component\Messenger\Bridge\Amqp\Transport\Connection;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class SyncStarredReposCommandTest extends WebTestCase
+class SyncStarredReposCommandTest extends KernelTestCase
 {
     public function testCommandSyncAllUsersWithoutQueue(): void
     {
-        $client = static::createClient();
         $message = new StarredReposSync(123);
 
         $bus = $this->getMockBuilder(MessageBusInterface::class)
@@ -36,27 +34,23 @@ class SyncStarredReposCommandTest extends WebTestCase
             ->method('__invoke')
             ->with($message);
 
-        $application = new Application($client->getKernel());
-        $application->add(new SyncStarredReposCommand(
+        $command = new SyncStarredReposCommand(
             self::getContainer()->get(UserRepository::class),
             $syncRepo,
             self::getContainer()->get('messenger.transport.sync_starred_repos'),
             $bus
-        ));
+        );
 
-        $command = $application->find('banditore:sync:starred-repos');
+        $output = new BufferedOutput();
 
-        $tester = new CommandTester($command);
-        $tester->execute([
-            'command' => $command->getName(),
-        ]);
+        $res = $command->__invoke($output, false, false, false);
 
-        $this->assertStringContainsString('Sync user 123 …', $tester->getDisplay());
+        $this->assertSame($res, 0);
+        $this->assertStringContainsString('Sync user 123 …', $output->fetch());
     }
 
     public function testCommandSyncAllUsersWithQueue(): void
     {
-        $client = static::createClient();
         $message = new StarredReposSync(123);
 
         $bus = $this->getMockBuilder(MessageBusInterface::class)
@@ -75,29 +69,23 @@ class SyncStarredReposCommandTest extends WebTestCase
         $syncRepo->expects($this->never())
             ->method('__invoke');
 
-        $application = new Application($client->getKernel());
-        $application->add(new SyncStarredReposCommand(
+        $command = new SyncStarredReposCommand(
             self::getContainer()->get(UserRepository::class),
             $syncRepo,
             $this->getTransportMessageCount(0),
             $bus
-        ));
+        );
 
-        $command = $application->find('banditore:sync:starred-repos');
+        $output = new BufferedOutput();
 
-        $tester = new CommandTester($command);
-        $tester->execute([
-            'command' => $command->getName(),
-            '--use_queue' => true,
-        ]);
+        $res = $command->__invoke($output, false, false, true);
 
-        $this->assertStringContainsString('Sync user 123 …', $tester->getDisplay());
+        $this->assertSame($res, 0);
+        $this->assertStringContainsString('Sync user 123 …', $output->fetch());
     }
 
     public function testCommandSyncAllUsersWithQueueFull(): void
     {
-        $client = static::createClient();
-
         $bus = $this->getMockBuilder(MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -112,28 +100,23 @@ class SyncStarredReposCommandTest extends WebTestCase
         $syncRepo->expects($this->never())
             ->method('__invoke');
 
-        $application = new Application($client->getKernel());
-        $application->add(new SyncStarredReposCommand(
+        $command = new SyncStarredReposCommand(
             self::getContainer()->get(UserRepository::class),
             $syncRepo,
             $this->getTransportMessageCount(10),
             $bus
-        ));
+        );
 
-        $command = $application->find('banditore:sync:starred-repos');
+        $output = new BufferedOutput();
 
-        $tester = new CommandTester($command);
-        $tester->execute([
-            'command' => $command->getName(),
-            '--use_queue' => true,
-        ]);
+        $res = $command->__invoke($output, false, false, true);
 
-        $this->assertStringContainsString('Current queue as too much messages (10), skipping.', $tester->getDisplay());
+        $this->assertSame($res, 1);
+        $this->assertStringContainsString('Current queue as too much messages (10), skipping.', $output->fetch());
     }
 
     public function testCommandSyncOneUserById(): void
     {
-        $client = static::createClient();
         $message = new StarredReposSync(123);
 
         $bus = $this->getMockBuilder(MessageBusInterface::class)
@@ -152,31 +135,26 @@ class SyncStarredReposCommandTest extends WebTestCase
         $syncRepo->expects($this->never())
             ->method('__invoke');
 
-        $application = new Application($client->getKernel());
-        $application->add(new SyncStarredReposCommand(
+        $command = new SyncStarredReposCommand(
             self::getContainer()->get(UserRepository::class),
             $syncRepo,
             $this->getTransportMessageCount(0),
             $bus
-        ));
+        );
 
-        $command = $application->find('banditore:sync:starred-repos');
+        $output = new BufferedOutput();
 
-        $tester = new CommandTester($command);
-        $tester->execute([
-            'command' => $command->getName(),
-            '--use_queue' => true,
-            '--id' => 123,
-        ]);
+        $res = $command->__invoke($output, '123', false, true);
 
-        $this->assertStringContainsString('Sync user 123 …', $tester->getDisplay());
-        $this->assertStringContainsString('User synced: 1', $tester->getDisplay());
+        $this->assertSame($res, 0);
+
+        $buffer = $output->fetch();
+        $this->assertStringContainsString('Sync user 123 …', $buffer);
+        $this->assertStringContainsString('User synced: 1', $buffer);
     }
 
     public function testCommandSyncOneUserByUsername(): void
     {
-        $client = static::createClient();
-
         $bus = $this->getMockBuilder(MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -192,30 +170,26 @@ class SyncStarredReposCommandTest extends WebTestCase
             ->method('__invoke')
             ->with(new StarredReposSync(123));
 
-        $application = new Application($client->getKernel());
-        $application->add(new SyncStarredReposCommand(
+        $command = new SyncStarredReposCommand(
             self::getContainer()->get(UserRepository::class),
             $syncRepo,
             self::getContainer()->get('messenger.transport.sync_starred_repos'),
             $bus
-        ));
+        );
 
-        $command = $application->find('banditore:sync:starred-repos');
+        $output = new BufferedOutput();
 
-        $tester = new CommandTester($command);
-        $tester->execute([
-            'command' => $command->getName(),
-            '--username' => 'admin',
-        ]);
+        $res = $command->__invoke($output, false, 'admin', false);
 
-        $this->assertStringContainsString('Sync user 123 …', $tester->getDisplay());
-        $this->assertStringContainsString('User synced: 1', $tester->getDisplay());
+        $this->assertSame($res, 0);
+
+        $buffer = $output->fetch();
+        $this->assertStringContainsString('Sync user 123 …', $buffer);
+        $this->assertStringContainsString('User synced: 1', $buffer);
     }
 
     public function testCommandSyncOneUserNotFound(): void
     {
-        $client = static::createClient();
-
         $bus = $this->getMockBuilder(MessageBusInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -230,23 +204,19 @@ class SyncStarredReposCommandTest extends WebTestCase
         $syncRepo->expects($this->never())
             ->method('__invoke');
 
-        $application = new Application($client->getKernel());
-        $application->add(new SyncStarredReposCommand(
+        $command = new SyncStarredReposCommand(
             self::getContainer()->get(UserRepository::class),
             $syncRepo,
             self::getContainer()->get('messenger.transport.sync_starred_repos'),
             $bus
-        ));
+        );
 
-        $command = $application->find('banditore:sync:starred-repos');
+        $output = new BufferedOutput();
 
-        $tester = new CommandTester($command);
-        $tester->execute([
-            'command' => $command->getName(),
-            '--username' => 'toto',
-        ]);
+        $res = $command->__invoke($output, false, 'toto', false);
 
-        $this->assertStringContainsString('No users found', $tester->getDisplay());
+        $this->assertSame($res, 1);
+        $this->assertStringContainsString('No users found', $output->fetch());
     }
 
     private function getTransportMessageCount(int $totalMessage = 0): AmqpTransport
