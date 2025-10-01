@@ -22,7 +22,7 @@ Then you can use Docker (used for test or dev):
 ```
 docker run -d --name banditore-mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -p 3306:3306 mysql:latest
 docker run -d --name banditore-redis -p 6379:6379 redis:latest
-docker run -d --name banditore-rabbit -e RABBITMQ_DEFAULT_USER=user -e RABBITMQ_DEFAULT_PASS=password -p 5672:5672 rabbitmq:4-management
+docker run -d --name banditore-rabbit -p 5672:5672 -p 15672:15672 rabbitmq:4-management
 ```
 
 ## Running Tests
