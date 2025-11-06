@@ -408,7 +408,16 @@
         ]
     },
     "symfony/form": {
-        "version": "v4.4.8"
+        "version": "7.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "7.2",
+            "ref": "7d86a6723f4a623f59e2bf966b6aad2fc461d36b"
+        },
+        "files": [
+            "config/packages/csrf.yaml"
+        ]
     },
     "symfony/framework-bundle": {
         "version": "7.3",
@@ -437,12 +446,12 @@
         "version": "v3.4.40"
     },
     "symfony/messenger": {
-        "version": "6.4",
+        "version": "7.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "6.0",
-            "ref": "ba1ac4e919baba5644d31b57a3284d6ba12d52ee"
+            "ref": "d8936e2e2230637ef97e5eecc0eea074eecae58b"
         },
         "files": [
             "config/packages/messenger.yaml"
@@ -457,7 +466,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "3.7",
-            "ref": "aff23899c4440dd995907613c1dd709b6f59503f"
+            "ref": "f5f5f3e4c23f5349796b7de587f19c51e7104299"
         },
         "files": [
             "config/packages/monolog.yaml"
@@ -515,7 +524,16 @@
         "version": "v4.4.8"
     },
     "symfony/property-info": {
-        "version": "v5.1.0"
+        "version": "7.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "7.3",
+            "ref": "dae70df71978ae9226ae915ffd5fad817f5ca1f7"
+        },
+        "files": [
+            "config/packages/property_info.yaml"
+        ]
     },
     "symfony/proxy-manager-bridge": {
         "version": "v5.1.5"
