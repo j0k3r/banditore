@@ -22,6 +22,11 @@ framework:
                     queues:
                         banditore.sync_versions: ~
 
+            # https://symfony.com/doc/current/messenger.html#transport-configuration
+            # async: '%env(MESSENGER_TRANSPORT_DSN)%'
+            # failed: 'doctrine://default?queue_name=failed'
+            # sync: 'sync://'
+
         routing:
             'App\Message\StarredReposSync': sync_starred_repos
             'App\Message\VersionsSync': sync_versions

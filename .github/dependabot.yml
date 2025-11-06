@@ -11,6 +11,9 @@ updates:
     symfony-dependencies:
       patterns:
         - "*symfony*"
+    twig-dependencies:
+      patterns:
+        - "*twig*"
 - package-ecosystem: npm
   directory: "/"
   schedule:
