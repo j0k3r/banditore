@@ -38,7 +38,7 @@
         "symfony/expression-language": "*",
         "symfony/flex": "^2.5",
         "symfony/form": "*",
-        "symfony/monolog-bundle": "^3.5",
+        "symfony/monolog-bundle": "^4.0",
         "symfony/polyfill-apcu": "^1.0",
         "symfony/polyfill-php80": "^1.27",
         "symfony/proxy-manager-bridge": "*",
