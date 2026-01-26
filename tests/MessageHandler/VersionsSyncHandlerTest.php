@@ -246,7 +246,7 @@ class VersionsSyncHandlerTest extends WebTestCase
 
         $versionRepository->expects($this->exactly(4))
             ->method('findExistingOne')
-            ->willReturnCallback(function ($tagName, $repoId) use ($repo) {
+            ->willReturnCallback(static function ($tagName, $repoId) use ($repo) {
                 // first version will exist, next one won't
                 if ('1.0.0' === $tagName) {
                     return new Version($repo);

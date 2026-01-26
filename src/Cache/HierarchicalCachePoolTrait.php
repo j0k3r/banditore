@@ -116,6 +116,6 @@ trait HierarchicalCachePoolTrait
             $parts[0] = 'root';
         }
 
-        return array_map(fn ($level) => $level . AbstractCachePool::SEPARATOR_TAG . $tag, $parts);
+        return array_map(static fn ($level) => $level . AbstractCachePool::SEPARATOR_TAG . $tag, $parts);
     }
 }
