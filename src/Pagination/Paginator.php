@@ -76,11 +76,11 @@ class Paginator implements PaginatorInterface
 
     public function paginate($currentPageNumber = 1)
     {
-        if (!($this->itemTotalCallback instanceof \Closure)) {
+        if (!$this->itemTotalCallback instanceof \Closure) {
             throw new CallbackNotFoundException('Item total callback not found, set it using Paginator::setItemTotalCallback()');
         }
 
-        if (!($this->sliceCallback instanceof \Closure)) {
+        if (!$this->sliceCallback instanceof \Closure) {
             throw new CallbackNotFoundException('Slice callback not found, set it using Paginator::setSliceCallback()');
         }
 
@@ -94,12 +94,12 @@ class Paginator implements PaginatorInterface
 
         $beforeQueryCallback = $this->beforeQueryCallback instanceof \Closure
             ? $this->beforeQueryCallback
-            : function (): void {}
+            : static function (): void {}
         ;
 
         $afterQueryCallback = $this->afterQueryCallback instanceof \Closure
             ? $this->afterQueryCallback
-            : function (): void {}
+            : static function (): void {}
         ;
 
         $pagination = new Pagination();
