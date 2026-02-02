@@ -3,28 +3,22 @@ updates:
 - package-ecosystem: composer
   directory: "/"
   schedule:
-    interval: daily
-    time: "02:00"
-    timezone: Europe/Paris
+    interval: weekly
   open-pull-requests-limit: 10
   groups:
     symfony-dependencies:
       patterns:
-        - "*symfony*"
+        - "symfony/*"
     twig-dependencies:
       patterns:
-        - "*twig*"
+        - "twig/*"
 - package-ecosystem: npm
   directory: "/"
   schedule:
-    interval: daily
-    time: "02:00"
-    timezone: Europe/Paris
+    interval: weekly
   open-pull-requests-limit: 10
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
     interval: weekly
-    time: "04:00"
-    timezone: Europe/Paris
   open-pull-requests-limit: 10
