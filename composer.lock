@@ -12857,16 +12857,16 @@
         },
         {
             "name": "symfony/phpunit-bridge",
-            "version": "v8.0.3",
+            "version": "v8.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/phpunit-bridge.git",
-                "reference": "3c59b07980df5d4ae4a2620287016209802261ea"
+                "reference": "f95d88d54e34b13ee220a81133261a3c8a6a287a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/3c59b07980df5d4ae4a2620287016209802261ea",
-                "reference": "3c59b07980df5d4ae4a2620287016209802261ea",
+                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/f95d88d54e34b13ee220a81133261a3c8a6a287a",
+                "reference": "f95d88d54e34b13ee220a81133261a3c8a6a287a",
                 "shasum": ""
             },
             "require": {
@@ -12918,7 +12918,7 @@
                 "testing"
             ],
             "support": {
-                "source": "https://github.com/symfony/phpunit-bridge/tree/v8.0.3"
+                "source": "https://github.com/symfony/phpunit-bridge/tree/v8.0.7"
             },
             "funding": [
                 {
@@ -12938,7 +12938,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-12-10T13:10:54+00:00"
+            "time": "2026-03-04T13:55:34+00:00"
         },
         {
             "name": "symfony/polyfill-php81",
@@ -13239,5 +13239,5 @@
         "php": ">=8.2"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
