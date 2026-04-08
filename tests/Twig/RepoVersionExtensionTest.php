@@ -11,8 +11,6 @@ class RepoVersionExtensionTest extends TestCase
     {
         $ext = new RepoVersionExtension();
 
-        $this->assertSame('repo_version_extension', $ext->getName());
-
         $this->assertNull($ext->linkToVersion([]));
         $this->assertNull($ext->linkToVersion(['fullName' => 'test/test']));
         $this->assertNull($ext->linkToVersion(['tagName' => 'v1.0.0']));
@@ -23,8 +21,6 @@ class RepoVersionExtensionTest extends TestCase
     public function testEncodedTagName(): void
     {
         $ext = new RepoVersionExtension();
-
-        $this->assertSame('repo_version_extension', $ext->getName());
 
         $this->assertNull($ext->linkToVersion([]));
         $this->assertNull($ext->linkToVersion(['fullName' => 'test/test']));

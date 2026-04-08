@@ -18,9 +18,4 @@ class RepoVersionExtension
 
         return 'https://github.com/' . $repo['fullName'] . '/releases/' . urlencode($repo['tagName']);
     }
-
-    public function getName(): string
-    {
-        return 'repo_version_extension';
-    }
 }
