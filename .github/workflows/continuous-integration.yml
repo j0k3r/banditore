@@ -57,15 +57,6 @@ jobs:
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: ".nvmrc"
-          cache: "yarn"
-
-      - name: Install dependencies with Yarn
-        run: yarn install
-
       - name: Install dependencies with Composer
         uses: ramsey/composer-install@v4
 

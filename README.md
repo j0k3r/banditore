@@ -17,7 +17,6 @@ Banditore retrieves new releases from your GitHub starred repositories and put t
  - Redis (to cache requests to the GitHub API)
  - [RabbitMQ](https://www.rabbitmq.com/), which is optional (see below)
  - [Supervisor](http://supervisord.org/) (only if you use RabbitMQ)
- - [NVM](https://github.com/nvm-sh/nvm#install--update-script) & [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/) to install assets
 
 ## Installation
 
@@ -45,12 +44,7 @@ Banditore retrieves new releases from your GitHub starred repositories and put t
     php bin/console doctrine:schema:create -e prod
     ```
 
-5. Install assets
-
-    ```bash
-    nvm install
-    yarn install
-    ```
+5. The application serves its frontend assets directly from `public/`, so no Node/Yarn install step is required (it's locked on `font-awesome@4.7.0` & `purecss@3.0.0`).
 
 6. You can now launch the website:
 
