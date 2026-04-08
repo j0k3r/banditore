@@ -3,6 +3,7 @@
 namespace App\Tests\MessageHandler;
 
 use App\Entity\Repo;
+use App\Entity\Star;
 use App\Entity\User;
 use App\Message\StarredReposSync;
 use App\MessageHandler\StarredReposSyncHandler;
@@ -631,6 +632,8 @@ class StarredReposSyncHandlerTest extends WebTestCase
 
     public function testFunctionalConsumer(): void
     {
+        $this->restoreFunctionalState();
+
         $responses = new MockHandler([
             // /rate_limit
             $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
@@ -704,6 +707,36 @@ class StarredReposSyncHandlerTest extends WebTestCase
             ['Content-Type' => 'application/json'],
             (string) json_encode($body)
         );
+    }
+
+    private function restoreFunctionalState(): void
+    {
+        static::ensureKernelShutdown();
+        static::createClient();
+
+        /** @var EntityManager $entityManager */
+        $entityManager = self::getContainer()->get('doctrine')->getManager();
+        /** @var User $user */
+        $user = self::getContainer()->get(UserRepository::class)->find(123);
+        /** @var Repo $repoSymfony */
+        $repoSymfony = self::getContainer()->get(RepoRepository::class)->find(555);
+        /** @var Repo $repoTest */
+        $repoTest = self::getContainer()->get(RepoRepository::class)->find(666);
+
+        $entityManager->createQuery('DELETE FROM App\Entity\Star s WHERE s.user = :user')
+            ->setParameter('user', $user)
+            ->execute();
+
+        $entityManager->createQuery('DELETE FROM App\Entity\Repo r WHERE r.id = :repoId')
+            ->setParameter('repoId', 777)
+            ->execute();
+
+        $entityManager->persist(new Star($user, $repoSymfony));
+        $entityManager->persist(new Star($user, $repoTest));
+        $entityManager->flush();
+        $entityManager->clear();
+
+        static::ensureKernelShutdown();
     }
 
     private function getMockClient(MockHandler $responses): GithubClient

@@ -36,7 +36,7 @@ make prepare
 Once it's ok, launch tests:
 
 ```
-php bin/phpunit -v
+php bin/phpunit
 ```
 
 Test environment defaults live in `.env.test`.
