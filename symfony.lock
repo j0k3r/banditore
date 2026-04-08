@@ -17,9 +17,6 @@
     "clue/stream-filter": {
         "version": "v1.4.1"
     },
-    "composer/package-versions-deprecated": {
-        "version": "1.11.99.5"
-    },
     "composer/pcre": {
         "version": "3.0.0"
     },
@@ -121,9 +118,6 @@
         "files": [
             ".php-cs-fixer.dist.php"
         ]
-    },
-    "friendsofphp/proxy-manager-lts": {
-        "version": "v1.0.3"
     },
     "guzzlehttp/guzzle": {
         "version": "6.5.3"
@@ -407,18 +401,6 @@
             ".env.dev"
         ]
     },
-    "symfony/form": {
-        "version": "7.3",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "7.2",
-            "ref": "7d86a6723f4a623f59e2bf966b6aad2fc461d36b"
-        },
-        "files": [
-            "config/packages/csrf.yaml"
-        ]
-    },
     "symfony/framework-bundle": {
         "version": "7.4",
         "recipe": {
@@ -502,9 +484,6 @@
     "symfony/polyfill-intl-grapheme": {
         "version": "v1.17.0"
     },
-    "symfony/polyfill-intl-icu": {
-        "version": "v1.17.0"
-    },
     "symfony/polyfill-intl-normalizer": {
         "version": "v1.17.0"
     },
@@ -534,9 +513,6 @@
         "files": [
             "config/packages/property_info.yaml"
         ]
-    },
-    "symfony/proxy-manager-bridge": {
-        "version": "v5.1.5"
     },
     "symfony/psr-http-message-bridge": {
         "version": "v2.1.1"

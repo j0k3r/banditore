@@ -132,10 +132,10 @@ composer install -o
 php bin/console doctrine:database:create -e=test
 php bin/console doctrine:schema:create -e=test
 php bin/console doctrine:fixtures:load --env=test -n
-php bin/simple-phpunit -v
+php bin/phpunit -v
 ```
 
-By default the `test` connexion login is `root` without password. You can change it in [app/config/config_test.yml](app/config/config_test.yml).
+Test environment defaults, including the database connection, are defined in `.env.test`.
 
 ## How it works
 

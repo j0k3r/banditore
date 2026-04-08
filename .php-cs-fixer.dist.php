@@ -7,7 +7,6 @@ $finder = (new Finder())
     ->in(__DIR__)
     ->exclude(['vendor', 'var', 'web'])
     ->notPath([
-        'config/bundles.php',
         'config/reference.php',
     ])
 ;

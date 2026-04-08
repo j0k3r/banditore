@@ -39,6 +39,8 @@ Once it's ok, launch tests:
 php bin/phpunit -v
 ```
 
+Test environment defaults live in `.env.test`.
+
 ## Linting
 
 Linter is used only on PHP files:
