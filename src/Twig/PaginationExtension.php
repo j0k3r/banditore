@@ -3,34 +3,20 @@
 namespace App\Twig;
 
 use App\Pagination\Pagination;
+use Twig\Attribute\AsTwigFunction;
 use Twig\Environment;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
 
 /**
  * Class SimplePaginationExtension.
  *
  * @author Ashley Dawson <ashley@ashleydawson.co.uk>
  */
-class PaginationExtension extends AbstractExtension
+class PaginationExtension
 {
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction(
-                'pagination_render',
-                $this->render(...),
-                [
-                    'is_safe' => ['html'],
-                    'needs_environment' => true,
-                ]
-            ),
-        ];
-    }
-
     /**
      * Render the pagination.
      */
+    #[AsTwigFunction(name: 'pagination_render', isSafe: ['html'], needsEnvironment: true)]
     public function render(Environment $environment, Pagination $pagination, string $routeName, string $pageParameterName = 'page', array $queryParameters = []): string
     {
         return $environment->render('default/_pagination.html.twig', [
