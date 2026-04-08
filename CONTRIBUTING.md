@@ -7,15 +7,15 @@ Contributions are welcome, of course.
 You locally need:
 
  - PHP >= 8.2 (with `pdo_mysql`) with [Composer](https://getcomposer.org/) installed
- - Node.js 22 (use `nvm install`) with Yarn installed
  - Docker
 
 Install deps:
 
 ```
-yarn
 composer i
 ```
+
+The application serves its frontend assets directly from `public/`, so there is no Node/Yarn setup step.
 
 Then you can use Docker (used for test or dev):
 
