@@ -31,7 +31,7 @@ return RectorConfig::configure()
         DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES,
         SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES,
         DoctrineSetList::GEDMO_ANNOTATIONS_TO_ATTRIBUTES,
-        PHPUnitSetList::PHPUNIT_90,
+        PHPUnitSetList::PHPUNIT_110,
     ])
     ->withAttributesSets(symfony: true, doctrine: true, gedmo: true, jms: true, sensiolabs: true)
     ->withComposerBased(twig: true, doctrine: true, phpunit: true, symfony: true)

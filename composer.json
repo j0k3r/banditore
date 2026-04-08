@@ -57,7 +57,7 @@
         "phpstan/phpstan-doctrine": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpstan/phpstan-symfony": "^2.0",
-        "phpunit/phpunit": "^9.6.22",
+        "phpunit/phpunit": "^11",
         "rector/rector": "^2.1",
         "symfony/browser-kit": "*",
         "symfony/css-selector": "*",

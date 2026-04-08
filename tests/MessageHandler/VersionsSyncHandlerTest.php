@@ -21,6 +21,7 @@ use GuzzleHttp\Psr7\Response;
 use Http\Adapter\Guzzle7\Client as Guzzle7Client;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
+use PHPUnit\Framework\Attributes\Group;
 use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -993,11 +994,12 @@ class VersionsSyncHandlerTest extends WebTestCase
 
     /**
      * Using mocks only for request.
-     *
-     * @group only
      */
+    #[Group('only')]
     public function testFunctionalConsumer(): void
     {
+        $this->restoreFunctionalState();
+
         $clientHandler = HandlerStack::create($this->getWorkingResponses());
         $guzzleClient = new Client([
             'handler' => $clientHandler,
@@ -1043,6 +1045,8 @@ class VersionsSyncHandlerTest extends WebTestCase
 
     public function testFunctionalConsumerWithTagCaseInsensitive(): void
     {
+        $this->restoreFunctionalState();
+
         $responses = new MockHandler([
             // rate_limit
             $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
@@ -1347,6 +1351,8 @@ class VersionsSyncHandlerTest extends WebTestCase
                     ],
                 ],
             ]),
+            // release for that tag does not exist
+            new Response(404, ['Content-Type' => 'application/json']),
             // rate_limit
             $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
@@ -1389,5 +1395,47 @@ class VersionsSyncHandlerTest extends WebTestCase
             ['Content-Type' => 'application/json'],
             (string) json_encode($body)
         );
+    }
+
+    private function restoreFunctionalState(): void
+    {
+        static::ensureKernelShutdown();
+        static::createClient();
+
+        /** @var EntityManager $entityManager */
+        $entityManager = self::getContainer()->get('doctrine')->getManager();
+        /** @var Repo $repoTest */
+        $repoTest = self::getContainer()->get(RepoRepository::class)->find(666);
+        /** @var Repo $repoSymfony */
+        $repoSymfony = self::getContainer()->get(RepoRepository::class)->find(555);
+
+        $entityManager->createQuery('DELETE FROM App\Entity\Version v WHERE v.repo IN (:repoIds)')
+            ->setParameter('repoIds', [555, 666])
+            ->execute();
+
+        $versionTest = new Version($repoTest);
+        $versionTest->hydrateFromGithub([
+            'tag_name' => '1.0.0',
+            'name' => 'First release',
+            'prerelease' => false,
+            'message' => 'YAY',
+            'published_at' => '2019-10-15T07:49:21Z',
+        ]);
+        $entityManager->persist($versionTest);
+
+        $versionSymfony = new Version($repoSymfony);
+        $versionSymfony->hydrateFromGithub([
+            'tag_name' => '1.0.21',
+            'name' => 'First release',
+            'prerelease' => false,
+            'message' => 'YAY 555',
+            'published_at' => '2019-06-15T07:49:21Z',
+        ]);
+        $entityManager->persist($versionSymfony);
+
+        $entityManager->flush();
+        $entityManager->clear();
+
+        static::ensureKernelShutdown();
     }
 }

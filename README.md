@@ -132,7 +132,7 @@ composer install -o
 php bin/console doctrine:database:create -e=test
 php bin/console doctrine:schema:create -e=test
 php bin/console doctrine:fixtures:load --env=test -n
-php bin/phpunit -v
+php bin/phpunit
 ```
 
 Test environment defaults, including the database connection, are defined in `.env.test`.
