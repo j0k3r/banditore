@@ -44,7 +44,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "1.0",
-            "ref": "87424683adc81d7dc305eefec1fced883084aab9"
+            "ref": "fdd756167454623e21f1d769c5b814b243782a67"
         }
     },
     "doctrine/doctrine-bundle": {
@@ -111,12 +111,12 @@
         "version": "1.1.1"
     },
     "friendsofphp/php-cs-fixer": {
-        "version": "3.0",
+        "version": "3.94",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "3.0",
-            "ref": "be2103eb4a20942e28a6dd87736669b757132435"
+            "branch": "main",
+            "version": "3.39",
+            "ref": "97aaf9026490db73b86c23d49e5774bc89d2b232"
         },
         "files": [
             ".php-cs-fixer.dist.php"
@@ -296,12 +296,12 @@
         "version": "2.3.2"
     },
     "sentry/sentry-symfony": {
-        "version": "5.6",
+        "version": "5.10",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "main",
             "version": "5.0",
-            "ref": "b6cb4b34429dadecd7187852123be19d628fa37a"
+            "ref": "12f504985eb24e3b20a9e41e0ec7e398798d18f0"
         },
         "files": [
             "config/packages/sentry.yaml"
@@ -425,7 +425,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "7.4",
-            "ref": "09f6e081c763a206802674ce0cb34a022f0ffc6d"
+            "ref": "d5dcd308c8becd725c9d8b91e31aab1ff0bbc30b"
         },
         "files": [
             ".editorconfig",
@@ -608,12 +608,12 @@
         "version": "v4.4.8"
     },
     "symfony/twig-bundle": {
-        "version": "6.4",
+        "version": "7.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "6.4",
-            "ref": "cab5fd2a13a45c266d45a7d9337e28dee6272877"
+            "ref": "f250159ebe99153d0c640a3e7742876fc7453f2c"
         },
         "files": [
             "config/packages/twig.yaml",
