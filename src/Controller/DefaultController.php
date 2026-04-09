@@ -10,6 +10,7 @@ use App\Repository\StarRepository;
 use App\Repository\UserRepository;
 use App\Repository\VersionRepository;
 use App\Rss\Generator;
+use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
 use MarcW\RssWriter\RssWriter;
@@ -92,6 +93,38 @@ class DefaultController extends AbstractController
         ]);
     }
 
+    #[Route(path: '/dashboard/repositories/{repoId}/feed', name: 'dashboard_repo_feed', methods: ['POST'])]
+    public function updateDashboardRepoFeedAction(int $repoId, Request $request, StarRepository $starRepository, EntityManagerInterface $entityManager): RedirectResponse
+    {
+        if (!$this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return $this->redirect($this->generateUrl('homepage'));
+        }
+
+        /** @var User */
+        $user = $this->getUser();
+        $star = $starRepository->findOneByUserAndRepo($user->getId(), $repoId);
+
+        if (null === $star) {
+            throw $this->createNotFoundException('Repository subscription not found.');
+        }
+
+        $ignoreInFeed = $request->request->getBoolean('ignore_in_feed');
+
+        $star->setIgnoredInFeed($ignoreInFeed);
+        $entityManager->flush();
+
+        $this->addFlash(
+            'info',
+            \sprintf(
+                '%s %s in your RSS feed.',
+                $star->getRepo()->getFullName(),
+                $ignoreInFeed ? 'is now ignored' : 'is now included again'
+            )
+        );
+
+        return $this->redirect($this->generateUrl('dashboard'));
+    }
+
     /**
      * Empty callback action.
      * The request will be handle by the GithubAuthenticator.
@@ -126,7 +159,7 @@ class DefaultController extends AbstractController
     ): RssStreamedResponse {
         $channel = $rssGenerator->generate(
             $user,
-            $this->repoVersion->findForUser($user->getId()),
+            $this->repoVersion->findForFeedUser($user->getId()),
             $this->generateUrl('rss_user', ['uuid' => $user->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL)
         );
 

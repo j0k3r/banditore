@@ -3,7 +3,9 @@
 namespace App\Tests\Controller;
 
 use App\Entity\User;
+use App\Repository\StarRepository;
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Connection;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -17,6 +19,7 @@ class DefaultControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
+        self::getContainer()->get(Connection::class)->executeStatement('UPDATE star SET ignored_in_feed = 0');
     }
 
     public function testIndexNotLoggedIn(): void
@@ -85,7 +88,29 @@ class DefaultControllerTest extends WebTestCase
 
         $table = $crawler->filter('table')->text();
         $this->assertStringContainsString('test/test', $table, 'Repo test/test exist in a table');
+        $this->assertStringContainsString('Exclude', $table, 'Feed toggle is available from the dashboard');
         $this->assertStringContainsString('ago', $table, 'Date is translated and ok');
+    }
+
+    public function testDashboardRepoFeedToggle(): void
+    {
+        /** @var User */
+        $user = self::getContainer()->get(UserRepository::class)->find(123);
+
+        $this->client->loginUser($user);
+        $this->client->request('POST', '/dashboard/repositories/666/feed', [
+            'ignore_in_feed' => '1',
+        ]);
+
+        $this->assertResponseRedirects('/dashboard', 302);
+
+        $this->client->followRedirect();
+        $this->assertSelectorTextContains('.alert.success', 'test/test is now ignored in your RSS feed.');
+
+        $star = self::getContainer()->get(StarRepository::class)->findOneByUserAndRepo(123, 666);
+
+        $this->assertNotNull($star);
+        $this->assertTrue($star->isIgnoredInFeed());
     }
 
     public function testDashboardPageTooHigh(): void

@@ -27,6 +27,9 @@ class Star
     #[ORM\Column(name: 'created_at', type: 'datetime', nullable: false)]
     private $createdAt;
 
+    #[ORM\Column(name: 'ignored_in_feed', type: 'boolean', options: ['default' => false])]
+    private bool $ignoredInFeed = false;
+
     public function __construct(#[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'stars')]
         #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
         private readonly User $user, #[ORM\ManyToOne(targetEntity: Repo::class, inversedBy: 'stars')]
@@ -68,5 +71,27 @@ class Star
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    public function getRepo(): Repo
+    {
+        return $this->repo;
+    }
+
+    public function isIgnoredInFeed(): bool
+    {
+        return $this->ignoredInFeed;
+    }
+
+    public function setIgnoredInFeed(bool $ignoredInFeed): self
+    {
+        $this->ignoredInFeed = $ignoredInFeed;
+
+        return $this;
     }
 }

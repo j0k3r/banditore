@@ -8,29 +8,24 @@ use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Enforce some relations to not be null.
- */
-final class Version20200613153754 extends AbstractMigration
+final class Version20260408120000 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Enforce some relations to not be null';
+        return 'Add per-user repo flag to ignore releases in RSS feeds';
     }
 
     public function up(Schema $schema): void
     {
         $this->abortIf(!$this->connection->getDatabasePlatform() instanceof AbstractMySQLPlatform, 'Migration can only be executed safely on MySQL.');
 
-        $this->addSql('ALTER TABLE star CHANGE user_id user_id INT NOT NULL, CHANGE repo_id repo_id INT NOT NULL');
-        $this->addSql('ALTER TABLE version CHANGE repo_id repo_id INT NOT NULL');
+        $this->addSql('ALTER TABLE star ADD ignored_in_feed TINYINT(1) DEFAULT 0 NOT NULL');
     }
 
     public function down(Schema $schema): void
     {
         $this->abortIf(!$this->connection->getDatabasePlatform() instanceof AbstractMySQLPlatform, 'Migration can only be executed safely on MySQL.');
 
-        $this->addSql('ALTER TABLE star CHANGE user_id user_id INT DEFAULT NULL, CHANGE repo_id repo_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE version CHANGE repo_id repo_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE star DROP ignored_in_feed');
     }
 }

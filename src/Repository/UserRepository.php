@@ -29,6 +29,7 @@ class UserRepository extends ServiceEntityRepository
             ->select('DISTINCT u.uuid')
             ->leftJoin('u.stars', 's')
             ->where('s.repo IN (:ids)')->setParameter('ids', $repoIds)
+            ->andWhere('s.ignoredInFeed = :ignoredInFeed')->setParameter('ignoredInFeed', false)
             ->getQuery()
             ->getArrayResult();
     }
