@@ -53,7 +53,7 @@ class VersionRepository extends ServiceEntityRepository
     public function findForUser($userId, $offset = 0, $length = 20)
     {
         return $this->createQueryBuilder('v')
-            ->select('v.tagName', 'v.name', 'v.createdAt', 'v.body', 'v.prerelease', 'r.fullName', 'r.ownerAvatar', 'r.ownerAvatar', 'r.homepage', 'r.language', 'r.description')
+            ->select('r.id AS repoId', 'v.tagName', 'v.name', 'v.createdAt', 'v.body', 'v.prerelease', 's.ignoredInFeed', 'r.fullName', 'r.ownerAvatar', 'r.ownerAvatar', 'r.homepage', 'r.language', 'r.description')
             ->leftJoin('v.repo', 'r')
             ->leftJoin('r.stars', 's')
             ->where('s.user = :userId')->setParameter('userId', $userId)
@@ -81,6 +81,24 @@ class VersionRepository extends ServiceEntityRepository
             ->where('s.user = :userId')->setParameter('userId', $userId)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * Find all versions available in the feed for the given user.
+     */
+    public function findForFeedUser(int $userId, int $offset = 0, int $length = 20): array
+    {
+        return $this->createQueryBuilder('v')
+            ->select('r.id AS repoId', 'v.tagName', 'v.name', 'v.createdAt', 'v.body', 'v.prerelease', 'r.fullName', 'r.ownerAvatar', 'r.ownerAvatar', 'r.homepage', 'r.language', 'r.description')
+            ->leftJoin('v.repo', 'r')
+            ->leftJoin('r.stars', 's')
+            ->where('s.user = :userId')->setParameter('userId', $userId)
+            ->andWhere('s.ignoredInFeed = :ignoredInFeed')->setParameter('ignoredInFeed', false)
+            ->orderBy('v.createdAt', 'desc')
+            ->setFirstResult($offset)
+            ->setMaxResults($length)
+            ->getQuery()
+            ->getArrayResult();
     }
 
     /**

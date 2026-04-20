@@ -454,6 +454,73 @@ aside.feed b:after {
     background: #ffab80;
 }
 
+.feed-status {
+    display: inline-block;
+    min-width: 5.5em;
+    padding: 0.15em 0.55em;
+    border-radius: 999px;
+    background: #EAF2F5;
+    color: #10556B;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.feed-status-muted {
+    background: #FFF0E8;
+    color: #AF5D37;
+}
+
+.feed-toggle-form {
+    display: inline;
+    margin-left: 0.45em;
+}
+
+.feed-toggle-button {
+    -webkit-appearance: none;
+    appearance: none;
+    background: none;
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    color: #10556B;
+    cursor: pointer;
+    display: inline;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: inherit;
+    margin: 0;
+    outline: none;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    vertical-align: baseline;
+}
+
+.feed-toggle-button:hover,
+.feed-toggle-button:focus {
+    color: #2B687F;
+}
+
+.included-indicator {
+    color: #58c026;
+    display: inline-block;
+    font-size: 15px;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.excluded-indicator {
+    color: #ca3838;
+    display: inline-block;
+    font-size: 15px;
+    line-height: 1;
+    vertical-align: middle;
+}
+
 /* This is the class used for the footer */
 .footer {
     background: #10556B;

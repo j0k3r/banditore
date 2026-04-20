@@ -65,4 +65,17 @@ class StarRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function findOneByUserAndRepo(int $userId, int $repoId): ?Star
+    {
+        $stars = $this->createQueryBuilder('s')
+            ->leftJoin('s.repo', 'r')
+            ->where('s.user = :userId')->setParameter('userId', $userId)
+            ->andWhere('r.id = :repoId')->setParameter('repoId', $repoId)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult();
+
+        return $stars[0] ?? null;
+    }
 }
