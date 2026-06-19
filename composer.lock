@@ -3754,16 +3754,16 @@
         },
         {
             "name": "snc/redis-bundle",
-            "version": "4.11.1",
+            "version": "4.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/snc/SncRedisBundle.git",
-                "reference": "d9788015e5fc94ba5b1d8b9bd4c267ecb5737c26"
+                "reference": "b3bc736452fcec2d6f6bc1f26e277322e7c7b745"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/d9788015e5fc94ba5b1d8b9bd4c267ecb5737c26",
-                "reference": "d9788015e5fc94ba5b1d8b9bd4c267ecb5737c26",
+                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/b3bc736452fcec2d6f6bc1f26e277322e7c7b745",
+                "reference": "b3bc736452fcec2d6f6bc1f26e277322e7c7b745",
                 "shasum": ""
             },
             "require": {
@@ -3775,8 +3775,8 @@
                 "symfony/var-dumper": "^6.4 || ^7.3 || ^8.0"
             },
             "conflict": {
-                "ext-redis": "<5.3.2",
-                "predis/predis": "<2.0"
+                "ext-redis": "<6.1.0",
+                "predis/predis": "<3.1"
             },
             "require-dev": {
                 "doctrine/annotations": "^2.0",
@@ -3785,9 +3785,10 @@
                 "ext-redis": "*",
                 "friendsofphp/proxy-manager-lts": "^1.0.6",
                 "monolog/monolog": "*",
-                "phpunit/phpunit": "^9.5.28 || ^10",
-                "predis/predis": "^2.0 || ^3.0",
+                "phpunit/phpunit": "^9.6.34 || ^10.5.63",
+                "predis/predis": "^3.1",
                 "psalm/plugin-phpunit": "^0.19.3",
+                "psr/http-message": "^2",
                 "seec/phpunit-consecutive-params": "^1.1.4",
                 "symfony/browser-kit": "^6.4 || ^7.3 || ^8.0",
                 "symfony/cache": "^6.4 || ^7.3 || ^8.0",
@@ -3840,9 +3841,9 @@
             ],
             "support": {
                 "issues": "https://github.com/snc/SncRedisBundle/issues",
-                "source": "https://github.com/snc/SncRedisBundle/tree/4.11.1"
+                "source": "https://github.com/snc/SncRedisBundle/tree/4.12.0"
             },
-            "time": "2026-01-28T13:33:40+00:00"
+            "time": "2026-06-05T08:30:36+00:00"
         },
         {
             "name": "symfony/amqp-messenger",
@@ -6562,16 +6563,16 @@
         },
         {
             "name": "symfony/polyfill-php83",
-            "version": "v1.38.1",
+            "version": "v1.38.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php83.git",
-                "reference": "8339098cae28673c15cce00d80734af0453054e2"
+                "reference": "796a26abb75ce49f3a84433cd81bf1009d73d5f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php83/zipball/8339098cae28673c15cce00d80734af0453054e2",
-                "reference": "8339098cae28673c15cce00d80734af0453054e2",
+                "url": "https://api.github.com/repos/symfony/polyfill-php83/zipball/796a26abb75ce49f3a84433cd81bf1009d73d5f8",
+                "reference": "796a26abb75ce49f3a84433cd81bf1009d73d5f8",
                 "shasum": ""
             },
             "require": {
@@ -6618,7 +6619,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php83/tree/v1.38.1"
+                "source": "https://github.com/symfony/polyfill-php83/tree/v1.38.2"
             },
             "funding": [
                 {
@@ -6638,7 +6639,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-26T12:51:13+00:00"
+            "time": "2026-05-27T06:51:48+00:00"
         },
         {
             "name": "symfony/polyfill-php84",
