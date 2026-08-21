@@ -1766,16 +1766,16 @@
         },
         {
             "name": "knplabs/github-api",
-            "version": "v3.16.0",
+            "version": "v3.16.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/php-github-api.git",
-                "reference": "25d7bafd6b0dd088d4850aef7fcc74dc4fba8b28"
+                "reference": "5c4f31019c8fdbf5e678201c09c54dd360eee42f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/25d7bafd6b0dd088d4850aef7fcc74dc4fba8b28",
-                "reference": "25d7bafd6b0dd088d4850aef7fcc74dc4fba8b28",
+                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/5c4f31019c8fdbf5e678201c09c54dd360eee42f",
+                "reference": "5c4f31019c8fdbf5e678201c09c54dd360eee42f",
                 "shasum": ""
             },
             "require": {
@@ -1809,7 +1809,7 @@
             "extra": {
                 "branch-alias": {
                     "dev-2.x": "2.20.x-dev",
-                    "dev-master": "3.15-dev"
+                    "dev-master": "3.16-dev"
                 }
             },
             "autoload": {
@@ -1842,7 +1842,7 @@
             ],
             "support": {
                 "issues": "https://github.com/KnpLabs/php-github-api/issues",
-                "source": "https://github.com/KnpLabs/php-github-api/tree/v3.16.0"
+                "source": "https://github.com/KnpLabs/php-github-api/tree/v3.16.1"
             },
             "funding": [
                 {
@@ -1850,7 +1850,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-11-07T19:35:30+00:00"
+            "time": "2026-08-18T07:59:04+00:00"
         },
         {
             "name": "knplabs/knp-time-bundle",
@@ -2346,16 +2346,16 @@
         },
         {
             "name": "php-http/cache-plugin",
-            "version": "2.0.2",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/cache-plugin.git",
-                "reference": "c7fd57abaf6d08578aee51a8f1f34ea33ddbfdef"
+                "reference": "1443d3882c4c18556fe9b409f664ebc8c021940c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/cache-plugin/zipball/c7fd57abaf6d08578aee51a8f1f34ea33ddbfdef",
-                "reference": "c7fd57abaf6d08578aee51a8f1f34ea33ddbfdef",
+                "url": "https://api.github.com/repos/php-http/cache-plugin/zipball/1443d3882c4c18556fe9b409f664ebc8c021940c",
+                "reference": "1443d3882c4c18556fe9b409f664ebc8c021940c",
                 "shasum": ""
             },
             "require": {
@@ -2395,9 +2395,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-http/cache-plugin/issues",
-                "source": "https://github.com/php-http/cache-plugin/tree/2.0.2"
+                "source": "https://github.com/php-http/cache-plugin/tree/2.1.0"
             },
-            "time": "2025-12-01T08:38:41+00:00"
+            "time": "2026-05-12T09:44:11+00:00"
         },
         {
             "name": "php-http/client-common",
