@@ -17,7 +17,7 @@
         "php": ">=8.2",
         "cache/adapter-common": "dev-psr-cache-v3",
         "cache/tag-interop": "dev-psr-cache-v3",
-        "doctrine/doctrine-bundle": "^2.0",
+        "doctrine/doctrine-bundle": "^3.3",
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^3.5",
         "knplabs/github-api": "^3.0",
