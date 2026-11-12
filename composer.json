@@ -14,7 +14,7 @@
         }
     },
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.4",
         "cache/adapter-common": "dev-psr-cache-v3",
         "cache/tag-interop": "dev-psr-cache-v3",
         "doctrine/doctrine-bundle": "^2.0",
@@ -45,8 +45,8 @@
         "symfony/twig-bundle": "*",
         "symfony/validator": "*",
         "symfony/yaml": "*",
-        "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.0|^3.0"
+        "twig/extra-bundle": "^3.0",
+        "twig/twig": "^3.0"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^4.1",
