@@ -48,9 +48,7 @@ class GithubAuthenticator extends OAuth2Authenticator
                 $user = $this->entityManager->getRepository(User::class)->find($githubUser->getId());
 
                 // always update user information at login
-                if (null === $user) {
-                    $user = new User();
-                }
+                $user ??= new User();
 
                 $user->setAccessToken($accessToken->getToken());
                 $user->hydrateFromGithub($githubUser);

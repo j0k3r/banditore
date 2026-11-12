@@ -28,37 +28,25 @@ class StarredReposSyncHandlerTest extends WebTestCase
 {
     public function testProcessNoUser(): void
     {
-        $doctrine = $this->getMockBuilder(Registry::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $doctrine = $this->createStub(Registry::class);
 
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createMock(UserRepository::class);
 
         $userRepository->expects($this->once())
             ->method('find')
             ->with(123)
             ->willReturn(null);
 
-        $starRepository = $this->getMockBuilder(StarRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $starRepository = $this->createStub(StarRepository::class);
 
-        $repoRepository = $this->getMockBuilder(RepoRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repoRepository = $this->createStub(RepoRepository::class);
 
-        $githubClient = $this->getMockBuilder(GithubClient::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $githubClient = $this->createMock(GithubClient::class);
 
         $githubClient->expects($this->never())
             ->method('authenticate');
 
-        $redisClient = $this->getMockBuilder(\Predis\Client::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $redisClient = $this->createMock(\Predis\Client::class);
 
         // will use `setex` & `del` but will be called dynamically by `_call`
         $redisClient->expects($this->never())
@@ -79,16 +67,12 @@ class StarredReposSyncHandlerTest extends WebTestCase
 
     public function testProcessSuccessfulMessage(): void
     {
-        $em = $this->getMockBuilder(EntityManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $em = $this->createMock(EntityManager::class);
         $em->expects($this->once())
             ->method('isOpen')
             ->willReturn(true);
 
-        $doctrine = $this->getMockBuilder(Registry::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $doctrine = $this->createMock(Registry::class);
         $doctrine->expects($this->once())
             ->method('getManager')
             ->willReturn($em);
@@ -98,18 +82,14 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $user->setUsername('bob');
         $user->setName('Bobby');
 
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createMock(UserRepository::class);
 
         $userRepository->expects($this->once())
             ->method('find')
             ->with(123)
             ->willReturn($user);
 
-        $starRepository = $this->getMockBuilder(StarRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $starRepository = $this->createMock(StarRepository::class);
 
         $starRepository->expects($this->exactly(2))
             ->method('findAllByUser')
@@ -125,9 +105,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $repo->setFullName('j0k3r/banditore');
         $repo->setUpdatedAt((new \DateTime())->setTimestamp(time() - 3600 * 72));
 
-        $repoRepository = $this->getMockBuilder(RepoRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repoRepository = $this->createMock(RepoRepository::class);
 
         $repoRepository->expects($this->once())
             ->method('find')
@@ -163,9 +141,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $redisClient = $this->getMockBuilder(\Predis\Client::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $redisClient = $this->createMock(\Predis\Client::class);
 
         // will use `setex` & `del` but will be called dynamically by `_call`
         $redisClient->expects($this->exactly(2))
@@ -194,16 +170,12 @@ class StarredReposSyncHandlerTest extends WebTestCase
 
     public function testUserRemovedFromGitHub(): void
     {
-        $em = $this->getMockBuilder(EntityManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $em = $this->createMock(EntityManager::class);
         $em->expects($this->once())
             ->method('isOpen')
             ->willReturn(true);
 
-        $doctrine = $this->getMockBuilder(Registry::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $doctrine = $this->createMock(Registry::class);
         $doctrine->expects($this->once())
             ->method('getManager')
             ->willReturn($em);
@@ -213,25 +185,19 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $user->setUsername('bob');
         $user->setName('Bobby');
 
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createMock(UserRepository::class);
 
         $userRepository->expects($this->once())
             ->method('find')
             ->with(123)
             ->willReturn($user);
 
-        $starRepository = $this->getMockBuilder(StarRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $starRepository = $this->createMock(StarRepository::class);
 
         $starRepository->expects($this->never())
             ->method('findAllByUser');
 
-        $repoRepository = $this->getMockBuilder(RepoRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repoRepository = $this->createMock(RepoRepository::class);
 
         $repoRepository->expects($this->never())
             ->method('find');
@@ -249,9 +215,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $redisClient = $this->getMockBuilder(\Predis\Client::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $redisClient = $this->createMock(\Predis\Client::class);
 
         // will use `setex` & `del` but will be called dynamically by `_call`
         $redisClient->expects($this->exactly(2))
@@ -283,16 +247,12 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('booboo');
 
-        $em = $this->getMockBuilder(EntityManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $em = $this->createMock(EntityManager::class);
         $em->expects($this->once())
             ->method('isOpen')
             ->willReturn(true);
 
-        $doctrine = $this->getMockBuilder(Registry::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $doctrine = $this->createMock(Registry::class);
         $doctrine->expects($this->once())
             ->method('getManager')
             ->willReturn($em);
@@ -302,27 +262,21 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $user->setUsername('bob');
         $user->setName('Bobby');
 
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createMock(UserRepository::class);
 
         $userRepository->expects($this->once())
             ->method('find')
             ->with(123)
             ->willReturn($user);
 
-        $starRepository = $this->getMockBuilder(StarRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $starRepository = $this->createMock(StarRepository::class);
 
         $starRepository->expects($this->once())
             ->method('findAllByUser')
             ->with(123)
             ->willReturn([666]);
 
-        $repoRepository = $this->getMockBuilder(RepoRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repoRepository = $this->createMock(RepoRepository::class);
 
         $repoRepository->expects($this->once())
             ->method('find')
@@ -354,9 +308,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
 
         $githubClient = $this->getMockClient($responses);
 
-        $redisClient = $this->getMockBuilder(\Predis\Client::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $redisClient = $this->createMock(\Predis\Client::class);
 
         // will use `setex` & `del` but will be called dynamically by `_call`
         $redisClient->expects($this->once())
@@ -380,16 +332,12 @@ class StarredReposSyncHandlerTest extends WebTestCase
      */
     public function testProcessSuccessfulMessageNoStarToRemove(): void
     {
-        $em = $this->getMockBuilder(EntityManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $em = $this->createMock(EntityManager::class);
         $em->expects($this->once())
             ->method('isOpen')
             ->willReturn(false); // simulate a closing manager
 
-        $doctrine = $this->getMockBuilder(Registry::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $doctrine = $this->createMock(Registry::class);
         $doctrine->expects($this->once())
             ->method('getManager')
             ->willReturn($em);
@@ -402,18 +350,14 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $user->setUsername('bob');
         $user->setName('Bobby');
 
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createMock(UserRepository::class);
 
         $userRepository->expects($this->once())
             ->method('find')
             ->with(123)
             ->willReturn($user);
 
-        $starRepository = $this->getMockBuilder(StarRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $starRepository = $this->createMock(StarRepository::class);
 
         $starRepository->expects($this->exactly(2))
             ->method('findAllByUser')
@@ -425,9 +369,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $repo->setFullName('j0k3r/banditore');
         $repo->setUpdatedAt((new \DateTime())->setTimestamp(time() - 3600 * 72));
 
-        $repoRepository = $this->getMockBuilder(RepoRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repoRepository = $this->createMock(RepoRepository::class);
 
         $repoRepository->expects($this->once())
             ->method('find')
@@ -463,9 +405,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $redisClient = $this->getMockBuilder(\Predis\Client::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $redisClient = $this->createMock(\Predis\Client::class);
 
         // will use `setex` & `del` but will be called dynamically by `_call`
         $redisClient->expects($this->exactly(2))
@@ -493,27 +433,19 @@ class StarredReposSyncHandlerTest extends WebTestCase
 
     public function testProcessWithBadClient(): void
     {
-        $doctrine = $this->getMockBuilder(Registry::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $doctrine = $this->createStub(Registry::class);
 
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createMock(UserRepository::class);
 
         $userRepository->expects($this->never())
             ->method('find');
 
-        $starRepository = $this->getMockBuilder(StarRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $starRepository = $this->createMock(StarRepository::class);
 
         $starRepository->expects($this->never())
             ->method('findAllByUser');
 
-        $repoRepository = $this->getMockBuilder(RepoRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repoRepository = $this->createMock(RepoRepository::class);
 
         $repoRepository->expects($this->never())
             ->method('find');
@@ -522,9 +454,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $redisClient = $this->getMockBuilder(\Predis\Client::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $redisClient = $this->createMock(\Predis\Client::class);
 
         // will use `setex` & `del` but will be called dynamically by `_call`
         $redisClient->expects($this->never())
@@ -549,15 +479,11 @@ class StarredReposSyncHandlerTest extends WebTestCase
 
     public function testProcessWithRateLimitReached(): void
     {
-        $em = $this->getMockBuilder(EntityManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $em = $this->createMock(EntityManager::class);
         $em->expects($this->never())
             ->method('isOpen');
 
-        $doctrine = $this->getMockBuilder(Registry::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $doctrine = $this->createMock(Registry::class);
         $doctrine->expects($this->never())
             ->method('getManager');
 
@@ -566,18 +492,14 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $user->setUsername('bob');
         $user->setName('Bobby');
 
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createMock(UserRepository::class);
 
         $userRepository->expects($this->once())
             ->method('find')
             ->with(123)
             ->willReturn($user);
 
-        $starRepository = $this->getMockBuilder(StarRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $starRepository = $this->createMock(StarRepository::class);
 
         $starRepository->expects($this->never())
             ->method('findAllByUser');
@@ -585,9 +507,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $starRepository->expects($this->never())
             ->method('removeFromUser');
 
-        $repoRepository = $this->getMockBuilder(RepoRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repoRepository = $this->createMock(RepoRepository::class);
 
         $repoRepository->expects($this->never())
             ->method('find');
@@ -603,9 +523,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $redisClient = $this->getMockBuilder(\Predis\Client::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $redisClient = $this->createMock(\Predis\Client::class);
 
         // will use `setex` & `del` but will be called dynamically by `_call`
         $redisClient->expects($this->once())

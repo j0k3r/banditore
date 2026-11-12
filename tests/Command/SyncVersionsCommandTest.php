@@ -17,18 +17,14 @@ class SyncVersionsCommandTest extends KernelTestCase
 {
     public function testCommandSyncAllUsersWithoutQueue(): void
     {
-        $bus = $this->getMockBuilder(MessageBusInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $bus = $this->createMock(MessageBusInterface::class);
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncVersion = $this->getMockBuilder(VersionsSyncHandler::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $syncVersion = $this->createMock(VersionsSyncHandler::class);
 
-        $syncVersion->expects($this->any())
+        $syncVersion
             ->method('__invoke');
 
         $command = new SyncVersionsCommand(
@@ -48,19 +44,15 @@ class SyncVersionsCommandTest extends KernelTestCase
 
     public function testCommandSyncAllUsersWithQueue(): void
     {
-        $bus = $this->getMockBuilder(MessageBusInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $bus = $this->createMock(MessageBusInterface::class);
 
-        $bus->expects($this->any())
+        $bus
             ->method('dispatch')
             ->willReturn(new Envelope(new VersionsSync(555)));
 
-        $syncVersion = $this->getMockBuilder(VersionsSyncHandler::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $syncVersion = $this->createMock(VersionsSyncHandler::class);
 
-        $syncVersion->expects($this->any())
+        $syncVersion
             ->method('__invoke');
 
         $command = new SyncVersionsCommand(
@@ -80,16 +72,12 @@ class SyncVersionsCommandTest extends KernelTestCase
 
     public function testCommandSyncAllUsersWithQueueFull(): void
     {
-        $bus = $this->getMockBuilder(MessageBusInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $bus = $this->createMock(MessageBusInterface::class);
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncVersion = $this->getMockBuilder(VersionsSyncHandler::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $syncVersion = $this->createMock(VersionsSyncHandler::class);
 
         $syncVersion->expects($this->never())
             ->method('__invoke');
@@ -113,18 +101,14 @@ class SyncVersionsCommandTest extends KernelTestCase
     {
         $message = new VersionsSync(555);
 
-        $bus = $this->getMockBuilder(MessageBusInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $bus = $this->createMock(MessageBusInterface::class);
 
         $bus->expects($this->once())
             ->method('dispatch')
             ->with($message)
             ->willReturn(new Envelope($message));
 
-        $syncVersion = $this->getMockBuilder(VersionsSyncHandler::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $syncVersion = $this->createMock(VersionsSyncHandler::class);
 
         $syncVersion->expects($this->never())
             ->method('__invoke');
@@ -151,16 +135,12 @@ class SyncVersionsCommandTest extends KernelTestCase
     {
         $message = new VersionsSync(666);
 
-        $bus = $this->getMockBuilder(MessageBusInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $bus = $this->createMock(MessageBusInterface::class);
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncVersion = $this->getMockBuilder(VersionsSyncHandler::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $syncVersion = $this->createMock(VersionsSyncHandler::class);
 
         $syncVersion->expects($this->once())
             ->method('__invoke')
@@ -186,16 +166,12 @@ class SyncVersionsCommandTest extends KernelTestCase
 
     public function testCommandSyncOneUserNotFound(): void
     {
-        $bus = $this->getMockBuilder(MessageBusInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $bus = $this->createMock(MessageBusInterface::class);
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncVersion = $this->getMockBuilder(VersionsSyncHandler::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $syncVersion = $this->createMock(VersionsSyncHandler::class);
 
         $syncVersion->expects($this->never())
             ->method('__invoke');
@@ -217,9 +193,7 @@ class SyncVersionsCommandTest extends KernelTestCase
 
     private function getTransportMessageCount(int $totalMessage = 0): AmqpTransport
     {
-        $connection = $this->getMockBuilder(Connection::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $connection = $this->createMock(Connection::class);
 
         $connection->expects($this->once())
             ->method('countMessagesInQueues')

@@ -19,16 +19,12 @@ class SyncStarredReposCommandTest extends KernelTestCase
     {
         $message = new StarredReposSync(123);
 
-        $bus = $this->getMockBuilder(MessageBusInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $bus = $this->createMock(MessageBusInterface::class);
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncRepo = $this->getMockBuilder(StarredReposSyncHandler::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $syncRepo = $this->createMock(StarredReposSyncHandler::class);
 
         $syncRepo->expects($this->once())
             ->method('__invoke')
@@ -53,18 +49,14 @@ class SyncStarredReposCommandTest extends KernelTestCase
     {
         $message = new StarredReposSync(123);
 
-        $bus = $this->getMockBuilder(MessageBusInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $bus = $this->createMock(MessageBusInterface::class);
 
         $bus->expects($this->once())
             ->method('dispatch')
             ->with($message)
             ->willReturn(new Envelope($message));
 
-        $syncRepo = $this->getMockBuilder(StarredReposSyncHandler::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $syncRepo = $this->createMock(StarredReposSyncHandler::class);
 
         $syncRepo->expects($this->never())
             ->method('__invoke');
@@ -86,16 +78,12 @@ class SyncStarredReposCommandTest extends KernelTestCase
 
     public function testCommandSyncAllUsersWithQueueFull(): void
     {
-        $bus = $this->getMockBuilder(MessageBusInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $bus = $this->createMock(MessageBusInterface::class);
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncRepo = $this->getMockBuilder(StarredReposSyncHandler::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $syncRepo = $this->createMock(StarredReposSyncHandler::class);
 
         $syncRepo->expects($this->never())
             ->method('__invoke');
@@ -119,18 +107,14 @@ class SyncStarredReposCommandTest extends KernelTestCase
     {
         $message = new StarredReposSync(123);
 
-        $bus = $this->getMockBuilder(MessageBusInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $bus = $this->createMock(MessageBusInterface::class);
 
         $bus->expects($this->once())
             ->method('dispatch')
             ->with($message)
             ->willReturn(new Envelope($message));
 
-        $syncRepo = $this->getMockBuilder(StarredReposSyncHandler::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $syncRepo = $this->createMock(StarredReposSyncHandler::class);
 
         $syncRepo->expects($this->never())
             ->method('__invoke');
@@ -155,16 +139,12 @@ class SyncStarredReposCommandTest extends KernelTestCase
 
     public function testCommandSyncOneUserByUsername(): void
     {
-        $bus = $this->getMockBuilder(MessageBusInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $bus = $this->createMock(MessageBusInterface::class);
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncRepo = $this->getMockBuilder(StarredReposSyncHandler::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $syncRepo = $this->createMock(StarredReposSyncHandler::class);
 
         $syncRepo->expects($this->once())
             ->method('__invoke')
@@ -190,16 +170,12 @@ class SyncStarredReposCommandTest extends KernelTestCase
 
     public function testCommandSyncOneUserNotFound(): void
     {
-        $bus = $this->getMockBuilder(MessageBusInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $bus = $this->createMock(MessageBusInterface::class);
 
         $bus->expects($this->never())
             ->method('dispatch');
 
-        $syncRepo = $this->getMockBuilder(StarredReposSyncHandler::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $syncRepo = $this->createMock(StarredReposSyncHandler::class);
 
         $syncRepo->expects($this->never())
             ->method('__invoke');
@@ -221,9 +197,7 @@ class SyncStarredReposCommandTest extends KernelTestCase
 
     private function getTransportMessageCount(int $totalMessage = 0): AmqpTransport
     {
-        $connection = $this->getMockBuilder(Connection::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $connection = $this->createMock(Connection::class);
 
         $connection->expects($this->once())
             ->method('countMessagesInQueues')

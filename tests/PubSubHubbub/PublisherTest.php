@@ -32,9 +32,7 @@ class PublisherTest extends TestCase
 
     public function testNoHubDefined(): void
     {
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createStub(UserRepository::class);
 
         $client = new Client();
 
@@ -48,9 +46,7 @@ class PublisherTest extends TestCase
 
     public function testBadResponse(): void
     {
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createMock(UserRepository::class);
         $userRepository->expects($this->once())
             ->method('findByRepoIds')
             ->with([123])
@@ -72,9 +68,7 @@ class PublisherTest extends TestCase
 
     public function testGoodResponse(): void
     {
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createMock(UserRepository::class);
         $userRepository->expects($this->once())
             ->method('findByRepoIds')
             ->with([123])
@@ -95,9 +89,7 @@ class PublisherTest extends TestCase
 
     public function testUrlGeneration(): void
     {
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createMock(UserRepository::class);
         $userRepository->expects($this->once())
             ->method('findByRepoIds')
             ->with([123])
@@ -120,10 +112,9 @@ class PublisherTest extends TestCase
      */
     private function getServiceContainer(RouteCollection $routes): Container
     {
-        $loader = $this->getMockBuilder(LoaderInterface::class)->getMock();
+        $loader = $this->createMock(LoaderInterface::class);
 
         $loader
-            ->expects($this->any())
             ->method('load')
             ->willReturn($routes)
         ;
@@ -131,7 +122,6 @@ class PublisherTest extends TestCase
         $sc = $this->getMockBuilder(Container::class)->onlyMethods(['get'])->getMock();
 
         $sc
-            ->expects($this->any())
             ->method('get')
             ->willReturn($loader)
         ;

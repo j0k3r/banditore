@@ -12,8 +12,8 @@ security:
 
     firewalls:
         dev:
-            # Ensure dev tools and static assets are always allowed
-            pattern: ^/(_profiler|_wdt|assets|build|css|images|js)/
+            # Ensure dev tools and static assets are always allowed=======
+            pattern: ^/(_profiler(/|$)|(_wdt|assets|build|css|images|js)/)
             security: false
 
         main:
