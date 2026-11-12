@@ -103,7 +103,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $repo = new Repo();
         $repo->setId(666);
         $repo->setFullName('j0k3r/banditore');
-        $repo->setUpdatedAt((new \DateTime())->setTimestamp(time() - 3600 * 72));
+        $repo->setUpdatedAt(new \DateTime()->setTimestamp(time() - 3600 * 72));
 
         $repoRepository = $this->createMock(RepoRepository::class);
 
@@ -367,7 +367,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $repo = new Repo();
         $repo->setId(123);
         $repo->setFullName('j0k3r/banditore');
-        $repo->setUpdatedAt((new \DateTime())->setTimestamp(time() - 3600 * 72));
+        $repo->setUpdatedAt(new \DateTime()->setTimestamp(time() - 3600 * 72));
 
         $repoRepository = $this->createMock(RepoRepository::class);
 
