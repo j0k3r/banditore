@@ -14,9 +14,7 @@ class CustomRedisCachePoolTest extends WebTestCase
     public function testResponseWithEmptyBody(): void
     {
         $redisStatus = new Status('OK');
-        $cache = $this->getMockBuilder(ClientInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $cache = $this->createMock(ClientInterface::class);
 
         $cache->expects($this->once())
             ->method('__call')
@@ -41,9 +39,7 @@ class CustomRedisCachePoolTest extends WebTestCase
     public function testResponseWith404(): void
     {
         $redisStatus = new Status('OK');
-        $cache = $this->getMockBuilder(ClientInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $cache = $this->createMock(ClientInterface::class);
 
         $cache->expects($this->once())
             ->method('__call')
@@ -61,9 +57,7 @@ class CustomRedisCachePoolTest extends WebTestCase
 
     public function testResponseWithRelease(): void
     {
-        $cache = $this->getMockBuilder(ClientInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $cache = $this->createMock(ClientInterface::class);
 
         $cache->expects($this->never())
             ->method('__call');
@@ -93,9 +87,7 @@ class CustomRedisCachePoolTest extends WebTestCase
     public function testResponseWithRefTags(): void
     {
         $redisStatus = new Status('OK');
-        $cache = $this->getMockBuilder(ClientInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $cache = $this->createMock(ClientInterface::class);
 
         $cache->expects($this->once())
             ->method('__call')
@@ -138,9 +130,7 @@ class CustomRedisCachePoolTest extends WebTestCase
     public function testResponseWithTag(): void
     {
         $redisStatus = new Status('OK');
-        $cache = $this->getMockBuilder(ClientInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $cache = $this->createMock(ClientInterface::class);
 
         $cache->expects($this->once())
             ->method('__call')
@@ -173,9 +163,7 @@ class CustomRedisCachePoolTest extends WebTestCase
     public function testResponseWithStarredRepos(): void
     {
         $redisStatus = new Status('OK');
-        $cache = $this->getMockBuilder(ClientInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $cache = $this->createMock(ClientInterface::class);
 
         $cache->expects($this->once())
             ->method('__call')

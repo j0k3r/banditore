@@ -137,9 +137,7 @@ class StarredReposSyncHandler
                 // if repo doesn't exist
                 // OR repo doesn't get updated since XX days
                 if (null === $repo || $repo->getUpdatedAt()->diff(new \DateTime())->days > self::DAYS_SINCE_LAST_UPDATE) {
-                    if (null === $repo) {
-                        $repo = new Repo();
-                    }
+                    $repo ??= new Repo();
 
                     $repo->hydrateFromGithub($starredRepo);
                     $em->persist($repo);

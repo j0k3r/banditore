@@ -34,7 +34,7 @@ class DefaultController extends AbstractController
     public function indexAction(): Response
     {
         if ($this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
-            return $this->redirect($this->generateUrl('dashboard'));
+            return $this->redirectToRoute('dashboard');
         }
 
         return $this->render('default/index.html.twig');
@@ -62,7 +62,7 @@ class DefaultController extends AbstractController
     public function dashboardAction(Request $request, Paginator $paginator): Response
     {
         if (!$this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
-            return $this->redirect($this->generateUrl('homepage'));
+            return $this->redirectToRoute('homepage');
         }
 
         /** @var User */
@@ -84,7 +84,7 @@ class DefaultController extends AbstractController
 
         // Avoid displaying empty page when page is too high
         if ($request->query->get('page') > $pagination->getTotalNumberOfPages()) {
-            return $this->redirect($this->generateUrl('dashboard'));
+            return $this->redirectToRoute('dashboard');
         }
 
         return $this->render('default/dashboard.html.twig', [
@@ -97,7 +97,7 @@ class DefaultController extends AbstractController
     public function updateDashboardRepoFeedAction(int $repoId, Request $request, StarRepository $starRepository, EntityManagerInterface $entityManager): RedirectResponse
     {
         if (!$this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
-            return $this->redirect($this->generateUrl('homepage'));
+            return $this->redirectToRoute('homepage');
         }
 
         /** @var User */
@@ -122,7 +122,7 @@ class DefaultController extends AbstractController
             )
         );
 
-        return $this->redirect($this->generateUrl('dashboard'));
+        return $this->redirectToRoute('dashboard');
     }
 
     /**
@@ -132,7 +132,7 @@ class DefaultController extends AbstractController
     #[Route(path: '/callback', name: 'github_callback')]
     public function githubCallbackAction(): RedirectResponse
     {
-        return $this->redirect($this->generateUrl('github_connect'));
+        return $this->redirectToRoute('github_connect');
     }
 
     /**
@@ -142,7 +142,7 @@ class DefaultController extends AbstractController
     public function connectAction(ClientRegistry $oauth): RedirectResponse
     {
         if ($this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
-            return $this->redirect($this->generateUrl('dashboard'));
+            return $this->redirectToRoute('dashboard');
         }
 
         return $oauth

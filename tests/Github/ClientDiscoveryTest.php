@@ -20,9 +20,7 @@ class ClientDiscoveryTest extends WebTestCase
 {
     public function testUseApplicationDefaultClient(): void
     {
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createStub(UserRepository::class);
 
         $responses = new MockHandler([
             // first rate_limit, it'll be ok because remaining > 50
@@ -62,9 +60,7 @@ class ClientDiscoveryTest extends WebTestCase
 
     public function testUseUserToken(): void
     {
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createMock(UserRepository::class);
 
         $userRepository->expects($this->once())
             ->method('findAllTokens')
@@ -123,9 +119,7 @@ class ClientDiscoveryTest extends WebTestCase
 
     public function testNoTokenAvailable(): void
     {
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createMock(UserRepository::class);
 
         $userRepository->expects($this->once())
             ->method('findAllTokens')
@@ -178,9 +172,7 @@ class ClientDiscoveryTest extends WebTestCase
 
     public function testOneCallFail(): void
     {
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createMock(UserRepository::class);
 
         $userRepository->expects($this->once())
             ->method('findAllTokens')
