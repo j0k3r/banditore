@@ -17,6 +17,8 @@ final class Version20260408120000 extends AbstractMigration
     {
         $this->abortIf(!$this->connection->getDatabasePlatform() instanceof AbstractMySQLPlatform, 'Migration can only be executed safely on MySQL.');
 
+        $this->skipIf($schema->getTable('star')->hasColumn('ignored_in_feed'), 'The star.ignored_in_feed column already exists.');
+
         $this->addSql('ALTER TABLE star ADD ignored_in_feed TINYINT(1) DEFAULT 0 NOT NULL');
     }
 

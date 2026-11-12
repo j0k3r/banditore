@@ -20,6 +20,8 @@ final class Version20180827105910 extends AbstractMigration
     {
         $this->abortIf(!$this->connection->getDatabasePlatform() instanceof AbstractMySQLPlatform, 'Migration can only be executed safely on MySQL.');
 
+        $this->skipIf($schema->getTable('repo')->hasColumn('removed_at'), 'The repo.removed_at column already exists.');
+
         $this->addSql('ALTER TABLE repo ADD removed_at DATETIME DEFAULT NULL');
     }
 
