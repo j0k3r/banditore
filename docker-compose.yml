@@ -1,0 +1,57 @@
+services:
+    app:
+        build: .
+        restart: unless-stopped
+        ports:
+            - "127.0.0.1:${APP_PORT:-8000}:80"
+        environment:
+            APP_ENV: prod
+            SYMFONY_ENV: prod
+            APP_DEBUG: "0"
+            APP_SECRET: "${APP_SECRET:?Set APP_SECRET in .env.docker}"
+            GITHUB_CLIENT_ID: "${GITHUB_CLIENT_ID:?Set GITHUB_CLIENT_ID in .env.docker}"
+            GITHUB_CLIENT_SECRET: "${GITHUB_CLIENT_SECRET:?Set GITHUB_CLIENT_SECRET in .env.docker}"
+            DATABASE_URL: "mysql://banditore:${DATABASE_PASSWORD:?Set DATABASE_PASSWORD in .env.docker}@mariadb:3306/banditore?serverVersion=12.3.0-MariaDB&charset=utf8mb4"
+            REDIS_URL_GUZZLE_CACHE: redis://redis:6379/2
+            REDIS_URL_APP_CACHE: redis://redis:6379/4
+            MESSENGER_TRANSPORT_DSN: "sync://"
+            SENTRY_DSN: ""
+            PROJECT_HOST: "${PROJECT_HOST:-localhost:8000}"
+            PROJECT_SCHEME: "${PROJECT_SCHEME:-http}"
+            DEFAULT_URI: "${PROJECT_SCHEME:-http}://${PROJECT_HOST:-localhost:8000}"
+        volumes:
+            - app_sessions:/var/www/html/var/sessions
+        depends_on:
+            mariadb:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+
+    mariadb:
+        image: mariadb:12.3
+        restart: unless-stopped
+        environment:
+            MARIADB_DATABASE: banditore
+            MARIADB_USER: banditore
+            MARIADB_PASSWORD: "${DATABASE_PASSWORD:?Set DATABASE_PASSWORD in .env.docker}"
+            MARIADB_ROOT_PASSWORD: "${DATABASE_ROOT_PASSWORD:?Set DATABASE_ROOT_PASSWORD in .env.docker}"
+        volumes:
+            - mariadb_data:/var/lib/mysql
+        healthcheck:
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+            interval: 5s
+            timeout: 5s
+            retries: 20
+
+    redis:
+        image: redis:8.10-alpine
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 5s
+            timeout: 3s
+            retries: 10
+
+volumes:
+    mariadb_data:
+    app_sessions:
