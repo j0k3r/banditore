@@ -27,7 +27,7 @@ class GeneratorTest extends TestCase
                     'description' => 'This is an awesome description',
                     'tagName' => '1.0.0',
                     'body' => '<p>yay</p>',
-                    'createdAt' => (new \DateTime())->setTimestamp(1171502725),
+                    'createdAt' => new \DateTime()->setTimestamp(1171502725),
                 ],
             ],
             'http://myfeed.api/.rss'

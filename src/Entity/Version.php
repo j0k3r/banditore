@@ -201,7 +201,7 @@ class Version
         $this->setTagName($data['tag_name']);
         $this->setName($data['name']);
         $this->setPrerelease($data['prerelease']);
-        $this->setCreatedAt((new \DateTime())->setTimestamp(strtotime((string) $data['published_at'])));
+        $this->setCreatedAt(new \DateTime()->setTimestamp(strtotime((string) $data['published_at'])));
         $this->setBody($data['message']);
     }
 }
