@@ -55,6 +55,54 @@ class VersionRepositoryTest extends WebTestCase
         $entityManager->clear();
     }
 
+    public function testFindForUserPaginatesBeforeLoadingDetails(): void
+    {
+        $repository = self::getContainer()->get(VersionRepository::class);
+
+        $firstPage = $repository->findForUser(123, 0, 1);
+        $secondPage = $repository->findForUser(123, 1, 1);
+
+        $this->assertCount(1, $firstPage);
+        $this->assertSame(666, $firstPage[0]['repoId']);
+        $this->assertSame('YAY', $firstPage[0]['body']);
+        $this->assertSame('test/test', $firstPage[0]['fullName']);
+        $this->assertFalse($firstPage[0]['ignoredInFeed']);
+        $this->assertCount(1, $secondPage);
+        $this->assertSame(555, $secondPage[0]['repoId']);
+        $this->assertSame('YAY 555', $secondPage[0]['body']);
+        $this->assertSame([], $repository->findForUser(123, 2, 1));
+    }
+
+    public function testFindForUserOrdersEqualDatesConsistently(): void
+    {
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $version = new Version($entityManager->getReference(Repo::class, 666));
+        $version->hydrateFromGithub([
+            'tag_name' => '1.0.1',
+            'name' => 'Another release',
+            'prerelease' => false,
+            'message' => 'Same date',
+            'published_at' => '2019-10-15T07:49:21Z',
+        ]);
+        $entityManager->persist($version);
+        $entityManager->flush();
+
+        $repository = self::getContainer()->get(VersionRepository::class);
+
+        $this->assertSame('1.0.1', $repository->findForUser(123, 0, 1)[0]['tagName']);
+        $this->assertSame('1.0.0', $repository->findForUser(123, 1, 1)[0]['tagName']);
+    }
+
+    public function testVersionsAreLimitedToTheUsersSubscriptions(): void
+    {
+        $repository = self::getContainer()->get(VersionRepository::class);
+
+        $this->assertSame(2, $repository->countForUser(123));
+        $this->assertCount(2, $repository->findForUser(123));
+        $this->assertSame(0, $repository->countForUser(999999));
+        $this->assertSame([], $repository->findForUser(999999));
+    }
+
     public function testFindForFeedUserExcludesIgnoredStars(): void
     {
         $repository = self::getContainer()->get(VersionRepository::class);

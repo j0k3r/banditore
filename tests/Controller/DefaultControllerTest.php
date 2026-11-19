@@ -9,6 +9,7 @@ use Doctrine\DBAL\Connection;
 use MarcW\RssWriter\Bridge\Symfony\HttpFoundation\RssStreamedResponse;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class DefaultControllerTest extends WebTestCase
@@ -160,9 +161,40 @@ class DefaultControllerTest extends WebTestCase
 
     public function testStats(): void
     {
-        $crawler = $this->client->request('GET', '/stats');
+        $cache = new ArrayAdapter();
+        self::getContainer()->set('cache.app', $cache);
+
+        $this->client->request('GET', '/stats');
 
         $this->assertResponseIsSuccessful();
+        $item = $cache->getItem('global_stats_v1');
+        $this->assertTrue($item->isHit());
+        $this->assertEqualsWithDelta(microtime(true) + 900, $item->getMetadata()['expiry'], 5);
+        $this->assertSame(3, $item->get()['counters']['nbRepos']);
+        $this->assertNotEmpty($item->get()['mostReleases']);
+        $this->assertNotEmpty($item->get()['lastestReleases']);
+    }
+
+    public function testStatsUsesCachedData(): void
+    {
+        $cache = new ArrayAdapter();
+        $cache->get('global_stats_v1', static fn () => [
+            'counters' => [
+                'nbRepos' => 98765,
+                'nbReleases' => 123456,
+                'avgReleasePerRepo' => 1.25,
+                'avgStarPerUser' => 42,
+            ],
+            'mostReleases' => [],
+            'lastestReleases' => [],
+        ]);
+        self::getContainer()->set('cache.app', $cache);
+
+        $this->client->request('GET', '/stats');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('table', '98765');
+        $this->assertSelectorTextContains('table', '123456');
     }
 
     public function testStatus(): void
