@@ -20,10 +20,27 @@ The application serves its frontend assets directly from `public/`, so there is 
 Then you can use Docker (used for test or dev):
 
 ```
-docker run -d --name banditore-mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -p 3306:3306 mysql:latest
+docker run -d --name banditore-mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -p 3306:3306 mariadb:latest
 docker run -d --name banditore-redis -p 6379:6379 redis:latest
 docker run -d --name banditore-rabbit -p 5672:5672 -p 15672:15672 rabbitmq:4-management
 ```
+
+## Running the app
+
+Create the database:
+
+```
+php bin/console doctrine:database:create --env=dev --if-not-exists
+php bin/console doctrine:schema:create --env=dev
+```
+
+Launch the server:
+
+```
+php -S localhost:8888 -t public/
+```
+
+Browse: http://localhost:8888
 
 ## Running Tests
 
@@ -48,4 +65,5 @@ Linter is used only on PHP files:
 ```
 php bin/php-cs-fixer fix
 php bin/phpstan analyse
+php bin/rector
 ```

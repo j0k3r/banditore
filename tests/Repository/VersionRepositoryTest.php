@@ -90,6 +90,42 @@ class VersionRepositoryTest extends WebTestCase
         $this->assertSame([], $repository->findForFeedUser(123, 2, 1));
     }
 
+    public function testPrereleasesAreFilteredBeforePagination(): void
+    {
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $version = new Version($entityManager->getReference(Repo::class, 666));
+        $version->hydrateFromGithub([
+            'tag_name' => '2.0.0-beta.1',
+            'name' => 'Preview',
+            'prerelease' => true,
+            'message' => 'A preview release',
+            'published_at' => '2026-11-19T12:00:00Z',
+        ]);
+        $entityManager->persist($version);
+        $entityManager->flush();
+        $repository = self::getContainer()->get(VersionRepository::class);
+
+        $this->assertSame(3, $repository->countForUser(123));
+        $this->assertSame(2, $repository->countForUser(123, true));
+        $this->assertSame('2.0.0-beta.1', $repository->findForUser(123, 0, 1)[0]['tagName']);
+        $this->assertSame('1.0.0', $repository->findForUser(123, 0, 1, true)[0]['tagName']);
+        $this->assertSame('1.0.21', $repository->findForUser(123, 1, 1, true)[0]['tagName']);
+        $this->assertSame([], $repository->findForUser(123, 2, 1, true));
+        $this->assertSame('2.0.0-beta.1', $repository->findForFeedUser(123, 0, 1)[0]['tagName']);
+        $this->assertSame('1.0.0', $repository->findForFeedUser(123, 0, 1, true)[0]['tagName']);
+        $this->assertSame('1.0.21', $repository->findForFeedUser(123, 1, 1, true)[0]['tagName']);
+        $this->assertSame([], $repository->findForFeedUser(123, 2, 1, true));
+
+        self::getContainer()->get(Connection::class)->executeStatement('UPDATE star SET ignored_in_feed = 1 WHERE user_id = 123 AND repo_id = 666');
+        $this->assertSame('1.0.21', $repository->findForFeedUser(123, 0, 1, true)[0]['tagName']);
+        $this->assertSame(2, $repository->countForUser(123, true));
+
+        self::getContainer()->get(Connection::class)->executeStatement('UPDATE version SET prerelease = 1 WHERE repo_id IN (555, 666)');
+        $this->assertSame(0, $repository->countForUser(123, true));
+        $this->assertSame([], $repository->findForUser(123, 0, 1, true));
+        $this->assertSame([], $repository->findForFeedUser(123, 0, 1, true));
+    }
+
     public function testFindForUserOrdersEqualDatesConsistently(): void
     {
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);

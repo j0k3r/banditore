@@ -72,10 +72,10 @@ class DefaultController extends AbstractController
         $userId = $user->getId();
 
         // Pass the item total
-        $paginator->setItemTotalCallback(fn () => $this->repoVersion->countForUser($userId));
+        $paginator->setItemTotalCallback(fn () => $this->repoVersion->countForUser($userId, $user->getHidePrereleases()));
 
         // Pass the slice
-        $paginator->setSliceCallback(fn ($offset, $length) => $this->repoVersion->findForUser($userId, $offset, $length));
+        $paginator->setSliceCallback(fn ($offset, $length) => $this->repoVersion->findForUser($userId, $offset, $length, $user->getHidePrereleases()));
 
         // Paginate using the current page number
         try {
@@ -91,7 +91,38 @@ class DefaultController extends AbstractController
 
         return $this->render('default/dashboard.html.twig', [
             'pagination' => $pagination,
+            'show_samples' => [] === $pagination->getItems() && (!$user->getHidePrereleases() || 0 === $this->repoVersion->countForUser($userId)),
             'sync_status' => $this->redis->get('banditore:user-sync:' . $userId),
+        ]);
+    }
+
+    #[Route(path: '/config', name: 'config', methods: ['GET', 'POST'])]
+    public function configAction(Request $request, StarRepository $starRepository, EntityManagerInterface $entityManager): Response
+    {
+        if (!$this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return $this->redirectToRoute('homepage');
+        }
+
+        /** @var User */
+        $user = $this->getUser();
+
+        if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('config_preferences', $request->request->getString('_token'))) {
+                throw $this->createAccessDeniedException('Invalid CSRF token.');
+            }
+
+            $user->setHidePrereleases($request->request->getBoolean('hide_prereleases'));
+            $entityManager->flush();
+
+            $this->addFlash('info', $user->getHidePrereleases()
+                ? 'Pre-releases are now hidden from your dashboard and RSS feed.'
+                : 'Pre-releases are now included in your dashboard and RSS feed.');
+
+            return $this->redirectToRoute('config');
+        }
+
+        return $this->render('default/config.html.twig', [
+            'excluded_repositories' => $starRepository->findExcludedForUser($user->getId()),
         ]);
     }
 
@@ -100,6 +131,10 @@ class DefaultController extends AbstractController
     {
         if (!$this->security->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirectToRoute('homepage');
+        }
+
+        if (!$this->isCsrfTokenValid('repo_feed', $request->request->getString('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
         /** @var User */
@@ -124,7 +159,7 @@ class DefaultController extends AbstractController
             )
         );
 
-        return $this->redirectToRoute('dashboard');
+        return $this->redirectToRoute($request->request->getBoolean('from_config') ? 'config' : 'dashboard');
     }
 
     /**
@@ -161,7 +196,7 @@ class DefaultController extends AbstractController
     ): RssStreamedResponse {
         $channel = $rssGenerator->generate(
             $user,
-            $this->repoVersion->findForFeedUser($user->getId()),
+            $this->repoVersion->findForFeedUser($user->getId(), hidePrereleases: $user->getHidePrereleases()),
             $this->generateUrl('rss_user', ['uuid' => $user->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL)
         );
 

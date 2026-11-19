@@ -51,19 +51,23 @@ class VersionRepository extends ServiceEntityRepository
      *
      * @return array
      */
-    public function findForUser($userId, $offset = 0, $length = 20)
+    public function findForUser($userId, $offset = 0, $length = 20, bool $hidePrereleases = false)
     {
         // Sort using the covering index before loading release bodies and repository details.
-        $versions = $this->createQueryBuilder('v')
+        $query = $this->createQueryBuilder('v')
             ->select('v.id', 'v.createdAt')
             ->innerJoin(Star::class, 's', 'WITH', 's.repo = v.repo')
             ->where('s.user = :userId')->setParameter('userId', $userId)
             ->orderBy('v.createdAt', 'desc')
             ->addOrderBy('v.id', 'desc')
             ->setFirstResult($offset)
-            ->setMaxResults($length)
-            ->getQuery()
-            ->getArrayResult();
+            ->setMaxResults($length);
+
+        if ($hidePrereleases) {
+            $query->andWhere('v.prerelease = :prerelease')->setParameter('prerelease', false);
+        }
+
+        $versions = $query->getQuery()->getArrayResult();
 
         if ([] === $versions) {
             return [];
@@ -89,23 +93,27 @@ class VersionRepository extends ServiceEntityRepository
      *
      * @return int
      */
-    public function countForUser($userId)
+    public function countForUser($userId, bool $hidePrereleases = false)
     {
-        return (int) $this->createQueryBuilder('v')
+        $query = $this->createQueryBuilder('v')
             ->select('COUNT(v.id)')
             ->innerJoin(Star::class, 's', 'WITH', 's.repo = v.repo')
-            ->where('s.user = :userId')->setParameter('userId', $userId)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->where('s.user = :userId')->setParameter('userId', $userId);
+
+        if ($hidePrereleases) {
+            $query->andWhere('v.prerelease = :prerelease')->setParameter('prerelease', false);
+        }
+
+        return (int) $query->getQuery()->getSingleScalarResult();
     }
 
     /**
      * Find all versions available in the feed for the given user.
      */
-    public function findForFeedUser(int $userId, int $offset = 0, int $length = 20): array
+    public function findForFeedUser(int $userId, int $offset = 0, int $length = 20, bool $hidePrereleases = false): array
     {
         // Filter and paginate using the covering index before loading release bodies.
-        $versions = $this->createQueryBuilder('v')
+        $query = $this->createQueryBuilder('v')
             ->select('v.id', 'v.createdAt')
             ->innerJoin(Star::class, 's', 'WITH', 's.repo = v.repo')
             ->where('s.user = :userId')->setParameter('userId', $userId)
@@ -113,9 +121,13 @@ class VersionRepository extends ServiceEntityRepository
             ->orderBy('v.createdAt', 'desc')
             ->addOrderBy('v.id', 'desc')
             ->setFirstResult($offset)
-            ->setMaxResults($length)
-            ->getQuery()
-            ->getArrayResult();
+            ->setMaxResults($length);
+
+        if ($hidePrereleases) {
+            $query->andWhere('v.prerelease = :prerelease')->setParameter('prerelease', false);
+        }
+
+        $versions = $query->getQuery()->getArrayResult();
 
         if ([] === $versions) {
             return [];
