@@ -1,0 +1,67 @@
+name: Docker
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke-test:
+    name: Compose smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      COMPOSE_ENV_FILES: .env.docker.example
+      COMPOSE_PROJECT_NAME: banditore-ci
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Build and start the stack
+        run: docker compose up -d --build --wait --wait-timeout 180
+
+      - name: Initialize and validate the application
+        run: |
+          docker compose exec -T --user www-data app php bin/console doctrine:schema:create --no-interaction
+          docker compose exec -T --user www-data app php bin/console doctrine:migrations:sync-metadata-storage --no-interaction
+          docker compose exec -T --user www-data app php bin/console doctrine:migrations:version --add --all --no-interaction
+          docker compose exec -T --user www-data app php bin/console doctrine:schema:validate
+          docker compose exec -T --user www-data app php bin/console lint:container
+
+      - name: Check Redis connectivity from the app
+        run: |
+          docker compose exec -T --user www-data app php <<'PHP'
+          <?php
+          require 'vendor/autoload.php';
+          $redis = new Predis\Client(getenv('REDIS_URL_APP_CACHE'));
+          if ('PONG' !== (string) $redis->ping()) {
+              throw new RuntimeException('Redis is not reachable from the app.');
+          }
+          PHP
+
+      - name: Check HTTP routes
+        run: |
+          curl --fail --silent --show-error http://127.0.0.1:8000/ | grep '<title>Bandito.re</title>'
+          curl --fail --silent --show-error --output /dev/null http://127.0.0.1:8000/stats
+          curl --fail --silent --show-error --output /dev/null http://127.0.0.1:8000/status
+          curl --fail --silent --show-error --output /dev/null http://127.0.0.1:8000/css/banditore.css
+          test "$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' http://127.0.0.1:8000/dashboard)" = 302
+          test "$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' http://127.0.0.1:8000/.env)" = 403
+
+      - name: Show service logs on failure
+        if: failure()
+        run: |
+          docker compose ps --all
+          docker compose logs --no-color
+
+      - name: Stop the stack
+        if: always()
+        run: docker compose down --volumes --remove-orphans

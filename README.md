@@ -18,6 +18,55 @@ Banditore retrieves new releases from your GitHub starred repositories and put t
  - [RabbitMQ](https://www.rabbitmq.com/), which is optional (see below)
  - [Supervisor](http://supervisord.org/) (only if you use RabbitMQ)
 
+## Docker
+
+The Compose setup runs the application (PHP 8.4 FPM and nginx on Alpine), MariaDB 12.3 LTS and Redis 8.10 Alpine. Supervisor manages nginx and PHP-FPM inside the application container; build tools and Composer stay in a separate build stage. Both MySQL and PostgreSQL PDO drivers are included. RabbitMQ is not needed: use the scheduled commands below to synchronize repositories and releases.
+
+1. Copy the configuration:
+
+    ```bash
+    cp .env.docker.example .env.docker
+    ```
+
+    Edit `.env.docker`: set your GitHub OAuth application's credentials and replace all three secret/password placeholders (for example, use `openssl rand -hex 32` for each). Use URL-safe database passwords, or URL-encode them in `DATABASE_URL` in the Compose file. Register `http://localhost:8000/callback` as the OAuth callback URL. If you change the address or port, update `APP_PORT`, `PROJECT_HOST`, `PROJECT_SCHEME` and the OAuth callback URL together.
+
+2. Build and start the services:
+
+    ```bash
+    docker compose --env-file .env.docker up -d --build
+    ```
+
+3. Initialize a **new, empty database** once, using the current schema, then mark the historical migrations as applied:
+
+    ```bash
+    docker compose --env-file .env.docker exec --user www-data app php bin/console doctrine:schema:create
+    docker compose --env-file .env.docker exec --user www-data app php bin/console doctrine:migrations:sync-metadata-storage
+    docker compose --env-file .env.docker exec --user www-data app php bin/console doctrine:migrations:version --add --all --no-interaction
+    ```
+
+    For an existing installation, import its database instead and apply only its pending migrations. Never mark pending migrations as applied on an existing database.
+
+4. Open <http://localhost:8000> and log in. Add these jobs to the **host's crontab**, replacing `/path/to/banditore` with the checkout path:
+
+    ```cron
+    */10 * * * * cd /path/to/banditore && docker compose --env-file .env.docker exec -T --user www-data app php bin/console banditore:sync:versions
+    */5  * * * * cd /path/to/banditore && docker compose --env-file .env.docker exec -T --user www-data app php bin/console banditore:sync:starred-repos
+    ```
+
+    The application container only serves HTTP; it does not run these jobs automatically. Do not pass `--use-queue` with this setup.
+
+MariaDB data and application sessions are stored in named volumes. `docker compose --env-file .env.docker down` preserves them; **adding `--volumes` deletes them**. The app listens on localhost only; MariaDB and Redis are not exposed to the host. For a public instance, use an HTTPS reverse proxy and adapt the port binding and URL settings.
+
+Back up the database before changing MariaDB major versions and follow MariaDB's supported upgrade procedure; changing the image tag is not a substitute for a database upgrade.
+
+After updating the code, rebuild with `up -d --build` and run pending migrations:
+
+```bash
+docker compose --env-file .env.docker exec --user www-data app php bin/console doctrine:migrations:migrate --no-interaction
+```
+
+The `Docker` CI workflow builds and starts this Compose stack on pull requests and pushes to `master`. It initializes a fresh database, validates the schema and container, checks Redis connectivity from the app, and smoke-tests HTTP routes. It uses dummy OAuth credentials and does not call GitHub.
+
 ## Installation
 
 1. Clone the project
