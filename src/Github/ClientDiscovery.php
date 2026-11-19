@@ -6,6 +6,7 @@ use App\Cache\CustomRedisCachePool;
 use App\Repository\UserRepository;
 use Github\AuthMethod;
 use Github\Client as GithubClient;
+use Github\HttpClient\Builder;
 use Predis\Client as RedisClient;
 use Psr\Log\LoggerInterface;
 
@@ -23,9 +24,12 @@ class ClientDiscovery
     public const THRESHOLD_RATE_REMAIN_USER = 2000;
     private $client;
 
-    public function __construct(private UserRepository $userRepository, private RedisClient $redis, private string $clientId, private string $clientSecret, private LoggerInterface $logger)
+    public function __construct(private UserRepository $userRepository, private RedisClient $redis, private string $clientId, private string $clientSecret, private LoggerInterface $logger, RetryAfterPlugin $retryAfter = new RetryAfterPlugin())
     {
-        $this->client = new GithubClient();
+        $builder = new Builder();
+        $this->client = new GithubClient($builder);
+        // Inspect responses before GithubExceptionThrower turns them into exceptions.
+        $builder->addPlugin($retryAfter);
     }
 
     /**
