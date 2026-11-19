@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Star;
 use App\Entity\Version;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\AbstractQuery;
@@ -52,14 +53,30 @@ class VersionRepository extends ServiceEntityRepository
      */
     public function findForUser($userId, $offset = 0, $length = 20)
     {
-        return $this->createQueryBuilder('v')
-            ->select('r.id AS repoId', 'v.tagName', 'v.name', 'v.createdAt', 'v.body', 'v.prerelease', 's.ignoredInFeed', 'r.fullName', 'r.ownerAvatar', 'r.ownerAvatar', 'r.homepage', 'r.language', 'r.description')
-            ->leftJoin('v.repo', 'r')
-            ->leftJoin('r.stars', 's')
+        // Sort using the covering index before loading release bodies and repository details.
+        $versions = $this->createQueryBuilder('v')
+            ->select('v.id', 'v.createdAt')
+            ->innerJoin(Star::class, 's', 'WITH', 's.repo = v.repo')
             ->where('s.user = :userId')->setParameter('userId', $userId)
             ->orderBy('v.createdAt', 'desc')
+            ->addOrderBy('v.id', 'desc')
             ->setFirstResult($offset)
             ->setMaxResults($length)
+            ->getQuery()
+            ->getArrayResult();
+
+        if ([] === $versions) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('v')
+            ->select('r.id AS repoId', 'v.tagName', 'v.name', 'v.createdAt', 'v.body', 'v.prerelease', 's.ignoredInFeed', 'r.fullName', 'r.ownerAvatar', 'r.homepage', 'r.language', 'r.description')
+            ->innerJoin('v.repo', 'r')
+            ->innerJoin('r.stars', 's')
+            ->where('s.user = :userId')->setParameter('userId', $userId)
+            ->andWhere('v.id IN (:ids)')->setParameter('ids', array_column($versions, 'id'))
+            ->orderBy('v.createdAt', 'desc')
+            ->addOrderBy('v.id', 'desc')
             ->getQuery()
             ->getArrayResult();
     }
@@ -76,8 +93,7 @@ class VersionRepository extends ServiceEntityRepository
     {
         return (int) $this->createQueryBuilder('v')
             ->select('COUNT(v.id)')
-            ->leftJoin('v.repo', 'r')
-            ->leftJoin('r.stars', 's')
+            ->innerJoin(Star::class, 's', 'WITH', 's.repo = v.repo')
             ->where('s.user = :userId')->setParameter('userId', $userId)
             ->getQuery()
             ->getSingleScalarResult();

@@ -3,6 +3,8 @@ parameters:
     paths:
         - src
         - tests
+    scanDirectories:
+        - migrations
 
     symfony:
         containerXmlPath: %rootDir%/../../../var/cache/test/App_KernelTestDebugContainer.xml

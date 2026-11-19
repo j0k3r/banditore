@@ -23,6 +23,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class DefaultController extends AbstractController
 {
@@ -170,22 +172,28 @@ class DefaultController extends AbstractController
      * Display some global stats.
      */
     #[Route(path: '/stats', name: 'stats')]
-    public function statsAction(RepoRepository $repoRepo, StarRepository $repoStar, UserRepository $repoUser): Response
+    public function statsAction(RepoRepository $repoRepo, StarRepository $repoStar, UserRepository $repoUser, CacheInterface $cache): Response
     {
-        $nbRepos = $repoRepo->countTotal();
-        $nbReleases = $this->repoVersion->countTotal();
-        $nbStars = $repoStar->countTotal();
-        $nbUsers = $repoUser->countTotal();
+        $stats = $cache->get('global_stats_v1', function (ItemInterface $item) use ($repoRepo, $repoStar, $repoUser): array {
+            $item->expiresAfter(900);
 
-        return $this->render('default/stats.html.twig', [
-            'counters' => [
-                'nbRepos' => $nbRepos,
-                'nbReleases' => $nbReleases,
-                'avgReleasePerRepo' => ($nbRepos > 0) ? round($nbReleases / $nbRepos, 2) : 0,
-                'avgStarPerUser' => ($nbUsers > 0) ? round($nbStars / $nbUsers, 2) : 0,
-            ],
-            'mostReleases' => $repoRepo->mostVersionsPerRepo(),
-            'lastestReleases' => $this->repoVersion->findLastVersionForEachRepo(20),
-        ]);
+            $nbRepos = $repoRepo->countTotal();
+            $nbReleases = $this->repoVersion->countTotal();
+            $nbStars = $repoStar->countTotal();
+            $nbUsers = $repoUser->countTotal();
+
+            return [
+                'counters' => [
+                    'nbRepos' => $nbRepos,
+                    'nbReleases' => $nbReleases,
+                    'avgReleasePerRepo' => ($nbRepos > 0) ? round($nbReleases / $nbRepos, 2) : 0,
+                    'avgStarPerUser' => ($nbUsers > 0) ? round($nbStars / $nbUsers, 2) : 0,
+                ],
+                'mostReleases' => $repoRepo->mostVersionsPerRepo(),
+                'lastestReleases' => $this->repoVersion->findLastVersionForEachRepo(20),
+            ];
+        });
+
+        return $this->render('default/stats.html.twig', $stats);
     }
 }
