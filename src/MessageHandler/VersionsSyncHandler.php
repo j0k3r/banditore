@@ -207,7 +207,7 @@ class VersionsSyncHandler
                 $newRelease['message'] = $this->removePgpSignature((string) $newRelease['message']);
             }
 
-            // render markdown in plain html and use default markdown file if it fails
+            // Render Markdown before saving the version so failed renders can be retried later.
             if (isset($newRelease['message']) && '' !== trim($newRelease['message'])) {
                 try {
                     /** @var Markdown */
@@ -217,8 +217,8 @@ class VersionsSyncHandler
                 } catch (\Exception $e) {
                     $this->logger->warning('<error>Failed to parse markdown: ' . $e->getMessage() . '</error>');
 
-                    // it is usually a problem from the abuse detection mechanism, to avoid multiple call, we just skip to the next repo
-                    return $newVersion;
+                    // Stop this repo, but flush versions already rendered before moving on.
+                    break;
                 }
             }
 

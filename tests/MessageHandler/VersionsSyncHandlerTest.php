@@ -59,7 +59,7 @@ class VersionsSyncHandlerTest extends WebTestCase
         $handler->__invoke(new VersionsSync(123));
     }
 
-    public function getWorkingResponses(): MockHandler
+    public function getWorkingResponses(?Response $secondMarkdownResponse = null): MockHandler
     {
         return new MockHandler([
             // rate_limit
@@ -171,18 +171,19 @@ class VersionsSyncHandlerTest extends WebTestCase
                 'message' => "weekly release\n-----BEGIN PGP SIGNATURE-----\nVersion: GnuPG v2\n\niF4EABEIAAYFAliw58IACgkQ64qmmlZsB5VNFwD+L1M86cO76oohqSy4TCbubPAL\n6341glOKJpfkwyjQnUkBAPCTZSBbe8CFHLxLUvypIiQSMn+AIkPfvzvSEahA40Vz\n=SaF+\n-----END PGP SIGNATURE-----\n",
             ]),
             // markdown
-            new Response(200, ['Content-Type' => 'text/html'], '<p>weekly release</p>'),
-            // TAG 2.0.1
-            // now tag 2.0.1 which is a release
-            $this->getOKResponse([
-                'tag_name' => '2.0.1',
-                'name' => 'Trade-off memory for compute, Windows support, 24 distributions with cdf, variance etc., dtypes, zero-dimensional Tensors, Tensor-Variable merge, , faster distributed, perf and bug fixes, CuDNN 7.1',
-                'prerelease' => false,
-                'published_at' => '2017-02-19T13:27:32Z',
-                'body' => 'yay',
-            ]),
-            // markdown
-            new Response(200, ['Content-Type' => 'text/html'], '<p>yay</p>'),
+            $secondMarkdownResponse ?? new Response(200, ['Content-Type' => 'text/html'], '<p>weekly release</p>'),
+            // TAG 2.0.1 is only reached if the previous Markdown call succeeded.
+            ...(null === $secondMarkdownResponse ? [
+                $this->getOKResponse([
+                    'tag_name' => '2.0.1',
+                    'name' => 'Trade-off memory for compute, Windows support, 24 distributions with cdf, variance etc., dtypes, zero-dimensional Tensors, Tensor-Variable merge, , faster distributed, perf and bug fixes, CuDNN 7.1',
+                    'prerelease' => false,
+                    'published_at' => '2017-02-19T13:27:32Z',
+                    'body' => 'yay',
+                ]),
+                // markdown
+                new Response(200, ['Content-Type' => 'text/html'], '<p>yay</p>'),
+            ] : []),
             // rate_limit
             $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
@@ -603,6 +604,45 @@ class VersionsSyncHandlerTest extends WebTestCase
         $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
         $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
         $this->assertStringContainsString('<error>Failed to parse markdown', $records[2]['message']);
+    }
+
+    public function testMarkdownFailureFlushesPreviouslyRenderedVersions(): void
+    {
+        $repo = new Repo();
+        $repo->setId(123);
+        $repo->setFullName('bob/wow');
+
+        $uow = $this->createStub(UnitOfWork::class);
+        $uow->method('getScheduledEntityInsertions')->willReturn([]);
+
+        $em = $this->createMock(EntityManager::class);
+        $em->method('isOpen')->willReturn(true);
+        $em->method('getUnitOfWork')->willReturn($uow);
+        $em->expects($this->once())->method('persist')->with($this->callback(static fn (Version $version) => '1.0.1' === $version->getTagName()));
+        $em->expects($this->once())->method('flush');
+
+        $doctrine = $this->createStub(Registry::class);
+        $doctrine->method('getManager')->willReturn($em);
+        $repoRepository = $this->createStub(RepoRepository::class);
+        $repoRepository->method('find')->willReturn($repo);
+        $versionRepository = $this->createStub(VersionRepository::class);
+        $versionRepository->method('findExistingOne')->willReturnCallback(static fn ($tag) => '1.0.0' === $tag ? 1 : null);
+
+        $publisher = $this->createMock(Publisher::class);
+        $publisher->expects($this->once())->method('pingHub')->with([123]);
+
+        $responses = $this->getWorkingResponses(new Response(429, [], 'Rate limited'));
+        $clientHandler = HandlerStack::create($responses);
+        $githubClient = new GithubClient(new Builder(new Guzzle7Client(new Client(['handler' => $clientHandler]))));
+        $logger = new Logger('test');
+        $logHandler = new TestHandler();
+        $logger->pushHandler($logHandler);
+
+        $handler = new VersionsSyncHandler($doctrine, $repoRepository, $versionRepository, $publisher, $githubClient, $logger);
+
+        $this->assertTrue($handler(new VersionsSync(123)));
+        $this->assertTrue($logHandler->hasWarningThatContains('Failed to parse markdown'));
+        $this->assertTrue($logHandler->hasNoticeThatContains('<comment>1</comment> new versions'));
     }
 
     /**
