@@ -73,6 +73,23 @@ class VersionRepositoryTest extends WebTestCase
         $this->assertSame([], $repository->findForUser(123, 2, 1));
     }
 
+    public function testFindForFeedUserPaginatesBeforeLoadingDetails(): void
+    {
+        $repository = self::getContainer()->get(VersionRepository::class);
+
+        $firstPage = $repository->findForFeedUser(123, 0, 1);
+        $secondPage = $repository->findForFeedUser(123, 1, 1);
+
+        $this->assertCount(1, $firstPage);
+        $this->assertSame(666, $firstPage[0]['repoId']);
+        $this->assertSame('test/test', $firstPage[0]['fullName']);
+        $this->assertSame('YAY', $firstPage[0]['body']);
+        $this->assertCount(1, $secondPage);
+        $this->assertSame(555, $secondPage[0]['repoId']);
+        $this->assertSame('YAY 555', $secondPage[0]['body']);
+        $this->assertSame([], $repository->findForFeedUser(123, 2, 1));
+    }
+
     public function testFindForUserOrdersEqualDatesConsistently(): void
     {
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
@@ -91,6 +108,8 @@ class VersionRepositoryTest extends WebTestCase
 
         $this->assertSame('1.0.1', $repository->findForUser(123, 0, 1)[0]['tagName']);
         $this->assertSame('1.0.0', $repository->findForUser(123, 1, 1)[0]['tagName']);
+        $this->assertSame('1.0.1', $repository->findForFeedUser(123, 0, 1)[0]['tagName']);
+        $this->assertSame('1.0.0', $repository->findForFeedUser(123, 1, 1)[0]['tagName']);
     }
 
     public function testVersionsAreLimitedToTheUsersSubscriptions(): void
@@ -101,6 +120,8 @@ class VersionRepositoryTest extends WebTestCase
         $this->assertCount(2, $repository->findForUser(123));
         $this->assertSame(0, $repository->countForUser(999999));
         $this->assertSame([], $repository->findForUser(999999));
+        $this->assertCount(2, $repository->findForFeedUser(123));
+        $this->assertSame([], $repository->findForFeedUser(999999));
     }
 
     public function testFindForFeedUserExcludesIgnoredStars(): void
@@ -110,11 +131,16 @@ class VersionRepositoryTest extends WebTestCase
         self::getContainer()->get(Connection::class)->executeStatement('UPDATE star SET ignored_in_feed = 1 WHERE user_id = 123 AND repo_id = 666');
 
         $dashboardVersions = $repository->findForUser(123);
-        $feedVersions = $repository->findForFeedUser(123);
+        $feedVersions = $repository->findForFeedUser(123, 0, 1);
 
         $this->assertNotEmpty($dashboardVersions);
         $this->assertTrue($dashboardVersions[0]['ignoredInFeed']);
         $this->assertCount(1, $feedVersions);
         $this->assertSame('symfony/symfony', $feedVersions[0]['fullName']);
+        $this->assertSame([], $repository->findForFeedUser(123, 1, 1));
+
+        self::getContainer()->get(Connection::class)->executeStatement('UPDATE star SET ignored_in_feed = 1 WHERE user_id = 123');
+
+        $this->assertSame([], $repository->findForFeedUser(123));
     }
 }

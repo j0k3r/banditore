@@ -104,15 +104,32 @@ class VersionRepository extends ServiceEntityRepository
      */
     public function findForFeedUser(int $userId, int $offset = 0, int $length = 20): array
     {
-        return $this->createQueryBuilder('v')
-            ->select('r.id AS repoId', 'v.tagName', 'v.name', 'v.createdAt', 'v.body', 'v.prerelease', 'r.fullName', 'r.ownerAvatar', 'r.ownerAvatar', 'r.homepage', 'r.language', 'r.description')
-            ->leftJoin('v.repo', 'r')
-            ->leftJoin('r.stars', 's')
+        // Filter and paginate using the covering index before loading release bodies.
+        $versions = $this->createQueryBuilder('v')
+            ->select('v.id', 'v.createdAt')
+            ->innerJoin(Star::class, 's', 'WITH', 's.repo = v.repo')
             ->where('s.user = :userId')->setParameter('userId', $userId)
             ->andWhere('s.ignoredInFeed = :ignoredInFeed')->setParameter('ignoredInFeed', false)
             ->orderBy('v.createdAt', 'desc')
+            ->addOrderBy('v.id', 'desc')
             ->setFirstResult($offset)
             ->setMaxResults($length)
+            ->getQuery()
+            ->getArrayResult();
+
+        if ([] === $versions) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('v')
+            ->select('r.id AS repoId', 'v.tagName', 'v.name', 'v.createdAt', 'v.body', 'v.prerelease', 'r.fullName', 'r.ownerAvatar', 'r.homepage', 'r.language', 'r.description')
+            ->innerJoin('v.repo', 'r')
+            ->innerJoin('r.stars', 's')
+            ->where('s.user = :userId')->setParameter('userId', $userId)
+            ->andWhere('s.ignoredInFeed = :ignoredInFeed')->setParameter('ignoredInFeed', false)
+            ->andWhere('v.id IN (:ids)')->setParameter('ids', array_column($versions, 'id'))
+            ->orderBy('v.createdAt', 'desc')
+            ->addOrderBy('v.id', 'desc')
             ->getQuery()
             ->getArrayResult();
     }
