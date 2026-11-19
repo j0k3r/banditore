@@ -89,9 +89,9 @@ You just need to define these 2 cronjobs (replace all `/path/to/banditore` with 
 
  ```bash
  # retrieve new release of each repo every 10 minutes
- */10  *   *   *   *   php /path/to/banditore/bin/console -e prod banditore:sync:versions --use_queue >> /path/to/banditore/var/logs/command-sync-versions.log 2>&1
+ */10  *   *   *   *   php /path/to/banditore/bin/console -e prod banditore:sync:versions --use-queue >> /path/to/banditore/var/logs/command-sync-versions.log 2>&1
  # sync starred repos of each user every 5 minutes
- */5   *   *   *   *   php /path/to/banditore/bin/console -e prod banditore:sync:starred-repos --use_queue >> /path/banditore/to/var/logs/command-sync-repos.log 2>&1
+ */5   *   *   *   *   php /path/to/banditore/bin/console -e prod banditore:sync:starred-repos --use-queue >> /path/banditore/to/var/logs/command-sync-repos.log 2>&1
 ```
 
 4. Setup Supervisor using the [sample file](data/supervisor.conf) from the repo. You can copy/paste it into `/etc/supervisor/conf.d/` and adjust path. The default file will launch:
