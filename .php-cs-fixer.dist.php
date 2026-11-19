@@ -3,7 +3,7 @@
 use PhpCsFixer\Finder;
 use PhpCsFixer\Config;
 
-$finder = (new Finder())
+$finder = new Finder()
     ->in(__DIR__)
     ->exclude(['vendor', 'var', 'web'])
     ->notPath([
@@ -11,7 +11,7 @@ $finder = (new Finder())
     ])
 ;
 
-return (new Config())
+return new Config()
     ->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,

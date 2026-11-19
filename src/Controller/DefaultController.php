@@ -49,7 +49,7 @@ class DefaultController extends AbstractController
             return $this->json([]);
         }
 
-        $diff = (new \DateTime())->getTimestamp() - $latest['createdAt']->getTimestamp();
+        $diff = new \DateTime()->getTimestamp() - $latest['createdAt']->getTimestamp();
 
         return $this->json([
             'latest' => $latest['createdAt'],

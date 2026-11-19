@@ -30,18 +30,18 @@ class Generator
     {
         $channel = new Channel();
         $channel->addExtension(
-            (new AtomLink())
+            new AtomLink()
                 ->setRel('self')
                 ->setHref($feedUrl)
                 ->setType('application/rss+xml')
         );
         $channel->addExtension(
-            (new AtomLink())
+            new AtomLink()
                 ->setRel('hub')
                 ->setHref('http://pubsubhubbub.appspot.com/')
         );
         $channel->addExtension(
-            (new Webfeeds())
+            new Webfeeds()
                 ->setLogo($user->getAvatar())
                 ->setIcon($user->getAvatar())
                 ->setAccentColor('10556B')
@@ -50,7 +50,7 @@ class Generator
             ->setLink($feedUrl)
             ->setDescription(str_replace('%USERNAME%', $user->getUsername(), self::CHANNEL_DESCRIPTION))
             ->setLanguage('en')
-            ->setCopyright('(c) ' . (new \DateTime())->format('Y') . ' banditore')
+            ->setCopyright('(c) ' . new \DateTime()->format('Y') . ' banditore')
             ->setLastBuildDate(isset($releases[0]) ? $releases[0]['createdAt'] : new \DateTime())
             ->setGenerator('banditore');
 
@@ -80,7 +80,7 @@ class Generator
                 ->setLink('https://github.com/' . $release['fullName'] . '/releases/' . urlencode((string) $release['tagName']))
                 ->setDescription($repoInformation . $release['body'])
                 ->setPubDate($release['createdAt'])
-                ->setGuid((new Guid())->setIsPermaLink(true)->setGuid('https://github.com/' . $release['fullName'] . '/releases/' . urlencode((string) $release['tagName'])))
+                ->setGuid(new Guid()->setIsPermaLink(true)->setGuid('https://github.com/' . $release['fullName'] . '/releases/' . urlencode((string) $release['tagName'])))
             ;
             $channel->addItem($item);
         }

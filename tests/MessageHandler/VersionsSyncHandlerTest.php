@@ -685,7 +685,7 @@ class VersionsSyncHandlerTest extends WebTestCase
     public function testProcessUnexpectedError(): void
     {
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('booboo');
+        $this->expectExceptionMessageIsOrContains('booboo');
 
         $em = $this->createMock(EntityManager::class);
         $em->expects($this->once())
