@@ -11,16 +11,12 @@ doctrine:
         server_version: '5.7'
         default_table_options:
             charset: utf8mb4
-            collate: utf8mb4_unicode_ci
+            collation: utf8mb4_unicode_ci
 
         # backtrace queries in profiler (increases memory usage per request)
         profiling_collect_backtrace: '%kernel.debug%'
 
-        use_savepoints: true
     orm:
-        auto_generate_proxy_classes: true
-        enable_lazy_ghost_objects: true
-        report_fields_where_declared: true
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         identity_generation_preferences:
@@ -33,8 +29,6 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
-        controller_resolver:
-            auto_mapping: false
 
 when@test:
     doctrine:
@@ -46,8 +40,6 @@ when@test:
 when@prod:
     doctrine:
         orm:
-            auto_generate_proxy_classes: false
-            proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
             metadata_cache_driver:
                 type: pool
                 pool: doctrine.system_cache_pool
