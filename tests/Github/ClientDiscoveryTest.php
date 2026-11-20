@@ -3,6 +3,7 @@
 namespace App\Tests\Github;
 
 use App\Github\ClientDiscovery;
+use App\Github\RateLimitClient;
 use App\Repository\UserRepository;
 use Github\Client as GithubClient;
 use Github\HttpClient\Builder;
@@ -15,6 +16,7 @@ use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use Predis\Client as RedisClient;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Clock\MockClock;
 
 class ClientDiscoveryTest extends WebTestCase
 {
@@ -115,6 +117,34 @@ class ClientDiscoveryTest extends WebTestCase
 
         $this->assertInstanceOf(GithubClient::class, $resClient);
         $this->assertSame('RateLimit ok (' . (ClientDiscovery::THRESHOLD_RATE_REMAIN_USER + 150) . ') with user: lion', $records[0]['message']);
+    }
+
+    public function testTokenSelectionStillUsesExplicitQuotaChecks(): void
+    {
+        $clock = new MockClock('2026-11-20T13:00:00Z');
+        $reset = $clock->now()->getTimestamp() + 3600;
+        $userRepository = $this->createMock(UserRepository::class);
+        $userRepository->expects($this->once())->method('findAllTokens')->willReturn([
+            ['username' => 'bob', 'accessToken' => 'bob-token'],
+        ]);
+        $responses = new MockHandler([
+            new Response(200, [
+                'Content-Type' => 'application/json',
+                'X-RateLimit-Resource' => 'core',
+                'X-RateLimit-Remaining' => '5000',
+                'X-RateLimit-Reset' => (string) $reset,
+            ], (string) json_encode(['resources' => ['core' => ['reset' => $reset, 'limit' => 5000, 'remaining' => 0]]])),
+            new Response(200, ['Content-Type' => 'application/json'], (string) json_encode(['resources' => ['core' => ['reset' => $reset, 'limit' => 5000, 'remaining' => 2500]]])),
+        ]);
+        $trackedClient = new RateLimitClient(new Guzzle7Client(new Client(['handler' => $responses])), $clock);
+        $logger = new Logger('test', [$logHandler = new TestHandler()]);
+        $discovery = new ClientDiscovery($userRepository, new RedisClient(), 'client_id', 'client_secret', $logger, rateLimitClient: $trackedClient);
+        $discovery->setGithubClient(new GithubClient(new Builder($trackedClient)));
+
+        $this->assertInstanceOf(GithubClient::class, $discovery->find());
+        $this->assertCount(0, $responses);
+        $this->assertTrue($logHandler->hasNoticeThatContains('with user: bob'));
+        $this->assertNull($trackedClient->getRecentRemaining(), 'The application quota must not survive a token change with missing headers.');
     }
 
     public function testNoTokenAvailable(): void

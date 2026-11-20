@@ -171,6 +171,22 @@ There is a status page available at `/status`, it returns a json with some infor
 
 For example, I've setup a check on [updown.io](https://updown.io/r/P7qer) to check that status page and if the page contains `"is_fresh":true`. So I receive an alert when `is_fresh` is false: which means there is a potential issue on the server.
 
+### Release-sync quota checks
+
+Release workers reuse the `core` quota from fresh GitHub response headers, observed
+before the HTTP cache can replace a 304 response with older cached headers. Local
+cache hits do not refresh that quota snapshot.
+
+A snapshot is usable for at most 30 seconds, never beyond its reset timestamp.
+For a positive quota below 200 calls, or when the snapshot is missing, invalid or
+expired, the worker falls back to the explicit `/rate_limit` check. A fresh zero
+quota still blocks syncing. Snapshots are local to the worker, not a distributed rate limiter;
+other workers can consume the same quota during that short window.
+
+Token discovery still checks `/rate_limit` explicitly for every candidate, clearing
+the snapshot when authentication changes. Starred-repository syncing and existing
+retry/acknowledgement behavior are unchanged.
+
 ## Running the test suite
 
 If you plan to contribute (you're awesome, I know that :v:), you'll need to install the project in a different way (for example, to retrieve dev packages):

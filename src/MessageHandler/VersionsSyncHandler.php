@@ -4,6 +4,7 @@ namespace App\MessageHandler;
 
 use App\Entity\Repo;
 use App\Entity\Version;
+use App\Github\RateLimitClient;
 use App\Github\RateLimitTrait;
 use App\Message\VersionsSync;
 use App\PubSubHubbub\Publisher;
@@ -28,7 +29,7 @@ class VersionsSyncHandler
     /**
      * Client parameter can be null when no available client were found by the Github Client Discovery.
      */
-    public function __construct(private ManagerRegistry $doctrine, private RepoRepository $repoRepository, private VersionRepository $versionRepository, private Publisher $pubsubhubbub, private ?Client $client, private LoggerInterface $logger)
+    public function __construct(private ManagerRegistry $doctrine, private RepoRepository $repoRepository, private VersionRepository $versionRepository, private Publisher $pubsubhubbub, private ?Client $client, private LoggerInterface $logger, private ?RateLimitClient $rateLimitClient = null)
     {
     }
 
@@ -54,7 +55,7 @@ class VersionsSyncHandler
 
         $this->logger->info('Consume banditore.sync_versions message', ['repo' => $repo->getFullName()]);
 
-        $rateLimit = $this->getRateLimits($this->client, $this->logger);
+        $rateLimit = $this->rateLimitClient?->getRecentRemaining() ?? $this->getRateLimits($this->client, $this->logger);
 
         $this->logger->info('[' . $rateLimit . '] Check <info>' . $repo->getFullName() . '</info> … ');
 
