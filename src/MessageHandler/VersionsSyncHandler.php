@@ -4,6 +4,7 @@ namespace App\MessageHandler;
 
 use App\Entity\Repo;
 use App\Entity\Version;
+use App\Github\RateLimitClient;
 use App\Github\RateLimitTrait;
 use App\Message\VersionsSync;
 use App\PubSubHubbub\Publisher;
@@ -30,7 +31,7 @@ class VersionsSyncHandler
     /**
      * Client parameter can be null when no available client were found by the Github Client Discovery.
      */
-    public function __construct(private ManagerRegistry $doctrine, private RepoRepository $repoRepository, private VersionRepository $versionRepository, private Publisher $pubsubhubbub, private ?Client $client, private LoggerInterface $logger, private bool $collectMetrics = false, private ?LoggerInterface $metricsLogger = null)
+    public function __construct(private ManagerRegistry $doctrine, private RepoRepository $repoRepository, private VersionRepository $versionRepository, private Publisher $pubsubhubbub, private ?Client $client, private LoggerInterface $logger, private bool $collectMetrics = false, private ?LoggerInterface $metricsLogger = null, private ?RateLimitClient $rateLimitClient = null)
     {
     }
 
@@ -322,7 +323,7 @@ class VersionsSyncHandler
     {
         $startedAt = hrtime(true);
         try {
-            return $this->getRateLimits($this->client, $this->logger);
+            return $this->rateLimitClient?->getRecentRemaining() ?? $this->getRateLimits($this->client, $this->logger);
         } finally {
             $this->recordDuration($metrics, 'rate_limit', $startedAt);
         }

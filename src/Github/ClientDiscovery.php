@@ -24,9 +24,9 @@ class ClientDiscovery
     public const THRESHOLD_RATE_REMAIN_USER = 2000;
     private $client;
 
-    public function __construct(private UserRepository $userRepository, private RedisClient $redis, private string $clientId, private string $clientSecret, private LoggerInterface $logger, RetryAfterPlugin $retryAfter = new RetryAfterPlugin())
+    public function __construct(private UserRepository $userRepository, private RedisClient $redis, private string $clientId, private string $clientSecret, private LoggerInterface $logger, RetryAfterPlugin $retryAfter = new RetryAfterPlugin(), private ?RateLimitClient $rateLimitClient = null)
     {
-        $builder = new Builder();
+        $builder = new Builder($this->rateLimitClient);
         $this->client = new GithubClient($builder);
         // Inspect responses before GithubExceptionThrower turns them into exceptions.
         $builder->addPlugin($retryAfter);
@@ -39,6 +39,7 @@ class ClientDiscovery
     public function setGithubClient(GithubClient $client): void
     {
         $this->client = $client;
+        $this->rateLimitClient?->clear();
     }
 
     /**
@@ -63,6 +64,7 @@ class ClientDiscovery
         );
 
         // try with the application default client
+        $this->rateLimitClient?->clear();
         $this->client->authenticate($this->clientId, $this->clientSecret, AuthMethod::CLIENT_ID);
 
         $remaining = $this->getRateLimits($this->client, $this->logger);
@@ -76,6 +78,7 @@ class ClientDiscovery
         // when at least one is ok, use it!
         $users = $this->userRepository->findAllTokens();
         foreach ($users as $user) {
+            $this->rateLimitClient?->clear();
             $this->client->authenticate($user['accessToken'], null, AuthMethod::ACCESS_TOKEN);
 
             $remaining = $this->getRateLimits($this->client, $this->logger);

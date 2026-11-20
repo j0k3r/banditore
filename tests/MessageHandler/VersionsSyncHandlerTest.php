@@ -4,6 +4,7 @@ namespace App\Tests\MessageHandler;
 
 use App\Entity\Repo;
 use App\Entity\Version;
+use App\Github\RateLimitClient;
 use App\Message\VersionsSync;
 use App\MessageHandler\VersionsSyncHandler;
 use App\PubSubHubbub\Publisher;
@@ -17,6 +18,7 @@ use Github\HttpClient\Builder;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Http\Adapter\Guzzle7\Client as Guzzle7Client;
 use Monolog\Handler\TestHandler;
@@ -25,6 +27,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Clock\MockClock;
 
 class VersionsSyncHandlerTest extends WebTestCase
 {
@@ -515,6 +518,56 @@ class VersionsSyncHandlerTest extends WebTestCase
         $timings = $metrics['timings_ms'];
         $this->assertGreaterThan(0, $timings['tags']);
         $this->assertGreaterThanOrEqual(array_sum($timings) - $timings['total'], $timings['total'] + 0.01);
+    }
+
+    public static function recentQuotaCases(): iterable
+    {
+        yield 'fresh headers avoid quota endpoint' => [5000, 0, false, true];
+        yield 'exhausted headers block syncing' => [0, 0, false, false];
+        yield 'low quota is checked explicitly' => [199, 0, true, false];
+        yield 'expired quota is checked explicitly' => [5000, 30, true, false];
+        yield 'missing headers require explicit check' => [null, 0, true, false];
+    }
+
+    #[DataProvider('recentQuotaCases')]
+    public function testRecentQuotaPreservesTheInitialGuard(?int $remaining, int $elapsed, bool $fallback, bool $allowed): void
+    {
+        $clock = new MockClock('2026-11-20T13:00:00Z');
+        $responses = new MockHandler([
+            new Response(200, [
+                'X-RateLimit-Resource' => 'core',
+                'X-RateLimit-Remaining' => null === $remaining ? '' : (string) $remaining,
+                'X-RateLimit-Reset' => (string) ($clock->now()->getTimestamp() + 3600),
+            ]),
+            ...($fallback ? [$this->getOKResponse(['resources' => ['core' => ['reset' => $clock->now()->getTimestamp() + 3600, 'limit' => 5000, 'remaining' => 0]]])] : []),
+            ...($allowed ? [$this->getOKResponse([])] : []),
+        ]);
+        $trackedClient = new RateLimitClient(new Guzzle7Client(new Client(['handler' => $responses])), $clock);
+        $githubClient = new GithubClient(new Builder($trackedClient));
+        $trackedClient->sendRequest(new Request('GET', 'https://api.github.com/rate_limit'));
+        $clock->sleep($elapsed);
+
+        $repo = new Repo();
+        $repo->setId(123);
+        $repo->setFullName('bob/wow');
+        $repoRepository = $this->createStub(RepoRepository::class);
+        $repoRepository->method('find')->willReturn($repo);
+        $em = $this->createStub(EntityManager::class);
+        $em->method('isOpen')->willReturn(true);
+        $doctrine = $this->createMock(Registry::class);
+        $doctrine->expects($allowed ? $this->once() : $this->never())->method('getManager')->willReturn($em);
+        $publisher = $this->createMock(Publisher::class);
+        $publisher->expects($this->never())->method('pingHub');
+        $metricsLogHandler = new TestHandler();
+        $handler = new VersionsSyncHandler($doctrine, $repoRepository, $this->createStub(VersionRepository::class), $publisher, $githubClient, new NullLogger(), collectMetrics: true, metricsLogger: new Logger('metrics', [$metricsLogHandler]), rateLimitClient: $trackedClient);
+
+        $this->assertSame($allowed, $handler(new VersionsSync(123)));
+        $this->assertCount(0, $responses);
+        $this->assertCount(1, $metricsLogHandler->getRecords());
+        $metrics = $metricsLogHandler->getRecords()[0]->context;
+        $this->assertSame($allowed ? 'completed' : 'rate_limit_unavailable', $metrics['status']);
+        $this->assertArrayHasKey('rate_limit', $metrics['timings_ms']);
+        $this->assertGreaterThanOrEqual(0, $metrics['timings_ms']['rate_limit']);
     }
 
     /**

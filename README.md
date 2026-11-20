@@ -197,7 +197,8 @@ are logged. Context fields include:
   checks attempted, including checks for already-known tags.
 - `new_versions`: versions included in successful flushes during this message.
 - `timings_ms`: cumulative wall-clock milliseconds for `repo_lookup`, `rate_limit`
-  (the initial check only; the final quota request has been removed), `tags` (full
+  (the initial guard, using recent headers or an explicit quota request; the final
+  quota request has been removed), `tags` (full
   list and the probe when needed), `existing_versions` (initial version-existence
   check and per-tag lookups), `version_details`
   (release lookup and tag/commit/blob fallback), `markdown` (including retry sleeps),
@@ -260,6 +261,24 @@ repository as removed. Repositories with existing versions skip the preliminary
 tag probe; a 404/451 from the refs endpoint falls back to the probe so deleted tags
 are not mistaken for a deleted repository. The subscriber filter affects new sync
 waves, not messages already queued; do not purge the existing queue to apply it.
+
+### Release-sync quota checks
+
+Release workers reuse the `core` quota from fresh GitHub response headers, observed
+before the HTTP cache can replace a 304 response with older cached headers. Local
+cache hits do not refresh that quota snapshot.
+
+A snapshot is usable for at most 30 seconds, never beyond its reset timestamp.
+For a positive quota below 200 calls, or when the snapshot is missing, invalid or
+expired, the worker falls back to the explicit `/rate_limit` check. A fresh zero
+quota still blocks syncing. Snapshots are local to the worker, not a distributed
+rate limiter; other workers can consume the same quota during that short window.
+The `rate_limit` timing includes either the fast local lookup or its network
+fallback, so reused headers should make this phase almost free.
+
+Token discovery still checks `/rate_limit` explicitly for every candidate, clearing
+the snapshot when authentication changes. Starred-repository syncing and existing
+retry/acknowledgement behavior are unchanged.
 
 ## Running the test suite
 

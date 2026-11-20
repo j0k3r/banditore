@@ -79,6 +79,14 @@ services:
         class: Github\Client
         factory: [ "@App\\Github\\ClientDiscovery", find ]
 
+    banditore.client.github_http:
+        class: Psr\Http\Client\ClientInterface
+        factory: [ 'Http\Discovery\Psr18ClientDiscovery', find ]
+
+    App\Github\RateLimitClient:
+        arguments:
+            $client: '@banditore.client.github_http'
+
     # feed stuff
     banditore.writer.rss:
         class: MarcW\RssWriter\RssWriter
