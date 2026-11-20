@@ -57,6 +57,9 @@ class User implements UserInterface, EquatableInterface
     #[ORM\Column(name: 'access_token', type: 'string', length: 100, nullable: false)]
     private $accessToken;
 
+    #[ORM\Column(name: 'hide_prereleases', type: 'boolean', options: ['default' => false])]
+    private bool $hidePrereleases = false;
+
     /**
      * @var \DateTime
      */
@@ -191,6 +194,18 @@ class User implements UserInterface, EquatableInterface
     public function getName()
     {
         return (string) $this->name;
+    }
+
+    public function getHidePrereleases(): bool
+    {
+        return $this->hidePrereleases;
+    }
+
+    public function setHidePrereleases(bool $hidePrereleases): self
+    {
+        $this->hidePrereleases = $hidePrereleases;
+
+        return $this;
     }
 
     /**

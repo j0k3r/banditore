@@ -66,6 +66,18 @@ class StarRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function findExcludedForUser(int $userId): array
+    {
+        return $this->createQueryBuilder('s')
+            ->select('r.id AS repoId', 'r.fullName', 'r.ownerAvatar')
+            ->innerJoin('s.repo', 'r')
+            ->where('s.user = :userId')->setParameter('userId', $userId)
+            ->andWhere('s.ignoredInFeed = :ignoredInFeed')->setParameter('ignoredInFeed', true)
+            ->orderBy('r.fullName', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
     public function findOneByUserAndRepo(int $userId, int $repoId): ?Star
     {
         $stars = $this->createQueryBuilder('s')

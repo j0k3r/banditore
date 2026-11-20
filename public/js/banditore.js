@@ -19,6 +19,13 @@
         }, false)
     }
 
+    var prereleasePreference = document.getElementById('hide-prereleases')
+    if (prereleasePreference) {
+        prereleasePreference.addEventListener('change', function () {
+            prereleasePreference.form.requestSubmit()
+        })
+    }
+
     // handle rwd menu
     var menu = document.getElementById('menu'),
     WINDOW_CHANGE_EVENT = ('onorientationchange' in window) ? 'orientationchange':'resize'

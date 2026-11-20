@@ -18,7 +18,7 @@
 
         <aside class="feed pure-u-lg-3-5 pure-u-md-4-5 pure-u-sm-5-5">
             <p>You can grab your <b><a href="{{ url('rss_user', { uuid: app.user.uuid }) }}">feed link</a></b> and add it to your favorite feed reader. Every new release will show up in it.</p>
-            <p>If one repository is too noisy, you can ignore it from the RSS feed without unstarring it on GitHub.</p>
+            <p>If one repository is too noisy, you can ignore it from the RSS feed without unstarring it on GitHub. Manage exclusions and pre-releases in <a href="{{ path('config') }}">Config</a>.</p>
         </aside>
 
         <h2 class="content-head is-center">Your latest releases</h2>
@@ -34,10 +34,13 @@
                     ) }}
                 </p>
             {% endif %}
-        {% else %}
-            <p><i>Here are some sample display.</i></p>
         {% endif %}
 
+        {% if show_samples %}
+            <p><i>Here are some sample releases while your starred repositories sync.</i></p>
+        {% endif %}
+
+        {% if pagination.items or show_samples %}
         <table class="pure-table pure-table-rwd">
             <thead>
                 <tr>
@@ -66,6 +69,7 @@
                             <button type="button" class="feed-toggle-button">Exclude</button>
                         </td>
                     </tr>
+                    {% if not app.user.hidePrereleases %}
                     <tr class="pure-table-odd">
                         <td data-th="Repo">
                             <img class="repo-avatar" src="https://avatars2.githubusercontent.com/u/5909549?v=3&amp;s=25"/>
@@ -83,9 +87,13 @@
                             <button type="button" class="feed-toggle-button">Exclude</button>
                         </td>
                     </tr>
+                    {% endif %}
                 {% endfor -%}
             </tbody>
         </table>
+        {% else %}
+            <p class="is-center">No releases to show with pre-releases hidden. You can include them again in <a href="{{ path('config') }}">Config</a>.</p>
+        {% endif %}
 
         {% if pagination.items and pagination.totalNumberOfPages > 1 %}
             <p class="is-center">

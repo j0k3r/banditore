@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Config · Bandito.re{% endblock %}
+
+{% block body %}
+<div class="content">
+    <div class="middle-content">
+        {% if app.session.flashBag.has('info') %}
+            <div class="alert success">
+                <span class="close"><i class="fa fa-close"></i></span>
+                {{- app.session.flashBag.get('info')|first -}}
+            </div>
+        {% endif %}
+
+        <h2 class="content-head is-center">Configuration</h2>
+
+        <h3 class="content-subhead">Pre-releases</h3>
+        <form method="post" action="{{ path('config') }}" class="config-preferences">
+            <input type="hidden" name="_token" value="{{ csrf_token('config_preferences') }}"/>
+            <div>
+                <label for="hide-prereleases">
+                    <input type="checkbox" id="hide-prereleases" name="hide_prereleases" value="1" aria-describedby="prerelease-help"{% if app.user.hidePrereleases %} checked{% endif %}/>
+                    Hide pre-releases
+                </label>
+                <p id="prerelease-help">Applies to your dashboard and RSS feed. Only releases marked as pre-release on GitHub are hidden.</p>
+            </div>
+            <noscript><button type="submit" class="pure-button">Save</button></noscript>
+        </form>
+
+        <h3 class="content-subhead">Excluded repositories</h3>
+        <p>These repositories are excluded from your RSS feed, but remain visible on your dashboard and starred on GitHub. You can exclude a repository from the dashboard.</p>
+
+        {% if excluded_repositories %}
+            <table class="pure-table pure-table-rwd config-repositories">
+                <thead>
+                    <tr>
+                        <th>Repository</th>
+                        <th>Included in feed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for repo in excluded_repositories %}
+                        <tr class="{% if loop.index is odd %}pure-table-odd{% endif %}">
+                            <td data-th="Repo">
+                                <img class="repo-avatar" src="{{ repo.ownerAvatar }}" alt="" loading="lazy"/>
+                                <a href="https://github.com/{{ repo.fullName }}" class="repo-name">{{ repo.fullName }}</a>
+                            </td>
+                            <td data-th="Included">
+                                <span class="excluded-indicator" title="Excluded from RSS">
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </span>
+                                <form method="post" action="{{ path('dashboard_repo_feed', { repoId: repo.repoId }) }}" class="feed-toggle-form">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('repo_feed') }}"/>
+                                    <input type="hidden" name="ignore_in_feed" value="0"/>
+                                    <input type="hidden" name="from_config" value="1"/>
+                                    <button type="submit" class="feed-toggle-button">Include again</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No repositories are excluded from your RSS feed.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

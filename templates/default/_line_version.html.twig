@@ -31,6 +31,7 @@
             {% endif -%}
 
             <form action="{{ path('dashboard_repo_feed', { repoId: repo.repoId }) }}" method="post" class="feed-toggle-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('repo_feed') }}"/>
                 <input type="hidden" name="ignore_in_feed" value="{{ repo.ignoredInFeed|default(false) ? '0' : '1' }}"/>
                 <button type="submit" class="feed-toggle-button">
                     {{ repo.ignoredInFeed|default(false) ? 'Include again' : 'Exclude' }}
