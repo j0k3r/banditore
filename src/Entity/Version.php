@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: VersionRepository::class)]
 #[ORM\Table(name: 'version')]
 #[ORM\Index(name: 'created_at_idx', columns: ['created_at'])]
-#[ORM\Index(name: 'repo_created_at_idx', columns: ['repo_id', 'created_at'])]
+#[ORM\Index(name: 'repo_created_at_idx', columns: ['repo_id', 'created_at', 'prerelease'])]
 #[ORM\Index(name: 'tag_name_name_created_at_prerelease_repo_id', columns: ['tag_name', 'name', 'created_at', 'prerelease', 'repo_id'])]
 #[ORM\UniqueConstraint(name: 'repo_version_unique', columns: ['repo_id', 'tag_name'])]
 class Version
