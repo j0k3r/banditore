@@ -2,6 +2,7 @@ monolog:
     channels: # To see all channels, run bin/console debug:autowiring logger
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
         - versions_sync_metrics
+        - starred_repos_sync_metrics
     handlers:
         versions_sync_metrics:
             # Diagnostic log failures must not fail sync messages.
@@ -14,6 +15,17 @@ monolog:
             level: info
             max_files: 3
             formatter: monolog.formatter.json
+        starred_repos_sync_metrics:
+            # Diagnostic log failures must not fail sync messages.
+            type: whatfailuregroup
+            members: [starred_repos_sync_metrics_file]
+            channels: [starred_repos_sync_metrics]
+        starred_repos_sync_metrics_file:
+            type: rotating_file
+            path: "%kernel.logs_dir%/starred-repos-sync-metrics.log"
+            level: info
+            max_files: 3
+            formatter: monolog.formatter.json
 
 when@dev:
     monolog:
@@ -22,11 +34,11 @@ when@dev:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: debug
-                channels: ["!event", "!versions_sync_metrics"]
+                channels: ["!event", "!versions_sync_metrics", "!starred_repos_sync_metrics"]
             console:
                 type: console
                 process_psr_3_messages: false
-                channels: ["!event", "!doctrine", "!console", "!versions_sync_metrics"]
+                channels: ["!event", "!doctrine", "!console", "!versions_sync_metrics", "!starred_repos_sync_metrics"]
 
 when@test:
     monolog:
@@ -36,7 +48,7 @@ when@test:
                 action_level: error
                 handler: nested
                 excluded_http_codes: [404, 405]
-                channels: ["!event", "!versions_sync_metrics"]
+                channels: ["!event", "!versions_sync_metrics", "!starred_repos_sync_metrics"]
             nested:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
@@ -50,7 +62,7 @@ when@prod:
                 action_level: error
                 handler: nested
                 excluded_http_codes: [404, 405]
-                channels: ["!deprecation", "!versions_sync_metrics"]
+                channels: ["!deprecation", "!versions_sync_metrics", "!starred_repos_sync_metrics"]
                 buffer_size: 50 # How many messages should be saved? Prevent memory leaks
             nested:
                 type: rotating_file
@@ -60,7 +72,7 @@ when@prod:
             console:
                 type: console
                 process_psr_3_messages: false
-                channels: ["!event", "!doctrine", "!versions_sync_metrics"]
+                channels: ["!event", "!doctrine", "!versions_sync_metrics", "!starred_repos_sync_metrics"]
             deprecation:
                 type: stream
                 channels: [deprecation]

@@ -24,6 +24,8 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
  * It might come from:
  *     - when user logged in
  *     - when we periodically sync user starred repos
+ *
+ * @phpstan-type SyncMetrics array{user_id: int, user: ?string, status: string, page_requests: int, stars_seen: int, existing_stars: int, repo_lookups: int, rate_limit_checks: int, flushes: int, added_stars: int, removed_stars: int, timings_ms: array<string, float>}
  */
 #[AsMessageHandler]
 class StarredReposSyncHandler
@@ -35,14 +37,51 @@ class StarredReposSyncHandler
     /**
      * Client parameter can be null when no available client were found by the Github Client Discovery.
      */
-    public function __construct(private ManagerRegistry $doctrine, private UserRepository $userRepository, private StarRepository $starRepository, private RepoRepository $repoRepository, private ?Client $client, private LoggerInterface $logger, private RedisClientInterface $redis)
+    public function __construct(private ManagerRegistry $doctrine, private UserRepository $userRepository, private StarRepository $starRepository, private RepoRepository $repoRepository, private ?Client $client, private LoggerInterface $logger, private RedisClientInterface $redis, private bool $collectMetrics = false, private ?LoggerInterface $metricsLogger = null)
     {
     }
 
     public function __invoke(StarredReposSync $message): bool
     {
+        $startedAt = hrtime(true);
+        $metrics = [
+            'user_id' => $message->getUserId(),
+            'user' => null,
+            'status' => 'failed',
+            'page_requests' => 0,
+            'stars_seen' => 0,
+            'existing_stars' => 0,
+            'repo_lookups' => 0,
+            'rate_limit_checks' => 0,
+            'flushes' => 0,
+            'added_stars' => 0,
+            'removed_stars' => 0,
+            'timings_ms' => array_fill_keys(['user_lookup', 'rate_limit', 'github_pages', 'existing_stars', 'repo_lookup', 'repo_processing', 'flush', 'cleanup'], 0.0),
+        ];
+
+        try {
+            return $this->sync($message, $metrics);
+        } catch (\Throwable $e) {
+            $metrics['status'] = 'failed';
+
+            throw $e;
+        } finally {
+            if ($this->collectMetrics) {
+                $this->recordDuration($metrics, 'total', $startedAt);
+                $metrics['timings_ms'] = array_map(static fn (float $duration): float => round($duration, 3), $metrics['timings_ms']);
+                ($this->metricsLogger ?? $this->logger)->info('Starred repos sync metrics', $metrics);
+            }
+        }
+    }
+
+    /**
+     * @param SyncMetrics $metrics
+     */
+    private function sync(StarredReposSync $message, array &$metrics): bool
+    {
         // in case no client with safe RateLimit were found
         if (null === $this->client) {
+            $metrics['status'] = 'no_client';
             $this->logger->error('No client provided');
 
             return false;
@@ -50,34 +89,46 @@ class StarredReposSyncHandler
 
         $userId = $message->getUserId();
 
-        /** @var User|null */
-        $user = $this->userRepository->find($userId);
+        $startedAt = hrtime(true);
+        try {
+            /** @var User|null */
+            $user = $this->userRepository->find($userId);
+        } finally {
+            $this->recordDuration($metrics, 'user_lookup', $startedAt);
+        }
 
         if (null === $user) {
+            $metrics['status'] = 'user_not_found';
             $this->logger->error('Can not find user', ['user' => $userId]);
 
             return false;
         }
+
+        $metrics['user'] = $user->getUsername();
 
         // to be able to notify user about repos sync (will be remove after 1h to avoid infinite sync notification)
         $this->redis->setex('banditore:user-sync:' . $user->getId(), 3600, time());
 
         $this->logger->info('Consume banditore.sync_starred_repos message', ['user' => $user->getUsername()]);
 
-        $rateLimit = $this->getRateLimits($this->client, $this->logger);
+        $rateLimit = $this->getMeasuredRateLimits($metrics);
 
         $this->logger->info('[' . $rateLimit . '] Check <info>' . $user->getUsername() . '</info> … ');
 
         if (0 === $rateLimit || false === $rateLimit) {
+            $metrics['status'] = 'rate_limit_unavailable';
             $this->logger->warning('RateLimit reached, stopping.');
 
             return false;
         }
 
         // this shouldn't be catched so the worker will die when an exception is thrown
-        $nbRepos = $this->doSyncRepo($user);
+        $nbRepos = $this->doSyncRepo($user, $metrics);
+        if ('partial' !== $metrics['status']) {
+            $metrics['status'] = null === $nbRepos ? 'fetch_failed' : 'completed';
+        }
 
-        $this->logger->notice('[' . $this->getRateLimits($this->client, $this->logger) . '] Synced repos: ' . $nbRepos, ['user' => $user->getUsername()]);
+        $this->logger->notice('[' . $this->getMeasuredRateLimits($metrics) . '] Synced repos: ' . $nbRepos, ['user' => $user->getUsername()]);
 
         // sync is done, remove notification
         $this->redis->del(['banditore:user-sync:' . $user->getId()]);
@@ -88,9 +139,10 @@ class StarredReposSyncHandler
     /**
      * Do the job to sync repo & star of a user.
      *
-     * @param User $user User to work on
+     * @param User        $user    User to work on
+     * @param SyncMetrics $metrics
      */
-    private function doSyncRepo(User $user): ?int
+    private function doSyncRepo(User $user, array &$metrics): ?int
     {
         $newStars = [];
         $page = 1;
@@ -109,7 +161,7 @@ class StarredReposSyncHandler
         }
 
         try {
-            $starredRepos = $githubUserApi->starred($user->getUsername(), $page, $perPage);
+            $starredRepos = $this->fetchStarredRepos($githubUserApi, $user, $page, $perPage, $metrics);
         } catch (\Exception $e) {
             $this->logger->warning('(starred) <error>' . $e->getMessage() . '</error>');
 
@@ -122,50 +174,83 @@ class StarredReposSyncHandler
             return null;
         }
 
-        $currentStars = $this->starRepository->findAllByUser($user->getId());
+        $startedAt = hrtime(true);
+        try {
+            $currentStars = $this->starRepository->findAllByUser($user->getId());
+            $metrics['existing_stars'] = \count($currentStars);
+        } finally {
+            $this->recordDuration($metrics, 'existing_stars', $startedAt);
+        }
 
         do {
+            $addedStars = 0;
             $this->logger->info('    sync ' . \count($starredRepos) . ' starred repos', [
                 'user' => $user->getUsername(),
-                'rate' => $this->getRateLimits($this->client, $this->logger),
+                'rate' => $this->getMeasuredRateLimits($metrics),
             ]);
 
             foreach ($starredRepos as $starredRepo) {
-                /** @var Repo|null */
-                $repo = $this->repoRepository->find($starredRepo['id']);
-
-                // if repo doesn't exist
-                // OR repo doesn't get updated since XX days
-                if (null === $repo || $repo->getUpdatedAt()->diff(new \DateTime())->days > self::DAYS_SINCE_LAST_UPDATE) {
-                    $repo ??= new Repo();
-
-                    $repo->hydrateFromGithub($starredRepo);
-                    $em->persist($repo);
+                ++$metrics['repo_lookups'];
+                $startedAt = hrtime(true);
+                try {
+                    /** @var Repo|null */
+                    $repo = $this->repoRepository->find($starredRepo['id']);
+                } finally {
+                    $this->recordDuration($metrics, 'repo_lookup', $startedAt);
                 }
 
-                // store current repo id to compare it later when we'll sync removed star
-                // using `id` instead of `full_name` to be more accurated (full_name can change)
-                $newStars[] = $repo->getId();
+                $startedAt = hrtime(true);
+                try {
+                    // if repo doesn't exist
+                    // OR repo doesn't get updated since XX days
+                    if (null === $repo || $repo->getUpdatedAt()->diff(new \DateTime())->days > self::DAYS_SINCE_LAST_UPDATE) {
+                        $repo ??= new Repo();
 
-                if (false === \in_array($repo->getId(), $currentStars, true)) {
-                    $star = new Star($user, $repo);
+                        $repo->hydrateFromGithub($starredRepo);
+                        $em->persist($repo);
+                    }
 
-                    $em->persist($star);
+                    // store current repo id to compare it later when we'll sync removed star
+                    // using `id` instead of `full_name` to be more accurated (full_name can change)
+                    $newStars[] = $repo->getId();
+
+                    if (false === \in_array($repo->getId(), $currentStars, true)) {
+                        $star = new Star($user, $repo);
+
+                        $em->persist($star);
+                        ++$addedStars;
+                    }
+                } finally {
+                    $this->recordDuration($metrics, 'repo_processing', $startedAt);
                 }
             }
 
-            $em->flush();
+            $startedAt = hrtime(true);
+            try {
+                $em->flush();
+                ++$metrics['flushes'];
+                $metrics['added_stars'] += $addedStars;
+            } finally {
+                $this->recordDuration($metrics, 'flush', $startedAt);
+            }
 
             try {
-                $starredRepos = $githubUserApi->starred($user->getUsername(), ++$page, $perPage);
+                $starredRepos = $this->fetchStarredRepos($githubUserApi, $user, ++$page, $perPage, $metrics);
             } catch (RuntimeException) {
                 // api limit is reached or whatever other error, we'll try next time
+                $metrics['status'] = 'partial';
+
                 return null;
             }
         } while (!empty($starredRepos));
 
         // now remove unstarred repos
-        $this->doCleanOldStar($user, $newStars);
+        $startedAt = hrtime(true);
+        try {
+            $this->doCleanOldStar($user, $newStars, $metrics);
+        } finally {
+            $this->recordDuration($metrics, 'cleanup', $startedAt);
+        }
 
         return \count($newStars);
     }
@@ -174,9 +259,10 @@ class StarredReposSyncHandler
      * Clean old star.
      * When user unstar a repo we also need to remove that association.
      *
-     * @param array $newStars Current starred repos Id of the user
+     * @param array       $newStars Current starred repos Id of the user
+     * @param SyncMetrics $metrics
      */
-    private function doCleanOldStar(User $user, array $newStars): void
+    private function doCleanOldStar(User $user, array $newStars, array &$metrics): void
     {
         $currentStars = $this->starRepository->findAllByUser($user->getId());
         $repoIdsToRemove = array_diff($currentStars, $newStars);
@@ -185,6 +271,46 @@ class StarredReposSyncHandler
             $this->logger->info('Removed stars: ' . \count($repoIdsToRemove), ['user' => $user->getUsername()]);
 
             $this->starRepository->removeFromUser($repoIdsToRemove, $user->getId());
+            $metrics['removed_stars'] = \count($repoIdsToRemove);
         }
+    }
+
+    /**
+     * @param SyncMetrics $metrics
+     */
+    private function fetchStarredRepos(\Github\Api\User $api, User $user, int $page, int $perPage, array &$metrics): array
+    {
+        ++$metrics['page_requests'];
+        $startedAt = hrtime(true);
+        try {
+            $repos = $api->starred($user->getUsername(), $page, $perPage);
+            $metrics['stars_seen'] += \count($repos);
+
+            return $repos;
+        } finally {
+            $this->recordDuration($metrics, 'github_pages', $startedAt);
+        }
+    }
+
+    /**
+     * @param SyncMetrics $metrics
+     */
+    private function getMeasuredRateLimits(array &$metrics): false|int
+    {
+        ++$metrics['rate_limit_checks'];
+        $startedAt = hrtime(true);
+        try {
+            return $this->getRateLimits($this->client, $this->logger);
+        } finally {
+            $this->recordDuration($metrics, 'rate_limit', $startedAt);
+        }
+    }
+
+    /**
+     * @param SyncMetrics $metrics
+     */
+    private function recordDuration(array &$metrics, string $phase, int $startedAt): void
+    {
+        $metrics['timings_ms'][$phase] = ($metrics['timings_ms'][$phase] ?? 0.0) + (hrtime(true) - $startedAt) / 1_000_000;
     }
 }
