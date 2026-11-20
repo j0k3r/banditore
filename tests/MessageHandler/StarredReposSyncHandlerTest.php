@@ -21,6 +21,7 @@ use GuzzleHttp\Psr7\Response;
 use Http\Adapter\Guzzle7\Client as Guzzle7Client;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -59,13 +60,25 @@ class StarredReposSyncHandlerTest extends WebTestCase
             $repoRepository,
             $githubClient,
             new NullLogger(),
-            $redisClient
+            $redisClient,
+            true,
+            new Logger('metrics', [$metricsLogHandler = new TestHandler()])
         );
 
-        $handler->__invoke(new StarredReposSync(123));
+        $this->assertFalse($handler->__invoke(new StarredReposSync(123)));
+        $metrics = $this->assertMetrics($metricsLogHandler, 'user_not_found');
+        $this->assertNull($metrics['user']);
+        $this->assertSame(0, $metrics['page_requests']);
     }
 
-    public function testProcessSuccessfulMessage(): void
+    public static function metricsModes(): iterable
+    {
+        yield 'metrics disabled' => [false];
+        yield 'metrics enabled' => [true];
+    }
+
+    #[DataProvider('metricsModes')]
+    public function testProcessSuccessfulMessage(bool $collectMetrics): void
     {
         $em = $this->createMock(EntityManager::class);
         $em->expects($this->once())
@@ -154,10 +167,26 @@ class StarredReposSyncHandlerTest extends WebTestCase
             $repoRepository,
             $githubClient,
             $logger,
-            $redisClient
+            $redisClient,
+            $collectMetrics,
+            new Logger('metrics', [$metricsLogHandler = new TestHandler()])
         );
 
-        $handler->__invoke(new StarredReposSync(123));
+        $this->assertTrue($handler->__invoke(new StarredReposSync(123)));
+        $this->assertCount(0, $responses);
+        $this->assertCount($collectMetrics ? 1 : 0, $metricsLogHandler->getRecords());
+        if ($collectMetrics) {
+            $metrics = $this->assertMetrics($metricsLogHandler, 'completed');
+            $this->assertSame('bob', $metrics['user']);
+            $this->assertSame(2, $metrics['page_requests']);
+            $this->assertSame(1, $metrics['stars_seen']);
+            $this->assertSame(2, $metrics['existing_stars']);
+            $this->assertSame(1, $metrics['repo_lookups']);
+            $this->assertSame(3, $metrics['rate_limit_checks']);
+            $this->assertSame(1, $metrics['flushes']);
+            $this->assertSame(0, $metrics['added_stars']);
+            $this->assertSame(1, $metrics['removed_stars']);
+        }
 
         $records = $logHandler->getRecords();
 
@@ -228,10 +257,17 @@ class StarredReposSyncHandlerTest extends WebTestCase
             $repoRepository,
             $githubClient,
             $logger,
-            $redisClient
+            $redisClient,
+            true,
+            new Logger('metrics', [$metricsLogHandler = new TestHandler()])
         );
 
-        $handler->__invoke(new StarredReposSync(123));
+        $this->assertTrue($handler->__invoke(new StarredReposSync(123)));
+        $metrics = $this->assertMetrics($metricsLogHandler, 'fetch_failed');
+        $this->assertSame(1, $metrics['page_requests']);
+        $this->assertSame(0, $metrics['stars_seen']);
+        $this->assertSame(0, $metrics['flushes']);
+        $this->assertSame(0, $metrics['removed_stars']);
 
         $records = $logHandler->getRecords();
 
@@ -321,10 +357,19 @@ class StarredReposSyncHandlerTest extends WebTestCase
             $repoRepository,
             $githubClient,
             new NullLogger(),
-            $redisClient
+            $redisClient,
+            true,
+            new Logger('metrics', [$metricsLogHandler = new TestHandler()])
         );
 
-        $handler->__invoke(new StarredReposSync(123));
+        try {
+            $handler->__invoke(new StarredReposSync(123));
+        } finally {
+            $metrics = $this->assertMetrics($metricsLogHandler, 'failed');
+            $this->assertSame(1, $metrics['repo_lookups']);
+            $this->assertSame(0, $metrics['flushes']);
+            $this->assertSame(0, $metrics['added_stars']);
+        }
     }
 
     /**
@@ -467,10 +512,15 @@ class StarredReposSyncHandlerTest extends WebTestCase
             $repoRepository,
             null, // simulate a bad client
             $logger,
-            $redisClient
+            $redisClient,
+            true,
+            new Logger('metrics', [$metricsLogHandler = new TestHandler()])
         );
 
-        $handler->__invoke(new StarredReposSync(123));
+        $this->assertFalse($handler->__invoke(new StarredReposSync(123)));
+        $metrics = $this->assertMetrics($metricsLogHandler, 'no_client');
+        $this->assertSame(0, $metrics['page_requests']);
+        $this->assertSame(0, $metrics['rate_limit_checks']);
 
         $records = $logHandler->getRecords();
 
@@ -536,16 +586,127 @@ class StarredReposSyncHandlerTest extends WebTestCase
             $repoRepository,
             $githubClient,
             $logger,
-            $redisClient
+            $redisClient,
+            true,
+            new Logger('metrics', [$metricsLogHandler = new TestHandler()])
         );
 
-        $handler->__invoke(new StarredReposSync(123));
+        $this->assertFalse($handler->__invoke(new StarredReposSync(123)));
+        $metrics = $this->assertMetrics($metricsLogHandler, 'rate_limit_unavailable');
+        $this->assertSame(0, $metrics['page_requests']);
+        $this->assertSame(1, $metrics['rate_limit_checks']);
 
         $records = $logHandler->getRecords();
 
         $this->assertSame('Consume banditore.sync_starred_repos message', $records[0]['message']);
         $this->assertSame('[0] Check <info>bob</info> … ', $records[1]['message']);
         $this->assertSame('RateLimit reached, stopping.', $records[2]['message']);
+    }
+
+    public function testEmptyAccountMetricsResetBetweenMessages(): void
+    {
+        $em = $this->createMock(EntityManager::class);
+        $em->expects($this->exactly(2))->method('isOpen')->willReturn(true);
+        $em->expects($this->exactly(2))->method('flush');
+        $em->expects($this->never())->method('persist');
+        $doctrine = $this->createStub(Registry::class);
+        $doctrine->method('getManager')->willReturn($em);
+        $user = new User();
+        $user->setId(123);
+        $user->setUsername('bob');
+        $userRepository = $this->createStub(UserRepository::class);
+        $userRepository->method('find')->willReturn($user);
+        $starRepository = $this->createMock(StarRepository::class);
+        $starRepository->expects($this->exactly(4))->method('findAllByUser')->willReturnOnConsecutiveCalls([555], [555], [], []);
+        $starRepository->expects($this->once())->method('removeFromUser')->with([555], 123);
+        $repoRepository = $this->createMock(RepoRepository::class);
+        $repoRepository->expects($this->never())->method('find');
+        $rateLimit = $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]);
+        $emptyPage = $this->getOKResponse([]);
+        $responses = new MockHandler([$rateLimit, $emptyPage, $rateLimit, $emptyPage, $rateLimit, $rateLimit, $emptyPage, $rateLimit, $emptyPage, $rateLimit]);
+        $metricsLogHandler = new TestHandler();
+        $handler = new StarredReposSyncHandler($doctrine, $userRepository, $starRepository, $repoRepository, $this->getMockClient($responses), new NullLogger(), $this->createStub(\Predis\Client::class), true, new Logger('metrics', [$metricsLogHandler]));
+
+        foreach ([1, 0] as $removedStars) {
+            $metricsLogHandler->clear();
+            $this->assertTrue($handler->__invoke(new StarredReposSync(123)));
+            $metrics = $this->assertMetrics($metricsLogHandler, 'completed');
+            $this->assertSame(2, $metrics['page_requests']);
+            $this->assertSame(3, $metrics['rate_limit_checks']);
+            $this->assertSame(0, $metrics['stars_seen']);
+            $this->assertSame(1, $metrics['flushes']);
+            $this->assertSame(0, $metrics['added_stars']);
+            $this->assertSame($removedStars, $metrics['removed_stars']);
+        }
+        $this->assertCount(0, $responses);
+    }
+
+    public static function partialFailures(): iterable
+    {
+        yield 'later page fails' => [false];
+        yield 'flush fails' => [true];
+    }
+
+    #[DataProvider('partialFailures')]
+    public function testMetricsOnPartialImport(bool $failFlush): void
+    {
+        $em = $this->createMock(EntityManager::class);
+        $em->expects($this->once())->method('isOpen')->willReturn(true);
+        $em->expects($this->exactly(2))->method('persist');
+        $em->expects($this->once())->method('flush')->willReturnCallback(static function () use ($failFlush): void {
+            if ($failFlush) {
+                throw new \RuntimeException('Flush failed');
+            }
+        });
+        $doctrine = $this->createMock(Registry::class);
+        $doctrine->expects($this->once())->method('getManager')->willReturn($em);
+        $user = new User();
+        $user->setId(123);
+        $user->setUsername('bob');
+        $userRepository = $this->createMock(UserRepository::class);
+        $userRepository->expects($this->once())->method('find')->with(123)->willReturn($user);
+        $starRepository = $this->createMock(StarRepository::class);
+        $starRepository->expects($this->once())->method('findAllByUser')->with(123)->willReturn([555]);
+        $starRepository->expects($this->never())->method('removeFromUser');
+        $repoRepository = $this->createMock(RepoRepository::class);
+        $repoRepository->expects($this->once())->method('find')->with(666)->willReturn(null);
+        $rateLimit = $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]);
+        $responses = new MockHandler([
+            $rateLimit,
+            $this->getOKResponse([[
+                'id' => 666,
+                'name' => 'banditore',
+                'full_name' => 'j0k3r/banditore',
+                'description' => 'banditore',
+                'homepage' => null,
+                'language' => 'PHP',
+                'owner' => ['avatar_url' => 'https://example.com/avatar.jpg'],
+            ]]),
+            $rateLimit,
+            new Response(500, ['Content-Type' => 'application/json'], '{"message":"Unavailable"}'),
+            $rateLimit,
+        ]);
+        $redisClient = $this->createMock(\Predis\Client::class);
+        $redisClient->expects($this->exactly($failFlush ? 1 : 2))->method('__call');
+        $metricsLogHandler = new TestHandler();
+        $handler = new StarredReposSyncHandler($doctrine, $userRepository, $starRepository, $repoRepository, $this->getMockClient($responses), new NullLogger(), $redisClient, true, new Logger('metrics', [$metricsLogHandler]));
+
+        if ($failFlush) {
+            $this->expectException(\RuntimeException::class);
+            $this->expectExceptionMessageIsOrContains('Flush failed');
+        }
+        try {
+            $this->assertTrue($handler->__invoke(new StarredReposSync(123)));
+        } finally {
+            $metrics = $this->assertMetrics($metricsLogHandler, $failFlush ? 'failed' : 'partial');
+            $this->assertSame($failFlush ? 1 : 2, $metrics['page_requests']);
+            $this->assertSame(1, $metrics['stars_seen']);
+            $this->assertSame(1, $metrics['existing_stars']);
+            $this->assertSame(1, $metrics['repo_lookups']);
+            $this->assertSame($failFlush ? 0 : 1, $metrics['flushes']);
+            $this->assertSame($failFlush ? 0 : 1, $metrics['added_stars']);
+            $this->assertSame(0, $metrics['removed_stars']);
+        }
     }
 
     public function testFunctionalConsumer(): void
@@ -596,7 +757,18 @@ class StarredReposSyncHandlerTest extends WebTestCase
         // override factory to avoid real call to Github
         self::getContainer()->set('banditore.client.github.test', $githubClient);
 
-        $handler = self::getContainer()->get(StarredReposSyncHandler::class);
+        $metricsLogHandler = new TestHandler();
+        $handler = new StarredReposSyncHandler(
+            self::getContainer()->get('doctrine'),
+            self::getContainer()->get(UserRepository::class),
+            self::getContainer()->get(StarRepository::class),
+            self::getContainer()->get(RepoRepository::class),
+            $githubClient,
+            new NullLogger(),
+            self::getContainer()->get('snc_redis.app_cache'),
+            true,
+            new Logger('metrics', [$metricsLogHandler])
+        );
 
         // before import
         $stars = self::getContainer()->get(StarRepository::class)->findAllByUser(123);
@@ -611,11 +783,40 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $this->assertNotNull($repo, 'Imported repo with id 777 exists');
         $this->assertSame('j0k3r/banditore', $repo->getFullName(), 'Imported repo with id 777 exists');
 
+        $metrics = $this->assertMetrics($metricsLogHandler, 'completed');
+        $this->assertSame(3, $metrics['page_requests']);
+        $this->assertSame(2, $metrics['stars_seen']);
+        $this->assertSame(2, $metrics['repo_lookups']);
+        $this->assertSame(4, $metrics['rate_limit_checks']);
+        $this->assertSame(2, $metrics['flushes']);
+        $this->assertSame(1, $metrics['added_stars']);
+        $this->assertSame(1, $metrics['removed_stars']);
+
         // validate that `test/test` association got removed
         $stars = self::getContainer()->get(StarRepository::class)->findAllByUser(123);
         $this->assertCount(2, $stars, 'User 123 has 2 starred repos');
         $this->assertSame(666, $stars[0], 'User 123 has "test/test" starred repo');
         $this->assertSame(777, $stars[1], 'User 123 has "j0k3r/banditore" starred repo');
+    }
+
+    private function assertMetrics(TestHandler $logHandler, string $status): array
+    {
+        $records = $logHandler->getRecords();
+        $this->assertCount(1, $records);
+        $this->assertSame('Starred repos sync metrics', $records[0]->message);
+        $metrics = $records[0]->context;
+        $this->assertSame(123, $metrics['user_id']);
+        $this->assertSame($status, $metrics['status']);
+        $this->assertSame(['user_lookup', 'rate_limit', 'github_pages', 'existing_stars', 'repo_lookup', 'repo_processing', 'flush', 'cleanup', 'total'], array_keys($metrics['timings_ms']));
+        foreach ($metrics['timings_ms'] as $duration) {
+            $this->assertGreaterThanOrEqual(0, $duration);
+        }
+        $timings = $metrics['timings_ms'];
+        $total = $timings['total'];
+        unset($timings['total']);
+        $this->assertGreaterThanOrEqual(array_sum($timings) - 0.01, $total);
+
+        return $metrics;
     }
 
     private function getOKResponse(array $body): Response
@@ -663,6 +864,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
 
         $guzzleClient = new Client([
             'handler' => $clientHandler,
+            'http_errors' => false,
         ]);
 
         $httpClient = new Guzzle7Client($guzzleClient);

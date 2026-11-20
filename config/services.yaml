@@ -64,6 +64,8 @@ services:
         lazy: true
         arguments:
             $redis: "@snc_redis.app_cache"
+            $collectMetrics: '%env(bool:STARRED_REPOS_SYNC_METRICS)%'
+            $metricsLogger: '@monolog.logger.starred_repos_sync_metrics'
 
     App\MessageHandler\VersionsSyncHandler:
         lazy: true
