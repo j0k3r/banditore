@@ -67,6 +67,9 @@ services:
 
     App\MessageHandler\VersionsSyncHandler:
         lazy: true
+        arguments:
+            $collectMetrics: '%env(bool:VERSIONS_SYNC_METRICS)%'
+            $metricsLogger: '@monolog.logger.versions_sync_metrics'
 
     # github stuff
     banditore.client.guzzle:

@@ -21,6 +21,7 @@ use GuzzleHttp\Psr7\Response;
 use Http\Adapter\Guzzle7\Client as Guzzle7Client;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -189,7 +190,14 @@ class VersionsSyncHandlerTest extends WebTestCase
         ]);
     }
 
-    public function testProcessSuccessfulMessage(): void
+    public static function metricsModes(): iterable
+    {
+        yield 'disabled' => [false];
+        yield 'enabled' => [true];
+    }
+
+    #[DataProvider('metricsModes')]
+    public function testProcessSuccessfulMessage(bool $collectMetrics): void
     {
         $uow = $this->createMock(UnitOfWork::class);
         $uow->expects($this->exactly(3))
@@ -254,13 +262,16 @@ class VersionsSyncHandlerTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
+        $metricsLogHandler = new TestHandler();
         $handler = new VersionsSyncHandler(
             $doctrine,
             $repoRepository,
             $versionRepository,
             $pubsubhubbub,
             $githubClient,
-            $logger
+            $logger,
+            $collectMetrics,
+            new Logger('metrics', [$metricsLogHandler])
         );
 
         $handler->__invoke(new VersionsSync(123));
@@ -270,6 +281,24 @@ class VersionsSyncHandlerTest extends WebTestCase
         $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
         $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
         $this->assertSame('[10] <comment>3</comment> new versions for <info>bob/wow</info>', $records[2]['message']);
+        $this->assertCount($collectMetrics ? 1 : 0, $metricsLogHandler->getRecords());
+        if ($collectMetrics) {
+            $record = $metricsLogHandler->getRecords()[0];
+            $this->assertSame('Versions sync metrics', $record->message);
+            $this->assertSame(123, $record->context['repo_id']);
+            $this->assertSame('bob/wow', $record->context['repo']);
+            $this->assertSame('completed', $record->context['status']);
+            $this->assertSame(4, $record->context['tags']);
+            $this->assertSame(4, $record->context['existing_version_lookups']);
+            $this->assertSame(3, $record->context['new_versions']);
+            $timings = $record->context['timings_ms'];
+            $this->assertSame(['repo_lookup', 'rate_limit', 'tags', 'existing_versions', 'version_details', 'markdown', 'flush', 'hub', 'total'], array_keys($timings));
+            foreach ($timings as $duration) {
+                $this->assertGreaterThanOrEqual(0, $duration);
+            }
+            $this->assertGreaterThan(0, $timings['total']);
+            $this->assertGreaterThanOrEqual(array_sum($timings) - $timings['total'], $timings['total'] + 0.01);
+        }
     }
 
     /**
@@ -638,11 +667,61 @@ class VersionsSyncHandlerTest extends WebTestCase
         $logHandler = new TestHandler();
         $logger->pushHandler($logHandler);
 
-        $handler = new VersionsSyncHandler($doctrine, $repoRepository, $versionRepository, $publisher, $githubClient, $logger);
+        $metricsLogHandler = new TestHandler();
+        $metricsLogger = new Logger('metrics', [$metricsLogHandler]);
+        $handler = new VersionsSyncHandler($doctrine, $repoRepository, $versionRepository, $publisher, $githubClient, $logger, true, $metricsLogger);
 
         $this->assertTrue($handler(new VersionsSync(123)));
         $this->assertTrue($logHandler->hasWarningThatContains('Failed to parse markdown'));
         $this->assertTrue($logHandler->hasNoticeThatContains('<comment>1</comment> new versions'));
+        $this->assertCount(1, $metricsLogHandler->getRecords());
+        $metrics = $metricsLogHandler->getRecords()[0]->context;
+        $this->assertSame('partial', $metrics['status']);
+        $this->assertSame(4, $metrics['tags']);
+        $this->assertSame(3, $metrics['existing_version_lookups']);
+        $this->assertSame(1, $metrics['new_versions']);
+        $this->assertGreaterThan(0, $metrics['timings_ms']['markdown']);
+    }
+
+    public function testMetricsAreLoggedOnExceptionAndResetForNextMessage(): void
+    {
+        $exception = new \RuntimeException('Database unavailable');
+        $repoRepository = $this->createMock(RepoRepository::class);
+        $repoRepository->expects($this->exactly(2))->method('find')->willReturnCallback(static function ($repoId) use ($exception) {
+            if (123 === $repoId) {
+                throw $exception;
+            }
+
+            return null;
+        });
+        $metricsLogHandler = new TestHandler();
+        $handler = new VersionsSyncHandler(
+            $this->createStub(Registry::class),
+            $repoRepository,
+            $this->createStub(VersionRepository::class),
+            $this->createStub(Publisher::class),
+            $this->createStub(GithubClient::class),
+            new NullLogger(),
+            true,
+            new Logger('metrics', [$metricsLogHandler])
+        );
+
+        try {
+            $handler(new VersionsSync(123));
+            $this->fail('The original exception must propagate.');
+        } catch (\RuntimeException $e) {
+            $this->assertSame($exception, $e);
+        }
+        $this->assertFalse($handler(new VersionsSync(456)));
+        $records = $metricsLogHandler->getRecords();
+        $this->assertCount(2, $records);
+        $this->assertSame('failed', $records[0]->context['status']);
+        $this->assertSame(123, $records[0]->context['repo_id']);
+        $this->assertSame('repo_not_found', $records[1]->context['status']);
+        $this->assertSame(456, $records[1]->context['repo_id']);
+        $this->assertNull($records[1]->context['repo']);
+        $this->assertSame(0, $records[1]->context['existing_version_lookups']);
+        $this->assertSame(0.0, $records[1]->context['timings_ms']['markdown']);
     }
 
     /**
