@@ -5,6 +5,7 @@ namespace App\MessageHandler;
 use App\Entity\Repo;
 use App\Entity\Star;
 use App\Entity\User;
+use App\Github\RateLimitClient;
 use App\Github\RateLimitTrait;
 use App\Message\StarredReposSync;
 use App\Repository\RepoRepository;
@@ -14,6 +15,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Github\Client;
 use Github\Exception\RuntimeException;
+use Github\ResultPager;
 use Predis\ClientInterface as RedisClientInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -25,7 +27,7 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
  *     - when user logged in
  *     - when we periodically sync user starred repos
  *
- * @phpstan-type SyncMetrics array{user_id: int, user: ?string, status: string, page_requests: int, stars_seen: int, existing_stars: int, repo_lookups: int, rate_limit_checks: int, flushes: int, added_stars: int, removed_stars: int, timings_ms: array<string, float>}
+ * @phpstan-type SyncMetrics array{user_id: int, user: ?string, status: string, page_requests: int, user_requests: int, stars_seen: int, existing_stars: int, repo_lookups: int, rate_limit_checks: int, flushes: int, added_stars: int, removed_stars: int, timings_ms: array<string, float>}
  */
 #[AsMessageHandler]
 class StarredReposSyncHandler
@@ -37,7 +39,7 @@ class StarredReposSyncHandler
     /**
      * Client parameter can be null when no available client were found by the Github Client Discovery.
      */
-    public function __construct(private ManagerRegistry $doctrine, private UserRepository $userRepository, private StarRepository $starRepository, private RepoRepository $repoRepository, private ?Client $client, private LoggerInterface $logger, private RedisClientInterface $redis, private bool $collectMetrics = false, private ?LoggerInterface $metricsLogger = null)
+    public function __construct(private ManagerRegistry $doctrine, private UserRepository $userRepository, private StarRepository $starRepository, private RepoRepository $repoRepository, private ?Client $client, private LoggerInterface $logger, private RedisClientInterface $redis, private bool $collectMetrics = false, private ?LoggerInterface $metricsLogger = null, private ?RateLimitClient $rateLimitClient = null)
     {
     }
 
@@ -49,6 +51,7 @@ class StarredReposSyncHandler
             'user' => null,
             'status' => 'failed',
             'page_requests' => 0,
+            'user_requests' => 0,
             'stars_seen' => 0,
             'existing_stars' => 0,
             'repo_lookups' => 0,
@@ -56,7 +59,7 @@ class StarredReposSyncHandler
             'flushes' => 0,
             'added_stars' => 0,
             'removed_stars' => 0,
-            'timings_ms' => array_fill_keys(['user_lookup', 'rate_limit', 'github_pages', 'existing_stars', 'repo_lookup', 'repo_processing', 'flush', 'cleanup'], 0.0),
+            'timings_ms' => array_fill_keys(['user_lookup', 'rate_limit', 'github_pages', 'github_user', 'existing_stars', 'repo_lookup', 'repo_processing', 'flush', 'cleanup'], 0.0),
         ];
 
         try {
@@ -128,7 +131,7 @@ class StarredReposSyncHandler
             $metrics['status'] = null === $nbRepos ? 'fetch_failed' : 'completed';
         }
 
-        $this->logger->notice('[' . $this->getMeasuredRateLimits($metrics) . '] Synced repos: ' . $nbRepos, ['user' => $user->getUsername()]);
+        $this->logger->notice('Synced repos: ' . $nbRepos, ['user' => $user->getUsername()]);
 
         // sync is done, remove notification
         $this->redis->del(['banditore:user-sync:' . $user->getId()]);
@@ -145,8 +148,7 @@ class StarredReposSyncHandler
     private function doSyncRepo(User $user, array &$metrics): ?int
     {
         $newStars = [];
-        $page = 1;
-        $perPage = 100;
+        $pager = new ResultPager($this->client, 100);
 
         /** @var EntityManager */
         $em = $this->doctrine->getManager();
@@ -161,17 +163,21 @@ class StarredReposSyncHandler
         }
 
         try {
-            $starredRepos = $this->fetchStarredRepos($githubUserApi, $user, $page, $perPage, $metrics);
+            $starredRepos = $this->fetchStarredRepos($pager, $githubUserApi, $user, true, $metrics);
         } catch (\Exception $e) {
-            $this->logger->warning('(starred) <error>' . $e->getMessage() . '</error>');
+            $this->logger->warning('(starred) <error>' . $e->getMessage() . '</error>', ['user_id' => $user->getId(), 'user' => $user->getUsername()]);
 
-            // user got removed from GitHub
-            if (404 === $e->getCode()) {
-                $user->setRemovedAt(new \DateTime());
-                $em->persist($user);
+            if (404 !== $e->getCode() || !$this->refreshUser($githubUserApi, $user, $em, $metrics)) {
+                return null;
             }
 
-            return null;
+            try {
+                $starredRepos = $this->fetchStarredRepos($pager, $githubUserApi, $user, true, $metrics);
+            } catch (\Exception $e) {
+                $this->logger->warning('(starred) <error>' . $e->getMessage() . '</error>', ['user_id' => $user->getId(), 'user' => $user->getUsername()]);
+
+                return null;
+            }
         }
 
         $startedAt = hrtime(true);
@@ -186,7 +192,6 @@ class StarredReposSyncHandler
             $addedStars = 0;
             $this->logger->info('    sync ' . \count($starredRepos) . ' starred repos', [
                 'user' => $user->getUsername(),
-                'rate' => $this->getMeasuredRateLimits($metrics),
             ]);
 
             foreach ($starredRepos as $starredRepo) {
@@ -225,17 +230,14 @@ class StarredReposSyncHandler
                 }
             }
 
-            $startedAt = hrtime(true);
-            try {
-                $em->flush();
-                ++$metrics['flushes'];
-                $metrics['added_stars'] += $addedStars;
-            } finally {
-                $this->recordDuration($metrics, 'flush', $startedAt);
+            $this->flush($em, $metrics, $addedStars);
+
+            if (!$pager->hasNext()) {
+                break;
             }
 
             try {
-                $starredRepos = $this->fetchStarredRepos($githubUserApi, $user, ++$page, $perPage, $metrics);
+                $starredRepos = $this->fetchStarredRepos($pager, $githubUserApi, $user, false, $metrics);
             } catch (RuntimeException) {
                 // api limit is reached or whatever other error, we'll try next time
                 $metrics['status'] = 'partial';
@@ -278,12 +280,12 @@ class StarredReposSyncHandler
     /**
      * @param SyncMetrics $metrics
      */
-    private function fetchStarredRepos(\Github\Api\User $api, User $user, int $page, int $perPage, array &$metrics): array
+    private function fetchStarredRepos(ResultPager $pager, \Github\Api\User $api, User $user, bool $firstPage, array &$metrics): array
     {
         ++$metrics['page_requests'];
         $startedAt = hrtime(true);
         try {
-            $repos = $api->starred($user->getUsername(), $page, $perPage);
+            $repos = $firstPage ? $pager->fetch($api, 'starred', [$user->getUsername(), 1, 100]) : $pager->fetchNext();
             $metrics['stars_seen'] += \count($repos);
 
             return $repos;
@@ -297,12 +299,71 @@ class StarredReposSyncHandler
      */
     private function getMeasuredRateLimits(array &$metrics): false|int
     {
-        ++$metrics['rate_limit_checks'];
         $startedAt = hrtime(true);
         try {
+            $remaining = $this->rateLimitClient?->getRecentRemaining();
+            if (null !== $remaining) {
+                return $remaining;
+            }
+
+            ++$metrics['rate_limit_checks'];
+
             return $this->getRateLimits($this->client, $this->logger);
         } finally {
             $this->recordDuration($metrics, 'rate_limit', $startedAt);
+        }
+    }
+
+    /**
+     * @param SyncMetrics $metrics
+     */
+    private function refreshUser(\Github\Api\User $api, User $user, EntityManager $em, array &$metrics): bool
+    {
+        ++$metrics['user_requests'];
+        $startedAt = hrtime(true);
+        try {
+            try {
+                $account = $api->showById($user->getId());
+            } finally {
+                $this->recordDuration($metrics, 'github_user', $startedAt);
+            }
+        } catch (\Exception $e) {
+            $this->logger->warning('(user/id) <error>' . $e->getMessage() . '</error>', ['user_id' => $user->getId(), 'user' => $user->getUsername()]);
+
+            // A stale login is not enough to disable a user; confirm unavailability by durable ID.
+            if (404 === $e->getCode()) {
+                $user->setRemovedAt(new \DateTime());
+                $em->persist($user);
+                $this->flush($em, $metrics);
+            }
+
+            return false;
+        }
+
+        if (($account['id'] ?? null) !== $user->getId() || !\is_string($account['login'] ?? null) || '' === $account['login'] || $account['login'] === $user->getUsername()) {
+            return false;
+        }
+
+        $user->setUsername($account['login']);
+        $em->persist($user);
+        $this->flush($em, $metrics);
+        $metrics['user'] = $user->getUsername();
+
+        return true;
+    }
+
+    /**
+     * @param SyncMetrics $metrics
+     */
+    private function flush(EntityManager $em, array &$metrics, int $addedStars = 0): void
+    {
+        $startedAt = hrtime(true);
+        try {
+            $em->flush();
+            ++$metrics['flushes'];
+            $metrics['added_stars'] += $addedStars;
+        } finally {
+            $this->recordDuration($metrics, 'flush', $startedAt);
         }
     }
 
