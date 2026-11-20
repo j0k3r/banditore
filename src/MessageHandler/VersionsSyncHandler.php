@@ -122,7 +122,7 @@ class VersionsSyncHandler
             }
         }
 
-        $this->logger->notice('[' . $this->getMeasuredRateLimits($metrics) . '] <comment>' . $nbVersions . '</comment> new versions for <info>' . $repo->getFullName() . '</info>');
+        $this->logger->notice('<comment>' . $nbVersions . '</comment> new versions for <info>' . $repo->getFullName() . '</info>');
 
         return true;
     }
@@ -164,6 +164,7 @@ class VersionsSyncHandler
             if (404 === $e->getCode() || 451 === $e->getCode()) {
                 $repo->setRemovedAt(new \DateTime());
                 $em->persist($repo);
+                $em->flush();
             }
 
             return null;

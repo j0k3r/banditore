@@ -171,6 +171,92 @@ There is a status page available at `/status`, it returns a json with some infor
 
 For example, I've setup a check on [updown.io](https://updown.io/r/P7qer) to check that status page and if the page contains `"is_fresh":true`. So I receive an alert when `is_fresh` is false: which means there is a potential issue on the server.
 
+### Measuring release-sync bottlenecks
+
+Timings are opt-in (`VERSIONS_SYNC_METRICS=0` by default). After deploying and
+refreshing the application cache, restart the existing workers so they also use the
+new code. Then run a bounded diagnostic consumer as the usual worker user,
+alongside the existing workers:
+
+```bash
+VERSIONS_SYNC_METRICS=1 php bin/console messenger:consume sync_versions -e prod --no-debug --limit=500 --time-limit=600
+```
+
+This **processes real queued messages**; it is not a dry run. The limits are checked
+between messages, so a single large import can exceed ten minutes. No new sync wave
+is needed. Do not enable the flag globally for a first measurement.
+
+Each handled message writes one JSON line to
+`var/log/versions-sync-metrics-YYYY-MM-DD.log`, independently of the production
+error-triggered logger. Three daily files are retained. No tokens or release bodies
+are logged. Context fields include:
+
+- `repo_id`, `repo`, `status`: `completed`, `partial`, `fetch_failed`,
+  `rate_limit_unavailable`, `no_client`, `repo_not_found`, or `failed` (exception).
+- `tags`: number of refs returned; `existing_version_lookups`: number of existence
+  checks attempted, including checks for already-known tags.
+- `new_versions`: versions included in successful flushes during this message.
+- `timings_ms`: cumulative wall-clock milliseconds for `repo_lookup`, `rate_limit`
+  (the initial check only; the final quota request has been removed), `tags` (probe and full list), `existing_versions`, `version_details`
+  (release lookup and tag/commit/blob fallback), `markdown` (including retry sleeps),
+  `flush`, `hub`, and the handler `total`.
+
+Timers include cache access, response decoding and failed calls, not just network or
+SQL execution. The total also includes untimed work such as entity hydration and
+pending-insertion checks. The first message may also include lazy dependency
+initialization/client discovery in the total; distinguish this from steady-state
+costs. Worker startup, message reception/acknowledgement, and writing the metrics log
+are excluded. Exceptions still propagate; retry and acknowledgement logic is unchanged.
+
+For example, aggregate one capture with `jq` (use a fresh file or select only the
+capture's timestamps when comparing runs):
+
+```bash
+jq -s '
+  map(select(.message == "Versions sync metrics") | .context) as $rows
+  | ($rows | map(.timings_ms.total) | add) as $total
+  | {
+      messages: ($rows | length),
+      statuses: ($rows | group_by(.status) | map({status: .[0].status, count: length})),
+      tags: ($rows | map(.tags) | add),
+      lookups: ($rows | map(.existing_version_lookups) | add),
+      new_versions: ($rows | map(.new_versions) | add),
+      phases: ([$rows[] | .timings_ms | to_entries[]]
+        | group_by(.key)
+        | map({phase: .[0].key, ms: (map(.value) | add)})
+        | map(. + {percent_of_total: (if $total > 0 then 100 * .ms / $total else 0 end)})
+        | sort_by(-.ms))
+    }
+' var/log/versions-sync-metrics-YYYY-MM-DD.log
+```
+
+Compare cumulative phase times, and separate messages with/without new versions.
+Repeat across several captures: a FIFO slice of 500 repositories may not represent
+all repositories. `completed` does not imply a new version was found.
+
+During the same window, record RabbitMQ's ready/unacknowledged counts, consumer count
+and acknowledgement rate; worker CPU/restarts; MySQL load, slow queries/lock waits;
+and GitHub 403/429 responses. Queue decline is a **net** rate if publishers are active.
+Summed handler time across concurrent workers is not elapsed capture time.
+
+To quantify repositories that could be skipped, run this read-only SQL query against
+the application database (it scans the eligible repositories; run off-peak if needed):
+
+```sql
+SELECT COUNT(*) AS eligible_repos,
+       COALESCE(SUM(NOT EXISTS (
+           SELECT 1 FROM star s WHERE s.repo_id = r.id
+       )), 0) AS repos_without_subscribers
+FROM repo r
+WHERE r.removed_at IS NULL;
+```
+
+On this integration branch, periodic scheduling excludes repositories without a
+subscriber and persists the removal flag immediately after a 404/451. Explicit
+repository selection is unchanged, and 403 access restrictions do not mark a
+repository as removed. The subscriber filter affects new sync waves, not messages
+already queued; do not purge the existing queue to apply it.
+
 ## Running the test suite
 
 If you plan to contribute (you're awesome, I know that :v:), you'll need to install the project in a different way (for example, to retrieve dev packages):

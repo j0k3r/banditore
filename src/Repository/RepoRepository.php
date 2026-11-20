@@ -28,6 +28,7 @@ class RepoRepository extends ServiceEntityRepository
         $data = $this->createQueryBuilder('r')
             ->select('r.id')
             ->where('r.removedAt IS NULL')
+            ->andWhere('EXISTS (SELECT s.id FROM App\Entity\Star s WHERE s.repo = r.id)')
             ->getQuery()
             ->getArrayResult();
 
