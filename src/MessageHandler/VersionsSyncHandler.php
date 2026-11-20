@@ -100,26 +100,13 @@ class VersionsSyncHandler
 
         [$username, $repoName] = explode('/', $repo->getFullName());
 
-        // this is a simple call to retrieve at least one tag from the selected repo
-        // using git/refs/tags when repo has no tag throws a 404 which can't be cached
-        // this query return an empty array when repo has no tag and it can be cached
-        try {
-            $tags = $githubRepoApi->tags($username, $repoName, ['per_page' => 1, 'page' => 1]);
-        } catch (\Exception $e) {
-            $this->logger->warning('(repo/tags) <error>' . $e->getMessage() . '</error>');
-
-            // repo not found OR access blocked? Ignore it in future loops
-            if (404 === $e->getCode() || 451 === $e->getCode()) {
-                $repo->setRemovedAt(new \DateTime());
-                $em->persist($repo);
-                $em->flush();
+        // Existing versions let us skip the tag probe on the normal path.
+        $hasVersions = $this->versionRepository->hasVersions($repo->getId());
+        if (!$hasVersions) {
+            $hasTags = $this->hasTags($repo, $githubRepoApi, $em);
+            if (true !== $hasTags) {
+                return false === $hasTags ? 0 : null;
             }
-
-            return null;
-        }
-
-        if (empty($tags)) {
-            return $newVersion;
         }
 
         // use git/refs/tags because tags aren't order by date creation (so we retrieve ALL tags every time …)
@@ -129,6 +116,14 @@ class VersionsSyncHandler
 
             $tags = $githubGitApi->tags()->all($username, $repoName);
         } catch (\Exception $e) {
+            // A 404 can mean all tags were deleted, not that the repository disappeared.
+            if ($hasVersions && (404 === $e->getCode() || 451 === $e->getCode())) {
+                $hasTags = $this->hasTags($repo, $githubRepoApi, $em);
+                if (true !== $hasTags) {
+                    return false === $hasTags ? 0 : null;
+                }
+            }
+
             $this->logger->warning('(git/refs/tags) <error>' . $e->getMessage() . '</error>');
 
             return null;
@@ -239,6 +234,31 @@ class VersionsSyncHandler
         $em->flush();
 
         return $newVersion;
+    }
+
+    /**
+     * The tag-list endpoint returns a cacheable empty array when there are no tags,
+     * unlike git/refs/tags, whose 404 is ambiguous.
+     */
+    private function hasTags(Repo $repo, \Github\Api\Repo $githubRepoApi, EntityManager $em): ?bool
+    {
+        [$username, $repoName] = explode('/', $repo->getFullName());
+
+        try {
+            $tags = $githubRepoApi->tags($username, $repoName, ['per_page' => 1, 'page' => 1]);
+
+            return !empty($tags);
+        } catch (\Exception $e) {
+            $this->logger->warning('(repo/tags) <error>' . $e->getMessage() . '</error>');
+
+            if (404 === $e->getCode() || 451 === $e->getCode()) {
+                $repo->setRemovedAt(new \DateTime());
+                $em->persist($repo);
+                $em->flush();
+            }
+
+            return null;
+        }
     }
 
     /**

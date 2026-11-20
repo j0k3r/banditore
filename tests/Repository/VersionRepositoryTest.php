@@ -55,6 +55,20 @@ class VersionRepositoryTest extends WebTestCase
         $entityManager->clear();
     }
 
+    public function testHasVersionsChecksOnlyTheGivenRepository(): void
+    {
+        $repository = self::getContainer()->get(VersionRepository::class);
+        $this->assertTrue($repository->hasVersions(555));
+
+        self::getContainer()->get(EntityManagerInterface::class)->createQuery('DELETE FROM App\Entity\Version v WHERE v.repo = :repoId')
+            ->setParameter('repoId', 555)
+            ->execute();
+
+        $this->assertFalse($repository->hasVersions(555));
+        $this->assertTrue($repository->hasVersions(666));
+        $this->assertFalse($repository->hasVersions(0));
+    }
+
     public function testFindForUserPaginatesBeforeLoadingDetails(): void
     {
         $repository = self::getContainer()->get(VersionRepository::class);
