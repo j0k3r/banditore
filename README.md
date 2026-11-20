@@ -197,7 +197,9 @@ are logged. Context fields include:
   checks attempted, including checks for already-known tags.
 - `new_versions`: versions included in successful flushes during this message.
 - `timings_ms`: cumulative wall-clock milliseconds for `repo_lookup`, `rate_limit`
-  (the initial check only; the final quota request has been removed), `tags` (probe and full list), `existing_versions`, `version_details`
+  (the initial check only; the final quota request has been removed), `tags` (full
+  list and the probe when needed), `existing_versions` (initial version-existence
+  check and per-tag lookups), `version_details`
   (release lookup and tag/commit/blob fallback), `markdown` (including retry sleeps),
   `flush`, `hub`, and the handler `total`.
 
@@ -254,8 +256,10 @@ WHERE r.removed_at IS NULL;
 On this integration branch, periodic scheduling excludes repositories without a
 subscriber and persists the removal flag immediately after a 404/451. Explicit
 repository selection is unchanged, and 403 access restrictions do not mark a
-repository as removed. The subscriber filter affects new sync waves, not messages
-already queued; do not purge the existing queue to apply it.
+repository as removed. Repositories with existing versions skip the preliminary
+tag probe; a 404/451 from the refs endpoint falls back to the probe so deleted tags
+are not mistaken for a deleted repository. The subscriber filter affects new sync
+waves, not messages already queued; do not purge the existing queue to apply it.
 
 ## Running the test suite
 

@@ -18,6 +18,16 @@ class VersionRepository extends ServiceEntityRepository
         parent::__construct($registry, Version::class);
     }
 
+    public function hasVersions(int $repoId): bool
+    {
+        return null !== $this->createQueryBuilder('v')
+            ->select('v.id')
+            ->where('v.repo = :repoId')->setParameter('repoId', $repoId)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
+    }
+
     /**
      * Find one version for a given tag name and repo id.
      * This is exactly the same as `findOneBy` but this one use a result cache.

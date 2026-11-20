@@ -60,21 +60,13 @@ class VersionsSyncHandlerTest extends WebTestCase
         $handler->__invoke(new VersionsSync(123));
     }
 
-    public function getWorkingResponses(?Response $secondMarkdownResponse = null): MockHandler
+    public function getWorkingResponses(?Response $secondMarkdownResponse = null, bool $hasVersions = false): MockHandler
     {
         return new MockHandler([
             // rate_limit
             $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
-            // repo/tags
-            $this->getOKResponse([[
-                'name' => '2.0.1',
-                'zipball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/zipball/2.0.1',
-                'tarball_url' => 'https://api.github.com/repos/snc/SncRedisBundle/tarball/2.0.1',
-                'commit' => [
-                    'sha' => '02c808d157c79ac32777e19f3ec31af24a32d2df',
-                    'url' => 'https://api.github.com/repos/snc/SncRedisBundle/commits/02c808d157c79ac32777e19f3ec31af24a32d2df',
-                ],
-            ]]),
+            // repo/tags is only needed before any versions have been imported.
+            ...($hasVersions ? [] : [$this->getOKResponse([['name' => '2.0.1']])]),
             // git/refs/tags
             $this->getOKResponse([
                 [
@@ -190,12 +182,14 @@ class VersionsSyncHandlerTest extends WebTestCase
 
     public static function metricsModes(): iterable
     {
-        yield 'disabled' => [false];
-        yield 'enabled' => [true];
+        yield 'first import, metrics disabled' => [false, false];
+        yield 'known repository, metrics disabled' => [false, true];
+        yield 'first import, metrics enabled' => [true, false];
+        yield 'known repository, metrics enabled' => [true, true];
     }
 
     #[DataProvider('metricsModes')]
-    public function testProcessSuccessfulMessage(bool $collectMetrics): void
+    public function testProcessSuccessfulMessage(bool $collectMetrics, bool $hasVersions): void
     {
         $uow = $this->createMock(UnitOfWork::class);
         $uow->expects($this->exactly(3))
@@ -232,6 +226,10 @@ class VersionsSyncHandlerTest extends WebTestCase
 
         $versionRepository = $this->createMock(VersionRepository::class);
 
+        $versionRepository->expects($this->once())
+            ->method('hasVersions')
+            ->with(123)
+            ->willReturn($hasVersions);
         $versionRepository->expects($this->exactly(4))
             ->method('findExistingOne')
             ->willReturnCallback(static function ($tagName, $repoId) use ($repo) {
@@ -247,7 +245,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->method('pingHub')
             ->with([123]);
 
-        $responses = $this->getWorkingResponses();
+        $responses = $this->getWorkingResponses(hasVersions: $hasVersions);
         $clientHandler = HandlerStack::create($responses);
         $guzzleClient = new Client([
             'handler' => $clientHandler,
@@ -376,14 +374,18 @@ class VersionsSyncHandlerTest extends WebTestCase
 
     public static function repoAccessFailures(): iterable
     {
-        yield 'not found' => [404, true];
-        yield 'legally blocked' => [451, true];
-        yield 'IP access restriction' => [403, false];
-        yield 'server error' => [500, false];
+        yield 'new repo, not found' => [404, true, false];
+        yield 'known repo, not found' => [404, true, true];
+        yield 'new repo, legally blocked' => [451, true, false];
+        yield 'known repo, legally blocked' => [451, true, true];
+        yield 'new repo, IP access restriction' => [403, false, false];
+        yield 'known repo, IP access restriction' => [403, false, true];
+        yield 'new repo, server error' => [500, false, false];
+        yield 'known repo, server error' => [500, false, true];
     }
 
     #[DataProvider('repoAccessFailures')]
-    public function testProcessRepoAccessFailure(int $statusCode, bool $removed): void
+    public function testProcessRepoAccessFailure(int $statusCode, bool $removed, bool $hasVersions): void
     {
         $em = $this->createMock(EntityManager::class);
         $em->expects($this->once())
@@ -419,11 +421,12 @@ class VersionsSyncHandlerTest extends WebTestCase
         $pubsubhubbub->expects($this->never())
             ->method('pingHub');
 
+        $versionRepository->method('hasVersions')->willReturn($hasVersions);
         $responses = new MockHandler([
-            // rate_limit
             $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
-            // repo/tags generate a bad request
             new Response($statusCode, ['Content-Type' => 'application/json']),
+            // An ambiguous refs failure is confirmed using the tag-list endpoint.
+            ...($hasVersions && $removed ? [new Response($statusCode, ['Content-Type' => 'application/json'])] : []),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -454,10 +457,64 @@ class VersionsSyncHandlerTest extends WebTestCase
 
         $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
         $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
-        $this->assertStringContainsString('(repo/tags) <error>', $records[2]['message']);
+        $endpoint = $hasVersions && !$removed ? 'git/refs/tags' : 'repo/tags';
+        $this->assertStringContainsString('(' . $endpoint . ') <error>', $records[2]['message']);
 
         $this->assertSame($removed, null !== $repo->getRemovedAt());
         $this->assertCount(0, $responses);
+    }
+
+    public static function tagProbeResults(): iterable
+    {
+        yield 'all tags deleted' => [200, false];
+        yield 'refs failed but tags still exist' => [200, true];
+        yield 'tag probe access restriction' => [403, false];
+        yield 'tag probe server error' => [500, false];
+    }
+
+    #[DataProvider('tagProbeResults')]
+    public function testKnownRepositoryRefsNotFoundIsConfirmedByTagProbe(int $probeStatus, bool $hasTags): void
+    {
+        $repo = new Repo();
+        $repo->setId(123);
+        $repo->setFullName('bob/wow');
+
+        $em = $this->createMock(EntityManager::class);
+        $em->method('isOpen')->willReturn(true);
+        $em->expects($this->never())->method('persist');
+        $em->expects($this->never())->method('flush');
+        $doctrine = $this->createStub(Registry::class);
+        $doctrine->method('getManager')->willReturn($em);
+        $repoRepository = $this->createStub(RepoRepository::class);
+        $repoRepository->method('find')->willReturn($repo);
+        $versionRepository = $this->createMock(VersionRepository::class);
+        $versionRepository->expects($this->once())->method('hasVersions')->with(123)->willReturn(true);
+        $versionRepository->expects($this->never())->method('findExistingOne');
+        $publisher = $this->createMock(Publisher::class);
+        $publisher->expects($this->never())->method('pingHub');
+
+        $responses = new MockHandler([
+            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
+            new Response(404, ['Content-Type' => 'application/json']),
+            new Response($probeStatus, ['Content-Type' => 'application/json'], (string) json_encode($hasTags ? [['name' => 'v1.0.0']] : [])),
+        ]);
+        $githubClient = new GithubClient(new Builder(new Guzzle7Client(new Client(['handler' => HandlerStack::create($responses)]))));
+        $logHandler = new TestHandler();
+        $metricsLogHandler = new TestHandler();
+        $handler = new VersionsSyncHandler($doctrine, $repoRepository, $versionRepository, $publisher, $githubClient, new Logger('test', [$logHandler]), true, new Logger('metrics', [$metricsLogHandler]));
+
+        $this->assertTrue($handler(new VersionsSync(123)));
+        $this->assertNull($repo->getRemovedAt());
+        $this->assertCount(0, $responses);
+        $this->assertSame(200 === $probeStatus && $hasTags, $logHandler->hasWarningThatContains('(git/refs/tags)'));
+        $this->assertSame(200 !== $probeStatus, $logHandler->hasWarningThatContains('(repo/tags)'));
+        $this->assertCount(1, $metricsLogHandler->getRecords());
+        $metrics = $metricsLogHandler->getRecords()[0]->context;
+        $this->assertSame(200 === $probeStatus && !$hasTags ? 'completed' : 'fetch_failed', $metrics['status']);
+        $this->assertSame(0, $metrics['new_versions']);
+        $timings = $metrics['timings_ms'];
+        $this->assertGreaterThan(0, $timings['tags']);
+        $this->assertGreaterThanOrEqual(array_sum($timings) - $timings['total'], $timings['total'] + 0.01);
     }
 
     /**
@@ -1020,7 +1077,7 @@ class VersionsSyncHandlerTest extends WebTestCase
     {
         $this->restoreFunctionalState();
 
-        $clientHandler = HandlerStack::create($this->getWorkingResponses());
+        $clientHandler = HandlerStack::create($this->getWorkingResponses(hasVersions: true));
         $guzzleClient = new Client([
             'handler' => $clientHandler,
         ]);
@@ -1068,12 +1125,6 @@ class VersionsSyncHandlerTest extends WebTestCase
         $responses = new MockHandler([
             // rate_limit
             $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
-            // repo/tags
-            $this->getOKResponse([[
-                'name' => 'v2.11.0',
-                'zipball_url' => 'https://api.github.com/repos/mozilla/metrics-graphics/zipball/v2.11.0',
-                'tarball_url' => 'https://api.github.com/repos/mozilla/metrics-graphics/tarball/v2.11.0',
-            ]]),
             // git/refs/tags
             $this->getOKResponse([
                 [
