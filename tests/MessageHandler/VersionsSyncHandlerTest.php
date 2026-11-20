@@ -21,6 +21,7 @@ use GuzzleHttp\Psr7\Response;
 use Http\Adapter\Guzzle7\Client as Guzzle7Client;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -184,8 +185,6 @@ class VersionsSyncHandlerTest extends WebTestCase
                 // markdown
                 new Response(200, ['Content-Type' => 'text/html'], '<p>yay</p>'),
             ] : []),
-            // rate_limit
-            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
     }
 
@@ -241,7 +240,8 @@ class VersionsSyncHandlerTest extends WebTestCase
             ->method('pingHub')
             ->with([123]);
 
-        $clientHandler = HandlerStack::create($this->getWorkingResponses());
+        $responses = $this->getWorkingResponses();
+        $clientHandler = HandlerStack::create($responses);
         $guzzleClient = new Client([
             'handler' => $clientHandler,
         ]);
@@ -269,7 +269,9 @@ class VersionsSyncHandlerTest extends WebTestCase
 
         $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
         $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
-        $this->assertSame('[10] <comment>3</comment> new versions for <info>bob/wow</info>', $records[2]['message']);
+        $this->assertSame('<comment>3</comment> new versions for <info>bob/wow</info>', $records[2]['message']);
+        $this->assertCount(3, $records);
+        $this->assertCount(0, $responses);
     }
 
     /**
@@ -311,8 +313,6 @@ class VersionsSyncHandlerTest extends WebTestCase
             $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // repo/tags generate a bad request
             new Response(400, ['Content-Type' => 'application/json']),
-            // rate_limit
-            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -346,15 +346,26 @@ class VersionsSyncHandlerTest extends WebTestCase
         $this->assertStringContainsString('(repo/tags) <error>', $records[2]['message']);
     }
 
-    /**
-     * The call to repo/tags will return a "404" then the repo will be flag as removed.
-     */
-    public function testProcessRepoNotFound(): void
+    public static function repoAccessFailures(): iterable
+    {
+        yield 'not found' => [404, true];
+        yield 'legally blocked' => [451, true];
+        yield 'IP access restriction' => [403, false];
+        yield 'server error' => [500, false];
+    }
+
+    #[DataProvider('repoAccessFailures')]
+    public function testProcessRepoAccessFailure(int $statusCode, bool $removed): void
     {
         $em = $this->createMock(EntityManager::class);
         $em->expects($this->once())
             ->method('isOpen')
             ->willReturn(true);
+        $em->expects($removed ? $this->once() : $this->never())
+            ->method('persist')
+            ->with($this->callback(static fn (Repo $repo): bool => null !== $repo->getRemovedAt()));
+        $em->expects($removed ? $this->once() : $this->never())
+            ->method('flush');
 
         $doctrine = $this->createMock(Registry::class);
         $doctrine->expects($this->once())
@@ -384,9 +395,7 @@ class VersionsSyncHandlerTest extends WebTestCase
             // rate_limit
             $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // repo/tags generate a bad request
-            new Response(404, ['Content-Type' => 'application/json']),
-            // rate_limit
-            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
+            new Response($statusCode, ['Content-Type' => 'application/json']),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -419,7 +428,8 @@ class VersionsSyncHandlerTest extends WebTestCase
         $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
         $this->assertStringContainsString('(repo/tags) <error>', $records[2]['message']);
 
-        $this->assertNotNull($repo->getRemovedAt());
+        $this->assertSame($removed, null !== $repo->getRemovedAt());
+        $this->assertCount(0, $responses);
     }
 
     /**
@@ -571,8 +581,6 @@ class VersionsSyncHandlerTest extends WebTestCase
             ]),
             // markdown failed
             new Response(400, ['Content-Type' => 'text/html'], 'booboo'),
-            // rate_limit
-            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -684,8 +692,6 @@ class VersionsSyncHandlerTest extends WebTestCase
             $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
             // repo/tags
             $this->getOKResponse([]),
-            // rate_limit
-            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -716,7 +722,9 @@ class VersionsSyncHandlerTest extends WebTestCase
 
         $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
         $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
-        $this->assertSame('[10] <comment>0</comment> new versions for <info>bob/wow</info>', $records[2]['message']);
+        $this->assertSame('<comment>0</comment> new versions for <info>bob/wow</info>', $records[2]['message']);
+        $this->assertCount(3, $records);
+        $this->assertCount(0, $responses);
     }
 
     /**
@@ -785,8 +793,6 @@ class VersionsSyncHandlerTest extends WebTestCase
                     ],
                 ],
             ]),
-            // rate_limit
-            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -859,8 +865,6 @@ class VersionsSyncHandlerTest extends WebTestCase
             ]]),
             // git/refs/tags generate a bad request
             new Response(400, ['Content-Type' => 'application/json']),
-            // rate_limit
-            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -1024,8 +1028,6 @@ class VersionsSyncHandlerTest extends WebTestCase
             ]),
             // markdown
             new Response(200, ['Content-Type' => 'text/html'], '<p>This is the first release after our major push.</p>'),
-            // rate_limit
-            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -1155,8 +1157,6 @@ class VersionsSyncHandlerTest extends WebTestCase
             ]),
             // markdown
             new Response(200, ['Content-Type' => 'text/html'], '<p>(blob, size 40) de1324951afe6e46240660cbc03c1500a90fc928</p>'),
-            // rate_limit
-            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
@@ -1187,7 +1187,7 @@ class VersionsSyncHandlerTest extends WebTestCase
 
         $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
         $this->assertSame('[10] Check <info>bob/wow</info> … ', $records[1]['message']);
-        $this->assertSame('[10] <comment>1</comment> new versions for <info>bob/wow</info>', $records[2]['message']);
+        $this->assertSame('<comment>1</comment> new versions for <info>bob/wow</info>', $records[2]['message']);
     }
 
     public function testBadTagObjectType(): void
@@ -1263,8 +1263,6 @@ class VersionsSyncHandlerTest extends WebTestCase
             ]),
             // release for that tag does not exist
             new Response(404, ['Content-Type' => 'application/json']),
-            // rate_limit
-            $this->getOKResponse(['resources' => ['core' => ['reset' => time() + 1000, 'limit' => 200, 'remaining' => 10]]]),
         ]);
 
         $clientHandler = HandlerStack::create($responses);
