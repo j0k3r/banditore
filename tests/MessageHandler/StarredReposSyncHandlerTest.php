@@ -21,8 +21,10 @@ use GuzzleHttp\Psr7\Response;
 use Http\Adapter\Guzzle7\Client as Guzzle7Client;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Messenger\Exception\RecoverableMessageHandlingException;
 
 class StarredReposSyncHandlerTest extends WebTestCase
 {
@@ -470,7 +472,12 @@ class StarredReposSyncHandlerTest extends WebTestCase
             $redisClient
         );
 
-        $handler->__invoke(new StarredReposSync(123));
+        try {
+            $handler->__invoke(new StarredReposSync(123));
+            $this->fail('Missing quota must defer the message.');
+        } catch (RecoverableMessageHandlingException $e) {
+            $this->assertSame(60000, $e->getRetryDelay());
+        }
 
         $records = $logHandler->getRecords();
 
@@ -539,13 +546,75 @@ class StarredReposSyncHandlerTest extends WebTestCase
             $redisClient
         );
 
-        $handler->__invoke(new StarredReposSync(123));
+        try {
+            $handler->__invoke(new StarredReposSync(123));
+            $this->fail('Exhausted quota must defer the message.');
+        } catch (RecoverableMessageHandlingException $e) {
+            $this->assertGreaterThanOrEqual(999000, $e->getRetryDelay());
+            $this->assertLessThanOrEqual(1001000, $e->getRetryDelay());
+        }
 
         $records = $logHandler->getRecords();
 
         $this->assertSame('Consume banditore.sync_starred_repos message', $records[0]['message']);
         $this->assertSame('[0] Check <info>bob</info> … ', $records[1]['message']);
-        $this->assertSame('RateLimit reached, stopping.', $records[2]['message']);
+        $this->assertSame('RateLimit reached, deferring sync.', $records[2]['message']);
+    }
+
+    public static function rateLimitPages(): iterable
+    {
+        yield 'first page' => [false];
+        yield 'during pagination' => [true];
+    }
+
+    #[DataProvider('rateLimitPages')]
+    public function testRateLimitDuringSyncIsRetriedWithoutRemovingStars(bool $laterPage): void
+    {
+        $reset = time() + 1000;
+        $responses = [$this->getOKResponse(['resources' => ['core' => ['reset' => $reset, 'limit' => 5000, 'remaining' => 10]]])];
+        if ($laterPage) {
+            $responses[] = $this->getOKResponse([['id' => 666]]);
+            $responses[] = $this->getOKResponse(['resources' => ['core' => ['reset' => $reset, 'limit' => 5000, 'remaining' => 1]]]);
+        }
+        $responses[] = new Response(403, [
+            'Content-Type' => 'application/json',
+            'X-RateLimit-Remaining' => '0',
+            'X-RateLimit-Limit' => '5000',
+            'X-RateLimit-Reset' => (string) $reset,
+        ], json_encode(['message' => 'API rate limit exceeded']));
+
+        $em = $this->createMock(EntityManager::class);
+        $em->method('isOpen')->willReturn(true);
+        $em->expects($laterPage ? $this->once() : $this->never())->method('flush');
+        $doctrine = $this->createStub(Registry::class);
+        $doctrine->method('getManager')->willReturn($em);
+
+        $user = new User();
+        $user->setId(123);
+        $user->setUsername('bob');
+        $userRepository = $this->createStub(UserRepository::class);
+        $userRepository->method('find')->willReturn($user);
+
+        $repo = new Repo();
+        $repo->setId(666);
+        $repo->setUpdatedAt(new \DateTime());
+        $repoRepository = $this->createStub(RepoRepository::class);
+        $repoRepository->method('find')->willReturn($repo);
+        $starRepository = $this->createMock(StarRepository::class);
+        $starRepository->expects($laterPage ? $this->once() : $this->never())->method('findAllByUser')->willReturn([666, 777]);
+        $starRepository->expects($this->never())->method('removeFromUser');
+        $redis = $this->createMock(\Predis\Client::class);
+        $redis->expects($this->once())->method('__call')->with('setex', $this->anything());
+
+        $handler = new StarredReposSyncHandler($doctrine, $userRepository, $starRepository, $repoRepository, $this->getMockClient(new MockHandler($responses)), new NullLogger(), $redis);
+
+        try {
+            $handler(new StarredReposSync(123));
+            $this->fail('Rate-limited sync must not be acknowledged as successful.');
+        } catch (RecoverableMessageHandlingException $e) {
+            $this->assertGreaterThanOrEqual(999000, $e->getRetryDelay());
+            $this->assertLessThanOrEqual(1001000, $e->getRetryDelay());
+        }
     }
 
     public function testFunctionalConsumer(): void
@@ -663,6 +732,7 @@ class StarredReposSyncHandlerTest extends WebTestCase
 
         $guzzleClient = new Client([
             'handler' => $clientHandler,
+            'http_errors' => false,
         ]);
 
         $httpClient = new Guzzle7Client($guzzleClient);

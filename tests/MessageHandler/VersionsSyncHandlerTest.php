@@ -24,6 +24,7 @@ use Monolog\Logger;
 use PHPUnit\Framework\Attributes\Group;
 use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Messenger\Exception\RecoverableMessageHandlingException;
 
 class VersionsSyncHandlerTest extends WebTestCase
 {
@@ -481,13 +482,19 @@ class VersionsSyncHandlerTest extends WebTestCase
             $logger
         );
 
-        $handler->__invoke(new VersionsSync(123));
+        try {
+            $handler->__invoke(new VersionsSync(123));
+            $this->fail('Exhausted quota must defer the message.');
+        } catch (RecoverableMessageHandlingException $e) {
+            $this->assertGreaterThanOrEqual(999000, $e->getRetryDelay());
+            $this->assertLessThanOrEqual(1001000, $e->getRetryDelay());
+        }
 
         $records = $logHandler->getRecords();
 
         $this->assertSame('Consume banditore.sync_versions message', $records[0]['message']);
         $this->assertSame('[0] Check <info>bob/wow</info> … ', $records[1]['message']);
-        $this->assertStringContainsString('RateLimit reached, stopping.', $records[2]['message']);
+        $this->assertStringContainsString('RateLimit reached, deferring sync.', $records[2]['message']);
     }
 
     /**
@@ -923,7 +930,12 @@ class VersionsSyncHandlerTest extends WebTestCase
             $logger
         );
 
-        $handler->__invoke(new VersionsSync(123));
+        try {
+            $handler->__invoke(new VersionsSync(123));
+            $this->fail('Missing quota must defer the message.');
+        } catch (RecoverableMessageHandlingException $e) {
+            $this->assertSame(60000, $e->getRetryDelay());
+        }
 
         $records = $logHandler->getRecords();
 

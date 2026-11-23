@@ -13,6 +13,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Github\Client;
+use Github\Exception\ApiLimitExceedException;
 use Github\Exception\RuntimeException;
 use Predis\ClientInterface as RedisClientInterface;
 use Psr\Log\LoggerInterface;
@@ -45,7 +46,7 @@ class StarredReposSyncHandler
         if (null === $this->client) {
             $this->logger->error('No client provided');
 
-            return false;
+            $this->deferSync();
         }
 
         $userId = $message->getUserId();
@@ -69,9 +70,9 @@ class StarredReposSyncHandler
         $this->logger->info('[' . $rateLimit . '] Check <info>' . $user->getUsername() . '</info> … ');
 
         if (0 === $rateLimit || false === $rateLimit) {
-            $this->logger->warning('RateLimit reached, stopping.');
+            $this->logger->warning('RateLimit reached, deferring sync.');
 
-            return false;
+            $this->deferSync();
         }
 
         // this shouldn't be catched so the worker will die when an exception is thrown
@@ -110,6 +111,8 @@ class StarredReposSyncHandler
 
         try {
             $starredRepos = $githubUserApi->starred($user->getUsername(), $page, $perPage);
+        } catch (ApiLimitExceedException $e) {
+            $this->deferSync($e);
         } catch (\Exception $e) {
             $this->logger->warning('(starred) <error>' . $e->getMessage() . '</error>');
 
@@ -158,8 +161,10 @@ class StarredReposSyncHandler
 
             try {
                 $starredRepos = $githubUserApi->starred($user->getUsername(), ++$page, $perPage);
+            } catch (ApiLimitExceedException $e) {
+                $this->deferSync($e);
             } catch (RuntimeException) {
-                // api limit is reached or whatever other error, we'll try next time
+                // Other API errors will be retried on the next scheduled sync.
                 return null;
             }
         } while (!empty($starredRepos));

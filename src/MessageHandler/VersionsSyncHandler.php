@@ -38,7 +38,7 @@ class VersionsSyncHandler
         if (null === $this->client) {
             $this->logger->error('No client provided');
 
-            return false;
+            $this->deferSync();
         }
 
         $repoId = $message->getRepoId();
@@ -59,9 +59,9 @@ class VersionsSyncHandler
         $this->logger->info('[' . $rateLimit . '] Check <info>' . $repo->getFullName() . '</info> … ');
 
         if (0 === $rateLimit || false === $rateLimit) {
-            $this->logger->warning('RateLimit reached, stopping.');
+            $this->logger->warning('RateLimit reached, deferring sync.');
 
-            return false;
+            $this->deferSync();
         }
 
         // this shouldn't be catched so the worker will die when an exception is thrown
