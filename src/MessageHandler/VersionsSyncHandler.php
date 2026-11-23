@@ -17,6 +17,7 @@ use Github\Api\Markdown;
 use Github\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\Messenger\Exception\RecoverableMessageHandlingException;
 
 /**
  * Consumer message to sync new version from a given repo.
@@ -50,6 +51,10 @@ class VersionsSyncHandler
 
         try {
             return $this->sync($message, $metrics);
+        } catch (RecoverableMessageHandlingException $e) {
+            $metrics['status'] = null === $this->client ? 'no_client' : 'rate_limit_unavailable';
+
+            throw $e;
         } catch (\Throwable $e) {
             $metrics['status'] = 'failed';
 
@@ -73,7 +78,7 @@ class VersionsSyncHandler
             $metrics['status'] = 'no_client';
             $this->logger->error('No client provided');
 
-            return false;
+            $this->deferSync();
         }
 
         $repoId = $message->getRepoId();
@@ -102,9 +107,9 @@ class VersionsSyncHandler
 
         if (0 === $rateLimit || false === $rateLimit) {
             $metrics['status'] = 'rate_limit_unavailable';
-            $this->logger->warning('RateLimit reached, stopping.');
+            $this->logger->warning('RateLimit reached, deferring sync.');
 
-            return false;
+            $this->deferSync();
         }
 
         // this shouldn't be catched so the worker will die when an exception is thrown

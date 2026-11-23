@@ -28,6 +28,7 @@ use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Clock\MockClock;
+use Symfony\Component\Messenger\Exception\RecoverableMessageHandlingException;
 
 class StarredReposSyncHandlerTest extends WebTestCase
 {
@@ -520,7 +521,12 @@ class StarredReposSyncHandlerTest extends WebTestCase
             new Logger('metrics', [$metricsLogHandler = new TestHandler()])
         );
 
-        $this->assertFalse($handler->__invoke(new StarredReposSync(123)));
+        try {
+            $handler->__invoke(new StarredReposSync(123));
+            $this->fail('Missing quota must defer the message.');
+        } catch (RecoverableMessageHandlingException $e) {
+            $this->assertSame(60000, $e->getRetryDelay());
+        }
         $metrics = $this->assertMetrics($metricsLogHandler, 'no_client');
         $this->assertSame(0, $metrics['page_requests']);
         $this->assertSame(0, $metrics['rate_limit_checks']);
@@ -594,7 +600,13 @@ class StarredReposSyncHandlerTest extends WebTestCase
             new Logger('metrics', [$metricsLogHandler = new TestHandler()])
         );
 
-        $this->assertFalse($handler->__invoke(new StarredReposSync(123)));
+        try {
+            $handler->__invoke(new StarredReposSync(123));
+            $this->fail('Exhausted quota must defer the message.');
+        } catch (RecoverableMessageHandlingException $e) {
+            $this->assertGreaterThanOrEqual(999000, $e->getRetryDelay());
+            $this->assertLessThanOrEqual(1001000, $e->getRetryDelay());
+        }
         $metrics = $this->assertMetrics($metricsLogHandler, 'rate_limit_unavailable');
         $this->assertSame(0, $metrics['page_requests']);
         $this->assertSame(1, $metrics['rate_limit_checks']);
@@ -603,7 +615,78 @@ class StarredReposSyncHandlerTest extends WebTestCase
 
         $this->assertSame('Consume banditore.sync_starred_repos message', $records[0]['message']);
         $this->assertSame('[0] Check <info>bob</info> … ', $records[1]['message']);
-        $this->assertSame('RateLimit reached, stopping.', $records[2]['message']);
+        $this->assertSame('RateLimit reached, deferring sync.', $records[2]['message']);
+    }
+
+    public static function rateLimitPages(): iterable
+    {
+        yield 'first page' => ['first page'];
+        yield 'during pagination' => ['pagination'];
+        yield 'during account lookup' => ['account lookup'];
+        yield 'after account rename' => ['account rename'];
+    }
+
+    #[DataProvider('rateLimitPages')]
+    public function testRateLimitDuringSyncIsRetriedWithoutRemovingStars(string $stage): void
+    {
+        $laterPage = 'pagination' === $stage;
+        $renamed = 'account rename' === $stage;
+        $accountLookup = $renamed || 'account lookup' === $stage;
+        $reset = time() + 1000;
+        $responses = [$this->getOKResponse(['resources' => ['core' => ['reset' => $reset, 'limit' => 5000, 'remaining' => 10]]])];
+        if ($laterPage) {
+            $responses[] = $this->getOKResponse([['id' => 666]])->withHeader('Link', '<https://api.github.com/users/bob/starred?page=2&per_page=100>; rel="next"');
+        }
+        if ($accountLookup) {
+            $responses[] = new Response(404, ['Content-Type' => 'application/json'], '{"message":"Not Found"}');
+            if ($renamed) {
+                $responses[] = $this->getOKResponse(['id' => 123, 'login' => 'new-bob']);
+            }
+        }
+        $responses[] = new Response(403, [
+            'Content-Type' => 'application/json',
+            'X-RateLimit-Remaining' => '0',
+            'X-RateLimit-Limit' => '5000',
+            'X-RateLimit-Reset' => (string) $reset,
+        ], json_encode(['message' => 'API rate limit exceeded']));
+
+        $em = $this->createMock(EntityManager::class);
+        $em->method('isOpen')->willReturn(true);
+        $em->expects($laterPage || $renamed ? $this->once() : $this->never())->method('flush');
+        $doctrine = $this->createStub(Registry::class);
+        $doctrine->method('getManager')->willReturn($em);
+
+        $user = new User();
+        $user->setId(123);
+        $user->setUsername('bob');
+        $userRepository = $this->createStub(UserRepository::class);
+        $userRepository->method('find')->willReturn($user);
+
+        $repo = new Repo();
+        $repo->setId(666);
+        $repo->setUpdatedAt(new \DateTime());
+        $repoRepository = $this->createStub(RepoRepository::class);
+        $repoRepository->method('find')->willReturn($repo);
+        $starRepository = $this->createMock(StarRepository::class);
+        $starRepository->expects($laterPage ? $this->once() : $this->never())->method('findAllByUser')->willReturn([666, 777]);
+        $starRepository->expects($this->never())->method('removeFromUser');
+        $redis = $this->createMock(\Predis\Client::class);
+        $redis->expects($this->once())->method('__call')->with('setex', $this->anything());
+
+        $metricsLogHandler = new TestHandler();
+        $handler = new StarredReposSyncHandler($doctrine, $userRepository, $starRepository, $repoRepository, $this->getMockClient(new MockHandler($responses)), new NullLogger(), $redis, true, new Logger('metrics', [$metricsLogHandler]));
+
+        try {
+            $handler(new StarredReposSync(123));
+            $this->fail('Rate-limited sync must not be acknowledged as successful.');
+        } catch (RecoverableMessageHandlingException $e) {
+            $this->assertGreaterThanOrEqual(999000, $e->getRetryDelay());
+            $this->assertLessThanOrEqual(1001000, $e->getRetryDelay());
+        }
+        $metrics = $this->assertMetrics($metricsLogHandler, 'rate_limit_unavailable');
+        $this->assertSame($laterPage || $renamed ? 2 : 1, $metrics['page_requests']);
+        $this->assertSame($accountLookup ? 1 : 0, $metrics['user_requests']);
+        $this->assertSame(0, $metrics['removed_stars']);
     }
 
     public static function recentQuotaCases(): iterable
@@ -646,7 +729,13 @@ class StarredReposSyncHandlerTest extends WebTestCase
         $metricsLogHandler = new TestHandler();
         $handler = new StarredReposSyncHandler($doctrine, $userRepository, $starRepository, $this->createStub(RepoRepository::class), $githubClient, new NullLogger(), $this->createStub(\Predis\Client::class), true, new Logger('metrics', [$metricsLogHandler]), $trackedClient);
 
-        $this->assertSame($allowed, $handler(new StarredReposSync(123)));
+        try {
+            $this->assertTrue($handler(new StarredReposSync(123)));
+            $this->assertTrue($allowed);
+        } catch (RecoverableMessageHandlingException $e) {
+            $this->assertFalse($allowed);
+            $this->assertGreaterThanOrEqual(60000, $e->getRetryDelay());
+        }
         $this->assertCount(0, $responses);
         $metrics = $this->assertMetrics($metricsLogHandler, $allowed ? 'completed' : 'rate_limit_unavailable');
         $this->assertSame($fallback ? 1 : 0, $metrics['rate_limit_checks']);
