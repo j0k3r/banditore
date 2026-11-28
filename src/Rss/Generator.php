@@ -56,19 +56,28 @@ class Generator
 
         foreach ($releases as $release) {
             // build repo top information
-            $repoHome = $release['homepage'] ? '(<a href="' . $release['homepage'] . '">' . $release['homepage'] . '</a>)' : '';
-            $repoLanguage = $release['language'] ? '<p>#' . $release['language'] . '</p>' : '';
+            // Escape attacker-controlled GitHub repo fields before embedding them as HTML in the
+            // feed (the item description is emitted verbatim inside CDATA). $release['body'] is left
+            // as-is because it is already sanitized via GitHub's gfm markdown rendering.
+            $homepage = htmlspecialchars((string) $release['homepage'], ENT_QUOTES);
+            $language = htmlspecialchars((string) $release['language'], ENT_QUOTES);
+            $fullName = htmlspecialchars((string) $release['fullName'], ENT_QUOTES);
+            $ownerAvatar = htmlspecialchars((string) $release['ownerAvatar'], ENT_QUOTES);
+            $description = htmlspecialchars((string) $release['description'], ENT_QUOTES);
+
+            $repoHome = $release['homepage'] ? '(<a href="' . $homepage . '">' . $homepage . '</a>)' : '';
+            $repoLanguage = $release['language'] ? '<p>#' . $language . '</p>' : '';
             $repoInformation = '<table>
                <tr>
                   <td>
-                     <a href="https://github.com/' . $release['fullName'] . '">
-                        <img src="' . $release['ownerAvatar'] . '&amp;s=140" alt="' . $release['fullName'] . '" title="' . $release['fullName'] . '" />
+                     <a href="https://github.com/' . $fullName . '">
+                        <img src="' . $ownerAvatar . '&amp;s=140" alt="' . $fullName . '" title="' . $fullName . '" />
                      </a>
                   </td>
                   <td>
-                     <b><a href="https://github.com/' . $release['fullName'] . '">' . $release['fullName'] . '</a></b>
+                     <b><a href="https://github.com/' . $fullName . '">' . $fullName . '</a></b>
                      ' . $repoHome . '<br/>
-                     ' . $release['description'] . '<br/>
+                     ' . $description . '<br/>
                      ' . $repoLanguage . '
                   </td>
                </tr>
